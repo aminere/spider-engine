@@ -1,4 +1,4 @@
-Spider is an HTML5 / WebGL engine available at: https://spiderengine.io
+Spider HTML5 / WebGL engine - https://spiderengine.io
 
 ## What is Spider?
 Spider is a software creation engine. More precisely it is a set of runtime, tools, and pipeline that is needed to create and publish real-time software. You may have heard the term Game Engine before, which is more commonly used to describe what Spider represents.
