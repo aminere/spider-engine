@@ -7,7 +7,7 @@ Behaviors are the primary way of creating functionality in the Spider Engine.
 
 Behaviors are graphs that represent an execution flow. 
 
-They have access to the engine through an :ref:`API <api>` and can perform a wide range of functionality.
+They have access to the engine through an `API <http://api>`_ and can perform a wide range of functionality.
 
 .. note::
 
