@@ -7,43 +7,48 @@ Entities and Components
 
 Spider uses the Entity Component pattern to build functionality.
 
-An Entity is a unique object that is part of a scene. An entity's functionality is entirely defined by its components.
+An Entity is the building block of a :ref:`Scene <scenes>`. Its appearance and behavior are defined by its components.
 
-For example, and Entity displays a Button if it has a :ref:`Button Component <components>`.
+For example, and Entity looks and acts like a Button if it has a :ref:`Button Component <button-component>`.
 
 An Entity may have children entities.
 
-See :ref:`Components <components>`.
+
+.. _scenes:
 
 Scenes
 ======
 
 A Scene is a hierarchy of entities. Only one scene can be open at a time.
 
-Typically, a scene represents an independent area of your program.
+A scene represents an independent area of your program.
 
-You can switch scenes using :ref:`Behaviors <behaviors>`. After a scene switch is completed, the previous scene is unloaded from memory.
+You can load and switch scenes using :ref:`Behaviors <behaviors>`. 
+
+.. note::
+
+	After a scene switch is completed, the previous scene is unloaded from memory.
 
 Publishing
 ==========
 
 There are several ways to publish creations made with Spider.
 
-Publish to web
---------------
+Publish to `spiderengine.io <https://spiderengine.io>`_
+------------------------------------------------------------
 
 Your creation will receive a unique URL and will be playable on the web.
 
 .. note::
 
-	Upon publishing to web, your creation will be listed on the Spider Engine `Projects Page <https://spiderengine.io/projects>`_.
+	Upon publishing to web, your creation will be listed on Spider Engine's `Projects Page <https://spiderengine.io/projects>`_.
 
-Publish to disk
----------------
+Publish to a Private Web Server
+-------------------------------
 
-You can download your creation to disk. You should typically do this if you want to host it on your own web server.
+You can publish to disk using the `Spider Editor <https://spiderengine.io/editor>`_ and obtain the data necessary to host your creation on your server.
 
-Native platforms
+Native Platforms
 ----------------
 
-It is possible to publish to iOS, Android, and desktop platforms. (Coming Soon)
+Support for PC, Mac, iOS and Android platforms is coming soon!
