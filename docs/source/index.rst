@@ -9,7 +9,7 @@ Spider is a web-based creation environment, based on HTML5 and WebGL.
    API Reference <http://api>
    overview
    behaviors
-   graphics
-   ui
+   3d
+   2d
    animation
    physics   

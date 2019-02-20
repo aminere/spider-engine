@@ -1,15 +1,12 @@
-========
-Graphics
-========
+==
+3D
+==
 
 Assets
 ======
 
 Model
 -----
-
-StaticMesh
-----------
 
 Texture
 --------
@@ -29,13 +26,13 @@ Components
 Visual
 ------
 
+Camera
+------
+
 Billboard
-^^^^^^^^^
+---------
 
 Skybox
-^^^^^^
-
-Camera
 ------
 
 Particles
