@@ -2,53 +2,44 @@
 Overview
 ========
 
-Entities and Components
-=======================
+Spider is an open source creation engine, dedicated to the making and publishing of video games.
 
-Spider uses the Entity Component pattern to build functionality.
+It's based on a WebGL / Typescript run-time, and a content creation platform at `spiderengine.io <https://spiderengine.io>`_.
 
-An Entity is the building block of a :ref:`Scene <scenes>`. Its appearance and behavior are defined by its components.
+    .. image:: ./images/editor.jpg
+        :scale: 70%
 
-For example, and Entity looks and acts like a Button if it has a :ref:`Button Component <button-component>`.
+Browser Support
+===============
 
-An Entity may have children entities.
+The run-time and editor run in any web-browser.
 
+However, we are focusing our testing efforts on Chrome |chrome| so we recommend it for best experience.
 
-.. _scenes:
-
-Scenes
-======
-
-A Scene is a hierarchy of entities. Only one scene can be open at a time.
-
-A scene represents an independent area of your program.
-
-You can load and switch scenes using :ref:`Behaviors <behaviors>`. 
-
-.. note::
-
-	After a scene switch is completed, the previous scene is unloaded from memory.
-
-Publishing
+Technology
 ==========
 
-There are several ways to publish creations made with Spider.
+Spider is based on modern web technologies:
 
-Publish to `spiderengine.io <https://spiderengine.io>`_
-------------------------------------------------------------
+* Written in `Typescript <https://www.typescriptlang.org/>`_
+* Uses `WebGL <https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API>`_ for graphics rendering
+* Uses `Cannon.js <http://www.cannonjs.org/>`_ for simulating physics
+* Game logic can be entirely developed in **Javascript**
 
-Your creation will receive a unique URL and will be playable on the web.
+Target Platforms
+================
 
-.. note::
+Web is and will always be the primarily supported platform by the Spider Engine.
 
-	Upon publishing to web, your creation will be listed on Spider Engine's `Projects Page <https://spiderengine.io/projects>`_.
+It also runs on PC. 
 
-Publish to a Private Web Server
--------------------------------
+Support for MacOS, Linux, iOS, and Android is coming soon.
 
-You can publish to disk using the `Spider Editor <https://spiderengine.io/editor>`_ and obtain the data necessary to host your creation on your server.
+.. |chrome| image:: ./images/chrome.png
 
-Native Platforms
-----------------
+Open Source Run-time
+====================
 
-Support for PC, Mac, iOS and Android platforms is coming soon!
+We are still in Beta and we plan to license the run-time under an open source license, along with the first official release.
+
+This will be our first open source project. If you have experience in the open source scene, we are definitly interested in hearing from you! `Contact Us <https://franticsoftware.com/#shapely_home_contact-4>`_

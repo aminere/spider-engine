@@ -1,15 +1,17 @@
 Spider Engine Documentation
 ===========================
 
-Spider is a web-based creation environment, based on HTML5 and WebGL.
+Dear User, Welcome!
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2   
    
-   API Reference <http://api>
    overview
-   behaviors
-   3d
+   projects
+   core
+   behavior
    2d
+   3d
    animation
-   physics   
+   editor
+   API Reference <http://api>

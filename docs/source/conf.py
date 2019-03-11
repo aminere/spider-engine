@@ -69,7 +69,7 @@ language = None
 exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = None
+pygments_style = 'sphinx'
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -90,6 +90,7 @@ html_theme_options = {
 html_sidebars = {
     '**': ['logo-text.html', 'globaltoc.html', 'searchbox.html']
 }
+html_css_files = ['custom.css']
 #html_theme = 'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
