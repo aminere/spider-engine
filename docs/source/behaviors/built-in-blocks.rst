@@ -1,9 +1,9 @@
 
+.. _built-in-blocks:
+
 ===============
 Built-in Blocks
 ===============
-
-.. _built-in-blocks:
 
 .. toctree::
 
@@ -16,3 +16,4 @@ Built-in Blocks
 	./built-in/screen-to-ray
 	./built-in/raycast-on-plane
 
+ 

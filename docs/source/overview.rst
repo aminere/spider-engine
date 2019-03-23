@@ -40,6 +40,6 @@ Support for MacOS, Linux, iOS, and Android is coming soon.
 Open Source Run-time
 ====================
 
-We are still in Beta and we plan to license the run-time under an open source license, along with the first official release.
+We plan to license the run-time under an open source license, along with the first official release after beta.
 
 This will be our first open source project. If you have experience in the open source scene, we are definitly interested in hearing from you! `Contact Us <https://franticsoftware.com/#shapely_home_contact-4>`_

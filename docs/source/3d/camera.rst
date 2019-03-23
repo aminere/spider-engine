@@ -1,7 +1,7 @@
 
-=======
-Cameras
-=======
+======
+Camera
+======
 
 Cameras render what they see to the screen or to a render target.
 

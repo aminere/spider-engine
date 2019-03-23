@@ -164,7 +164,7 @@ Spider Engine provides a set of common blocks to deal with core needs, such as f
 
 .. toctree::
 
-	./behaviors/built-in-blocks
+	behaviors/built-in-blocks
 
 
 Custom Data Objects
