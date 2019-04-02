@@ -1,4 +1,4 @@
-Spider HTML5 / WebGL engine - https://spiderengine.io
+Open Source Creation Engine - https://spiderengine.io
 
 ## What is Spider Engine?
 Spider is an open source 2D/3D engine and a content editor. It is dedicated to enabling fast creation and publishing of real-time content on the web.
