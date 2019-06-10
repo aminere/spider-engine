@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "dist/spider-engine.js",
   "types": "dist/spider-engine.d.ts",
+  "repository": "franticsoftware/spider-engine",
   "dependencies": {
     "@types/cannon": "^0.1.4",
     "cannon": "^0.6.2",
