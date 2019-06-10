@@ -1,0 +1,73 @@
+import { CollisionShape } from "./CollisionShape";
+import { BoxCollisionShape } from "./BoxCollisionShape";
+import { ReferenceArray } from "../serialization/ReferenceArray";
+import { AssetReference } from "../serialization/AssetReference";
+import { CollisionGroup } from "./CollisionGroup";
+import { Component } from "../core/Component";
+import { SyncEvent } from "ts-events";
+import { CollisionInfo } from "./CollisionInfo";
+import * as Attributes from "../core/Attributes";
+import { SerializedObject } from "../core/SerializableObject";
+import { ObjectProps } from "../core/Types";
+
+export class Collider extends Component {    
+    
+    get version() { return 2; }
+
+    get group() { return this._group.asset; }    
+    get shapes() { 
+        return this._shapes.data
+            .filter(r => Boolean(r.instance))
+            .map(r => r.instance as CollisionShape); 
+    }
+
+    set shapes(shapes: CollisionShape[]) {
+        this._shapes.clear();
+        shapes.forEach(shape => this._shapes.grow(shape));
+    }
+
+    set onCollision(callback: ((info: CollisionInfo) => void) | null) {
+        this._collision.detach();
+        if (callback) {
+            this._collision.attach(callback);
+        }
+    }
+
+    /**
+     * @event
+     */
+    get collision() { return this._collision; }
+
+    private _group = new AssetReference(CollisionGroup);
+    private _shapes = new ReferenceArray(CollisionShape);
+
+    @Attributes.unserializable()
+    private _collision = new SyncEvent<CollisionInfo>();    
+
+    constructor(props?: ObjectProps<Collider>) {
+        super();
+        if (props) {
+            this.setState(props);
+        }
+        if (this.shapes.length === 0) {
+            this._shapes.grow(new BoxCollisionShape());
+        }
+    }    
+
+    upgrade(json: SerializedObject, previousVersion: number) {
+        if (previousVersion === 1) {
+            Object.assign(json.properties, { _shapes: json.properties.shapes });
+            delete json.properties.shapes;
+        }
+        return json;
+    }
+
+    addShape(shape: CollisionShape) {
+        this._shapes.grow(shape);
+    }
+
+    destroy() {
+        super.destroy();
+        this._collision.detach();
+    }
+}

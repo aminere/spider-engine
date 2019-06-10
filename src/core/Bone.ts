@@ -1,0 +1,32 @@
+import { Matrix44 } from "../math/Matrix44";
+import { SerializedObject } from "./SerializableObject";
+import { Component } from "./Component";
+import { ObjectProps } from "./Types";
+
+export class Bone extends Component {    
+    
+    get version() { return 2; }
+
+    worldMatrix = new Matrix44();
+    inverseMatrix = new Matrix44();    
+    fbxId = 0;
+
+    constructor(props?: ObjectProps<Bone>) {
+        super();
+        if (props) {
+            this.setState(props);
+        }
+    }
+    
+    upgrade(json: SerializedObject, previousVersion: number) {
+        if (previousVersion === 1) {
+            Object.assign(json.properties, {
+                worldMatrix: json.properties.boneWorldMatrix,
+                inverseMatrix: json.properties.boneInverseMatrix,
+            });
+            delete json.properties.boneWorldMatrix;
+            delete json.properties.boneInverseMatrix;
+        }
+        return json;
+    }
+}

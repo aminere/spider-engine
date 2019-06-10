@@ -1,0 +1,27 @@
+<html>
+
+<head>
+  <title>Spider Engine Launcher</title>
+  <link rel="manifest" href="public/manifest.json">
+  <link rel="shortcut icon" href="public/favicon.ico">
+  <link rel="stylesheet" href="public/spider-engine.css">
+</head>
+
+<body>
+  <div class="rootDiv">
+    <canvas id="spiderTarget" class="spiderTarget"></canvas>
+  </div>
+  <script type="text/javascript">		
+    var spiderScript = document.createElement("script");
+    spiderScript.onload = () => {
+      window.spiderEngine = window.spiderEngineCreate({ 
+        container: document.getElementById("spiderTarget"),
+        startupScene: "Assets/Startup.Scene" 
+      });
+    };
+    spiderScript.src = "./dist/spider_electron_dev.js";
+    document.head.appendChild(spiderScript);		
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "spiderengine-launcher",
+  "productName": "Spider Engine Launcher",
+  "version": "1.0.0",
+  "main": "src/electron-launcher-prod.js",
+  "devDependencies": {
+    "electron": "^1.8.4",
+    "electron-packager": "^8.7.0"
+  },
+  "scripts": {
+    "start": "electron src/electron-launcher-dev.js",
+    "build-windows": "electron-packager . --overwrite --platform=win32 --arch=x64 --prune=true --out=release"
+  }
+}
