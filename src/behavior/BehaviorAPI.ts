@@ -130,10 +130,10 @@ export class BehaviorAPI {
             Finish: () => ExecutionStatus.Finish
         },
         Vector3: {
-            up: () => Vector3.dummy.copy(Vector3.up),
-            right: () => Vector3.dummy.copy(Vector3.right),
-            forward: () => Vector3.dummy.copy(Vector3.forward),
-            zero: () => Vector3.dummy.copy(Vector3.zero),
+            up: () => Vector3.fromPool().copy(Vector3.up),
+            right: () => Vector3.fromPool().copy(Vector3.right),
+            forward: () => Vector3.fromPool().copy(Vector3.forward),
+            zero: () => Vector3.fromPool().copy(Vector3.zero),
             distance: (a: Vector3, b: Vector3) => Vector3.distance(a, b),
             distanceSq: (a: Vector3, b: Vector3) => Vector3.distanceSq(a, b),
             fromPool: () => Vector3.fromPool()
@@ -145,11 +145,11 @@ export class BehaviorAPI {
             fromMatrix: (m: Matrix44) => Basis.fromMatrix(m)
         },
         Matrix44: {
-            identity: () => Matrix44.dummy.copy(Matrix44.identity),
+            identity: () => Matrix44.fromPool().copy(Matrix44.identity),
             fromPool: () => Matrix44.fromPool()
         },
         Quaternion: {
-            identity: () => Quaternion.dummy.copy(Quaternion.identity),
+            identity: () => Quaternion.fromPool().copy(Quaternion.identity),
             fromPool: () => Quaternion.fromPool(),
             fromEulerAngles: (x: number, y: number, z: number, order?: RotationOrder) => Quaternion.fromEulerAngles(
                 x,

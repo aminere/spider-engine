@@ -8,6 +8,7 @@ import { VertexBuffer } from "../graphics/VertexBuffer";
 import { Triangle } from "../math/Triangle";
 import { Ray } from "../math/Ray";
 import { Basis } from "../math/Basis";
+import { Quaternion } from "../math/Quaternion";
 export declare class BehaviorAPIFactory {
     static variableObjectFactory: {
         Vector2: (...args: number[]) => Vector2;
@@ -15,6 +16,7 @@ export declare class BehaviorAPIFactory {
         Vector4: (...args: number[]) => Vector4;
         Color: (...args: number[]) => Color;
         Matrix44: () => Matrix44;
+        Quaternion: () => Quaternion;
         Map: () => Map<any, any>;
         Plane: () => Plane;
         Triangle: () => Triangle;

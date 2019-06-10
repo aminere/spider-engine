@@ -23,6 +23,8 @@ namespace Private {
     export const basis = new Basis();
     export const modelViewMatrix = new Matrix44();
     export const viewMatrix = new Matrix44();
+    export const dummy1 = new Quaternion();
+    export const dummy2 = new Quaternion();
 
     export const line = new VertexBuffer();
     line.setData("position", [0, 0, 0, 0, 0, 0]);
@@ -179,8 +181,16 @@ export class GeometryRenderer {
         let absolutePosition = Vector3.fromPool().setFromMatrix(worldMatrix);
         let position = Vector3.fromPool().copy(forward).multiply(distFromOrigin).add(absolutePosition);
         let rotation = Quaternion.fromPool().lookAt(forward, up);
-        let scale = Vector3.fromPool().set(radius, radius, height);
-        Private.modelViewMatrix.compose(position, rotation, scale);
+        let scale = Vector3.fromPool().set(radius, height, radius);
+        const { dummy1, dummy2 } = Private;
+        Private.modelViewMatrix.compose(
+            position, 
+            dummy1.multiplyQuaternions(
+                dummy2.setFromEulerAngles(Math.PI / 2, 0, 0),
+                rotation
+            ), 
+            scale
+        );
         Private.debugMaterial.applyParameter(
             "modelViewMatrix",
             Private.modelViewMatrix.multiplyMatrices(Private.viewMatrix, Private.modelViewMatrix));

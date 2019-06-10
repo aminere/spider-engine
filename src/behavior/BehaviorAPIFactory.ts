@@ -10,6 +10,7 @@ import { Triangle } from "../math/Triangle";
 import { Ray } from "../math/Ray";
 import { Basis } from "../math/Basis";
 import { Interfaces } from "../core/Interfaces";
+import { Quaternion } from "../math/Quaternion";
 
 export class BehaviorAPIFactory {
 
@@ -19,6 +20,7 @@ export class BehaviorAPIFactory {
         Vector4: (...args: number[]) => new Vector4(...args),
         Color: (...args: number[]) => new Color(...args),
         Matrix44: () => new Matrix44(),
+        Quaternion: () => new Quaternion(),
         Map: () => new Map(),
         Plane: () => new Plane(),
         Triangle: () => new Triangle(),
