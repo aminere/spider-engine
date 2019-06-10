@@ -39,6 +39,9 @@ namespace Private {
     }
 }
 
+/**
+ * @hidden
+ */
 export namespace RTTIInternal {
     export function buildTypeTree() {
         Private.typeTree = {

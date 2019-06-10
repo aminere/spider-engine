@@ -16,13 +16,8 @@ import { Shader } from "../Shader";
 import { WebGL } from "../WebGL";
 import { MemoryTexture } from "../MemoryTexture";
 
-/**
- * @hidden
- */
-namespace Internal {
-    export namespace graphicUpdate {
-        export let offsetMatrix = new Matrix44();
-    }
+namespace Private {
+    export const offsetMatrix = new Matrix44();
 }
 
 export class SkinnedMesh extends StaticMesh {
@@ -144,7 +139,7 @@ export class SkinnedMesh extends StaticMesh {
     }
 
     private updateMatrices() {
-        const { offsetMatrix } = Internal.graphicUpdate;
+        const { offsetMatrix } = Private;
         for (let i = 0; i < this._bones.length; ++i) {
             // compute the offset between the current and the original transform
             let matrix = this._bones[i] ? this._bones[i].transform.worldMatrix : Matrix44.identity;

@@ -1,6 +1,6 @@
 import { VertexBuffer } from "../VertexBuffer";
 
-namespace Internal {
+namespace Private {
     export let quad: VertexBuffer;    
     export let centeredQuad: VertexBuffer;
     export let uiQuad: VertexBuffer;
@@ -85,11 +85,11 @@ namespace Internal {
 }
 
 export class GeometryProvider {
-    static get quad() { return Internal.quad; }
-    static get centeredQuad() { return Internal.centeredQuad; }
-    static get uiQuad() { return Internal.uiQuad; }
+    static get quad() { return Private.quad; }
+    static get centeredQuad() { return Private.centeredQuad; }
+    static get uiQuad() { return Private.uiQuad; }
     static get skyBox() { 
-        if (!Internal.skyBox) {
+        if (!Private.skyBox) {
             let skyBox = new VertexBuffer();
             const size = 1;
             skyBox.setData(
@@ -139,17 +139,17 @@ export class GeometryProvider {
                 ]                
             );
             skyBox.primitiveType = "TRIANGLES";
-            Internal.skyBox = skyBox;
+            Private.skyBox = skyBox;
         }		
-        return Internal.skyBox; 
+        return Private.skyBox; 
     }
 
     static unload(gl: WebGLRenderingContext) {
-        Internal.centeredQuad.unload(gl);
-        Internal.quad.unload(gl);
-        Internal.uiQuad.unload(gl);
-        if (Internal.skyBox) {
-            Internal.skyBox.unload(gl);
+        Private.centeredQuad.unload(gl);
+        Private.quad.unload(gl);
+        Private.uiQuad.unload(gl);
+        if (Private.skyBox) {
+            Private.skyBox.unload(gl);
         }
     }
 }

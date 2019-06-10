@@ -22,6 +22,9 @@ namespace Private {
     export let instance: IObjectManager;
 }
 
+/**
+ * @hidden
+ */
 export class IObjectManagerInternal {
     static set instance(instance: IObjectManager) {
         Private.instance = instance;

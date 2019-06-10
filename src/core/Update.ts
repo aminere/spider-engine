@@ -17,6 +17,9 @@ namespace Private {
     export const updateHook = new VoidSyncEvent();
 }
 
+/**
+ * @hidden
+ */
 export namespace UpdateInternal {    
     export function update() {        
         GamepadsInternal.scanGamepads();

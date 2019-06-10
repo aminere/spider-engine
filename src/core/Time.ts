@@ -13,6 +13,9 @@ namespace Private {
     export let currentFrame = 0;    
 }
 
+/**
+ * @hidden
+ */
 export namespace TimeInternal {
     export function updateDeltaTime() {
         const time = performance.now();

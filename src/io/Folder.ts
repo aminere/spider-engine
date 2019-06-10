@@ -40,6 +40,9 @@ export class Folder extends UniqueObject {
     }    
 }
 
+/**
+ * @hidden
+ */
 export namespace FolderInternal {
     export function getFolderPath(folder: Folder) {
         let parent = folder.parent;

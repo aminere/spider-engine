@@ -11,10 +11,7 @@ import { Texture } from "../graphics/Texture";
 import { GeometryProvider } from "../graphics/geometry/GeometryProvider";
 import { DefaultAssets } from "../assets/DefaultAssets";
 
-/**
- * @hidden
- */
-namespace Internal {
+namespace Private {
 
     export let tint = new Color();
 
@@ -63,7 +60,7 @@ export class UIFillUtils {
                 return spriteSheetFill.tesselate(layout);
             }
         }
-        return Internal.getUIElementVertexBuffer(layout);
+        return Private.getUIElementVertexBuffer(layout);
     }
 
     static renderFill(
@@ -89,7 +86,7 @@ export class UIFillUtils {
             let fill = _fill as ColorFill;
             let texture = DefaultAssets.whiteTexture;
             uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, texture);
-            uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Internal.tint.copy(fill.color).multiplyColor(tint));
+            uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
             if (uiMaterial.begin()) {
                 GraphicUtils.drawVertexBuffer(gl, vertexBuffer, uiMaterial.shader as Shader);
             }
@@ -97,7 +94,7 @@ export class UIFillUtils {
             let fill = _fill as TextureFill;
             if (fill.texture) {
                 uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, fill.texture);
-                uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Internal.tint.copy(fill.color).multiplyColor(tint));
+                uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
                 if (uiMaterial.begin()) {
                     GraphicUtils.drawVertexBuffer(gl, vertexBuffer, uiMaterial.shader as Shader);
                 }
@@ -107,7 +104,7 @@ export class UIFillUtils {
             let spriteTexture = fill.sprite.asset ? fill.sprite.asset.texture.asset : null;
             if (spriteTexture) {
                 uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, spriteTexture);
-                uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Internal.tint.copy(fill.color).multiplyColor(tint));
+                uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
                 if (uiMaterial.begin()) {
                     GraphicUtils.drawVertexBuffer(gl, vertexBuffer, uiMaterial.shader as Shader);
                 }
@@ -127,7 +124,7 @@ export class UIFillUtils {
             let fill = _fill as SpriteSheetFill;
             if (fill.texture) {
                 uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, fill.texture);
-                uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Internal.tint.copy(fill.color).multiplyColor(tint));
+                uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
                 if (uiMaterial.begin()) {
                     GraphicUtils.drawVertexBuffer(gl, vertexBuffer, uiMaterial.shader as Shader);                
                 }

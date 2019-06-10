@@ -4,6 +4,9 @@ import { ExecutionStatus } from "./ExecutionStatus";
 import { SignalPin, PinType } from "./Pin";
 import { BehaviorNode } from "./BehaviorNode";
 
+/**
+ * @hidden
+ */
 export namespace OperatorInternal {
     export const startPinId = "_start";
     export const finishPinId = "_finish";

@@ -3,6 +3,9 @@
 import { IFile } from "./IFile";
 import { Debug } from "../Debug";
 
+/**
+ * @hidden
+ */
 // tslint:disable-next-line
 let fs: any = undefined;
 if (process.env.PLATFORM === "electron") {

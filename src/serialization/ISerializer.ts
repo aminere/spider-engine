@@ -11,6 +11,9 @@ namespace Private {
     export let instance: ISerializer;
 }
 
+/**
+ * @hidden
+ */
 export class ISerializerInternal {
     static set instance(instance: ISerializer) {
         Private.instance = instance;

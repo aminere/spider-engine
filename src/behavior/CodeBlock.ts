@@ -12,6 +12,9 @@ import { BehaviorErrors } from "./BehaviorErrors";
 import { EditorBehaviorExecution } from "../editor/EditorBehaviorExecution";
 import { ICodeBlock } from "./ICodeBlock";
 
+/**
+ * @hidden
+ */
 export namespace CodeBlockInternal {
     export const codeProperty = "_code";
     export const trimId = (id: string) => id.split("-").join("");

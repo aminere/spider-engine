@@ -145,7 +145,10 @@ namespace Private {
     }
 }
 
-export namespace EngineHandlers {
+/**
+ * @hidden
+ */
+export namespace EngineHandlersInternal {
     export function onWindowResized() {
         if (Private.targetCanvas) {
             RendererInternal.processCanvasDimensions(Private.targetCanvas);
@@ -234,6 +237,9 @@ export namespace EngineHandlers {
     }
 }
 
+/**
+ * @hidden
+ */
 export namespace EngineInternal {
 
     export const targetCanvas = () => Private.targetCanvas;
@@ -254,20 +260,20 @@ export namespace EngineInternal {
             // tslint:disable-next-line
             const isMobile = "isMobile" in window ? (window as any).isMobile.any : false;
             if (isMobile) {
-                window.addEventListener("touchstart", EngineHandlers.onTouchStart);
-                window.addEventListener("touchend", EngineHandlers.onTouchEnd);
-                window.addEventListener("touchcancel", EngineHandlers.onTouchCancel);
-                window.addEventListener("touchmove", EngineHandlers.onTouchMove);
+                window.addEventListener("touchstart", EngineHandlersInternal.onTouchStart);
+                window.addEventListener("touchend", EngineHandlersInternal.onTouchEnd);
+                window.addEventListener("touchcancel", EngineHandlersInternal.onTouchCancel);
+                window.addEventListener("touchmove", EngineHandlersInternal.onTouchMove);
             } else {
-                window.addEventListener("mousemove", EngineHandlers.onMouseMove);
-                window.addEventListener("mouseup", EngineHandlers.onMouseUp);
-                window.addEventListener("mousedown", EngineHandlers.onMouseDown);
-                window.addEventListener("wheel", EngineHandlers.onMouseWheel, { passive: false });
+                window.addEventListener("mousemove", EngineHandlersInternal.onMouseMove);
+                window.addEventListener("mouseup", EngineHandlersInternal.onMouseUp);
+                window.addEventListener("mousedown", EngineHandlersInternal.onMouseDown);
+                window.addEventListener("wheel", EngineHandlersInternal.onMouseWheel, { passive: false });
             }
         }
-        window.addEventListener("resize", EngineHandlers.onWindowResized);
-        window.addEventListener("keyup", EngineHandlers.onKeyUp);
-        window.addEventListener("keydown", EngineHandlers.onKeyDown);
+        window.addEventListener("resize", EngineHandlersInternal.onWindowResized);
+        window.addEventListener("keyup", EngineHandlersInternal.onKeyUp);
+        window.addEventListener("keydown", EngineHandlersInternal.onKeyDown);
         return Promise.resolve();
     }
     
@@ -483,21 +489,21 @@ export class Engine {
                 // tslint:disable-next-line
                 const isMobile = "isMobile" in window ? (window as any).isMobile.any : false;
                 if (isMobile) {
-                    window.removeEventListener("touchstart", EngineHandlers.onTouchStart);
-                    window.removeEventListener("touchend", EngineHandlers.onTouchEnd);
-                    window.removeEventListener("touchcancel", EngineHandlers.onTouchCancel);
-                    window.removeEventListener("touchmove", EngineHandlers.onTouchMove);
+                    window.removeEventListener("touchstart", EngineHandlersInternal.onTouchStart);
+                    window.removeEventListener("touchend", EngineHandlersInternal.onTouchEnd);
+                    window.removeEventListener("touchcancel", EngineHandlersInternal.onTouchCancel);
+                    window.removeEventListener("touchmove", EngineHandlersInternal.onTouchMove);
                 } else {
-                    window.removeEventListener("mousemove", EngineHandlers.onMouseMove);
-                    window.removeEventListener("mouseup", EngineHandlers.onMouseUp);
-                    window.removeEventListener("mousedown", EngineHandlers.onMouseDown);
-                    window.removeEventListener("wheel", EngineHandlers.onMouseWheel);
+                    window.removeEventListener("mousemove", EngineHandlersInternal.onMouseMove);
+                    window.removeEventListener("mouseup", EngineHandlersInternal.onMouseUp);
+                    window.removeEventListener("mousedown", EngineHandlersInternal.onMouseDown);
+                    window.removeEventListener("wheel", EngineHandlersInternal.onMouseWheel);
                 }
             }
 
-            window.removeEventListener("resize", EngineHandlers.onWindowResized);
-            window.removeEventListener("keyup", EngineHandlers.onKeyUp);
-            window.removeEventListener("keydown", EngineHandlers.onKeyDown);
+            window.removeEventListener("resize", EngineHandlersInternal.onWindowResized);
+            window.removeEventListener("keyup", EngineHandlersInternal.onKeyUp);
+            window.removeEventListener("keydown", EngineHandlersInternal.onKeyDown);
             EngineInternal.unload();
         }        
     }

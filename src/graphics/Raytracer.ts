@@ -9,10 +9,7 @@ import { Component } from "../core/Component";
 import { Interfaces } from "../core/Interfaces";
 import { ObjectProps } from "../core/Types";
 
-/**
- * @hidden
- */
-namespace Internal {
+namespace Private {
     export let worker: Worker | null = null;
 }
 
@@ -52,7 +49,7 @@ export class Raytracer extends Component {
             }
             return;
         }
-        let { worker } = Internal;
+        let { worker } = Private;
         if (!worker) {
             this.raytrace();            
         } else {
@@ -111,19 +108,19 @@ export class Raytracer extends Component {
                 target.data = new Uint8Array(e.data as ArrayBuffer);
             } else {
                 Debug.log("Raytracer finished.");
-                Internal.worker = null;
+                Private.worker = null;
                 this._savePending = true;
             }
         };
-        Internal.worker = worker;
+        Private.worker = worker;
         this._initialized = true;
     }
 
     private terminate() {
-        if (this._initialized && Internal.worker) {
+        if (this._initialized && Private.worker) {
             Debug.log("Terminating Raytracer..");
-            Internal.worker.terminate();
-            Internal.worker = null;
+            Private.worker.terminate();
+            Private.worker = null;
             this._initialized = false;            
         }        
     }

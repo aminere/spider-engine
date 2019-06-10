@@ -2,10 +2,7 @@ import { Vector3 } from "./Vector3";
 import { MathEx } from "./MathEx";
 import { ObjectPool } from "../core/ObjectPool";
 
-/**
- * @hidden
- */
-namespace Internal {
+namespace Private {
     export let dummy = new Vector3();
     export let dummy2 = new Vector3();
     export let dummy3 = new Vector3();
@@ -72,7 +69,7 @@ export class Triangle {
     }
 
     getClosestPoint(p: Vector3) {
-        let { dummy, dummy2, dummy3, dummy4, dummy5 } = Internal;
+        let { dummy, dummy2, dummy3, dummy4, dummy5 } = Private;
         let ab = dummy, bc = dummy2, ca = dummy3, diff = dummy4;
         MathEx.getClosestPointOnLine(p, this.a, this.b, ab);
         MathEx.getClosestPointOnLine(p, this.b, this.c, bc);
@@ -95,7 +92,7 @@ export class Triangle {
     }
 
     getBarycentricCoords(p: Vector3) {
-        let { dummy, dummy2, dummy3, dummy4 } = Internal;
+        let { dummy, dummy2, dummy3, dummy4 } = Private;
         let v0 = dummy, v1 = dummy2, v2 = dummy3;
         v0.substractVectors(this.b, this.a);
         v1.substractVectors(this.c, this.a);

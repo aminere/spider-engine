@@ -31,6 +31,9 @@ namespace Private {
     export const mockInstanceCache: { [typeName: string]: SerializableObject } = {};
 }
 
+/**
+ * @hidden
+ */
 export namespace SerializerUtilsInternal {
     export let serializeIdsAsPaths = false;
 }

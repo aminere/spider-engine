@@ -7,9 +7,6 @@ import { FolderInternal, Folder } from "../io/Folder";
 import { FoldersInternal } from "../io/Folders";
 import { EngineError } from "../core/EngineError";
 
-/**
- * @hidden
- */
 interface IdToPath {
     [id: string]: string;
 }
@@ -20,6 +17,9 @@ namespace Private {
     export let externalsIdDatabase: { [externalName: string]: IdToPath } = {};
 }
 
+/**
+ * @hidden
+ */
 export class AssetIdDatabaseInternal {
     static get fileName() { return "ids.json"; }
     static get path() { return `Assets/${AssetIdDatabaseInternal.fileName}`; }

@@ -20,6 +20,9 @@ namespace Private {
     export let instance: IEntityUtils;
 }
 
+/**
+ * @hidden
+ */
 export class IEntityUtilsInternal {
     static set instance(instance: IEntityUtils) {
         Private.instance = instance;

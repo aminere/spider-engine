@@ -57,6 +57,9 @@ export class Input {
     }
 }
 
+/**
+ * @hidden
+ */
 export class InputInternal {
     static create(touchPos: Vector2) {        
         Private.touchEvent.x = touchPos.x;

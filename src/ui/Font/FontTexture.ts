@@ -4,7 +4,7 @@ import { FontShadow, DefaultFontShadow } from "./FontShadow";
 import { WebGL } from "../../graphics/WebGL";
 import { TextAlignment } from "../Alignment";
 
-namespace Internal {    
+namespace Private {    
     export function wordWrap(context: CanvasRenderingContext2D, text: string, maxWidth: number) {
         let finalLines: string[] = [];
         var words = text.split(" ");
@@ -201,7 +201,7 @@ export class FontTexture extends Texture {
             let canvasWidth = this._maxWidth * this._scaleFactor;
             let lines: string[] = [];
             for (let globalLine of globalLines) {
-                lines = lines.concat(Internal.wordWrap(context, globalLine, canvasWidth));
+                lines = lines.concat(Private.wordWrap(context, globalLine, canvasWidth));
             }
             if (lines.length === 0) {
                 return false;

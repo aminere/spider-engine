@@ -3,6 +3,9 @@ import * as Attributes from "../../core/Attributes";
 import { Shader, ShaderInstance } from "../Shader";
 import { ShaderParams } from "../ShaderUtils";
 
+/**
+ * @hidden
+ */
 export namespace PhongShaderInternal {
     export const diffuseKey = "diffuse";
     export const diffuseMapKey = "diffuseMap";

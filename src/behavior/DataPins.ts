@@ -17,10 +17,7 @@ import { Ray } from "../math/Ray";
 import { Component } from "../core/Component";
 import { Interfaces } from "../core/Interfaces";
 
-/**
- * @hidden
- */
-namespace Internal {
+namespace Private {
     export let defaultComponentType = "Transform";
     export let defaultAssetType = "Material";
 }
@@ -149,7 +146,7 @@ export class ComponentReferencePin<T extends Component> extends TDataPin<Compone
 
     constructor(id?: string, type?: PinType, componentType?: string) {
         super(id, type);
-        this._componentType = componentType || Internal.defaultComponentType;
+        this._componentType = componentType || Private.defaultComponentType;
         Object.defineProperty(
             this,
             TDataPin.runtimeValueAccessor,
@@ -324,7 +321,7 @@ export class AssetPin<T extends Asset> extends TDataPin<AssetReference<T>> {
 
     constructor(id?: string, type?: PinType, assetType?: string) {
         super(id, type);
-        this._assetType = assetType || Internal.defaultAssetType;
+        this._assetType = assetType || Private.defaultAssetType;
         Object.defineProperty(
             this,
             TDataPin.runtimeValueAccessor,

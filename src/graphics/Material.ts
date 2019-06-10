@@ -18,6 +18,9 @@ namespace Private {
     export const shaderParamsPropertySetter = "shaderParams";
 }
 
+/**
+ * @hidden
+ */
 export namespace MaterialInternal {
     export const shaderPropertyKey = "_shader";
     export const shaderParamsPropertyKey = `_${Private.shaderParamsPropertySetter}`;

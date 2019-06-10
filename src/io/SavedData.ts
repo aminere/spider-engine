@@ -4,6 +4,9 @@ namespace Private {
     export let savedData: object;
 }
 
+/**
+ * @hidden
+ */
 export namespace SavedDataInternal {
     export function preload() {
         return new Promise<void>((resolve, reject) => {

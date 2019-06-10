@@ -14,6 +14,9 @@ namespace Private {
     }
 }
 
+/**
+ * @hidden
+ */
 export namespace GamepadsInternal {
 
     export function scanGamepads() {

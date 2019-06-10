@@ -7,6 +7,9 @@ namespace Private {
     export const loadingMap = new Map<Asset, VoidAsyncEvent[]>();
 }
 
+/**
+ * @hidden
+ */
 export namespace AssetsInternal {
     export function updateLoading() {
         const { loadingMap } = Private;

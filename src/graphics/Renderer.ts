@@ -387,6 +387,9 @@ export class Renderer implements IRenderer {
     get showWireFrame() { return Private.showWireFrame; }    
 }
 
+/**
+ * @hidden
+ */
 export class RendererInternal {
 
     static processCanvasDimensions(canvas: HTMLCanvasElement) {

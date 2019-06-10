@@ -2,23 +2,14 @@
 import { EngineUtils } from "./EngineUtils";
 import { Debug } from "../io/Debug";
 
-/**
- * @hidden
- */
 interface AsyncBatchListeners {
     [listenerId: string]: (withErrors: boolean) => void;
 }
 
-/**
- * @hidden
- */
-namespace Internal {
+namespace Private {
     export let batchListeners: AsyncBatchListeners = {};
 }
 
-/**
- * @hidden
- */
 export class AsyncUtils {    
 
     static processBatch<T>(
@@ -32,9 +23,9 @@ export class AsyncUtils {
         let onProcessed = () => {
             ++processed;
             if (processed >= items.length) {
-                if (listenedId in Internal.batchListeners) {
-                    Internal.batchListeners[listenedId](hasErrors);
-                    delete Internal.batchListeners[listenedId];
+                if (listenedId in Private.batchListeners) {
+                    Private.batchListeners[listenedId](hasErrors);
+                    delete Private.batchListeners[listenedId];
                 } else {                    
                     if (process.env.NODE_ENV === "development") {        
                         Debug.log(`Skipping detached Async Batch request '${listenedId}'`);                
@@ -43,7 +34,7 @@ export class AsyncUtils {
             }
         };
         if (items.length > 0) {
-            Internal.batchListeners[listenedId] = completed;
+            Private.batchListeners[listenedId] = completed;
             for (let item of items) {
                 processItem(item, onProcessed, () => {
                     hasErrors = true;
@@ -57,6 +48,6 @@ export class AsyncUtils {
     }
 
     static detachBatchListener(listenerId: string) {
-        delete Internal.batchListeners[listenerId];
+        delete Private.batchListeners[listenerId];
     }
 }

@@ -20,10 +20,7 @@ export class RayAABBCollisionResult {
 
 export class RaySphereCollisionResult extends RayAABBCollisionResult { }
 
-/**
- * @hidden
- */
-namespace Internal {
+namespace Private {
     export let dummy = new Vector3();
     export let dummy2 = new Vector3();
     export let rayAABBResult = new RayAABBCollisionResult();
@@ -34,9 +31,6 @@ namespace Internal {
 
 export class Ray {
 
-    /**
-     * @hidden
-     */
     static dummy = new Ray();
 
     get origin() { return this._origin; }
@@ -171,7 +165,7 @@ export class Ray {
         const x = (xNormalized * (2 * orthoSizeX)) - orthoSizeX;
 
         // determine origin and direction
-        let { basis } = Internal;
+        let { basis } = Private;
         basis.setFromMatrix(inverseView);
         this.origin
             .setFromMatrix(inverseView)
@@ -185,7 +179,7 @@ export class Ray {
 
     castOnSphere(center: Vector3, radius: number) {
         // thanks to iq - http://www.iquilezles.org/www/articles/intersectors/intersectors.htm
-        const { dummy, raySphereResult } = Internal;
+        const { dummy, raySphereResult } = Private;
         const oc = dummy.substractVectors(this.origin, center);
         const b = oc.dot(this.direction);
         const c = oc.dot(oc) - radius * radius;
@@ -215,7 +209,7 @@ export class Ray {
     }
 
     castOnPlane(plane: Plane) {
-        let { rayPlaneResult } = Internal;
+        let { rayPlaneResult } = Private;
         let nominator = plane.normal.dot(this.origin) - plane.distFromOrigin;
         if (MathEx.isZero(nominator)) {
             rayPlaneResult.intersection = Vector3.dummy.copy(this.origin);
@@ -240,7 +234,7 @@ export class Ray {
     }
 
     castOnAABB(aabb: AABB) {
-        const { rayAABBResult, dummy, dummy2 } = Internal;
+        const { rayAABBResult, dummy, dummy2 } = Private;
         const t0 = Vector3.dummy.substractVectors(aabb.min, this.origin).divideVector(this.direction);
         const t1 = Vector3.dummy2.substractVectors(aabb.max, this.origin).divideVector(this.direction);
         const vmin = dummy.set(Math.min(t0.x, t1.x), Math.min(t0.y, t1.y), Math.min(t0.z, t1.z));

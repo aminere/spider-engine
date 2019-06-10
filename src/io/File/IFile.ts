@@ -13,6 +13,9 @@ namespace Private {
     export let instance: IFile;
 }
 
+/**
+ * @hidden
+ */
 export class IFileInternal {
     static set instance(instance: IFile) {
         Private.instance = instance;

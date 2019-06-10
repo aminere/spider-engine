@@ -14,6 +14,9 @@ namespace Private {
     export let instance: IRenderer;
 }
 
+/**
+ * @hidden
+ */
 export class IRendererInternal {
     static set instance(instance: IRenderer) {
         Private.instance = instance;

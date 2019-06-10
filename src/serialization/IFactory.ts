@@ -31,6 +31,9 @@ namespace Private {
     export let instance: IFactory;
 }
 
+/**
+ * @hidden
+ */
 export class IFactoryInternal {
     static set instance(instance: IFactory) {
         Private.instance = instance;

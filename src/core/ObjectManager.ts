@@ -260,6 +260,9 @@ export class ObjectManager implements IObjectManager {
     }    
 }
 
+/**
+ * @hidden
+ */
 export namespace ObjectManagerInternal {
     export function create() {
         IObjectManagerInternal.instance = new ObjectManager();

@@ -7,6 +7,9 @@ import { AnimationInstance } from "./AnimationInstance";
 import { AnimationUtils } from "./AnimationUtils";
 import { Animation } from "./Animation";
 
+/**
+ * @hidden
+ */
 export namespace AnimationComponentInternal {
     export const animationsKey = "_animations";
 }

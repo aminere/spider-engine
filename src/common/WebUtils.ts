@@ -1,8 +1,5 @@
 import { AsyncEvent } from "ts-events";
 
-/**
- * @hidden
- */
 interface WebRequest {
     request: XMLHttpRequest;
     // tslint:disable-next-line
@@ -10,10 +7,7 @@ interface WebRequest {
     onError: (status: string) => void;
 }
 
-/**
- * @hidden
- */
-namespace Internal {
+namespace Private {
     export let requests: { [id: string]: WebRequest } = {};
 }
 
@@ -41,9 +35,9 @@ export class WebUtils {
         request.onreadystatechange = () => {
             if (request.readyState === XMLHttpRequest.DONE) {
                 let listener: WebRequest | null = null;
-                if (requestId in Internal.requests) {
-                    listener = Internal.requests[requestId];
-                    delete Internal.requests[requestId];
+                if (requestId in Private.requests) {
+                    listener = Private.requests[requestId];
+                    delete Private.requests[requestId];
                 }
                 if (listener) {
                     if (request.status === 200 || request.status === 0) {
@@ -84,7 +78,7 @@ export class WebUtils {
             request.responseType = responseType as XMLHttpRequestResponseType;
         }
 
-        Internal.requests[requestId] = {
+        Private.requests[requestId] = {
             request: request,
             onSuccess: onSuccess,
             onError: onError
@@ -104,10 +98,10 @@ export class WebUtils {
     }
 
     static abortRequest(requestId: string) {
-        let requestInfo = Internal.requests[requestId];
+        let requestInfo = Private.requests[requestId];
         let request = requestInfo ? requestInfo.request : null;
         if (request) {
-            delete Internal.requests[requestId];
+            delete Private.requests[requestId];
             request.abort();
         }
     }

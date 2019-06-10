@@ -9,6 +9,9 @@ import { Vector4 } from "../math/Vector4";
 import { Component } from "./Component";
 import { ObjectProps } from "./Types";
 
+/**
+ * @hidden
+ */
 export namespace TransformInternal {
     export const positionKey = "_position";
     export const rotationKey = "_rotation";

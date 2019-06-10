@@ -41,6 +41,9 @@ namespace Private {
     }    
 }
 
+/**
+ * @hidden
+ */
 export namespace CollisionSystemInternal {
     export function clearCollisions() {
         Private.collisions.flush();

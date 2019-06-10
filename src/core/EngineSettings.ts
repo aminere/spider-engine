@@ -6,6 +6,9 @@ import { IObjectManagerInternal } from "./IObjectManager";
 import { EngineError } from "./EngineError";
 import { AssetIdDatabase } from "../assets/AssetIdDatabase";
 
+/**
+ * @hidden
+ */
 export namespace EngineSettingsInternal {
     export const path = "spider-engine.json";
 }

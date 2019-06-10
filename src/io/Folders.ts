@@ -15,6 +15,9 @@ export class Folders extends UniqueObject {
     }
 }
 
+/**
+ * @hidden
+ */
 export namespace FoldersInternal {
     export let folders: Folders;
     export const foldersPath = "Assets/folders.json";

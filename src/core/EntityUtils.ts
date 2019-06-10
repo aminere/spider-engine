@@ -254,6 +254,9 @@ export class EntityUtils implements IEntityUtils {
     }
 }
 
+/**
+ * @hidden
+ */
 export namespace EntityUtilsInternal {
     export function create() {
         IEntityUtilsInternal.instance = new EntityUtils();

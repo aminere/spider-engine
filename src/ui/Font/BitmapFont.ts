@@ -11,7 +11,7 @@ import { FontMetrics } from "./FontMetrics";
 import { WebGL } from "../../graphics/WebGL";
 import { TextAlignment } from "../Alignment";
 
-namespace Internal {
+namespace Private {
     export function wordWrap(metrics: FontMetrics, text: string, maxWidth: number) {
         let finalLines: string[] = [];
         var words = text.split(" ");
@@ -141,7 +141,7 @@ export class BitmapFont extends Font {
             if (isMultiline) {
                 let lines: string[] = [];
                 for (var globalLine of globalLines) {
-                    lines = lines.concat(Internal.wordWrap(metrics, globalLine, this._maxWidth));
+                    lines = lines.concat(Private.wordWrap(metrics, globalLine, this._maxWidth));
                 }                
                 this._width = this._maxWidth;
                 this._height = this.lineHeight * lines.length;

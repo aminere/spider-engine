@@ -3,6 +3,9 @@ import { Color } from "../../graphics/Color";
 import { Asset } from "../../assets/Asset";
 import { Quaternion } from "../../math/Quaternion";
 
+/**
+ * @hidden
+ */
 export namespace AnimationKeyInternal {
     export function find(keys: AnimationKey[], time: number) {
         // TODO: epsilon compare

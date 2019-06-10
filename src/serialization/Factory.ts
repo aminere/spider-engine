@@ -116,6 +116,9 @@ export class Factory implements IFactory {
     }
 }
 
+/**
+ * @hidden
+ */
 export class FactoryInternal {
     static create(customTypes?: TypeDefinition<SerializableObject>[]) {
         const instance = new Factory();

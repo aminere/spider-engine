@@ -4,10 +4,7 @@ import { MathEx } from "./MathEx";
 import { Quaternion } from "./Quaternion";
 import { ObjectPool } from "../core/ObjectPool";
 
-/**
- * @hidden
- */
-namespace Internal {
+namespace Private {
     export let dummy = new Vector3();
     export let dummy2 = new Vector3();
     export let dummy3 = new Vector3();
@@ -15,12 +12,8 @@ namespace Internal {
 
 export class Matrix44 {
 
-    static identity = new Matrix44();
-    /**
-     * @hidden
-     */
+    static identity = new Matrix44();    
     static dummy = new Matrix44();
-
     static pool = new ObjectPool(Matrix44, 64);
 
     data: number[];
@@ -125,7 +118,7 @@ export class Matrix44 {
     }
 
     makeLookAt(forward: Vector3, up: Vector3) {
-        let { dummy, dummy2, dummy3 } = Internal;
+        let { dummy, dummy2, dummy3 } = Private;
         let x = dummy, y = dummy2, z = dummy3;
         // based on https://en.wikibooks.org/wiki/GLSL_Programming/Vertex_Transformations
         z.copy(forward).normalize();
@@ -250,7 +243,7 @@ export class Matrix44 {
     }
 
     decompose(position: Vector3, quaternion: Quaternion, scale: Vector3) {
-        let { dummy } = Internal;
+        let { dummy } = Private;
         let matrix = Matrix44.dummy;
         // based on Threejs
         var te = this.data;
@@ -453,7 +446,7 @@ export class Matrix44 {
         // this method does not support reflection matrices
         var te = this.data;
         var me = m.data;
-        let { dummy } = Internal;
+        let { dummy } = Private;
         var scaleX = 1 / dummy.setFromMatrixColumn(m, 0).length;
         var scaleY = 1 / dummy.setFromMatrixColumn(m, 1).length;
         var scaleZ = 1 / dummy.setFromMatrixColumn(m, 2).length;

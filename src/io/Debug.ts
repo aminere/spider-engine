@@ -1,6 +1,9 @@
 import { Vector3 } from "../math/Vector3";
 import { Vector2 } from "../math/Vector2";
 
+/**
+ * @hidden
+ */
 export namespace DebugInternal {
     // tslint:disable-next-line
     export let externalLogger: (message: any) => void = () => {};

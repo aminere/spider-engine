@@ -21,6 +21,9 @@ export class Serializer implements ISerializer {
     }
 }
 
+/**
+ * @hidden
+ */
 export namespace SerializerInternal {
     export function create() {
         ISerializerInternal.instance = new Serializer();

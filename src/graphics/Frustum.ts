@@ -2,9 +2,6 @@ import { Plane, PlaneClassification } from "../math/Plane";
 import { Vector3 } from "../math/Vector3";
 import { Transform } from "../core/Transform";
 
-/**
- * @hidden
- */
 enum FrustumPlane {
     Near,
     Far,
@@ -15,9 +12,6 @@ enum FrustumPlane {
     Count 
 }
 
-/**
- * @hidden
- */
 export enum FrustumCorner {
     FarTopLeft,
     FarTopRight,
@@ -30,10 +24,7 @@ export enum FrustumCorner {
     Count
 }
 
-/**
- * @hidden
- */
-namespace Internal {
+namespace Private {
     export namespace update {
         export let fCenter = new Vector3();
         export let nCenter = new Vector3();
@@ -71,10 +62,7 @@ export class Frustum {
         }
         return true;
     }
-
-    /**
-     * @hidden
-     */
+    
     update(
         nearW: number, 
         nearH: number, 
@@ -84,7 +72,7 @@ export class Frustum {
         far: number,
         transform: Transform
     ) {
-        let { fCenter, nCenter, temp1, temp2 } = Internal.update;
+        const { fCenter, nCenter, temp1, temp2 } = Private.update;
 
         fCenter.copy(transform.worldForward).multiply(-far).add(transform.worldPosition);        
         this._corners[FrustumCorner.FarTopLeft].addVectors(
