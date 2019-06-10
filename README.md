@@ -1,8 +1,6 @@
 Spider Engine
 =============
 
-Typescript + WebGL Creation Engine https://spiderengine.io
-
 ![Thumbnails](docs/source/images/runtime.jpg)
 
 Spider is a fast game engine for the web, composed of an open source run-time and an editor front-end.
