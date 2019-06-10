@@ -1,5 +1,5 @@
 {
-  "name": "spider-engine",
+  "name": "@aminere/spider-engine",
   "version": "1.0.0",
   "main": "dist/spider-engine.js",
   "types": "dist/spider-engine.d.ts",
