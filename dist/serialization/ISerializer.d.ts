@@ -5,6 +5,9 @@ export interface ISerializer {
     serializeObject: (o: SerializableObject) => SerializedObject;
     deserializeObject: (target: SerializableObject, json: SerializedObject) => void;
 }
+/**
+ * @hidden
+ */
 export declare class ISerializerInternal {
     static instance: ISerializer;
 }

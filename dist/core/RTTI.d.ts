@@ -1,3 +1,6 @@
+/**
+ * @hidden
+ */
 export declare namespace RTTIInternal {
     function buildTypeTree(): void;
     function registerRawTypeInfo(parentTypeName: string, typeName: string): void;

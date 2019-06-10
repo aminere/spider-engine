@@ -1,3 +1,6 @@
+/**
+ * @hidden
+ */
 export declare namespace GamepadsInternal {
     function scanGamepads(): void;
     function initialize(): void;

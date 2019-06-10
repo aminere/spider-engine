@@ -7,6 +7,9 @@ export interface IRenderer {
     renderTarget: RenderTarget | null;
     showWireFrame: boolean;
 }
+/**
+ * @hidden
+ */
 export declare class IRendererInternal {
     static instance: IRenderer;
 }

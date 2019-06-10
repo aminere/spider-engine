@@ -1,5 +1,8 @@
 import { UniqueObject } from "./UniqueObject";
 import { SerializedObject } from "./SerializableObject";
+/**
+ * @hidden
+ */
 export declare namespace EngineSettingsInternal {
     const path = "spider-engine.json";
 }

@@ -19,6 +19,9 @@ export interface IFactory {
     createReferenceArray: (typeName: string, data?: ReferenceBase[]) => ReferenceArray<SerializableObject> | null;
     isAbstract: (typeName: string) => boolean;
 }
+/**
+ * @hidden
+ */
 export declare class IFactoryInternal {
     static instance: IFactory;
 }

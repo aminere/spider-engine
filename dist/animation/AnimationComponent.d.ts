@@ -3,6 +3,9 @@ import { AsyncEvent } from "ts-events";
 import { Component } from "../core/Component";
 import { AnimationInstance } from "./AnimationInstance";
 import { Animation } from "./Animation";
+/**
+ * @hidden
+ */
 export declare namespace AnimationComponentInternal {
     const animationsKey = "_animations";
 }

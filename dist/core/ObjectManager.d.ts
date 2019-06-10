@@ -24,6 +24,9 @@ export declare class ObjectManager implements IObjectManager {
     clearCache(): void;
     forEach(handler: (obj: UniqueObject) => void): void;
 }
+/**
+ * @hidden
+ */
 export declare namespace ObjectManagerInternal {
     function create(): void;
 }

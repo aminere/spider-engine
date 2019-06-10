@@ -1,3 +1,6 @@
+/**
+ * @hidden
+ */
 export declare namespace CollisionSystemInternal {
     function clearCollisions(): void;
 }

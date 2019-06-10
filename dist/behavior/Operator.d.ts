@@ -1,5 +1,8 @@
 import { ExecutionStatus } from "./ExecutionStatus";
 import { BehaviorNode } from "./BehaviorNode";
+/**
+ * @hidden
+ */
 export declare namespace OperatorInternal {
     const startPinId = "_start";
     const finishPinId = "_finish";

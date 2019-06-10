@@ -1,4 +1,7 @@
 import { VoidSyncEvent } from "ts-events";
+/**
+ * @hidden
+ */
 export declare namespace UpdateInternal {
     function update(): void;
 }

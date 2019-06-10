@@ -6,6 +6,9 @@ export declare class Serializer implements ISerializer {
     serializeObject(o: SerializableObject): SerializedObject;
     deserializeObject(target: SerializableObject, json: SerializedObject): void;
 }
+/**
+ * @hidden
+ */
 export declare namespace SerializerInternal {
     function create(): void;
 }

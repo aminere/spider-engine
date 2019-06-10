@@ -21,6 +21,9 @@ export declare class Factory implements IFactory {
     createReferenceArray(typeName: string, data?: ReferenceBase[]): ReferenceArray<SerializableObject> | null;
     isAbstract(typeName: string): boolean;
 }
+/**
+ * @hidden
+ */
 export declare class FactoryInternal {
     static create(customTypes?: TypeDefinition<SerializableObject>[]): void;
 }

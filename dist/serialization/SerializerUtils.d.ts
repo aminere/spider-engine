@@ -1,6 +1,9 @@
 import { Entity, SerializedEntity } from "../core/Entity";
 import { SerializableObject, SerializedObject } from "../core/SerializableObject";
 import { Component } from "../core/Component";
+/**
+ * @hidden
+ */
 export declare namespace SerializerUtilsInternal {
     let serializeIdsAsPaths: boolean;
 }

@@ -5,6 +5,9 @@ export declare class Folders extends UniqueObject {
     externals: Folder;
     constructor();
 }
+/**
+ * @hidden
+ */
 export declare namespace FoldersInternal {
     let folders: Folders;
     const foldersPath = "Assets/folders.json";

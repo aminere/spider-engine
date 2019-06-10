@@ -4,6 +4,9 @@ import { BasePin } from "./Pin";
 import { VoidSyncEvent } from "ts-events";
 import { SerializedObject } from "../core/SerializableObject";
 import { ICodeBlock } from "./ICodeBlock";
+/**
+ * @hidden
+ */
 export declare namespace CodeBlockInternal {
     const codeProperty = "_code";
     const trimId: (id: string) => string;

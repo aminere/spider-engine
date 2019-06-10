@@ -22,6 +22,9 @@ export declare class Input {
     static keyChanged: SyncEvent<KeyEvent>;
     static detachAll(): void;
 }
+/**
+ * @hidden
+ */
 export declare class InputInternal {
     static create(touchPos: Vector2): void;
     static readonly keyChangedInfo: KeyEvent;

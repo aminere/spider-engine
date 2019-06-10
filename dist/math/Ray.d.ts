@@ -15,9 +15,6 @@ export declare class RayAABBCollisionResult {
 export declare class RaySphereCollisionResult extends RayAABBCollisionResult {
 }
 export declare class Ray {
-    /**
-     * @hidden
-     */
     static dummy: Ray;
     origin: Vector3;
     direction: Vector3;

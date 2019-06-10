@@ -4,6 +4,9 @@ import { Shader } from "./Shader";
 import { SerializableObject, SerializedObject } from "../core/SerializableObject";
 import { GraphicAsset } from "./GraphicAsset";
 import { ShaderParamInstanceType } from "./ShaderUtils";
+/**
+ * @hidden
+ */
 export declare namespace MaterialInternal {
     const shaderPropertyKey = "_shader";
     const shaderParamsPropertyKey: string;

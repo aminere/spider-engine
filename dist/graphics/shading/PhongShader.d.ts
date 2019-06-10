@@ -1,4 +1,7 @@
 import { Shader, ShaderInstance } from "../Shader";
+/**
+ * @hidden
+ */
 export declare namespace PhongShaderInternal {
     const diffuseKey = "diffuse";
     const diffuseMapKey = "diffuseMap";

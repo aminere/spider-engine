@@ -8,6 +8,9 @@ export declare class EntityUtils implements IEntityUtils {
     updateLayoutWorldMatrix(layout: Layout): void;
     translateReferences(entity: Entity, oldIdToNewId: {}, translatedRefs?: TranslatedEntityReferences): void;
 }
+/**
+ * @hidden
+ */
 export declare namespace EntityUtilsInternal {
     function create(): void;
 }

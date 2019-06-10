@@ -9,6 +9,9 @@ export declare class Folder extends UniqueObject {
     findFolder(name: string): Folder | undefined;
     assignParentNodes(): void;
 }
+/**
+ * @hidden
+ */
 export declare namespace FolderInternal {
     function getFolderPath(folder: Folder): string;
     function isDefault(folder: Folder): boolean;

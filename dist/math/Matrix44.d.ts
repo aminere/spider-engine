@@ -3,9 +3,6 @@ import { Quaternion } from "./Quaternion";
 import { ObjectPool } from "../core/ObjectPool";
 export declare class Matrix44 {
     static identity: Matrix44;
-    /**
-     * @hidden
-     */
     static dummy: Matrix44;
     static pool: ObjectPool<Matrix44>;
     data: number[];

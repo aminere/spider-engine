@@ -6,6 +6,9 @@ export interface IFile {
     renameFolder: (oldPath: string, newPath: string) => Promise<void>;
     clearAllFiles: () => Promise<void>;
 }
+/**
+ * @hidden
+ */
 export declare class IFileInternal {
     static instance: IFile;
 }

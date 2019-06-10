@@ -5,6 +5,9 @@ import { Matrix44 } from "../math/Matrix44";
 import { SerializedObject } from "./SerializableObject";
 import { Component } from "./Component";
 import { ObjectProps } from "./Types";
+/**
+ * @hidden
+ */
 export declare namespace TransformInternal {
     const positionKey = "_position";
     const rotationKey = "_rotation";

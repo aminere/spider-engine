@@ -1,3 +1,6 @@
+/**
+ * @hidden
+ */
 export declare namespace TimeInternal {
     function updateDeltaTime(): void;
     function resetCurrentFrame(): void;

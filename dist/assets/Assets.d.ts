@@ -1,4 +1,7 @@
 import { Asset } from "./Asset";
+/**
+ * @hidden
+ */
 export declare namespace AssetsInternal {
     function updateLoading(): void;
 }

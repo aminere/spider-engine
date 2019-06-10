@@ -1,8 +1,5 @@
 import { Vector3 } from "../math/Vector3";
 import { Transform } from "../core/Transform";
-/**
- * @hidden
- */
 export declare enum FrustumCorner {
     FarTopLeft = 0,
     FarTopRight = 1,
@@ -20,8 +17,5 @@ export declare class Frustum {
     private _corners;
     constructor();
     isPointInside(worldPos: Vector3): boolean;
-    /**
-     * @hidden
-     */
     update(nearW: number, nearH: number, farW: number, farH: number, near: number, far: number, transform: Transform): void;
 }

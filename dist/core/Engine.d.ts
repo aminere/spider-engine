@@ -12,7 +12,10 @@ export interface EngineConfig {
     onSceneLoaded?: (path: string) => void;
     onDownloadProgress?: (amount: number, finished: boolean) => void;
 }
-export declare namespace EngineHandlers {
+/**
+ * @hidden
+ */
+export declare namespace EngineHandlersInternal {
     function onWindowResized(): void;
     function onMouseDown(e: MouseEvent): void;
     function onMouseWheel(e: WheelEvent): void;
@@ -25,6 +28,9 @@ export declare namespace EngineHandlers {
     function onKeyDown(e: KeyboardEvent): void;
     function onKeyUp(e: KeyboardEvent): void;
 }
+/**
+ * @hidden
+ */
 export declare namespace EngineInternal {
     const targetCanvas: () => HTMLCanvasElement;
     function initializeWithCanvas(canvas: HTMLCanvasElement): Promise<void>;

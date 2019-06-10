@@ -1,10 +1,10 @@
 import { AsyncEvent } from "ts-events";
-/**
- * @hidden
- */
 interface IdToPath {
     [id: string]: string;
 }
+/**
+ * @hidden
+ */
 export declare class AssetIdDatabaseInternal {
     static readonly fileName: string;
     static readonly path: string;

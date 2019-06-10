@@ -1,5 +1,8 @@
 import { Vector3 } from "../math/Vector3";
 import { Vector2 } from "../math/Vector2";
+/**
+ * @hidden
+ */
 export declare namespace DebugInternal {
     let externalLogger: (message: any) => void;
 }

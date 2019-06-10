@@ -2,6 +2,9 @@ import { SerializableObject } from "../../core/SerializableObject";
 import { Color } from "../../graphics/Color";
 import { Asset } from "../../assets/Asset";
 import { Quaternion } from "../../math/Quaternion";
+/**
+ * @hidden
+ */
 export declare namespace AnimationKeyInternal {
     function find(keys: AnimationKey[], time: number): AnimationKey | undefined;
 }

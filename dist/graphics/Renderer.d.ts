@@ -10,6 +10,9 @@ export declare class Renderer implements IRenderer {
     renderTarget: RenderTarget | null;
     showWireFrame: boolean;
 }
+/**
+ * @hidden
+ */
 export declare class RendererInternal {
     static processCanvasDimensions(canvas: HTMLCanvasElement): void;
     static create(canvas: HTMLCanvasElement): void;

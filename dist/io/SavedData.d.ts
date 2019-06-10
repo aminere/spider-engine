@@ -1,3 +1,6 @@
+/**
+ * @hidden
+ */
 export declare namespace SavedDataInternal {
     function preload(): Promise<void>;
 }

@@ -15,6 +15,9 @@ export interface IObjectManager {
     addToCache: (obj: UniqueObject) => void;
     forEach: (handler: (obj: UniqueObject) => void) => void;
 }
+/**
+ * @hidden
+ */
 export declare class IObjectManagerInternal {
     static instance: IObjectManager;
 }

@@ -12,6 +12,9 @@ export interface IEntityUtils {
     dirtifyWorldMatrixIfNecessary: (entity: Entity) => void;
     translateReferences: (entity: Entity, oldIdToNewId: {}, translatedRefs?: TranslatedEntityReferences) => void;
 }
+/**
+ * @hidden
+ */
 export declare class IEntityUtilsInternal {
     static instance: IEntityUtils;
 }

@@ -14,6 +14,9 @@ export interface SerializedEntity {
     children?: SerializedEntity[];
     prefabId?: string;
 }
+/**
+ * @hidden
+ */
 export declare namespace EntityInternal {
     const entitiesJustDestroyed: Entity[];
     const entitiesJustCreated: Entity[];
