@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "license": "ISC",
   "homepage": "https://spiderengine.io",
-  "keywords": ["games", "typescript", "webgl", "graphics"],
+  "keywords": [
+    "games",
+    "typescript",
+    "webgl",
+    "graphics"
+  ],
   "main": "dist/spider-engine.js",
   "types": "dist/spider-engine.d.ts",
   "repository": "aminere/spider-engine",
