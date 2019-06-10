@@ -1,0 +1,31 @@
+import { ReferenceArray } from "../../serialization/ReferenceArray";
+import { CollisionInfo } from "../../collision/CollisionInfo";
+import { UIEvents } from "./UIEvents";
+import { SerializedObject } from "../../core/SerializableObject";
+import { Operator } from "../Operator";
+import { Behavior } from "../Behavior";
+import { BasePin } from "../Pin";
+import { ExecutionStatus } from "../ExecutionStatus";
+export declare class BehaviorOperator extends Operator {
+    readonly version: number;
+    behavior: Behavior | null;
+    readonly customPins: ReferenceArray<BasePin>;
+    private _uniqueBehaviorInstance;
+    private _customPins;
+    private _behavior;
+    constructor();
+    destroy(): void;
+    isLoaded(): boolean;
+    onStart(): ExecutionStatus;
+    onUpdate(): ExecutionStatus;
+    onSignalReceived(inputPinId: string): void;
+    onCollision(info: CollisionInfo): void;
+    onUIEvent(handler: (uiOperator: UIEvents) => boolean): boolean;
+    onBehaviorPinsChanged(): void;
+    findPin(pinId: string): BasePin | undefined;
+    filterPins(filter: (p: BasePin) => boolean): BasePin[];
+    upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
+    private checkIfBehaviorFinished;
+    private onBehaviorInlineVariableChanged;
+    private onBehaviorChanged;
+}

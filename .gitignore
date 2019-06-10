@@ -8,20 +8,9 @@
 /workers/raytracer/node_modules
 /workers/raytracer/dist
 
-# testing
-/coverage
-
-# production
-/build
-
 # misc
 .DS_Store
 .env
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-/dist
-idDatabase
-folderDatabase
-/Assets

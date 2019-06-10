@@ -1,0 +1,35 @@
+import { Behavior } from "./Behavior";
+import { ReferenceArray } from "../serialization/ReferenceArray";
+import { BasePin } from "./Pin";
+import { CollisionInfo } from "../collision/CollisionInfo";
+import { Operator } from "./Operator";
+import { UIEvents } from "./operators/UIEvents";
+import { SerializedObject } from "../core/SerializableObject";
+import { Component } from "../core/Component";
+import { IBehaviorComponent } from "./IBehaviorComponent";
+export declare class BehaviorComponent extends Component implements IBehaviorComponent {
+    readonly version: number;
+    autoStart: boolean;
+    behavior: Behavior | null;
+    readonly customPins: ReferenceArray<BasePin>;
+    readonly activeOperators: Operator[];
+    private _customPins;
+    private _uniqueBehaviorInstance;
+    private _behavior;
+    constructor();
+    isLoaded(): boolean;
+    destroy(): void;
+    start(): void;
+    update(): void;
+    onCollision(info: CollisionInfo): void;
+    onUIEvent(handler: (uiOperator: UIEvents) => boolean): boolean;
+    sendSignal(signalName: string): void;
+    getPins(): ReferenceArray<BasePin>;
+    setPins(pins: ReferenceArray<BasePin>): void;
+    findPinByName(name: string): BasePin | undefined;
+    upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
+    private onBehaviorChanged;
+    private buildCustomPins;
+    private onBehaviorPinChanged;
+    private onBehaviorInlineVariableChanged;
+}

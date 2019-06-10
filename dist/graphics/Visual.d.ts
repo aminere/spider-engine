@@ -1,0 +1,36 @@
+import { Material } from "./Material";
+import { Geometry, GraphicUpdateResult } from "./geometry/Geometry";
+import { Camera } from "./Camera";
+import { VisualGroup } from "./VisualGroup";
+import { Shader } from "./Shader";
+import { SerializedObject } from "../core/SerializableObject";
+import { VertexBuffer } from "./VertexBuffer";
+import { Matrix44 } from "../math/Matrix44";
+import { Component } from "../core/Component";
+import { ObjectProps } from "../core/Types";
+import { Entity } from "../core/Entity";
+export declare class Visual extends Component {
+    readonly version: number;
+    material: Material | null;
+    geometry: Geometry | undefined;
+    group: VisualGroup | null;
+    readonly vertexBuffer: VertexBuffer | null;
+    animatedMaterial: Material | undefined;
+    readonly worldTransform: Matrix44;
+    readonly localTransform: Matrix44;
+    readonly bucketId: string;
+    readonly isSkinned: boolean;
+    readonly hasVertexColor: boolean;
+    castShadows: boolean;
+    receiveShadows: boolean;
+    receiveFog: boolean;
+    private _group;
+    private _geometry;
+    private _material;
+    private _uniqueAnimatedMaterialInstance?;
+    constructor(props?: ObjectProps<Visual>);
+    setEntity(entity: Entity): void;
+    graphicUpdate(camera: Camera, shader: Shader, deltaTime: number): GraphicUpdateResult | GraphicUpdateResult.Unchanged;
+    destroy(): void;
+    upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
+}
