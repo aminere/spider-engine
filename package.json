@@ -1,6 +1,6 @@
 {
   "name": "spider-engine",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "dist/spider-engine.js",
   "types": "dist/spider-engine.d.ts",
   "dependencies": {
