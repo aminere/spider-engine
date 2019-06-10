@@ -13,6 +13,7 @@ export declare class DefaultAssets {
     static readonly blurShader: Shader;
     static readonly fullScreenShader: Shader;
     static readonly particlesMaterial: Material;
+    static readonly phongShader: Shader;
     static readonly composeShader: Shader;
     static readonly renderDepthShader: Shader;
     static readonly skinnedRenderDepthShader: Shader;

@@ -18,11 +18,12 @@ export * from "./assets/DefaultAssets";
 
 // Graphics
 export * from "./graphics/Camera";
-export { Visual } from "./graphics/Visual";
-export { Light } from "./graphics/lighting/Light";
+export * from "./graphics/Visual";
+export * from "./graphics/lighting/Light";
 export * from "./graphics/Particles";
 export { Material } from "./graphics/Material";
 export { Shader } from "./graphics/Shader";
+export * from "./graphics/shading/PhongShader";
 export * from "./graphics/volumes/BoxVolume";
 export * from "./graphics/volumes/SphereVolume";
 export * from "./graphics/geometry/primitives/BoxGeometry";
@@ -36,6 +37,7 @@ export * from "./graphics/geometry/QuadGeometry";
 export * from "./graphics/geometry/SkinnedMesh";
 export * from "./graphics/geometry/SpriteGeometry";
 export * from "./graphics/geometry/StaticMesh";
+export * from "./graphics/Color";
 
 // Animation
 export { Animation } from "./animation/Animation";

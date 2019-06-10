@@ -24,6 +24,7 @@ namespace Private {
     export let uiMaterial: Material;
     export let renderDepthShader: Shader;
     export let skinnedRenderDepthShader: Shader;
+    export let phongShader: Shader;
     export let skyMaterial: Material;
     export let cubeMapMaterial: Material;
     export let fullScreenShader: Shader;
@@ -113,7 +114,12 @@ namespace Private {
             path: "Assets/DefaultAssets/Shaders/PostFX/Compose.Shader",
             set: asset => composeShader = asset as Shader,
             get: () => composeShader
-        }
+        },
+        {
+            path: "Assets/DefaultAssets/Shaders/Phong.PhongShader",
+            set: asset => phongShader = asset as Shader,
+            get: () => phongShader
+        },
     ];
 }
 
@@ -127,6 +133,7 @@ export class DefaultAssets {
     static get blurShader() { return Private.blurShader; }
     static get fullScreenShader() { return Private.fullScreenShader; }
     static get particlesMaterial() { return Private.particlesMaterial; }
+    static get phongShader() { return Private.phongShader; }
     static get composeShader() { return Private.composeShader; }
     static get renderDepthShader() { return Private.renderDepthShader; }
     static get skinnedRenderDepthShader() { return Private.skinnedRenderDepthShader; }

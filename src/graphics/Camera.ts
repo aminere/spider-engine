@@ -255,7 +255,7 @@ export class Camera extends Component {
     getScreenPosition(worldPosition: Vector3, screenPositionOut: Vector3) {
         if (this.getViewPosition(worldPosition, screenPositionOut)) {
             // convert to screen space
-            let screenSize = Interfaces.renderer.screenSize;
+            const { screenSize } = Interfaces.renderer;
             screenPositionOut.x = screenSize.x * ((screenPositionOut.x + 1) * .5);
             screenPositionOut.y = screenSize.y * ((-screenPositionOut.y + 1) * .5);
             return true;
