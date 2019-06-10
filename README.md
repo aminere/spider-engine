@@ -22,5 +22,5 @@ Use `create-spider-engine-app` to make a minimalist project, pre-configured with
 ```
 npx create-spider-engine-app my-app
 cd my-app
-npx serve
+npm start
 ```
