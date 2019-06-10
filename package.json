@@ -1,6 +1,7 @@
 {
   "name": "@aminere/spider-engine",
   "version": "1.0.0",
+  "license": "ISC",
   "main": "dist/spider-engine.js",
   "types": "dist/spider-engine.d.ts",
   "repository": "aminere/spider-engine",
