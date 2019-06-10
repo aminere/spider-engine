@@ -5,7 +5,7 @@ Spider Engine
 
 Spider is a fast game engine for the web, composed of an open source run-time and an editor front-end.
 
-* [Playground](https://spiderengine.io/playground)
+* [Playground](https://playground.spiderengine.io)
 * [Projects](https://spiderengine.io/projects)
 * [Documentation](https://docs.spiderengine.io/) 
 * [API reference](https://docs.spiderengine.io/api)
