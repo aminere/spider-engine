@@ -19,7 +19,7 @@ Quick Start
 
 Use `create-spider-engine-app` to make a minimalist project, pre-configured with a typescript stack.
 
-```
+```bash
 npx create-spider-engine-app my-app
 cd my-app
 npm start
@@ -29,7 +29,7 @@ npm start
 
 The following displays a rotating box on screen:
 
-```
+```javascript
 // Box
 const box = spider.Entities.create()
     .setComponent(spider.Visual, {
