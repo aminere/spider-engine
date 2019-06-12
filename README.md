@@ -32,9 +32,15 @@ npm start
 The following displays a rotating box on screen:
 
 ```javascript
-// shader
-const shader = new spider.Shader({
-    vertexCode: `                
+import * as spider from "@aminere/spider-engine";
+
+const canvas = document.getElementById("targetCanvas") as HTMLCanvasElement;
+spider.Engine.create({
+    container: canvas,
+}).then(() => {
+    // shader
+    const shader = new spider.Shader({
+        vertexCode: `                
 attribute vec3 position;
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
@@ -42,35 +48,37 @@ void main() {
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }
 `,
-    fragmentCode: `
+        fragmentCode: `
 precision mediump float;
 void main() {    
     gl_FragColor = vec4(1.);
 }
 `
-});
-
-// Camera
-spider.Entities.create()
-    .setComponent(spider.Camera)
-    .setComponent(spider.Transform, {
-        position: new spider.Vector3(0, 0, 4)
     });
 
-// Box
-const box = spider.Entities.create().setComponent(spider.Visual, {
-    material: new spider.Material({ shader }),
-    geometry: new spider.BoxGeometry()
-});
+    // Camera
+    spider.Entities.create()
+        .setComponent(spider.Camera)
+        .setComponent(spider.Transform, {
+            position: new spider.Vector3(0, 0, 4)
+        });
 
-// Update callback
-spider.Update.hook.attach(() => {
-    box.updateComponent(spider.Transform, {
-        rotation: spider.Quaternion.fromEulerAngles(
-            spider.Time.time,
-            spider.Time.time,
-            0
-        )
+    // Box
+    const box = spider.Entities.create().setComponent(spider.Visual, {
+        material: new spider.Material({ shader }),
+        geometry: new spider.BoxGeometry()
+    });
+
+    // Update callback
+    spider.Update.hook.attach(() => {
+        box.updateComponent(spider.Transform, {
+            rotation: spider.Quaternion.fromEulerAngles(
+                spider.Time.time,
+                spider.Time.time,
+                0
+            )
+        });
     });
 });
+
 ```
