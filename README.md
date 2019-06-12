@@ -34,11 +34,16 @@ The following displays a rotating box on screen:
 ```javascript
 import * as spider from "@aminere/spider-engine";
 
+// Get a reference to a canvas element that will be the main output of the engine
 const canvas = document.getElementById("targetCanvas") as HTMLCanvasElement;
+
+// Initialize the engine
 spider.Engine.create({
     container: canvas,
 }).then(() => {
-    // shader
+
+    // Create a simple shader
+    // It is also possible to use a default shader from spider.DefaultAssets
     const shader = new spider.Shader({
         vertexCode: `                
 attribute vec3 position;
@@ -56,14 +61,17 @@ void main() {
 `
     });
 
-    // Camera
+    // Setup the Camera
+    // Spider Engine uses the Entity Component pattern to build functionality
+    // The Camera is an entity with a Camera and a Transform component    
     spider.Entities.create()
         .setComponent(spider.Camera)
         .setComponent(spider.Transform, {
             position: new spider.Vector3(0, 0, 4)
         });
 
-    // Box
+    // Create a Box
+    // Visual components are the primary way of rendering objects to the screen    
     const box = spider.Entities.create().setComponent(spider.Visual, {
         material: new spider.Material({ shader }),
         geometry: new spider.BoxGeometry()
