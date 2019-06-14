@@ -1,12 +1,15 @@
+pushd ../
+
 echo Building Engine
 
 echo npm install..
 npm install
 
-echo building engine web prod
-npm run build-web-prod
+echo building engine electron prod
+npm run build-electron-prod
 
 pushd workers/raytracer
-npm install
 npm run build-prod
+popd
+
 popd

@@ -1,4 +1,6 @@
 
+pushd ../
+
 rm -rf ./launcher/electron/dist
 rm -rf ./launcher/electron/public
 mkdir ./launcher/electron/dist
@@ -8,4 +10,6 @@ cp -R ./public ./launcher/electron/public
 
 pushd launcher/electron
 npm run build-windows
+popd
+
 popd
