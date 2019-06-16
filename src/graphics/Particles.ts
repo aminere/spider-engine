@@ -18,7 +18,7 @@ import { SphereCollisionShape } from "../collision/SphereCollisionShape";
 import { CollisionUtils } from "../collision/CollisionUtils";
 import { MathEx } from "../math/MathEx";
 import * as Attributes from "../core/Attributes";
-import { DefaultAssets } from "../assets/DefaultAssets";
+import { defaultAssets } from "../assets/DefaultAssets";
 import { Time } from "../core/Time";
 import { Component } from "../core/Component";
 import { Transform } from "../core/Transform";
@@ -231,7 +231,7 @@ export class Particles extends Component {
             this._volume.instance = new BoxVolume();
         }
         if (!this._material.asset) {
-            this._material.asset = DefaultAssets.particlesMaterial;
+            this._material.asset = defaultAssets.materials.particles;
         }
         if (!this._shape.instance) {
             this._shape.instance = new BillboardParticle();

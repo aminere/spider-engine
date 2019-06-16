@@ -9,7 +9,7 @@ import { GraphicUtils } from "../graphics/GraphicUtils";
 import { AssetReference } from "../serialization/AssetReference";
 import { Texture } from "../graphics/Texture";
 import { GeometryProvider } from "../graphics/geometry/GeometryProvider";
-import { DefaultAssets } from "../assets/DefaultAssets";
+import { defaultAssets } from "../assets/DefaultAssets";
 
 namespace Private {
 
@@ -84,7 +84,7 @@ export class UIFillUtils {
             }
         } else if (_fill.isA(ColorFill)) {
             let fill = _fill as ColorFill;
-            let texture = DefaultAssets.whiteTexture;
+            let texture = defaultAssets.whiteTexture;
             uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, texture);
             uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
             if (uiMaterial.begin()) {

@@ -10,140 +10,147 @@ import { AssetLoadingDefinition } from "./AssetLoadingDefinition";
 import { EngineHud } from "../core/hud/EngineHud";
 import { IObjectManagerInternal } from "../core/IObjectManager";
 
-namespace Private {
+export namespace defaultAssets {    
+    export namespace materials {
+        export let particles: Material;
+        export let ui: Material;
+        export let sky: Material;
+        export let cubeMap: Material;
+    }    
 
-    export let whiteTexture: Texture2D;
-    export let particlesMaterial: Material;
-    export let transitionScene: Scene;
-    export let boxMesh: StaticMeshAsset;
-    export let sphereMesh: StaticMeshAsset;
-    export let planeMesh: StaticMeshAsset;
-    export let coneMesh: StaticMeshAsset;
+    export namespace shaders {
+        export let renderDepth: Shader;
+        export let skinnedRenderDepth: Shader;
+        export let phong: Shader;    
+        export let fullScreen: Shader;
+        export let blur: Shader;
+        export let compose: Shader;
+        export let bloom: Shader;
+        export let diffuse: Shader;
+    }    
+    
+    export namespace primitives {    
+        export let box: StaticMeshAsset;
+        export let sphere: StaticMeshAsset;
+        export let plane: StaticMeshAsset;
+        export let cone: StaticMeshAsset;
+    }
+    
+    // misc
+    export let whiteTexture: Texture2D;    
+    export let transitionScene: Scene;    
     export let hudPrefab: Prefab;
-    export let hudProperty: Prefab;
-    export let uiMaterial: Material;
-    export let renderDepthShader: Shader;
-    export let skinnedRenderDepthShader: Shader;
-    export let phongShader: Shader;
-    export let skyMaterial: Material;
-    export let cubeMapMaterial: Material;
-    export let fullScreenShader: Shader;
-    export let blurShader: Shader;
-    export let composeShader: Shader;
-    export let bloomShader: Shader;
+    export let hudProperty: Prefab;    
+}
 
-    export const defaultAssets: AssetLoadingDefinition[] = [
-        // Engine assets
-        {
-            path: "Assets/DefaultAssets/Textures/WhiteSquare.Texture2D",
-            set: asset => whiteTexture = asset as Texture2D,
-            get: () => whiteTexture
-        },
+namespace Private {    
+    export const definitions: AssetLoadingDefinition[] = [
+        // materials
         {
             path: "Assets/DefaultAssets/Materials/Particles.Material",
-            set: asset => particlesMaterial = asset as Material,
-            get: () => particlesMaterial
-        },
-        {
-            path: "Assets/DefaultAssets/Transition/Transition.Scene",
-            set: asset => transitionScene = asset as Scene,
-            get: () => transitionScene
-        },
-        {
-            path: "Assets/DefaultAssets/Geometry/Meshes/Cube.StaticMeshAsset",
-            set: asset => boxMesh = asset as StaticMeshAsset,
-            get: () => boxMesh
-        },
-        {
-            path: "Assets/DefaultAssets/Geometry/Meshes/Sphere.StaticMeshAsset",
-            set: asset => sphereMesh = asset as StaticMeshAsset,
-            get: () => sphereMesh
-        },
-        {
-            path: "Assets/DefaultAssets/Geometry/Meshes/Plane.StaticMeshAsset",
-            set: asset => planeMesh = asset as StaticMeshAsset,
-            get: () => planeMesh
-        },
-        {
-            path: "Assets/DefaultAssets/Geometry/Meshes/Cone.StaticMeshAsset",
-            set: asset => coneMesh = asset as StaticMeshAsset,
-            get: () => coneMesh
-        },
-        // Rendering
+            set: asset => defaultAssets.materials.particles = asset as Material,
+            get: () => defaultAssets.materials.particles
+        },        
         {
             path: "Assets/DefaultAssets/Materials/UI.Material",
-            set: asset => uiMaterial = asset as Material,
-            get: () => uiMaterial
-        },
-        {
-            path: "Assets/DefaultAssets/Shaders/RenderDepth.Shader",
-            set: asset => renderDepthShader = asset as Shader,
-            get: () => renderDepthShader
-        },
-        {
-            path: "Assets/DefaultAssets/Shaders/SkinnedRenderDepth.Shader",
-            set: asset => skinnedRenderDepthShader = asset as Shader,
-            get: () => skinnedRenderDepthShader
+            set: asset => defaultAssets.materials.ui = asset as Material,
+            get: () => defaultAssets.materials.ui
         },
         {
             path: "Assets/DefaultAssets/Materials/Sky.Material",
-            set: asset => skyMaterial = asset as Material,
-            get: () => skyMaterial
+            set: asset => defaultAssets.materials.sky = asset as Material,
+            get: () => defaultAssets.materials.sky
         },
         {
             path: "Assets/DefaultAssets/Materials/CubeMap.Material",
-            set: asset => cubeMapMaterial = asset as Material,
-            get: () => cubeMapMaterial
+            set: asset => defaultAssets.materials.cubeMap = asset as Material,
+            get: () => defaultAssets.materials.cubeMap
+        },
+        // shaders
+        {
+            path: "Assets/DefaultAssets/Shaders/RenderDepth.Shader",
+            set: asset => defaultAssets.shaders.renderDepth = asset as Shader,
+            get: () => defaultAssets.shaders.renderDepth
         },
         {
+            path: "Assets/DefaultAssets/Shaders/SkinnedRenderDepth.Shader",
+            set: asset => defaultAssets.shaders.skinnedRenderDepth = asset as Shader,
+            get: () => defaultAssets.shaders.skinnedRenderDepth
+        },
+        
+        {
             path: "Assets/DefaultAssets/Shaders/FullScreen.Shader",
-            set: asset => fullScreenShader = asset as Shader,
-            get: () => fullScreenShader
+            set: asset => defaultAssets.shaders.fullScreen = asset as Shader,
+            get: () => defaultAssets.shaders.fullScreen
         },
         {
             path: "Assets/DefaultAssets/Shaders/PostFX/BloomStep1.Shader",
-            set: asset => bloomShader = asset as Shader,
-            get: () => bloomShader
+            set: asset => defaultAssets.shaders.bloom = asset as Shader,
+            get: () => defaultAssets.shaders.bloom
         },
         {
             path: "Assets/DefaultAssets/Shaders/PostFX/Blur.Shader",
-            set: asset => blurShader = asset as Shader,
-            get: () => blurShader
+            set: asset => defaultAssets.shaders.blur = asset as Shader,
+            get: () => defaultAssets.shaders.blur
         },
         {
             path: "Assets/DefaultAssets/Shaders/PostFX/Compose.Shader",
-            set: asset => composeShader = asset as Shader,
-            get: () => composeShader
+            set: asset => defaultAssets.shaders.compose = asset as Shader,
+            get: () => defaultAssets.shaders.compose
         },
         {
             path: "Assets/DefaultAssets/Shaders/Phong.PhongShader",
-            set: asset => phongShader = asset as Shader,
-            get: () => phongShader
+            set: asset => defaultAssets.shaders.phong = asset as Shader,
+            get: () => defaultAssets.shaders.phong
         },
+        {
+            path: "Assets/DefaultAssets/Shaders/Diffuse.Shader",
+            set: asset => defaultAssets.shaders.diffuse = asset as Shader,
+            get: () => defaultAssets.shaders.diffuse
+        },
+        // primitives
+        {
+            path: "Assets/DefaultAssets/Geometry/Meshes/Cube.StaticMeshAsset",
+            set: asset => defaultAssets.primitives.box = asset as StaticMeshAsset,
+            get: () => defaultAssets.primitives.box
+        },
+        {
+            path: "Assets/DefaultAssets/Geometry/Meshes/Sphere.StaticMeshAsset",
+            set: asset => defaultAssets.primitives.sphere = asset as StaticMeshAsset,
+            get: () => defaultAssets.primitives.sphere
+        },
+        {
+            path: "Assets/DefaultAssets/Geometry/Meshes/Plane.StaticMeshAsset",
+            set: asset => defaultAssets.primitives.plane = asset as StaticMeshAsset,
+            get: () => defaultAssets.primitives.plane
+        },
+        {
+            path: "Assets/DefaultAssets/Geometry/Meshes/Cone.StaticMeshAsset",
+            set: asset => defaultAssets.primitives.cone = asset as StaticMeshAsset,
+            get: () => defaultAssets.primitives.cone
+        },
+        // misc
+        {
+            path: "Assets/DefaultAssets/Textures/WhiteSquare.Texture2D",
+            set: asset => defaultAssets.whiteTexture = asset as Texture2D,
+            get: () => defaultAssets.whiteTexture
+        },       
+        {
+            path: "Assets/DefaultAssets/Transition/Transition.Scene",
+            set: asset => defaultAssets.transitionScene = asset as Scene,
+            get: () => defaultAssets.transitionScene
+        }        
     ];
 }
 
-export class DefaultAssets {
-    static get whiteTexture() { return Private.whiteTexture; }
-    static get boxMesh() { return Private.boxMesh; }
-    static get sphereMesh() { return Private.sphereMesh; }
-    static get planeMesh() { return Private.planeMesh; }
-    static get coneMesh() { return Private.coneMesh; }
-    static get uiMaterial() { return Private.uiMaterial; }
-    static get blurShader() { return Private.blurShader; }
-    static get fullScreenShader() { return Private.fullScreenShader; }
-    static get particlesMaterial() { return Private.particlesMaterial; }
-    static get phongShader() { return Private.phongShader; }
-    static get composeShader() { return Private.composeShader; }
-    static get renderDepthShader() { return Private.renderDepthShader; }
-    static get skinnedRenderDepthShader() { return Private.skinnedRenderDepthShader; }
-    static get cubeMapMaterial() { return Private.cubeMapMaterial; }
-    static get skyMaterial() { return Private.skyMaterial; }
-    static get transitionScene() { return Private.transitionScene; }
+/**
+ * @hidden
+ */
+export namespace DefaultAssetsInternal {
 
-    static load() {
+    export function load() {
         return Promise.all(
-            Private.defaultAssets.map(a => {
+            Private.definitions.map(a => {
                 return IObjectManagerInternal.instance.loadObject(a.path)
                     .then(tuple => a.set(tuple[0] as Asset));
             })
@@ -151,8 +158,8 @@ export class DefaultAssets {
         .then(() => EngineHud.load());
     }
 
-    static get loaded() {
-        for (const a of Private.defaultAssets) {
+    export function isLoaded() {
+        for (const a of Private.definitions) {
             if (!a.get().isLoaded()) {
                 return false;
             }

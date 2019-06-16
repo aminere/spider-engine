@@ -10,7 +10,7 @@ import { MathEx } from "../math/MathEx";
 import { MeshCollisionShape } from "./MeshCollisionShape";
 import { CollisionGroup } from "./CollisionGroup";
 import { Triangle } from "../math/Triangle";
-import { DefaultAssets } from "../assets/DefaultAssets";
+import { defaultAssets } from "../assets/DefaultAssets";
 import { Transform } from "../core/Transform";
 
 /**
@@ -95,14 +95,14 @@ export class CollisionUtils {
 
     static get boxMesh() {
         if (!Private.boxMesh) {
-            Private.boxMesh = DefaultAssets.boxMesh.vertexBuffer;
+            Private.boxMesh = defaultAssets.primitives.box.vertexBuffer;
         }
         return Private.boxMesh;
     }
 
     static get sphereMesh() {
         if (!Private.sphereMesh) {
-            Private.sphereMesh = DefaultAssets.sphereMesh.vertexBuffer;
+            Private.sphereMesh = defaultAssets.primitives.sphere.vertexBuffer;
         }
         return Private.sphereMesh;
     }

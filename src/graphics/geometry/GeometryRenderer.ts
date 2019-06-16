@@ -2,7 +2,6 @@
 import { Vector3 } from "../../math/Vector3";
 import { Matrix44 } from "../../math/Matrix44";
 import { AABB } from "../../math/AABB";
-import { StaticMeshAsset } from "../../assets/StaticMeshAsset";
 import { BoxCollisionShape } from "../../collision/BoxCollisionShape";
 import { AsyncUtils } from "../../core/AsyncUtils";
 import { Basis } from "../../math/Basis";
@@ -16,7 +15,7 @@ import { Camera } from "../Camera";
 import { GraphicUtils } from "../GraphicUtils";
 import { Material } from "../Material";
 import { IObjectManagerInternal } from "../../core/IObjectManager";
-import { DefaultAssets } from "../../assets/DefaultAssets";
+import { defaultAssets } from "../../assets/DefaultAssets";
 
 namespace Private {
     export const crossSize = 1;
@@ -194,7 +193,7 @@ export class GeometryRenderer {
         Private.debugMaterial.applyParameter(
             "modelViewMatrix",
             Private.modelViewMatrix.multiplyMatrices(Private.viewMatrix, Private.modelViewMatrix));
-        GraphicUtils.drawVertexBuffer(WebGL.context, DefaultAssets.coneMesh.vertexBuffer, Private.debugMaterial.shader as Shader);
+        GraphicUtils.drawVertexBuffer(WebGL.context, defaultAssets.primitives.cone.vertexBuffer, Private.debugMaterial.shader as Shader);
     }
 
     static drawCross(p: Vector3, color: Color) {
@@ -278,7 +277,7 @@ export class GeometryRenderer {
         Private.debugMaterial.applyParameter(
             "modelViewMatrix",
             Private.modelViewMatrix.multiplyMatrices(Private.viewMatrix, Private.modelViewMatrix));
-        GraphicUtils.drawVertexBuffer(WebGL.context, DefaultAssets.boxMesh.vertexBuffer, Private.debugMaterial.shader as Shader);
+        GraphicUtils.drawVertexBuffer(WebGL.context, defaultAssets.primitives.box.vertexBuffer, Private.debugMaterial.shader as Shader);
     }
 
     static drawSphere(center: Vector3, radius: number, color: Color, worldMatrix: Matrix44) {
@@ -294,7 +293,7 @@ export class GeometryRenderer {
         Private.debugMaterial.applyParameter(
             "modelViewMatrix",
             Private.modelViewMatrix.multiplyMatrices(Private.viewMatrix, Private.modelViewMatrix));
-        GraphicUtils.drawVertexBuffer(WebGL.context, DefaultAssets.sphereMesh.vertexBuffer, Private.debugMaterial.shader as Shader);
+        GraphicUtils.drawVertexBuffer(WebGL.context, defaultAssets.primitives.sphere.vertexBuffer, Private.debugMaterial.shader as Shader);
     }
 
     static drawPlane(normal: Vector3, distToOrigin: number, color: Color, worldMatrix: Matrix44) {        

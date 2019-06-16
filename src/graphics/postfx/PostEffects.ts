@@ -4,7 +4,7 @@ import * as Attributes from "../../core/Attributes";
 import { Reference } from "../../serialization/Reference";
 import { Vector3 } from "../../math/Vector3";
 import { Vector2 } from "../../math/Vector2";
-import { DefaultAssets } from "../../assets/DefaultAssets";
+import { defaultAssets } from "../../assets/DefaultAssets";
 import { Interfaces } from "../../core/Interfaces";
 import { RenderTarget } from "../RenderTarget";
 import { VertexBuffer } from "../VertexBuffer";
@@ -57,33 +57,33 @@ export class FastBloom extends Bloom {
 
         // downsample and extract bright intensities
         let renderer = Interfaces.renderer;
-        const { fullScreenShader } = DefaultAssets;
-        if (!fullScreenShader.begin()) {
+        const { fullScreen } = defaultAssets.shaders;
+        if (!fullScreen.begin()) {
             return null;
         }
         renderer.renderTarget = this._buffer1;
-        fullScreenShader.applyReferenceParameter("texture", inputRT);
-        fullScreenShader.applyParameter("threshold", this.threshold);
-        GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, fullScreenShader);
+        fullScreen.applyReferenceParameter("texture", inputRT);
+        fullScreen.applyParameter("threshold", this.threshold);
+        GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, fullScreen);
        
-        const { blurShader } = DefaultAssets;
-        if (!blurShader.begin()) {
+        const { blur } = defaultAssets.shaders;
+        if (!blur.begin()) {
             return null;
         }
 
         // horizontal pass
         let pixelSize = Vector2.fromPool().set(1 / this._buffer1.getWidth(), 1 / this._buffer1.getHeight());
         renderer.renderTarget = this._buffer2;
-        blurShader.applyParameter("horizontal", true);
-        blurShader.applyReferenceParameter("texture", this._buffer1);
-        blurShader.applyParameter("pixelSize", pixelSize);                            
-        GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, blurShader);
+        blur.applyParameter("horizontal", true);
+        blur.applyReferenceParameter("texture", this._buffer1);
+        blur.applyParameter("pixelSize", pixelSize);                            
+        GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, blur);
 
         // vertical pass
         renderer.renderTarget = this._buffer1;
-        blurShader.applyParameter("horizontal", false);
-        blurShader.applyReferenceParameter("texture", this._buffer2);
-        GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, blurShader);
+        blur.applyParameter("horizontal", false);
+        blur.applyReferenceParameter("texture", this._buffer2);
+        GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, blur);
         return this._buffer1;
     }
 

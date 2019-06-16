@@ -3,7 +3,7 @@ import * as Attributes from "../../../core/Attributes";
 import { Geometry } from "../Geometry";
 import { AABB } from "../../../math/AABB";
 import { Vector3 } from "../../../math/Vector3";
-import { DefaultAssets } from "../../../assets/DefaultAssets";
+import { defaultAssets } from "../../../assets/DefaultAssets";
 
 @Attributes.displayName("Box")
 export class BoxGeometry extends Geometry {
@@ -12,7 +12,7 @@ export class BoxGeometry extends Geometry {
     private _boundingBox = new AABB(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
 
     getVertexBuffer() {
-        return DefaultAssets.boxMesh.vertexBuffer;
+        return defaultAssets.primitives.box.vertexBuffer;
     }
 
     getBoundingBox() {        

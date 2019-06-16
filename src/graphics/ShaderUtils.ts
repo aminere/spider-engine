@@ -10,7 +10,7 @@ import { StaticCubemap } from "./StaticCubemap";
 import { Asset } from "../assets/Asset";
 import { Matrix33 } from "../math/Matrix33";
 import { Texture } from "./Texture";
-import { DefaultAssets } from "../assets/DefaultAssets";
+import { defaultAssets } from "../assets/DefaultAssets";
 import { Vector4 } from "../math/Vector4";
 
 export type ShaderParamType =
@@ -205,7 +205,7 @@ namespace Private {
                     gl.uniform1i(param.uniformLocation, param.textureStage);
                     return true;
                 } else {
-                    if (DefaultAssets.whiteTexture.begin(param.textureStage)) {
+                    if (defaultAssets.whiteTexture.begin(param.textureStage)) {
                         gl.uniform1i(param.uniformLocation, param.textureStage);
                         return true;
                     }
@@ -226,7 +226,7 @@ namespace Private {
                     gl.uniform1i(param.uniformLocation, param.textureStage);
                     return true;
                 } else {
-                    if (DefaultAssets.whiteTexture.begin(param.textureStage)) {
+                    if (defaultAssets.whiteTexture.begin(param.textureStage)) {
                         gl.uniform1i(param.uniformLocation, param.textureStage);
                         return true;
                     }

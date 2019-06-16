@@ -10,7 +10,7 @@ import { AssetIdDatabase } from "../assets/AssetIdDatabase";
 import { RendererInternal } from "../graphics/Renderer";
 import { SerializerUtils } from "../serialization/SerializerUtils";
 import { IObjectManagerInternal } from "./IObjectManager";
-import { DefaultAssets } from "../assets/DefaultAssets";
+import { defaultAssets } from "../assets/DefaultAssets";
 
 interface SceneLoadInfo {
     path: string;
@@ -27,7 +27,7 @@ namespace Private {
     export let preloadedScenes: string[] = [];
 
     export function getTransitionAnimComponent() {
-        const fadeQuad = DefaultAssets.transitionScene.root.findChild("FadeQuad") as Entity;
+        const fadeQuad = defaultAssets.transitionScene.root.findChild("FadeQuad") as Entity;
         return fadeQuad.getComponent(AnimationComponent) as AnimationComponent;
     }
 
@@ -69,7 +69,7 @@ namespace Private {
             finalizeSceneLoad();
             anim.animationFinished.once(onTransitionAnimFinished);
             anim.playAnimation("FadeIn");
-            scenes.push(DefaultAssets.transitionScene);
+            scenes.push(defaultAssets.transitionScene);
         } else if (name === "FadeIn") {
             scenes.pop();
             transitionInProgress = false;
@@ -104,7 +104,7 @@ export namespace ScenesInternal {
                 anim.animationFinished.once(Private.onTransitionAnimFinished);
                 anim.playAnimation("FadeOut");
                 Private.transitionInProgress = true;
-                Private.scenes.push(DefaultAssets.transitionScene);
+                Private.scenes.push(defaultAssets.transitionScene);
             } else {
                 Private.finalizeSceneLoad();
             }

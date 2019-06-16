@@ -27,7 +27,7 @@ import { WebGL } from "./WebGL";
 import { Components } from "../core/Components";
 import { Time } from "../core/Time";
 import { ScenesInternal } from "../core/Scenes";
-import { DefaultAssets } from "../assets/DefaultAssets";
+import { defaultAssets } from "../assets/DefaultAssets";
 import { IRenderer, IRendererInternal } from "./IRenderer";
 import { IObjectManagerInternal } from "../core/IObjectManager";
 
@@ -260,7 +260,7 @@ namespace Private {
                     // Are renderer with the same shader type (skinned vs non-skinned), this is a fair assumption
                     // But deserves a check in the future
                     const hasSkinning = visuals[0].isSkinned;
-                    const currentShader = hasSkinning ? DefaultAssets.skinnedRenderDepthShader : DefaultAssets.renderDepthShader;
+                    const currentShader = hasSkinning ? defaultAssets.shaders.skinnedRenderDepth : defaultAssets.shaders.renderDepth;
                     if (currentShader !== previousRenderDepthShader) {
                         // if (hasSkinning) {
                         //     // ( for example when prebuilding shader to be used with multiple objects )
@@ -494,25 +494,25 @@ export class RendererInternal {
                             // tslint:disable-next-line
                             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
                         } else if (environment.isA(SkySimulation)) {
-                            const sky = environment as SkySimulation;
+                            const skySim = environment as SkySimulation;
                             gl.enable(gl.DEPTH_TEST);
                             gl.depthMask(false);
                             // tslint:disable-next-line
                             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                            const { skyMaterial } = DefaultAssets;
-                            skyMaterial.queueParameter("projectionMatrix", camera.getProjectionMatrix());
-                            skyMaterial.queueParameter("modelViewMatrix", Private.makeSkyViewMatrix(camera));
-                            skyMaterial.queueParameter("sunPosition", sky.sunPosition);
-                            skyMaterial.queueParameter("rayleigh", sky.rayleigh);
-                            skyMaterial.queueParameter("turbidity", sky.turbidity);
-                            skyMaterial.queueParameter("mieCoefficient", sky.mieCoefficient);
-                            skyMaterial.queueParameter("luminance", sky.luminance);
-                            skyMaterial.queueParameter("mieDirectionalG", sky.mieDirectionalG);
-                            if (skyMaterial.begin()) {
+                            const { sky } = defaultAssets.materials;
+                            sky.queueParameter("projectionMatrix", camera.getProjectionMatrix());
+                            sky.queueParameter("modelViewMatrix", Private.makeSkyViewMatrix(camera));
+                            sky.queueParameter("sunPosition", skySim.sunPosition);
+                            sky.queueParameter("rayleigh", skySim.rayleigh);
+                            sky.queueParameter("turbidity", skySim.turbidity);
+                            sky.queueParameter("mieCoefficient", skySim.mieCoefficient);
+                            sky.queueParameter("luminance", skySim.luminance);
+                            sky.queueParameter("mieDirectionalG", skySim.mieDirectionalG);
+                            if (sky.begin()) {
                                 GraphicUtils.drawVertexBuffer(
                                     gl, 
-                                    DefaultAssets.sphereMesh.vertexBuffer, 
-                                    skyMaterial.shader as Shader
+                                    defaultAssets.primitives.sphere.vertexBuffer, 
+                                    sky.shader as Shader
                                 );
                             }
                         } else if (environment.isA(SkyBoxEnvironment)) {
@@ -522,13 +522,13 @@ export class RendererInternal {
                                 gl.depthMask(false);
                                 // tslint:disable-next-line
                                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                                const { cubeMapMaterial } = DefaultAssets;
-                                cubeMapMaterial.queueParameter("projectionMatrix", camera.getProjectionMatrix());
-                                cubeMapMaterial.queueParameter("modelViewMatrix", Private.makeSkyViewMatrix(camera));
-                                cubeMapMaterial.queueReferenceParameter("cubemap", sky.cubeMap);
-                                if (cubeMapMaterial.begin()) {
+                                const { cubeMap } = defaultAssets.materials;
+                                cubeMap.queueParameter("projectionMatrix", camera.getProjectionMatrix());
+                                cubeMap.queueParameter("modelViewMatrix", Private.makeSkyViewMatrix(camera));
+                                cubeMap.queueReferenceParameter("cubemap", sky.cubeMap);
+                                if (cubeMap.begin()) {
                                     const vb = GeometryProvider.skyBox;
-                                    GraphicUtils.drawVertexBuffer(gl, vb, cubeMapMaterial.shader as Shader);
+                                    GraphicUtils.drawVertexBuffer(gl, vb, cubeMap.shader as Shader);
                                 }
                             }
                         }
@@ -549,7 +549,7 @@ export class RendererInternal {
                     const fullScreenQuad = GeometryProvider.centeredQuad;
                     const inputRT = bloom.render(gl, camera.sceneRenderTarget, fullScreenQuad) as RenderTarget;
                     // add post effects to scene RT
-                    const composeShader = DefaultAssets.composeShader;
+                    const composeShader = defaultAssets.shaders.compose;
                     if (composeShader.begin()) {
                         IRendererInternal.instance.renderTarget = camera.renderTarget;
                         composeShader.applyReferenceParameter("scene", camera.sceneRenderTarget);
@@ -577,11 +577,11 @@ export class RendererInternal {
         // render UI
         IRendererInternal.instance.renderTarget = null;
         gl.disable(gl.DEPTH_TEST);
-        DefaultAssets.uiMaterial.queueParameter("projectionMatrix", Private.uiProjectionMatrix);
+        defaultAssets.materials.ui.queueParameter("projectionMatrix", Private.uiProjectionMatrix);
         const screens = Components.ofType(Screen);
         for (const screen of screens) {
             screen.updateTransforms();
-            screen.render(DefaultAssets.uiMaterial);
+            screen.render(defaultAssets.materials.ui);
         }
 
         if (uiPostRender) {

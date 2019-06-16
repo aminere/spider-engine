@@ -2,24 +2,40 @@ import { Texture2D } from "../graphics/Texture2D";
 import { StaticMeshAsset } from "./StaticMeshAsset";
 import { Material } from "../graphics/Material";
 import { Scene } from "./Scene";
+import { Prefab } from "./Prefab";
 import { Shader } from "../graphics/Shader";
-export declare class DefaultAssets {
-    static readonly whiteTexture: Texture2D;
-    static readonly boxMesh: StaticMeshAsset;
-    static readonly sphereMesh: StaticMeshAsset;
-    static readonly planeMesh: StaticMeshAsset;
-    static readonly coneMesh: StaticMeshAsset;
-    static readonly uiMaterial: Material;
-    static readonly blurShader: Shader;
-    static readonly fullScreenShader: Shader;
-    static readonly particlesMaterial: Material;
-    static readonly phongShader: Shader;
-    static readonly composeShader: Shader;
-    static readonly renderDepthShader: Shader;
-    static readonly skinnedRenderDepthShader: Shader;
-    static readonly cubeMapMaterial: Material;
-    static readonly skyMaterial: Material;
-    static readonly transitionScene: Scene;
-    static load(): Promise<void>;
-    static readonly loaded: boolean;
+export declare namespace defaultAssets {
+    namespace materials {
+        let particles: Material;
+        let ui: Material;
+        let sky: Material;
+        let cubeMap: Material;
+    }
+    namespace shaders {
+        let renderDepth: Shader;
+        let skinnedRenderDepth: Shader;
+        let phong: Shader;
+        let fullScreen: Shader;
+        let blur: Shader;
+        let compose: Shader;
+        let bloom: Shader;
+        let diffuse: Shader;
+    }
+    namespace primitives {
+        let box: StaticMeshAsset;
+        let sphere: StaticMeshAsset;
+        let plane: StaticMeshAsset;
+        let cone: StaticMeshAsset;
+    }
+    let whiteTexture: Texture2D;
+    let transitionScene: Scene;
+    let hudPrefab: Prefab;
+    let hudProperty: Prefab;
+}
+/**
+ * @hidden
+ */
+export declare namespace DefaultAssetsInternal {
+    function load(): Promise<void>;
+    function isLoaded(): boolean;
 }

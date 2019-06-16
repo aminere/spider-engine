@@ -28,7 +28,7 @@ import { Components } from "./Components";
 import { AssetsInternal } from "../assets/Assets";
 import { GamepadsInternal } from "../input/Gamepads";
 import { UpdateInternal } from "./Update";
-import { DefaultAssets } from "../assets/DefaultAssets";
+import { DefaultAssetsInternal } from "../assets/DefaultAssets";
 import { TimeInternal } from "./Time";
 import { ScenesInternal, Scenes } from "./Scenes";
 import { EntityUtilsInternal } from "./EntityUtils";
@@ -287,7 +287,7 @@ export namespace EngineInternal {
     export function reload() {
         unload();
         return EngineSettings.load()
-            .then(() => DefaultAssets.load())
+            .then(() => DefaultAssetsInternal.load())
             .then(() => {
                 if (!WebGL.context) {
                     return EngineInternal.initializeWithCanvas(Private.targetCanvas);
@@ -337,7 +337,7 @@ export namespace EngineInternal {
 
         AssetsInternal.updateLoading();
 
-        if (!DefaultAssets.loaded) {
+        if (!DefaultAssetsInternal.isLoaded()) {
             requestAnimationFrame(() => updateFrame());
             return;
         }
@@ -443,7 +443,7 @@ export class Engine {
                 })
                 .then(() => tryInitializeWithCanvas())
                 .then(() => SavedDataInternal.preload())
-                .then(() => DefaultAssets.load())
+                .then(() => DefaultAssetsInternal.load())
                 .then(() => {
                     if (Private.targetCanvas) {
                         Private.engineActive = true;
