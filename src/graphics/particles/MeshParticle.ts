@@ -23,13 +23,13 @@ export class MeshParticle extends ParticleShape {
         this.mesh.assetChanged.attach(this.onMeshChanged);
     }
 
-    tesselate(positions: number[], posIdx: number, size: number) {
-        let vb = this.mesh.asset ? this.mesh.asset.vertexBuffer : null;
+    getPositions(positions: number[], posIdx: number, size: number) {
+        const vb = this.mesh.asset ? this.mesh.asset.vertexBuffer : null;
         if (!vb) {
             return;
         }
-        let meshPositions = vb.getData("position");
-        for (var i = 0; i < vb.vertexCount; ++i) {
+        const meshPositions = vb.attributes.position as number[];
+        for (let i = 0; i < vb.vertexCount; ++i) {
             let localIndex = i * 3;
             let idx = posIdx + localIndex;
             positions[idx + 0] = meshPositions[localIndex + 0] * size * this.scale.x;
@@ -39,13 +39,13 @@ export class MeshParticle extends ParticleShape {
     }
 
     getUvs(uvs: number[], uvIdx: number) {
-        let vb = this.mesh.asset ? this.mesh.asset.vertexBuffer : null;
+        const vb = this.mesh.asset ? this.mesh.asset.vertexBuffer : null;
         if (!vb) {
             return;
         }
-        let meshUvs = vb.getData("uv");
-        let uvCount = vb.vertexCount * 2;
-        for (var i = 0; i < uvCount; ++i) {
+        const meshUvs = vb.attributes.uv as number[];
+        const uvCount = vb.vertexCount * 2;
+        for (let i = 0; i < uvCount; ++i) {
             uvs[uvIdx + i] = meshUvs[i];
         }
     }
