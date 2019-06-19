@@ -1,49 +1,44 @@
 import { VertexBuffer } from "../VertexBuffer";
 
 namespace Private {
-    export let quad: VertexBuffer;    
+    export let quad: VertexBuffer;
     export let centeredQuad: VertexBuffer;
     export let uiQuad: VertexBuffer;
     export let skyBox: VertexBuffer;
 
-    quad = new VertexBuffer();
-    quad.setData(
-        "position",
-        [
-            0, 0, 0, // Bottom left
-            1, 0, 0, // Bottom right
-            1, 1, 0, // Top right                
-            0, 0, 0, // Bottom left                
-            1, 1, 0, // Top right
-            0, 1, 0, // Top left
-        ]
-    );
-    quad.setData(
-        "uv",
-        [
-            0, 0, // Bottom left                
-            1, 0, // Bottom right
-            1, 1, // Top right     
-            0, 0, // Bottom left
-            1, 1, // Top right
-            0, 1, // Top Left            
-        ]
-    );        
-    quad.setData(
-        "normal",
-        [
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1
-        ]
-    );  
-    quad.primitiveType = "TRIANGLES";
+    quad = new VertexBuffer({
+        attributes: {
+            position: [
+                0, 0, 0, // Bottom left
+                1, 0, 0, // Bottom right
+                1, 1, 0, // Top right                
+                0, 0, 0, // Bottom left                
+                1, 1, 0, // Top right
+                0, 1, 0, // Top left
+            ],
+            uv: [
+                0, 0, // Bottom left                
+                1, 0, // Bottom right
+                1, 1, // Top right     
+                0, 0, // Bottom left
+                1, 1, // Top right
+                0, 1, // Top Left            
+            ],
+            normal:
+                [
+                    0, 0, 1,
+                    0, 0, 1,
+                    0, 0, 1,
+                    0, 0, 1,
+                    0, 0, 1,
+                    0, 0, 1
+                ]
+        },
+        primitiveType: "TRIANGLES"
+    });
 
     centeredQuad = new VertexBuffer();
-    centeredQuad.setData(
+    centeredQuad.setAttribute(
         "position",
         [
             -1, -1, 0.0, // Bottom left
@@ -53,13 +48,13 @@ namespace Private {
             1, 1, 0.0, // Top right            
             -1, 1, 0.0, // Top left
         ]
-    );              
-    centeredQuad.setData("uv", quad.data.uv);
-    centeredQuad.setData("normal", quad.data.normal);
+    );
+    centeredQuad.setAttribute("uv", quad.attributes.uv);
+    centeredQuad.setAttribute("normal", quad.attributes.normal);
     centeredQuad.primitiveType = "TRIANGLES";
 
     uiQuad = new VertexBuffer();
-    uiQuad.setData(
+    uiQuad.setAttribute(
         "position",
         [
             0, 0, 0.0, // Top left
@@ -70,7 +65,7 @@ namespace Private {
             1, 1, 0.0, // Bottom right
         ]
     );
-    uiQuad.setData(
+    uiQuad.setAttribute(
         "uv",
         [
             0, 1, // Top left
@@ -88,60 +83,60 @@ export class GeometryProvider {
     static get quad() { return Private.quad; }
     static get centeredQuad() { return Private.centeredQuad; }
     static get uiQuad() { return Private.uiQuad; }
-    static get skyBox() { 
+    static get skyBox() {
         if (!Private.skyBox) {
             let skyBox = new VertexBuffer();
             const size = 1;
-            skyBox.setData(
+            skyBox.setAttribute(
                 "position",
                 [
-                    -size,  size, -size,
+                    -size, size, -size,
                     -size, -size, -size,
-                     size, -size, -size,
-                     size, -size, -size,
-                     size,  size, -size,
-                    -size,  size, -size,
-                    
-                    -size, -size,  size,
+                    size, -size, -size,
+                    size, -size, -size,
+                    size, size, -size,
+                    -size, size, -size,
+
+                    -size, -size, size,
                     -size, -size, -size,
-                    -size,  size, -size,
-                    -size,  size, -size,
-                    -size,  size,  size,
-                    -size, -size,  size,
-                    
-                     size, -size, -size,
-                     size, -size,  size,
-                     size,  size,  size,
-                     size,  size,  size,
-                     size,  size, -size,
-                     size, -size, -size,
-                     
-                    -size, -size,  size,
-                    -size,  size,  size,
-                     size,  size,  size,
-                     size,  size,  size,
-                     size, -size,  size,
-                    -size, -size,  size,
-                    
-                    -size,  size, -size,
-                     size,  size, -size,
-                     size,  size,  size,
-                     size,  size,  size,
-                    -size,  size,  size,
-                    -size,  size, -size,
-                    
+                    -size, size, -size,
+                    -size, size, -size,
+                    -size, size, size,
+                    -size, -size, size,
+
+                    size, -size, -size,
+                    size, -size, size,
+                    size, size, size,
+                    size, size, size,
+                    size, size, -size,
+                    size, -size, -size,
+
+                    -size, -size, size,
+                    -size, size, size,
+                    size, size, size,
+                    size, size, size,
+                    size, -size, size,
+                    -size, -size, size,
+
+                    -size, size, -size,
+                    size, size, -size,
+                    size, size, size,
+                    size, size, size,
+                    -size, size, size,
+                    -size, size, -size,
+
                     -size, -size, -size,
-                    -size, -size,  size,
-                     size, -size, -size,
-                     size, -size, -size,
-                    -size, -size,  size,
-                     size, -size,  size
-                ]                
+                    -size, -size, size,
+                    size, -size, -size,
+                    size, -size, -size,
+                    -size, -size, size,
+                    size, -size, size
+                ]
             );
             skyBox.primitiveType = "TRIANGLES";
             Private.skyBox = skyBox;
-        }		
-        return Private.skyBox; 
+        }
+        return Private.skyBox;
     }
 
     static unload(gl: WebGLRenderingContext) {

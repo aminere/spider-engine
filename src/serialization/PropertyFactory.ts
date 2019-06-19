@@ -244,7 +244,7 @@ export class PropertyFactory {
             readProperty: (json: SerializedVertexBuffer) => {
                 let vb = new VertexBuffer();
                 for (let attribute of Object.keys(json.attributes)) {
-                    vb.setData(attribute as VertexAttribute, json.attributes[attribute]);
+                    vb.setAttribute(attribute as VertexAttribute, json.attributes[attribute]);
                 }                
                 vb.primitiveType = json.primitiveType;
                 vb.isDynamic = json.isDynamic;
@@ -255,7 +255,7 @@ export class PropertyFactory {
 
             writeProperty: (vb: VertexBuffer): SerializedVertexBuffer => {
                 return {
-                    attributes: vb.data,
+                    attributes: vb.attributes,
                     vertexCount: vb.vertexCount,
                     primitiveType: vb.primitiveType,
                     isDynamic: vb.isDynamic,

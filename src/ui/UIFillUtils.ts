@@ -17,7 +17,7 @@ namespace Private {
 
     export function getUIElementVertexBuffer(layout: Layout) {
         let quad = GeometryProvider.uiQuad;
-        let pos = quad.data.position;
+        let pos = quad.attributes.position;
         let w = layout.actualWidth;
         let h = layout.actualHeight;
         // floor to keep vertices as integers which preserves the pixel perfect look
@@ -37,7 +37,7 @@ namespace Private {
         pos[9] = 0 + xOffset; pos[10] = h + yOffset; pos[11] = 0; // Bottom left
         pos[12] = w + xOffset; pos[13] = 0 + yOffset; pos[14] = 0; // Top right
         pos[15] = w + xOffset; pos[16] = h + yOffset; pos[17] = 0; // Bottom right
-        quad.dirtifyData("position");
+        quad.dirtifyAttribute("position");
         return quad;
     }
 }

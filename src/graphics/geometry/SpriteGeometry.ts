@@ -19,8 +19,8 @@ export class SpriteGeometry extends Geometry {
             this._vertexBuffer = new VertexBuffer();
             this._vertexBuffer.isDynamic = true;
             this._vertexBuffer.primitiveType = "TRIANGLES";
-            this._vertexBuffer.setData("position", []);
-            this._vertexBuffer.setData("uv", []);
+            this._vertexBuffer.setAttribute("position", []);
+            this._vertexBuffer.setAttribute("uv", []);
         }
         if (this.sprite.asset) {
             this.sprite.asset.tesselateInWorldUnits(this._vertexBuffer); 

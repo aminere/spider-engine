@@ -5,6 +5,7 @@ import { EngineUtils } from "../core/EngineUtils";
 import { PrimitiveType } from "./GraphicTypes";
 import { WebGL } from "./WebGL";
 import { Interfaces } from "../core/Interfaces";
+import { ObjectProps } from "../core/Types";
 
 export type VertexAttribute =
     "position"
@@ -22,6 +23,10 @@ interface VertexMetadata {
     isDirty: boolean;
 }
 
+interface VertexAttributes {
+    [attribute: string]: number[];
+}
+
 export class VertexBuffer {
 
     set vertexCount(count: number) { this._vertexCount = count; }
@@ -33,7 +38,14 @@ export class VertexBuffer {
     set name(name: string | undefined) { this._name = name; }
     get name() { return this._name; }
 
-    get data() { return this._data; }
+    get attributes() { return this._attributes; }
+    set attributes(attributes: VertexAttributes) {
+        Object.entries(attributes).forEach(([attribute, data]) => {
+            // TODO type check the attribute!
+            this.setAttribute(attribute as VertexAttribute, data);
+        });
+    }
+
     get id() { return this._id; }
     get indices() { return this._indices; }
     set indices(indices: number[] | undefined) {
@@ -48,7 +60,7 @@ export class VertexBuffer {
         }        
     }
 
-    private _data: { [attribute: string]: number[] } = {};
+    private _attributes: { [attribute: string]: number[] } = {};
     private _vertexCount = 0;
     private _primitiveType!: PrimitiveType;
 
@@ -60,16 +72,21 @@ export class VertexBuffer {
     private _indices?: number[];
     private _indicesMetaData?: VertexMetadata;
 
-    constructor() {
-        this._id = EngineUtils.makeUniqueId();        
+    constructor(props?: ObjectProps<VertexBuffer>) {
+        this._id = EngineUtils.makeUniqueId();
+        if (props) {
+            Object.entries(props).forEach(([key, value]) => {
+                Object.assign(this, { [key]: value });
+            });
+        }
     }
 
     copy() {
         return Interfaces.serializer.copyVertexBuffer(this);
     }
 
-    setData(attribute: VertexAttribute, data: number[]) {
-        this._data[attribute] = data;
+    setAttribute(attribute: VertexAttribute, data: number[]) {
+        this._attributes[attribute] = data;
         this._metaData[attribute] = {
             glBuffer: null,
             isDirty: true
@@ -80,10 +97,10 @@ export class VertexBuffer {
     }
 
     getData(attribute: VertexAttribute) {
-        return this._data[attribute];
+        return this._attributes[attribute];
     }
 
-    dirtifyData(attribute: VertexAttribute) {
+    dirtifyAttribute(attribute: VertexAttribute) {
         if (attribute in this._metaData) {
             this._metaData[attribute].isDirty = true;
             if (attribute === "position") {
@@ -123,7 +140,7 @@ export class VertexBuffer {
                 } else {
                     // remove barycentric coords buffer
                     gl.deleteBuffer(this._metaData.barycentricCoord.glBuffer);
-                    delete this._data.barycentricCoord;
+                    delete this._attributes.barycentricCoord;
                     delete this._metaData.barycentricCoord;
                 }
             }
@@ -151,13 +168,13 @@ export class VertexBuffer {
     }
 
     load(gl: WebGLRenderingContext) {
-        for (const attribute of Object.keys(this._data)) {
+        for (const attribute of Object.keys(this._attributes)) {
             const buffer = gl.createBuffer();
             if (buffer) {
                 gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
                 gl.bufferData(
                     gl.ARRAY_BUFFER,
-                    new Float32Array(this._data[attribute]),
+                    new Float32Array(this._attributes[attribute]),
                     this._isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW
                 );
                 this._metaData[attribute].glBuffer = buffer;
@@ -178,7 +195,7 @@ export class VertexBuffer {
 
     unload(gl: WebGLRenderingContext) {
         if (this._isLoaded) {
-            for (const attribute of Object.keys(this._data)) {
+            for (const attribute of Object.keys(this._attributes)) {
                 if (this._metaData[attribute].glBuffer) {
                     gl.deleteBuffer(this._metaData[attribute].glBuffer);
                     this._metaData[attribute].glBuffer = null;
@@ -236,7 +253,7 @@ export class VertexBuffer {
             gl.bindBuffer(gl.ARRAY_BUFFER, this._metaData[attribute].glBuffer);
             gl.bufferData(
                 gl.ARRAY_BUFFER,
-                new Float32Array(this._data[attribute]),
+                new Float32Array(this._attributes[attribute]),
                 this._isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW
             );
             this._metaData[attribute].isDirty = false;
@@ -246,12 +263,12 @@ export class VertexBuffer {
     }
 
     private loadBarycentricCoords(gl: WebGLRenderingContext) {
-        if (!("position" in this._data) || this.primitiveType !== "TRIANGLES") {
+        if (!("position" in this._attributes) || this.primitiveType !== "TRIANGLES") {
             return;
         }
         const exists = this.hasBarycentricCoords();
-        const coords: number[] = exists ? this._data.barycentricCoord : [];
-        coords.length = this._data.position.length;
+        const coords: number[] = exists ? this._attributes.barycentricCoord : [];
+        coords.length = this._attributes.position.length;
         if (this._indices) {
             // let triangleCount = this._indices.length / 3;
             // TODO - not sure there is a way to generate barycentric coords reliably when using an index buffer
@@ -266,13 +283,13 @@ export class VertexBuffer {
         }
 
         if (exists) {
-            this.dirtifyData("barycentricCoord");
+            this.dirtifyAttribute("barycentricCoord");
         } else {
-            this.setData("barycentricCoord", coords);
+            this.setAttribute("barycentricCoord", coords);
             const buffer = gl.createBuffer();
             if (buffer) {
                 gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._data.barycentricCoord), this._isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._attributes.barycentricCoord), this._isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
                 this._metaData.barycentricCoord.glBuffer = buffer;
                 this._metaData.barycentricCoord.isDirty = false;
             }
@@ -280,7 +297,7 @@ export class VertexBuffer {
     }
 
     private hasBarycentricCoords() {
-        return "barycentricCoord" in this._data;
+        return "barycentricCoord" in this._attributes;
     }
 }
 

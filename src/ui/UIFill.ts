@@ -100,8 +100,8 @@ export class SpriteFill extends UIFill {
             this._vertexBuffer = new VertexBuffer();
             this._vertexBuffer.isDynamic = true;
             this._vertexBuffer.primitiveType = "TRIANGLES";
-            this._vertexBuffer.setData("position", []);
-            this._vertexBuffer.setData("uv", []);
+            this._vertexBuffer.setAttribute("position", []);
+            this._vertexBuffer.setAttribute("uv", []);
         }
 
         if (layout.actualWidth !== this._width) {
@@ -277,7 +277,7 @@ export class SpriteSheetFill extends UIFill {
         if (!this._vertexBuffer) {
             this._vertexBuffer = new VertexBuffer();
             this._vertexBuffer.isDynamic = true;            
-            this._vertexBuffer.setData("position", [
+            this._vertexBuffer.setAttribute("position", [
                 0, 0, 0.0, // Top left
                 1, 0, 0.0, // Top right
                 0, 1, 0.0, // Bottom left
@@ -285,7 +285,7 @@ export class SpriteSheetFill extends UIFill {
                 1, 0, 0.0, // Top right
                 1, 1, 0.0, // Bottom right
             ]);
-            this._vertexBuffer.setData("uv", [
+            this._vertexBuffer.setAttribute("uv", [
                 0, 1, // Top left
                 1, 1, // Top right
                 0, 0, // Bottom left
@@ -325,7 +325,7 @@ export class SpriteSheetFill extends UIFill {
             }
 
             if (this._isDirty) {
-                let pos = this._vertexBuffer.data.position;
+                let pos = this._vertexBuffer.attributes.position;
                 pos[0] = 0 + xOffset; pos[1] = 0 + yOffset; pos[2] = 0; // Top left
                 pos[3] = layout.actualWidth + xOffset; pos[4] = 0 + yOffset; pos[5] = 0; // Top right
                 pos[6] = 0 + xOffset; pos[7] = layout.actualHeight + yOffset; pos[8] = 0; // Bottom left
@@ -337,7 +337,7 @@ export class SpriteSheetFill extends UIFill {
                 let numRows = texture.getHeight() / Math.max(this.tileSize.y, 1);
                 let row = Math.floor(this.currentTile / rowSize);
                 let col = Math.round(this.currentTile) % rowSize;
-                let uv = this._vertexBuffer.data.uv;
+                let uv = this._vertexBuffer.attributes.uv;
                 let tileSizeX = 1 / rowSize;
                 let tileSizeY = 1 / numRows;
                 // Add a half pixel offset except for the first cells, this fixes seams between cells.
@@ -361,8 +361,8 @@ export class SpriteSheetFill extends UIFill {
                 // Bottom right
                 uv[10] = tileSizeX * col + tileSizeX - halfPixelX;
                 uv[11] = 1 - (tileSizeY * row + tileSizeY - halfPixelY);
-                this._vertexBuffer.dirtifyData("position");
-                this._vertexBuffer.dirtifyData("uv");
+                this._vertexBuffer.dirtifyAttribute("position");
+                this._vertexBuffer.dirtifyAttribute("uv");
                 this._isDirty = false;
             }
         }

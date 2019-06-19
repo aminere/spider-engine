@@ -115,9 +115,9 @@ export class Sprite extends Asset {
             numTiles++;
         }
         let numVertices = numTiles * 6;
-        let pos = vb.data.position;
+        let pos = vb.attributes.position;
         pos.length = numVertices * 3;
-        let uv = vb.data.uv;
+        let uv = vb.attributes.uv;
         uv.length = numVertices * 2;
         vb.vertexCount = numVertices;
 
@@ -306,8 +306,8 @@ export class Sprite extends Asset {
         ); // Bottom right corner
 
         console.assert(idx === vb.vertexCount * 2);
-        vb.dirtifyData("position");
-        vb.dirtifyData("uv");
+        vb.dirtifyAttribute("position");
+        vb.dirtifyAttribute("uv");
     }
 
     private makeQuadPos(a: number[], index: number, x: number, y: number, w: number, h: number, offsetX: number, offsetY: number) {

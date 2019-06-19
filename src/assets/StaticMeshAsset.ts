@@ -22,8 +22,8 @@ export class StaticMeshAsset extends GraphicAsset {
 
     get boundingBox() { 
         if (!this._boundingBox && this._vertexBuffer) {
-            const { data, primitiveType, indices } = this._vertexBuffer;
-            this._boundingBox = AABB.fromVertexArray(data.position, primitiveType, indices);
+            const { attributes, primitiveType, indices } = this._vertexBuffer;
+            this._boundingBox = AABB.fromVertexArray(attributes.position, primitiveType, indices);
         }
         return this._boundingBox; 
     }

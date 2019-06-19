@@ -120,8 +120,8 @@ export class BitmapFont extends Font {
             this._vertexBuffer = new VertexBuffer();
             this._vertexBuffer.isDynamic = true;
             this._vertexBuffer.primitiveType = "TRIANGLES";
-            this._vertexBuffer.setData("position", []);
-            this._vertexBuffer.setData("uv", []);
+            this._vertexBuffer.setAttribute("position", []);
+            this._vertexBuffer.setAttribute("uv", []);
         }
 
         let texture = this.getTexture();
@@ -152,8 +152,8 @@ export class BitmapFont extends Font {
                 this._width = this.drawText(globalLines, this.lineHeight);
             }
 
-            this._vertexBuffer.dirtifyData("position");
-            this._vertexBuffer.dirtifyData("uv");
+            this._vertexBuffer.dirtifyAttribute("position");
+            this._vertexBuffer.dirtifyAttribute("uv");
             this._isDirty = false;
         }
 
@@ -201,8 +201,8 @@ export class BitmapFont extends Font {
         const characterCount = lines.reduce((prev, cur) => prev + cur.length, 0);
         const vertexCount = characterCount * 6;
         this._vertexBuffer.vertexCount = vertexCount;
-        let pos = this._vertexBuffer.data.position;
-        let uv = this._vertexBuffer.data.uv;
+        let pos = this._vertexBuffer.attributes.position;
+        let uv = this._vertexBuffer.attributes.uv;
         pos.length = vertexCount * 3;
         uv.length = vertexCount * 2;
         const tileSizeX = 1 / rowSize;

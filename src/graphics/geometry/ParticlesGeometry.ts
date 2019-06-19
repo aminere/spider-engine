@@ -141,8 +141,8 @@ export class ParticlesGeometry extends Geometry {
         }
 
         const { particlePos, particleVelocity, color, localTransform } = Private;
-        const positions = this._vb.data.position;
-        const colors = this._vb.data.color;
+        const positions = this._vb.attributes.position;
+        const colors = this._vb.attributes.color;
         let posIdx = 0;
         let colIdx = 0;
         this._shape.makeLocalTransform(localTransform, camera.entity.transform);
@@ -188,8 +188,8 @@ export class ParticlesGeometry extends Geometry {
         }
 
         this._vb.vertexCount = posIdx / 3;
-        this._vb.dirtifyData("position");
-        this._vb.dirtifyData("color");
+        this._vb.dirtifyAttribute("position");
+        this._vb.dirtifyAttribute("color");
         return GraphicUpdateResult.Changed;
     }
 
@@ -222,11 +222,11 @@ export class ParticlesGeometry extends Geometry {
 
         const positions: number[] = [];
         positions.length = verticesPerParticles * maxParticles;
-        this._vb.setData("position", positions);
+        this._vb.setAttribute("position", positions);
 
         const colors: number[] = [];
         colors.length = this._vb.vertexCount * 4;
-        this._vb.setData("color", colors);
+        this._vb.setAttribute("color", colors);
 
         const uvs: number[] = [];
         uvs.length = this._vb.vertexCount * 2;
@@ -235,7 +235,7 @@ export class ParticlesGeometry extends Geometry {
             this._shape.getUvs(uvs, uvIdx);
             uvIdx += verticesPerParticles * 2;
         }
-        this._vb.setData("uv", uvs);
+        this._vb.setAttribute("uv", uvs);
         this._vb.isDynamic = true;
         this._vb.primitiveType = "TRIANGLES";
     }
