@@ -193,21 +193,21 @@ export class CollisionUtils {
         include?: CollisionGroup[],
         exclude?: CollisionGroup[]
     ) {
-        let boxVertices = CollisionUtils.boxMesh.getData("position");
-        let sphereVertices = CollisionUtils.sphereMesh.getData("position");
-        let v1 = Vector3.fromPool();
-        let v2 = Vector3.fromPool();
-        let v3 = Vector3.fromPool();
-        let triangle = Triangle.fromPool();
-        let plane = Plane.fromPool();
-        let sphereIntersectionPoint = Vector3.fromPool();
-        let colliderIntersectionPoint = Vector3.fromPool();
-        let closestSphereIntersectionPoint = Vector3.fromPool();
-        let closestColliderIntersectionPoint = Vector3.fromPool();
-        let contactPlane = Plane.fromPool();
+        const boxVertices = CollisionUtils.boxMesh.attributes.position as number[];
+        const sphereVertices = CollisionUtils.sphereMesh.attributes.position as number[];
+        const v1 = Vector3.fromPool();
+        const v2 = Vector3.fromPool();
+        const v3 = Vector3.fromPool();
+        const triangle = Triangle.fromPool();
+        const plane = Plane.fromPool();
+        const sphereIntersectionPoint = Vector3.fromPool();
+        const colliderIntersectionPoint = Vector3.fromPool();
+        const closestSphereIntersectionPoint = Vector3.fromPool();
+        const closestColliderIntersectionPoint = Vector3.fromPool();
+        const contactPlane = Plane.fromPool();
         let maxRecursions = 3;
 
-        let moveSphereRecursive = (
+        const moveSphereRecursive = (
             position: Vector3,
             radius: number,
             velocity: Vector3,
@@ -215,7 +215,7 @@ export class CollisionUtils {
             newPosition: Vector3,
             newVelocity: Vector3
         ) => {
-            let velocityLength = velocity.length;
+            const velocityLength = velocity.length;
             if (velocityLength === 0) {
                 return false;
             }
@@ -223,7 +223,7 @@ export class CollisionUtils {
             let toClosestIntersection = 999999;
             let velocityNormalized = Vector3.fromPool().copy(velocity).multiply(1 / velocityLength);
             // let invVelocityNormalized = Vector3.fromPool().copy(velocityNormalized).flip();
-            for (let collider of colliders) {
+            for (const collider of colliders) {
                 if (collider.group && !collider.group.isAllowed(include, exclude)) {
                     continue;
                 }
@@ -255,7 +255,7 @@ export class CollisionUtils {
                             if (mesh.vertexBuffer.indices) {
                                 continue;
                             }
-                            vertices = mesh.vertexBuffer.getData("position");
+                            vertices = mesh.vertexBuffer.attributes.position as number[];
                         }
 
                         let triangleCount = (vertices.length / 3) / 3;

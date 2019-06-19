@@ -23,9 +23,7 @@ interface VertexMetadata {
     isDirty: boolean;
 }
 
-interface VertexAttributes {
-    [attribute: string]: number[];
-}
+type VertexAttributes = { [P in VertexAttribute]?: number[] };
 
 export class VertexBuffer {
 
@@ -42,7 +40,7 @@ export class VertexBuffer {
     set attributes(attributes: VertexAttributes) {
         Object.entries(attributes).forEach(([attribute, data]) => {
             // TODO type check the attribute!
-            this.setAttribute(attribute as VertexAttribute, data);
+            this.setAttribute(attribute as VertexAttribute, data as number[]);
         });
     }
 
@@ -60,7 +58,7 @@ export class VertexBuffer {
         }        
     }
 
-    private _attributes: { [attribute: string]: number[] } = {};
+    private _attributes: VertexAttributes = {};
     private _vertexCount = 0;
     private _primitiveType!: PrimitiveType;
 
@@ -96,10 +94,6 @@ export class VertexBuffer {
         }
     }
 
-    getData(attribute: VertexAttribute) {
-        return this._attributes[attribute];
-    }
-
     dirtifyAttribute(attribute: VertexAttribute) {
         if (attribute in this._metaData) {
             this._metaData[attribute].isDirty = true;
@@ -110,7 +104,7 @@ export class VertexBuffer {
                 }
             }
         } else {
-            Debug.log(`Attribute '${attribute}' not found on Vertex Buffer'`);
+            Debug.log(`Attribute '${attribute}' not found on VertexBuffer'`);
         }
     }
 
@@ -263,11 +257,11 @@ export class VertexBuffer {
     }
 
     private loadBarycentricCoords(gl: WebGLRenderingContext) {
-        if (!("position" in this._attributes) || this.primitiveType !== "TRIANGLES") {
+        if (!this._attributes.position || this.primitiveType !== "TRIANGLES") {
             return;
         }
         const exists = this.hasBarycentricCoords();
-        const coords: number[] = exists ? this._attributes.barycentricCoord : [];
+        const coords = exists ? (this._attributes.barycentricCoord as number[]) : [];
         coords.length = this._attributes.position.length;
         if (this._indices) {
             // let triangleCount = this._indices.length / 3;
@@ -289,7 +283,7 @@ export class VertexBuffer {
             const buffer = gl.createBuffer();
             if (buffer) {
                 gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this._attributes.barycentricCoord), this._isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
+                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(coords), this._isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
                 this._metaData.barycentricCoord.glBuffer = buffer;
                 this._metaData.barycentricCoord.isDirty = false;
             }
@@ -302,7 +296,7 @@ export class VertexBuffer {
 }
 
 export interface SerializedVertexBuffer {
-    attributes: { [attribute: string]: number[] };
+    attributes: VertexAttributes;
     vertexCount: number;
     primitiveType: PrimitiveType;
     isDynamic: boolean;

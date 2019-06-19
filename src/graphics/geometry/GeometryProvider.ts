@@ -37,46 +37,43 @@ namespace Private {
         primitiveType: "TRIANGLES"
     });
 
-    centeredQuad = new VertexBuffer();
-    centeredQuad.setAttribute(
-        "position",
-        [
-            -1, -1, 0.0, // Bottom left
-            1, -1, 0.0, // Bottom right                
-            1, 1, 0.0, // Top right
-            -1, -1, 0.0, // Bottom left
-            1, 1, 0.0, // Top right            
-            -1, 1, 0.0, // Top left
-        ]
-    );
-    centeredQuad.setAttribute("uv", quad.attributes.uv);
-    centeredQuad.setAttribute("normal", quad.attributes.normal);
-    centeredQuad.primitiveType = "TRIANGLES";
+    centeredQuad = new VertexBuffer({
+        attributes: {
+            position: [
+                -1, -1, 0.0, // Bottom left
+                1, -1, 0.0, // Bottom right                
+                1, 1, 0.0, // Top right
+                -1, -1, 0.0, // Bottom left
+                1, 1, 0.0, // Top right            
+                -1, 1, 0.0, // Top left
+            ],
+            uv: quad.attributes.uv as number[],
+            normal: quad.attributes.normal as number[]
+        },
+        primitiveType: "TRIANGLES"
+    });
 
-    uiQuad = new VertexBuffer();
-    uiQuad.setAttribute(
-        "position",
-        [
-            0, 0, 0.0, // Top left
-            1, 0, 0.0, // Top right
-            0, 1, 0.0, // Bottom left
-            0, 1, 0.0, // Bottom left
-            1, 0, 0.0, // Top right
-            1, 1, 0.0, // Bottom right
-        ]
-    );
-    uiQuad.setAttribute(
-        "uv",
-        [
-            0, 1, // Top left
-            1, 1, // Top right
-            0, 0, // Bottom left
-            0, 0, // Bottom left
-            1, 1, // Top right
-            1, 0 // Bottom right
-        ]
-    );
-    uiQuad.primitiveType = "TRIANGLES";
+    uiQuad = new VertexBuffer({
+        attributes: {
+            position: [
+                0, 0, 0.0, // Top left
+                1, 0, 0.0, // Top right
+                0, 1, 0.0, // Bottom left
+                0, 1, 0.0, // Bottom left
+                1, 0, 0.0, // Top right
+                1, 1, 0.0, // Bottom right    
+            ],
+            uv: [
+                0, 1, // Top left
+                1, 1, // Top right
+                0, 0, // Bottom left
+                0, 0, // Bottom left
+                1, 1, // Top right
+                1, 0 // Bottom right
+            ]
+        },
+        primitiveType: "TRIANGLES"
+    });
 }
 
 export class GeometryProvider {
@@ -85,55 +82,56 @@ export class GeometryProvider {
     static get uiQuad() { return Private.uiQuad; }
     static get skyBox() {
         if (!Private.skyBox) {
-            let skyBox = new VertexBuffer();
             const size = 1;
-            skyBox.setAttribute(
-                "position",
-                [
-                    -size, size, -size,
-                    -size, -size, -size,
-                    size, -size, -size,
-                    size, -size, -size,
-                    size, size, -size,
-                    -size, size, -size,
+            const skyBox = new VertexBuffer({
+                attributes: {
+                    position: [
+                        -size, size, -size,
+                        -size, -size, -size,
+                        size, -size, -size,
+                        size, -size, -size,
+                        size, size, -size,
+                        -size, size, -size,
 
-                    -size, -size, size,
-                    -size, -size, -size,
-                    -size, size, -size,
-                    -size, size, -size,
-                    -size, size, size,
-                    -size, -size, size,
+                        -size, -size, size,
+                        -size, -size, -size,
+                        -size, size, -size,
+                        -size, size, -size,
+                        -size, size, size,
+                        -size, -size, size,
 
-                    size, -size, -size,
-                    size, -size, size,
-                    size, size, size,
-                    size, size, size,
-                    size, size, -size,
-                    size, -size, -size,
+                        size, -size, -size,
+                        size, -size, size,
+                        size, size, size,
+                        size, size, size,
+                        size, size, -size,
+                        size, -size, -size,
 
-                    -size, -size, size,
-                    -size, size, size,
-                    size, size, size,
-                    size, size, size,
-                    size, -size, size,
-                    -size, -size, size,
+                        -size, -size, size,
+                        -size, size, size,
+                        size, size, size,
+                        size, size, size,
+                        size, -size, size,
+                        -size, -size, size,
 
-                    -size, size, -size,
-                    size, size, -size,
-                    size, size, size,
-                    size, size, size,
-                    -size, size, size,
-                    -size, size, -size,
+                        -size, size, -size,
+                        size, size, -size,
+                        size, size, size,
+                        size, size, size,
+                        -size, size, size,
+                        -size, size, -size,
 
-                    -size, -size, -size,
-                    -size, -size, size,
-                    size, -size, -size,
-                    size, -size, -size,
-                    -size, -size, size,
-                    size, -size, size
-                ]
-            );
-            skyBox.primitiveType = "TRIANGLES";
+                        -size, -size, -size,
+                        -size, -size, size,
+                        size, -size, -size,
+                        size, -size, -size,
+                        -size, -size, size,
+                        size, -size, size
+                    ]
+                },
+                primitiveType: "TRIANGLES"
+
+            });
             Private.skyBox = skyBox;
         }
         return Private.skyBox;

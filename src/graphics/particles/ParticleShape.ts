@@ -7,7 +7,7 @@ export class ParticleShape extends SerializableObject {
     
     onPropertyChanged?: (name: string) => void;
 
-    tesselate(positions: number[], posIdx: number, size: number) {
+    getPositions(positions: number[], posIdx: number, size: number) {
         positions[posIdx + 0] = -size; positions[posIdx + 1] = -size; positions[posIdx + 2] = 0;
         positions[posIdx + 3] = size; positions[posIdx + 4] = -size; positions[posIdx + 5] = 0;
         positions[posIdx + 6] = size; positions[posIdx + 7] = size; positions[posIdx + 8] = 0;

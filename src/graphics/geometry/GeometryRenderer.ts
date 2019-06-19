@@ -41,33 +41,33 @@ namespace Private {
 
     cross.primitiveType = "LINES";
 
-    export const billboard = new VertexBuffer();
-    billboard.setAttribute(
-        "position",
-        [
-            -1, 1, 0.0,
-            1, 1, 0.0,
-            -1, -1, 0.0,
-            -1, -1, 0.0,
-            1, 1, 0.0,
-            1, -1, 0.0
-        ]
-    );
-    billboard.primitiveType = "TRIANGLES";
+    export const billboard = new VertexBuffer({
+        attributes: {
+            position: [
+                -1, 1, 0.0,
+                1, 1, 0.0,
+                -1, -1, 0.0,
+                -1, -1, 0.0,
+                1, 1, 0.0,
+                1, -1, 0.0
+            ]            
+        },
+        primitiveType: "TRIANGLES"
+    });   
 
-    export const quad = new VertexBuffer();
-    quad.setAttribute(
-        "position",
-        [
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, 0
-        ]
-    );
-    quad.primitiveType = "TRIANGLES";
+    export const quad = new VertexBuffer({
+        attributes: {
+            position: [
+                0, 0, 0,
+                0, 0, 0,
+                0, 0, 0,
+                0, 0, 0,
+                0, 0, 0,
+                0, 0, 0
+            ]
+        },
+        primitiveType: "TRIANGLES"
+    });
 
     export const circle = function () {
         const vb = new VertexBuffer();
@@ -87,28 +87,29 @@ namespace Private {
         return vb;
     }();
 
-    export const rect = new VertexBuffer();
-    rect.setAttribute(
-        "position",
-        [
-            0, 0, 0,
-            1, 0, 0,
-            1, 1, 0,
-            0, 1, 0,
-            0, 0, 0
-        ]
-    );        
-    rect.primitiveType = "LINE_STRIP";
+    export const rect = new VertexBuffer({
+        attributes: {
+            position: [
+                0, 0, 0,
+                1, 0, 0,
+                1, 1, 0,
+                0, 1, 0,
+                0, 0, 0
+            ]
+        },
+        primitiveType: "LINE_STRIP"
+    });   
 
     export let debugMaterial: Material;
 
     export function drawQuad(p1: Vector3, p2: Vector3, p3: Vector3, p4: Vector3) {
-        p1.toArray(quad.attributes.position, 0);
-        p2.toArray(quad.attributes.position, 3);
-        p3.toArray(quad.attributes.position, 6);
-        p3.toArray(quad.attributes.position, 9);
-        p2.toArray(quad.attributes.position, 12);
-        p4.toArray(quad.attributes.position, 15);
+        const position = quad.attributes.position as number[];
+        p1.toArray(position, 0);
+        p2.toArray(position, 3);
+        p3.toArray(position, 6);
+        p3.toArray(position, 9);
+        p2.toArray(position, 12);
+        p4.toArray(position, 15);
         quad.dirtifyAttribute("position");
         GraphicUtils.drawVertexBuffer(WebGL.context, quad, debugMaterial.shader as Shader);
     }
@@ -169,18 +170,19 @@ export class GeometryRenderer {
     static drawLine(start: Vector3, end: Vector3, color: Color, worldMatrix: Matrix44) {
         Private.debugMaterial.applyParameter("ambient", color);
         Private.debugMaterial.applyParameter("modelViewMatrix", Private.modelViewMatrix.multiplyMatrices(Private.viewMatrix, worldMatrix));
-        start.toArray(Private.line.attributes.position, 0);
-        end.toArray(Private.line.attributes.position, 3);
+        const position = Private.line.attributes.position as number[];
+        start.toArray(position, 0);
+        end.toArray(position, 3);
         Private.line.dirtifyAttribute("position");
         GraphicUtils.drawVertexBuffer(WebGL.context, Private.line, Private.debugMaterial.shader as Shader);
     }
 
     static drawCone(radius: number, height: number, distFromOrigin: number, forward: Vector3, up: Vector3, color: Color, worldMatrix: Matrix44) {
         Private.debugMaterial.applyParameter("ambient", color);
-        let absolutePosition = Vector3.fromPool().setFromMatrix(worldMatrix);
-        let position = Vector3.fromPool().copy(forward).multiply(distFromOrigin).add(absolutePosition);
-        let rotation = Quaternion.fromPool().lookAt(forward, up);
-        let scale = Vector3.fromPool().set(radius, height, radius);
+        const absolutePosition = Vector3.fromPool().setFromMatrix(worldMatrix);
+        const position = Vector3.fromPool().copy(forward).multiply(distFromOrigin).add(absolutePosition);
+        const rotation = Quaternion.fromPool().lookAt(forward, up);
+        const scale = Vector3.fromPool().set(radius, height, radius);
         const { dummy1, dummy2 } = Private;
         Private.modelViewMatrix.compose(
             position, 
@@ -319,12 +321,12 @@ export class GeometryRenderer {
     static draw2DRect(minX: number, minY: number, maxX: number, maxY: number, color: Color, matrix: Matrix44) {
         Private.debugMaterial.applyParameter("ambient", color);
         Private.debugMaterial.applyParameter("modelViewMatrix", Private.modelViewMatrix.multiplyMatrices(Private.viewMatrix, matrix));
-        let data = Private.rect.attributes.position;
-        data[0] = minX; data[1] = minY; data[2] = 0;
-        data[3] = maxX; data[4] = minY; data[5] = 0;
-        data[6] = maxX; data[7] = maxY; data[8] = 0;
-        data[9] = minX; data[10] = maxY; data[11] = 0;
-        data[12] = minX; data[13] = minY; data[14] = 0;
+        const position = Private.rect.attributes.position as number[];
+        position[0] = minX;  position[1] = minY;  position[2] = 0;
+        position[3] = maxX;  position[4] = minY;  position[5] = 0;
+        position[6] = maxX;  position[7] = maxY;  position[8] = 0;
+        position[9] = minX;  position[10] = maxY; position[11] = 0;
+        position[12] = minX; position[13] = minY; position[14] = 0;
         Private.rect.dirtifyAttribute("position");
         GraphicUtils.drawVertexBuffer(WebGL.context, Private.rect, Private.debugMaterial.shader as Shader);
     }
@@ -332,13 +334,13 @@ export class GeometryRenderer {
     static draw2DCross(x: number, y: number, size: number, color: Color, matrix: Matrix44) {
         Private.debugMaterial.applyParameter("ambient", color);
         Private.debugMaterial.applyParameter("modelViewMatrix", Private.modelViewMatrix.multiplyMatrices(Private.viewMatrix, matrix));
-        let data = Private.line.attributes.position;
-        data[0] = x - size; data[1] = y; data[2] = 0;
-        data[3] = x + size; data[4] = y; data[5] = 0;
+        const position = Private.line.attributes.position as number[];
+        position[0] = x - size; position[1] = y; position[2] = 0;
+        position[3] = x + size; position[4] = y; position[5] = 0;
         Private.line.dirtifyAttribute("position");
         GraphicUtils.drawVertexBuffer(WebGL.context, Private.line, Private.debugMaterial.shader as Shader);
-        data[0] = x; data[1] = y - size; data[2] = 0;
-        data[3] = x; data[4] = y + size; data[5] = 0;
+        position[0] = x; position[1] = y - size; position[2] = 0;
+        position[3] = x; position[4] = y + size; position[5] = 0;
         Private.line.dirtifyAttribute("position");
         GraphicUtils.drawVertexBuffer(WebGL.context, Private.line, Private.debugMaterial.shader as Shader);
     }

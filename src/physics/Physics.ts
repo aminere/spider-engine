@@ -102,26 +102,26 @@ export class Physics {
                 } else if (shape.isA(VisualCollisionShape) || shape.isA(MeshCollisionShape)) {
                     let vertexBuffer: VertexBuffer | null = null;
                     if (shape.isA(VisualCollisionShape)) {
-                        let visual = (shape as VisualCollisionShape).visual;
-                        let geometry = visual ? visual.geometry : undefined;
+                        const visual = (shape as VisualCollisionShape).visual;
+                        const geometry = visual ? visual.geometry : undefined;
                         vertexBuffer = geometry ? geometry.getVertexBuffer() : null;
                     } else {
-                        let mesh = (shape as MeshCollisionShape).mesh.asset;
+                        const mesh = (shape as MeshCollisionShape).mesh.asset;
                         vertexBuffer = mesh ? mesh.vertexBuffer : null;
                     }
                     if (vertexBuffer) {
                         if (vertexBuffer.primitiveType !== "TRIANGLES" || vertexBuffer.indices) {
                             continue;
                         }
-                        let vertices = vertexBuffer.getData("position");
-                        let triangleCount = (vertices.length / 3) / 3;
+                        const positions = vertexBuffer.attributes.position as number[];
+                        const triangleCount = (positions.length / 3) / 3;
                         for (let i = 0; i < triangleCount; ++i) {
-                            let index = i * 9;
-                            v1.set(vertices[index], vertices[index + 1], vertices[index + 2]).transform(transform.worldMatrix);
-                            v2.set(vertices[index + 3], vertices[index + 4], vertices[index + 5]).transform(transform.worldMatrix);
-                            v3.set(vertices[index + 6], vertices[index + 7], vertices[index + 8]).transform(transform.worldMatrix);
+                            const index = i * 9;
+                            v1.set(positions[index], positions[index + 1], positions[index + 2]).transform(transform.worldMatrix);
+                            v2.set(positions[index + 3], positions[index + 4], positions[index + 5]).transform(transform.worldMatrix);
+                            v3.set(positions[index + 6], positions[index + 7], positions[index + 8]).transform(transform.worldMatrix);
                             plane.setFromPoints(v1, v2, v3);
-                            let rayPlaneResult = ray.castOnPlane(plane);
+                            const rayPlaneResult = ray.castOnPlane(plane);
                             if (rayPlaneResult.intersection) {
                                 if (rayPlaneResult.classification === PlaneClassification.Front) {
                                     triangle.set(v1, v2, v3);

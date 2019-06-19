@@ -29,7 +29,7 @@ export class DynamicGeometry extends Geometry {
     getBoundingBox() {
         if (!this._boundingBox && this._vb) {
             const { attributes, primitiveType, indices } = this._vb;
-            this._boundingBox = AABB.fromVertexArray(attributes.position, primitiveType, indices);
+            this._boundingBox = AABB.fromVertexArray(attributes.position as number[], primitiveType, indices);
         }
         return this._boundingBox;
     }

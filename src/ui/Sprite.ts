@@ -30,9 +30,6 @@ export class Sprite extends Asset {
     @Attributes.enumLiterals(SpriteRenderModeMetadata.literals)
     borderMode = SpriteRenderMode.Stretch;
 
-    /**
-     * @hidden     
-     */
     destroy() {
         this.texture.detach();
         super.destroy();
@@ -42,9 +39,6 @@ export class Sprite extends Asset {
         return EngineUtils.isAssetRefLoaded(this.texture);
     }
 
-    /**
-     * @hidden     
-     */
     tesselateInPixelsUnits(vb: VertexBuffer, offsetX: number, offsetY: number, width: number, height: number) {
         let texture = this.texture.asset;
         if (texture) {
@@ -62,9 +56,6 @@ export class Sprite extends Asset {
         }        
     }
 
-    /**
-     * @hidden     
-     */
     tesselateInWorldUnits(vb: VertexBuffer) {
         let texture = this.texture.asset;
         if (texture) {
@@ -114,10 +105,10 @@ export class Sprite extends Asset {
             // only one tile in the center
             numTiles++;
         }
-        let numVertices = numTiles * 6;
-        let pos = vb.attributes.position;
+        const numVertices = numTiles * 6;
+        const pos = vb.attributes.position as number[];
         pos.length = numVertices * 3;
-        let uv = vb.attributes.uv;
+        const uv = vb.attributes.uv as number[];
         uv.length = numVertices * 2;
         vb.vertexCount = numVertices;
 

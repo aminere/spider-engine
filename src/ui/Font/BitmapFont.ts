@@ -201,8 +201,8 @@ export class BitmapFont extends Font {
         const characterCount = lines.reduce((prev, cur) => prev + cur.length, 0);
         const vertexCount = characterCount * 6;
         this._vertexBuffer.vertexCount = vertexCount;
-        let pos = this._vertexBuffer.attributes.position;
-        let uv = this._vertexBuffer.attributes.uv;
+        const pos = this._vertexBuffer.attributes.position as number[];
+        const uv = this._vertexBuffer.attributes.uv  as number[];
         pos.length = vertexCount * 3;
         uv.length = vertexCount * 2;
         const tileSizeX = 1 / rowSize;

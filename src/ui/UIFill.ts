@@ -325,7 +325,7 @@ export class SpriteSheetFill extends UIFill {
             }
 
             if (this._isDirty) {
-                let pos = this._vertexBuffer.attributes.position;
+                const pos = this._vertexBuffer.attributes.position as number[];
                 pos[0] = 0 + xOffset; pos[1] = 0 + yOffset; pos[2] = 0; // Top left
                 pos[3] = layout.actualWidth + xOffset; pos[4] = 0 + yOffset; pos[5] = 0; // Top right
                 pos[6] = 0 + xOffset; pos[7] = layout.actualHeight + yOffset; pos[8] = 0; // Bottom left
@@ -333,16 +333,16 @@ export class SpriteSheetFill extends UIFill {
                 pos[12] = layout.actualWidth + xOffset; pos[13] = 0 + yOffset; pos[14] = 0; // Top right
                 pos[15] = layout.actualWidth + xOffset; pos[16] = layout.actualHeight + yOffset; pos[17] = 0; // Bottom right                
 
-                let rowSize = texture.getWidth() / Math.max(this.tileSize.x, 1);
-                let numRows = texture.getHeight() / Math.max(this.tileSize.y, 1);
-                let row = Math.floor(this.currentTile / rowSize);
-                let col = Math.round(this.currentTile) % rowSize;
-                let uv = this._vertexBuffer.attributes.uv;
-                let tileSizeX = 1 / rowSize;
-                let tileSizeY = 1 / numRows;
+                const rowSize = texture.getWidth() / Math.max(this.tileSize.x, 1);
+                const numRows = texture.getHeight() / Math.max(this.tileSize.y, 1);
+                const row = Math.floor(this.currentTile / rowSize);
+                const col = Math.round(this.currentTile) % rowSize;
+                const uv = this._vertexBuffer.attributes.uv as number[];
+                const tileSizeX = 1 / rowSize;
+                const tileSizeY = 1 / numRows;
                 // Add a half pixel offset except for the first cells, this fixes seams between cells.
-                let halfPixelX = ((1 / texture.getWidth()) / 2) * (col > 0 ? 1 : 0);
-                let halfPixelY = ((1 / texture.getHeight()) / 2) * (row > 0 ? 1 : 0);
+                const halfPixelX = ((1 / texture.getWidth()) / 2) * (col > 0 ? 1 : 0);
+                const halfPixelY = ((1 / texture.getHeight()) / 2) * (row > 0 ? 1 : 0);
                 // Top left
                 uv[0] = tileSizeX * col + halfPixelX;
                 uv[1] = 1 - (tileSizeY * row + halfPixelY);

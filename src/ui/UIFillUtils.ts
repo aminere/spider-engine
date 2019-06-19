@@ -16,18 +16,18 @@ namespace Private {
     export let tint = new Color();
 
     export function getUIElementVertexBuffer(layout: Layout) {
-        let quad = GeometryProvider.uiQuad;
-        let pos = quad.attributes.position;
-        let w = layout.actualWidth;
-        let h = layout.actualHeight;
+        const quad = GeometryProvider.uiQuad;
+        const pos = quad.attributes.position as number[];
+        const w = layout.actualWidth;
+        const h = layout.actualHeight;
         // floor to keep vertices as integers which preserves the pixel perfect look
         // tslint:disable-next-line
         /*
         let xOffset = -Math.floor(layout.pivot.x * w);
         let yOffset = -Math.floor(layout.pivot.y * h);
         /*/
-        let xOffset = -layout.pivot.x * w;
-        let yOffset = -layout.pivot.y * h;
+        const xOffset = -layout.pivot.x * w;
+        const yOffset = -layout.pivot.y * h;
         // tslint:disable-next-line
         //*/
 

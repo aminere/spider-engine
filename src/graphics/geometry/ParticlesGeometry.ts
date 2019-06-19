@@ -141,8 +141,8 @@ export class ParticlesGeometry extends Geometry {
         }
 
         const { particlePos, particleVelocity, color, localTransform } = Private;
-        const positions = this._vb.attributes.position;
-        const colors = this._vb.attributes.color;
+        const positions = this._vb.attributes.position as number[];
+        const colors = this._vb.attributes.color as number[];
         let posIdx = 0;
         let colIdx = 0;
         this._shape.makeLocalTransform(localTransform, camera.entity.transform);
@@ -167,7 +167,7 @@ export class ParticlesGeometry extends Geometry {
 
             // tesselate               
             const size = this.getData("size", i);
-            this._shape.tesselate(positions, posIdx, size);
+            this._shape.getPositions(positions, posIdx, size);
             for (let j = 0; j < vertexCount; ++j) {
                 // apply the local transform to the vertices
                 const idx = j * 3;
