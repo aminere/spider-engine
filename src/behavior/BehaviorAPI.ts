@@ -15,7 +15,6 @@ import { SavedData } from "../io/SavedData";
 import { Time } from "../core/Time";
 import { Project } from "../core/Project";
 import { Gamepads } from "../input/Gamepads";
-import { PRS } from "../math/PRS";
 import { Entities, EntityProps } from "../core/Entities";
 import { Scenes } from "../core/Scenes";
 import { Assets } from "../assets/Assets";

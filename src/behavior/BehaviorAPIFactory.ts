@@ -11,6 +11,7 @@ import { Ray } from "../math/Ray";
 import { Basis } from "../math/Basis";
 import { Interfaces } from "../core/Interfaces";
 import { Quaternion } from "../math/Quaternion";
+import { ObjectProps } from "../core/Types";
 
 export class BehaviorAPIFactory {
 
@@ -19,14 +20,14 @@ export class BehaviorAPIFactory {
         Vector3: (...args: number[]) => new Vector3(...args),
         Vector4: (...args: number[]) => new Vector4(...args),
         Color: (...args: number[]) => new Color(...args),
-        Matrix44: () => new Matrix44(),
-        Quaternion: () => new Quaternion(),
+        Matrix44: (data?: number[]) => new Matrix44(data),
+        Quaternion: (x?: number, y?: number, z?: number, w?: number) => new Quaternion(x, y, z, w),
         Map: () => new Map(),
-        Plane: () => new Plane(),
-        Triangle: () => new Triangle(),
-        Ray: () => new Ray(),
+        Plane: (normal?: Vector3, distFromOrigin?: number) => new Plane(normal, distFromOrigin),
+        Triangle: (a?: Vector3, b?: Vector3, c?: Vector3) => new Triangle(a, b, c),
+        Ray: (origin?: Vector3, direction?: Vector3, length?: number) => new Ray(origin, direction, length),
         Basis: () => new Basis(),
-        VertexBuffer: () => new VertexBuffer()        
+        VertexBuffer: (props?: ObjectProps<VertexBuffer>) => new VertexBuffer(props)        
     };
 
     // tslint:disable-next-line
