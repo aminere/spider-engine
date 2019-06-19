@@ -34,6 +34,7 @@ export * from "./graphics/geometry/SkinnedMesh";
 export * from "./graphics/geometry/SpriteGeometry";
 export * from "./graphics/geometry/StaticMesh";
 export * from "./graphics/Color";
+export * from "./graphics/VertexBuffer";
 export { Animation } from "./animation/Animation";
 export { AnimationComponent } from "./animation/AnimationComponent";
 export * from "./ui/Layout";

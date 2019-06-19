@@ -21,18 +21,9 @@ export declare class Sprite extends Asset {
     borderSize: Vector2;
     renderMode: SpriteRenderMode;
     borderMode: SpriteRenderMode;
-    /**
-     * @hidden
-     */
     destroy(): void;
     isLoaded(): boolean;
-    /**
-     * @hidden
-     */
     tesselateInPixelsUnits(vb: VertexBuffer, offsetX: number, offsetY: number, width: number, height: number): void;
-    /**
-     * @hidden
-     */
     tesselateInWorldUnits(vb: VertexBuffer): void;
     private tesselateInternal;
     private makeQuadPos;

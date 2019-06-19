@@ -15,14 +15,14 @@ export declare class BehaviorAPIFactory {
         Vector3: (...args: number[]) => Vector3;
         Vector4: (...args: number[]) => Vector4;
         Color: (...args: number[]) => Color;
-        Matrix44: () => Matrix44;
-        Quaternion: () => Quaternion;
+        Matrix44: (data?: number[] | undefined) => Matrix44;
+        Quaternion: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => Quaternion;
         Map: () => Map<any, any>;
-        Plane: () => Plane;
-        Triangle: () => Triangle;
-        Ray: () => Ray;
+        Plane: (normal?: Vector3 | undefined, distFromOrigin?: number | undefined) => Plane;
+        Triangle: (a?: Vector3 | undefined, b?: Vector3 | undefined, c?: Vector3 | undefined) => Triangle;
+        Ray: (origin?: Vector3 | undefined, direction?: Vector3 | undefined, length?: number | undefined) => Ray;
         Basis: () => Basis;
-        VertexBuffer: () => VertexBuffer;
+        VertexBuffer: (props?: Partial<Pick<VertexBuffer, "copy" | "attributes" | "primitiveType" | "indices" | "begin" | "name" | "vertexCount" | "isDynamic" | "setAttribute" | "dirtifyAttribute" | "updateBufferDatas" | "bindBuffers" | "end" | "draw" | "load" | "unload" | "bindAttributes" | "unbindAttributes" | "hasAttribute">> | undefined) => VertexBuffer;
     };
     static createObject(typeName: string, ...args: any[]): any;
 }
