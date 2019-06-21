@@ -5,6 +5,8 @@ Spider Engine
 
 Spider is a fast game engine, ideal for prototyping in your web browser.
 
+It provides high-level abstractions over a range of functionalities needed by games, including rendering, serialization, UI, input, prefabs, hierarchy, to name a few.
+
 It is composed of an open source run-time and an editor front-end.
 
 * [Playground](https://playground.spiderengine.io)
