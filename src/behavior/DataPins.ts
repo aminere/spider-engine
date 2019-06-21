@@ -188,14 +188,10 @@ export class CollisionInfoPin extends TDataPin<CollisionInfo> {
 }
 
 export class ObjectReferencePin extends TDataPin<ObjectReference> {
-    get declarationId() { return this._declarationId; }
+    get declarationId() { return this.value.declarationId; }
     set declarationId(declarationId: string) {
         this.value = new ObjectReference(declarationId);
-        this._declarationId = declarationId;
     }
-
-    @Attributes.hidden()
-    private _declarationId!: string;
 
     constructor(declarationId: string, id?: string, type?: PinType) {
         super(id, type);
