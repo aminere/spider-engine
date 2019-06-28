@@ -40,6 +40,7 @@ export * from "./graphics/geometry/StaticMesh";
 export * from "./graphics/Color";
 export * from "./graphics/VertexBuffer";
 export * from "./graphics/VisualGroup";
+export * from "./graphics/RenderTarget";
 
 // Animation
 export { Animation } from "./animation/Animation";
