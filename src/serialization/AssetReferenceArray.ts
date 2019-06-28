@@ -3,9 +3,6 @@ import { Asset } from "../assets/Asset";
 import { AssetReference } from "./AssetReference";
 import { SerializedAssetReference } from "./SerializedTypes";
 
-/**
- * @hidden
- */
 export class AssetReferenceArray<T extends Asset> {
 
     data: AssetReference<T>[];
@@ -26,9 +23,6 @@ export class AssetReferenceArray<T extends Asset> {
     }
 }
 
-/**
- * @hidden
- */
 export interface SerializedAssetReferenceArray {
     typeName: string;
     data: SerializedAssetReference[];

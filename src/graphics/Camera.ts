@@ -97,6 +97,14 @@ export class Camera extends Component {
         this._renderTarget.asset = renderTarget;
     }    
 
+    set excludedGroups(excluded: VisualGroup[]) {
+        this._excludedGroups.data = excluded.map(e => new AssetReference(VisualGroup, e));
+    }
+
+    set includedGroups(included: VisualGroup[]) {
+        this._includedGroups.data = included.map(e => new AssetReference(VisualGroup, e));
+    }
+
     private _projector = new Reference(Projector);
 
     @Attributes.enumLiterals(CameraClearMetadata.literals)
