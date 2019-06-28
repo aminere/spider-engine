@@ -437,11 +437,7 @@ export class RendererInternal {
                 continue;
             }
             for (const camera of cameras) {
-                if (visual.group) {
-                    if (camera.canRenderGroup(visual.group.id)) {
-                        Private.addToRenderMap(camera, visual);
-                    }
-                } else {
+                if (camera.canRenderGroup(visual.group ? visual.group.id : undefined)) {
                     Private.addToRenderMap(camera, visual);
                 }
             }

@@ -95,7 +95,7 @@ export class Camera extends Component {
 
     set renderTarget(renderTarget: RenderTarget | null) {
         this._renderTarget.asset = renderTarget;
-    }
+    }    
 
     private _projector = new Reference(Projector);
 
@@ -167,13 +167,14 @@ export class Camera extends Component {
         super.destroy();
     }
 
-    canRenderGroup(groupId: string) {
-        let excluded = this._excludedGroups.data.some(g => g.id === groupId);
+    canRenderGroup(groupId?: string) {
+        const definedGroup = Boolean(groupId);
+        const excluded = definedGroup ? this._excludedGroups.data.some(g => g.id === groupId) : false;
         if (excluded) {
             return false;
         }
         if (this._includedGroups.data.length > 0) {
-            return this._includedGroups.data.some(g => g.id === groupId);
+            return definedGroup && this._includedGroups.data.some(g => g.id === groupId);
         }
         return true;
     }
