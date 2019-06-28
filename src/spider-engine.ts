@@ -39,6 +39,7 @@ export * from "./graphics/geometry/SpriteGeometry";
 export * from "./graphics/geometry/StaticMesh";
 export * from "./graphics/Color";
 export * from "./graphics/VertexBuffer";
+export * from "./graphics/VisualGroup";
 
 // Animation
 export { Animation } from "./animation/Animation";
