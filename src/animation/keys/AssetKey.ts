@@ -2,9 +2,10 @@ import { AssetReference, AssetReferenceState } from "../../serialization/AssetRe
 import { TAnimationKey } from "./AnimationKey";
 import { Asset } from "../../assets/Asset";
 import { IFactoryInternal } from "../../serialization/IFactory";
-import { IObjectManagerInternal } from "../../core/IObjectManager";
 import { EngineUtils } from "../../core/EngineUtils";
 import * as Attributes from "../../core/Attributes";
+import { UniqueObject } from "../../core/UniqueObject";
+import { ObjectManagerInternal } from "../../core/ObjectManager";
 
 export class AssetKey extends TAnimationKey<string> {
     @Attributes.unserializable()
@@ -21,11 +22,16 @@ export class AssetKey extends TAnimationKey<string> {
             this.assetRef.state = AssetReferenceState.Loading;
         }
         if (value !== undefined) {
-            IObjectManagerInternal.instance.loadObjectById(value)
-                .then(tuple => {
-                    this.assetRef.asset = tuple[0] as Asset;
-                    created();
-                });
+            const loadSuccess = (obj: UniqueObject, fromCache: boolean) => {
+                this.assetRef.asset = obj as Asset;
+                created();
+            };
+            if (process.env.CONFIG === "editor") {
+                ObjectManagerInternal.loadObjectById(value, loadSuccess, created);
+            } else {
+                // in standalone, ids are resolved as paths
+                ObjectManagerInternal.loadObject(value, loadSuccess, created, false);
+            } 
         } else {
             this.assetRef.asset = null;
             created();

@@ -2,6 +2,8 @@ import { AssetKey } from "../keys/AssetKey";
 import { SingleTrack } from "./SingleTrack";
 import { AnimationKey, AnimationKeyInternal } from "../keys/AnimationKey";
 import { SerializedAnimationTrack } from "./AnimationTrack";
+import { SerializerUtilsInternal } from "../../serialization/SerializerUtils";
+import { AssetIdDatabase } from "../../assets/AssetIdDatabase";
 
 export class AssetTrack extends SingleTrack<AssetKey> {
 
@@ -50,7 +52,23 @@ export class AssetTrack extends SingleTrack<AssetKey> {
     }
 
     serialize(): SerializedAnimationTrack {
-        const trackData = super.serialize() as SerializedAnimationTrack;
+        const trackData = {
+            typeName: this.constructor.name,
+            version: this.version,
+            times: this.keys.data.map(k => k.time),
+            values: this.keys.data.map(k => {
+                let id = k.value;
+                if (process.env.CONFIG === "editor") {
+                    if (id && SerializerUtilsInternal.serializeIdsAsPaths) {
+                        const path = AssetIdDatabase.getPath(id);
+                        if (path) {
+                            id = path;
+                        }
+                    }
+                }
+                return id;
+            })
+        } as SerializedAnimationTrack;
         Object.assign(trackData, { _typeName: this._typeName });
         return trackData;
     }
