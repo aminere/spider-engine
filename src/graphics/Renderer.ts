@@ -442,7 +442,7 @@ export class RendererInternal {
                     if (process.env.CONFIG === "editor") {
                         groupId = visual.group.id;
                     } else {
-                        groupId = visual.group.templatePath;
+                        groupId = visual.group.templatePath || visual.group.id;
                     }
                 }
                 if (camera.canRenderGroup(groupId)) {
