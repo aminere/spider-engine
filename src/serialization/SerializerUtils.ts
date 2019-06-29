@@ -101,7 +101,18 @@ export class SerializerUtils {
                 id: e.id,
                 name: e.name,
                 active: e.active,
-                prefabId: e.prefabId
+                prefabId: (() => {
+                    let id = e.prefabId;
+                    if (process.env.CONFIG === "editor") {
+                        if (id && SerializerUtilsInternal.serializeIdsAsPaths) {
+                            const path = AssetIdDatabase.getPath(id);
+                            if (path) {
+                                id = path;
+                            }
+                        }
+                    }
+                    return id;
+                })()
             };
         } else {
             const children = e.children.map(b => SerializerUtils.serializeEntityWithPrefabRefs(b));
@@ -193,7 +204,7 @@ export class SerializerUtils {
 
             if (process.env.CONFIG === "editor") {
                 if (id && SerializerUtilsInternal.serializeIdsAsPaths) {
-                    const path =  AssetIdDatabase.getPath(id);
+                    const path = AssetIdDatabase.getPath(id);
                     if (path) {
                         id = path;
                     }

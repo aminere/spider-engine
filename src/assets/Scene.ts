@@ -188,8 +188,15 @@ export class Scene extends Asset {
     }
     
     setEntityFromPrefab(entity: Entity, prefabId: string) {
-        return IObjectManagerInternal.instance
-            .loadObjectById(prefabId)
+        return Promise.resolve()
+            .then(() => {
+                if (process.env.CONFIG === "editor") {
+                    return IObjectManagerInternal.instance.loadObjectById(prefabId);
+                } else {
+                    // in standalone, ids are resolved as paths
+                    return IObjectManagerInternal.instance.loadObject(prefabId);
+                }                 
+            })
             .then(([prefab]) => {
                 this.setEntityFromPrefabInstance(entity, prefab as Prefab);
                 return prefab as Prefab;
