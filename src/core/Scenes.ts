@@ -42,8 +42,13 @@ namespace Private {
             console.assert(false);
             return;
         }
+
+        let sceneRemovedFromCache = false;
         if (!additive) {
-            scenes.forEach(_scene => _scene.destroy());
+            scenes.forEach(_scene => {
+                sceneRemovedFromCache = _scene.templatePath === scene.templatePath;
+                IObjectManagerInternal.instance.deleteObject(_scene);                
+            });
             RendererInternal.clearDefaultPerspectiveCamera();
             TimeInternal.resetCurrentFrame();
             EngineHud.onSceneDestroyed();
@@ -51,6 +56,11 @@ namespace Private {
             scenes.length = 0;
         }
         IObjectManagerInternal.instance.loadGraphicObjects();
+
+        if (sceneRemovedFromCache) {
+            IObjectManagerInternal.instance.addToCache(scene);
+        }
+        
         scenes.push(scene);
         if (isFirstScene) {
             if (process.env.CONFIG === "standalone") {
