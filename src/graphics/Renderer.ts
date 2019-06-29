@@ -437,7 +437,15 @@ export class RendererInternal {
                 continue;
             }
             for (const camera of cameras) {
-                if (camera.canRenderGroup(visual.group ? visual.group.id : undefined)) {
+                let groupId: string | undefined = undefined;
+                if (visual.group) {
+                    if (process.env.CONFIG === "editor") {
+                        groupId = visual.group.id;
+                    } else {
+                        groupId = visual.group.templatePath;
+                    }
+                }
+                if (camera.canRenderGroup(groupId)) {
                     Private.addToRenderMap(camera, visual);
                 }
             }
