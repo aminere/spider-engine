@@ -87,7 +87,7 @@
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="vertexbuffer.html#data" class="tsd-kind-icon">data</a></li>
+								<li class="tsd-kind-accessor tsd-parent-kind-class"><a href="vertexbuffer.html#attributes" class="tsd-kind-icon">attributes</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="vertexbuffer.html#id" class="tsd-kind-icon">id</a></li>
 								<li class="tsd-kind-accessor tsd-parent-kind-class"><a href="vertexbuffer.html#indices" class="tsd-kind-icon">indices</a></li>
 								<li class="tsd-kind-accessor tsd-parent-kind-class"><a href="vertexbuffer.html#isdynamic" class="tsd-kind-icon">is<wbr>Dynamic</a></li>
@@ -103,13 +103,12 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#bindattributes" class="tsd-kind-icon">bind<wbr>Attributes</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#bindbuffers" class="tsd-kind-icon">bind<wbr>Buffers</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#copy" class="tsd-kind-icon">copy</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#dirtifydata" class="tsd-kind-icon">dirtify<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#dirtifyattribute" class="tsd-kind-icon">dirtify<wbr>Attribute</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#draw" class="tsd-kind-icon">draw</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#end" class="tsd-kind-icon">end</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#getdata" class="tsd-kind-icon">get<wbr>Data</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#hasattribute" class="tsd-kind-icon">has<wbr>Attribute</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#load" class="tsd-kind-icon">load</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#setdata" class="tsd-kind-icon">set<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#setattribute" class="tsd-kind-icon">set<wbr>Attribute</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#unbindattributes" class="tsd-kind-icon">unbind<wbr>Attributes</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#unload" class="tsd-kind-icon">unload</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vertexbuffer.html#updatebufferdatas" class="tsd-kind-icon">update<wbr>Buffer<wbr>Datas</a></li>
@@ -124,15 +123,21 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Vertex<wbr>Buffer<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="vertexbuffer.html" class="tsd-signature-type">VertexBuffer</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Vertex<wbr>Buffer<span class="tsd-signature-symbol">(</span>props<span class="tsd-signature-symbol">?: </span><a href="../index.html#objectprops" class="tsd-signature-type">ObjectProps</a><span class="tsd-signature-symbol">&lt;</span><a href="vertexbuffer.html" class="tsd-signature-type">VertexBuffer</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="vertexbuffer.html" class="tsd-signature-type">VertexBuffer</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L61">graphics/VertexBuffer.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L71">graphics/VertexBuffer.ts:71</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> props: <a href="../index.html#objectprops" class="tsd-signature-type">ObjectProps</a><span class="tsd-signature-symbol">&lt;</span><a href="vertexbuffer.html" class="tsd-signature-type">VertexBuffer</a><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="vertexbuffer.html" class="tsd-signature-type">VertexBuffer</a></h4>
 						</li>
 					</ul>
@@ -140,25 +145,37 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="data" class="tsd-anchor"></a>
-					<h3>data</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> data<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-accessor tsd-parent-kind-class">
+					<a name="attributes" class="tsd-anchor"></a>
+					<h3>attributes</h3>
+					<ul class="tsd-signatures tsd-kind-accessor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> attributes<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">set</span> attributes<span class="tsd-signature-symbol">(</span>attributes<span class="tsd-signature-symbol">: </span><a href="../index.html#vertexattributes" class="tsd-signature-type">VertexAttributes</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L36">graphics/VertexBuffer.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L39">graphics/VertexBuffer.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
 							<ul class="tsd-parameters">
-								<li class="tsd-parameter-index-signature">
-									<h5><span class="tsd-signature-symbol">[</span>attribute: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
+							</ul>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L40">graphics/VertexBuffer.ts:40</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>attributes: <a href="../index.html#vertexattributes" class="tsd-signature-type">VertexAttributes</a></h5>
 								</li>
 							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -172,7 +189,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L37">graphics/VertexBuffer.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L47">graphics/VertexBuffer.ts:47</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -190,7 +207,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L38">graphics/VertexBuffer.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L48">graphics/VertexBuffer.ts:48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span>
@@ -201,7 +218,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L39">graphics/VertexBuffer.ts:39</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L49">graphics/VertexBuffer.ts:49</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -225,7 +242,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L32">graphics/VertexBuffer.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L35">graphics/VertexBuffer.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -233,7 +250,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L31">graphics/VertexBuffer.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L34">graphics/VertexBuffer.ts:34</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -257,7 +274,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L34">graphics/VertexBuffer.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L37">graphics/VertexBuffer.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span>
@@ -268,7 +285,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L33">graphics/VertexBuffer.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L36">graphics/VertexBuffer.ts:36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -292,7 +309,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L30">graphics/VertexBuffer.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L33">graphics/VertexBuffer.ts:33</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">"POINTS"</span>
@@ -313,7 +330,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L29">graphics/VertexBuffer.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L32">graphics/VertexBuffer.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -337,7 +354,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L28">graphics/VertexBuffer.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L31">graphics/VertexBuffer.ts:31</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -345,7 +362,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L27">graphics/VertexBuffer.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L30">graphics/VertexBuffer.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -371,7 +388,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L106">graphics/VertexBuffer.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L117">graphics/VertexBuffer.ts:117</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -397,7 +414,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L198">graphics/VertexBuffer.ts:198</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L209">graphics/VertexBuffer.ts:209</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -423,7 +440,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L111">graphics/VertexBuffer.ts:111</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L122">graphics/VertexBuffer.ts:122</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -446,7 +463,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L67">graphics/VertexBuffer.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L82">graphics/VertexBuffer.ts:82</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="vertexbuffer.html" class="tsd-signature-type">VertexBuffer</a></h4>
@@ -454,16 +471,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="dirtifydata" class="tsd-anchor"></a>
-					<h3>dirtify<wbr>Data</h3>
+					<a name="dirtifyattribute" class="tsd-anchor"></a>
+					<h3>dirtify<wbr>Attribute</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">dirtify<wbr>Data<span class="tsd-signature-symbol">(</span>attribute<span class="tsd-signature-symbol">: </span><a href="../index.html#vertexattribute" class="tsd-signature-type">VertexAttribute</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">dirtify<wbr>Attribute<span class="tsd-signature-symbol">(</span>attribute<span class="tsd-signature-symbol">: </span><a href="../index.html#vertexattribute" class="tsd-signature-type">VertexAttribute</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L86">graphics/VertexBuffer.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L97">graphics/VertexBuffer.ts:97</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -486,7 +503,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L141">graphics/VertexBuffer.ts:141</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L152">graphics/VertexBuffer.ts:152</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -509,7 +526,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L137">graphics/VertexBuffer.ts:137</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L148">graphics/VertexBuffer.ts:148</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -526,29 +543,6 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getdata" class="tsd-anchor"></a>
-					<h3>get<wbr>Data</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Data<span class="tsd-signature-symbol">(</span>attribute<span class="tsd-signature-symbol">: </span><a href="../index.html#vertexattribute" class="tsd-signature-type">VertexAttribute</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L82">graphics/VertexBuffer.ts:82</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>attribute: <a href="../index.html#vertexattribute" class="tsd-signature-type">VertexAttribute</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="hasattribute" class="tsd-anchor"></a>
 					<h3>has<wbr>Attribute</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -558,7 +552,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L230">graphics/VertexBuffer.ts:230</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L241">graphics/VertexBuffer.ts:241</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -581,7 +575,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L153">graphics/VertexBuffer.ts:153</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L164">graphics/VertexBuffer.ts:164</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -595,16 +589,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setdata" class="tsd-anchor"></a>
-					<h3>set<wbr>Data</h3>
+					<a name="setattribute" class="tsd-anchor"></a>
+					<h3>set<wbr>Attribute</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Data<span class="tsd-signature-symbol">(</span>attribute<span class="tsd-signature-symbol">: </span><a href="../index.html#vertexattribute" class="tsd-signature-type">VertexAttribute</a>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Attribute<span class="tsd-signature-symbol">(</span>attribute<span class="tsd-signature-symbol">: </span><a href="../index.html#vertexattribute" class="tsd-signature-type">VertexAttribute</a>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L71">graphics/VertexBuffer.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L86">graphics/VertexBuffer.ts:86</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -630,7 +624,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L216">graphics/VertexBuffer.ts:216</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L227">graphics/VertexBuffer.ts:227</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -656,7 +650,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L179">graphics/VertexBuffer.ts:179</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L190">graphics/VertexBuffer.ts:190</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -679,7 +673,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/VertexBuffer.ts#L100">graphics/VertexBuffer.ts:100</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/VertexBuffer.ts#L111">graphics/VertexBuffer.ts:111</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -712,8 +706,8 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="vertexbuffer.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="vertexbuffer.html#data" class="tsd-kind-icon">data</a>
+							<li class=" tsd-kind-accessor tsd-parent-kind-class">
+								<a href="vertexbuffer.html#attributes" class="tsd-kind-icon">attributes</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="vertexbuffer.html#id" class="tsd-kind-icon">id</a>
@@ -746,7 +740,7 @@
 								<a href="vertexbuffer.html#copy" class="tsd-kind-icon">copy</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="vertexbuffer.html#dirtifydata" class="tsd-kind-icon">dirtify<wbr>Data</a>
+								<a href="vertexbuffer.html#dirtifyattribute" class="tsd-kind-icon">dirtify<wbr>Attribute</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="vertexbuffer.html#draw" class="tsd-kind-icon">draw</a>
@@ -755,16 +749,13 @@
 								<a href="vertexbuffer.html#end" class="tsd-kind-icon">end</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="vertexbuffer.html#getdata" class="tsd-kind-icon">get<wbr>Data</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="vertexbuffer.html#hasattribute" class="tsd-kind-icon">has<wbr>Attribute</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="vertexbuffer.html#load" class="tsd-kind-icon">load</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="vertexbuffer.html#setdata" class="tsd-kind-icon">set<wbr>Data</a>
+								<a href="vertexbuffer.html#setattribute" class="tsd-kind-icon">set<wbr>Attribute</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="vertexbuffer.html#unbindattributes" class="tsd-kind-icon">unbind<wbr>Attributes</a>

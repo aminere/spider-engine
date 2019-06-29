@@ -1,0 +1,267 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Editor &#8212; Spider Engine  documentation</title>
+    <link rel="stylesheet" href="_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Animation" href="animation.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="animation.html" title="Animation"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Spider Engine  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+<div style="text-align:center;padding:20px;padding-bottom:10px;">
+    <a target="_blank" href="https://spiderengine.io">
+        <img             
+            src="data:image/png;base64,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" 
+        />
+    </a>
+</div>
+
+<div class="sidebar-block">  
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="behavior.html">Behaviors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2d.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3d.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="animation.html">Animation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Editor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#views">Views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#undo-redo">Undo / Redo</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="/api">API Reference</a></li>
+<li class="toctree-l1"><a class="reference external" target="_blank" href="https://forum.spiderengine.io">Forum</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="index.html">Docs</a></li>
+              
+              <li>Editor</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="editor">
+<h1>Editor<a class="headerlink" href="#editor" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="content">
+<p class="topic-title first">Content</p>
+<ul class="simple">
+<li><a class="reference internal" href="#views" id="id6">Views</a><ul>
+<li><a class="reference internal" href="#assets-view" id="id7">Assets View</a></li>
+<li><a class="reference internal" href="#scene-view" id="id8">Scene View</a></li>
+<li><a class="reference internal" href="#preview-area" id="id9">Preview Area</a><ul>
+<li><a class="reference internal" href="#transform-layout-manipulation" id="id10">Transform / Layout Manipulation</a></li>
+<li><a class="reference internal" href="#play-mode" id="id11">Play Mode</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#properties-view" id="id12">Properties View</a></li>
+<li><a class="reference internal" href="#search-view" id="id13">Search View</a></li>
+<li><a class="reference internal" href="#animation-timeline" id="id14">Animation Timeline</a></li>
+<li><a class="reference internal" href="#editor-layout" id="id15">Editor Layout</a></li>
+<li><a class="reference internal" href="#multi-monitor-support" id="id16">Multi-monitor Support</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#undo-redo" id="id17">Undo / Redo</a></li>
+</ul>
+</div>
+<p>The <a class="reference external" target="_blank" href="https://spiderengine.io/editor">Spider Editor</a> is dedicated to creating content that runs on the Spider Engine Runtime.</p>
+<p>It’s accessible on the web, and a Desktop version is in development.</p>
+<div class="section" id="views">
+<h2><a class="toc-backref" href="#id6">Views</a><a class="headerlink" href="#views" title="Permalink to this headline">¶</a></h2>
+<p>The editor is composed of several views, that can be shown through the Views Menu <img alt="views" src="_images/views.png" /></p>
+<div class="section" id="assets-view">
+<span id="id1"></span><h3><a class="toc-backref" href="#id7">Assets View</a><a class="headerlink" href="#assets-view" title="Permalink to this headline">¶</a></h3>
+<p>Lets you import, create, and manage all assets needed by the game.</p>
+<blockquote>
+<div><img alt="_images/assets.png" src="_images/assets.png" />
+</div></blockquote>
+</div>
+<div class="section" id="scene-view">
+<span id="id2"></span><h3><a class="toc-backref" href="#id8">Scene View</a><a class="headerlink" href="#scene-view" title="Permalink to this headline">¶</a></h3>
+<p>Manages all the entities in the currently opened <a class="reference internal" href="core.html#scene"><span class="std std-ref">Scene</span></a>.</p>
+<p>You can drag-and-drop to change the hierarchy:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Drag Entity A on Entity B to make Entity A a child of Entity B.</li>
+<li>Hold <strong>Shift</strong> while dropping Entity A to make it a sibling of Entity B as opposed to a child.</li>
+</ul>
+</div></blockquote>
+<p>You can multi-select using <strong>Ctrl-click</strong> to edit or move multiple entities at the same time.</p>
+<p>You can duplicate entities using <strong>Ctrl-C</strong> / <strong>Ctrl-V</strong>.</p>
+<blockquote>
+<div><img alt="_images/scene.png" src="_images/scene.png" />
+</div></blockquote>
+</div>
+<div class="section" id="preview-area">
+<span id="id3"></span><h3><a class="toc-backref" href="#id9">Preview Area</a><a class="headerlink" href="#preview-area" title="Permalink to this headline">¶</a></h3>
+<p>Let’s you edit the current scene.</p>
+<div class="section" id="transform-layout-manipulation">
+<h4><a class="toc-backref" href="#id10">Transform / Layout Manipulation</a><a class="headerlink" href="#transform-layout-manipulation" title="Permalink to this headline">¶</a></h4>
+<p>You can select an manipulate both 2D and 3D entities using industry-standard manipulation gizmos.</p>
+</div>
+<div class="section" id="play-mode">
+<h4><a class="toc-backref" href="#id11">Play Mode</a><a class="headerlink" href="#play-mode" title="Permalink to this headline">¶</a></h4>
+<p>You can <strong>Play</strong> the game in the editor via the preview area.</p>
+<p>The editor handles a fully-fledged play session including Scene switches.</p>
+<blockquote>
+<div><img alt="_images/preview.png" src="_images/preview.png" />
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="properties-view">
+<span id="id4"></span><h3><a class="toc-backref" href="#id12">Properties View</a><a class="headerlink" href="#properties-view" title="Permalink to this headline">¶</a></h3>
+<p>Let’s you edit the properties of selected objects.</p>
+<p>When entities are selected, it lets you create and manage their components, and setup animations on them.</p>
+<blockquote>
+<div><img alt="_images/properties.png" src="_images/properties.png" />
+</div></blockquote>
+</div>
+<div class="section" id="search-view">
+<span id="id5"></span><h3><a class="toc-backref" href="#id13">Search View</a><a class="headerlink" href="#search-view" title="Permalink to this headline">¶</a></h3>
+<p>Lets you find code in all code blocks and converters in the project.</p>
+<blockquote>
+<div><img alt="_images/search.png" src="_images/search.png" />
+</div></blockquote>
+</div>
+<div class="section" id="animation-timeline">
+<span id="timeline"></span><h3><a class="toc-backref" href="#id14">Animation Timeline</a><a class="headerlink" href="#animation-timeline" title="Permalink to this headline">¶</a></h3>
+<p>Lets you create and edit animation tracks.</p>
+<p>You can scrub the timeline to preview the animation in real-time.</p>
+<p>You can also use the timeline’s <strong>Play Mode</strong> to preview the animation.</p>
+<blockquote>
+<div><img alt="_images/timeline.png" src="_images/timeline.png" />
+</div></blockquote>
+</div>
+<div class="section" id="editor-layout">
+<h3><a class="toc-backref" href="#id15">Editor Layout</a><a class="headerlink" href="#editor-layout" title="Permalink to this headline">¶</a></h3>
+<p>You can customize the layout of the Editor any way you want.</p>
+<p>Your custom layout is saved and will be restored even if you close and re-open the Editor.</p>
+<p>If you change your mind, you can restore the Layout to Factory Settings by clicking on <strong>Reset Layout</strong> from the Views menu <img alt="views" src="_images/views.png" /></p>
+</div>
+<div class="section" id="multi-monitor-support">
+<h3><a class="toc-backref" href="#id16">Multi-monitor Support</a><a class="headerlink" href="#multi-monitor-support" title="Permalink to this headline">¶</a></h3>
+<p>It can be very convenient to edit certain assets like <a class="reference internal" href="3d/material.html#shader"><span class="std std-ref">Shaders</span></a>, <a class="reference internal" href="behavior.html#code-block"><span class="std std-ref">Code Blocks</span></a>, and <a class="reference internal" href="behavior.html#behaviors"><span class="std std-ref">Behaviors</span></a>, in a separate monitor.</p>
+<p>You can pop them out using the Pop out button located in the top-right of each tab you want to pop-out.</p>
+<img alt="_images/multi-monitor.png" src="_images/multi-monitor.png" />
+</div>
+</div>
+<div class="section" id="undo-redo">
+<h2><a class="toc-backref" href="#id17">Undo / Redo</a><a class="headerlink" href="#undo-redo" title="Permalink to this headline">¶</a></h2>
+<p>Almost all operations done in the Editor are undoable. We are working to provide the most complete support possible.</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>Ctrl-Z</strong> to Undo</li>
+<li><strong>Ctly-Y</strong> to Redo</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="animation.html" title="previous chapter (use the left arrow)">Animation</a>
+      </div>
+    
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="animation.html" title="Animation"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Spider Engine  documentation</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2019, Frantic Software Inc.</a>
+  </div>
+  </body>
+</html>

@@ -95,8 +95,10 @@
 								<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><a href="camera.html#active" class="tsd-kind-icon">active</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="camera.html#clearvalue" class="tsd-kind-icon">clear<wbr>Value</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="camera.html#entity" class="tsd-kind-icon">entity</a></li>
+								<li class="tsd-kind-set-signature tsd-parent-kind-class"><a href="camera.html#excludedgroups" class="tsd-kind-icon">excluded<wbr>Groups</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="camera.html#frustum" class="tsd-kind-icon">frustum</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="camera.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-set-signature tsd-parent-kind-class"><a href="camera.html#includedgroups" class="tsd-kind-icon">included<wbr>Groups</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="camera.html#parent" class="tsd-kind-icon">parent</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="camera.html#posteffects" class="tsd-kind-icon">post<wbr>Effects</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="camera.html#priority" class="tsd-kind-icon">priority</a></li>
@@ -145,7 +147,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L121">graphics/Camera.ts:121</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L129">graphics/Camera.ts:129</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -173,7 +175,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="component.html">Component</a>.<a href="component.html#active">active</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/Component.ts#L12">core/Component.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/Component.ts#L12">core/Component.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -182,7 +184,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="component.html">Component</a>.<a href="component.html#active">active</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/Component.ts#L13">core/Component.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/Component.ts#L13">core/Component.ts:13</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -205,7 +207,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L65">graphics/Camera.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L65">graphics/Camera.ts:65</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../enums/cameraclear.html" class="tsd-signature-type">CameraClear</a></h4>
@@ -223,10 +225,33 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="component.html">Component</a>.<a href="component.html#entity">entity</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/Component.ts#L10">core/Component.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/Component.ts#L10">core/Component.ts:10</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="entity.html" class="tsd-signature-type">Entity</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-set-signature tsd-parent-kind-class">
+					<a name="excludedgroups" class="tsd-anchor"></a>
+					<h3>excluded<wbr>Groups</h3>
+					<ul class="tsd-signatures tsd-kind-set-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">set</span> excludedGroups<span class="tsd-signature-symbol">(</span>excluded<span class="tsd-signature-symbol">: </span><a href="visualgroup.html" class="tsd-signature-type">VisualGroup</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L100">graphics/Camera.ts:100</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>excluded: <a href="visualgroup.html" class="tsd-signature-type">VisualGroup</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -240,7 +265,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L85">graphics/Camera.ts:85</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L85">graphics/Camera.ts:85</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="frustum.html" class="tsd-signature-type">Frustum</a>
@@ -261,10 +286,33 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="component.html">Component</a>.<a href="component.html#id">id</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/Component.ts#L11">core/Component.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/Component.ts#L11">core/Component.ts:11</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-set-signature tsd-parent-kind-class">
+					<a name="includedgroups" class="tsd-anchor"></a>
+					<h3>included<wbr>Groups</h3>
+					<ul class="tsd-signatures tsd-kind-set-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">set</span> includedGroups<span class="tsd-signature-symbol">(</span>included<span class="tsd-signature-symbol">: </span><a href="visualgroup.html" class="tsd-signature-type">VisualGroup</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L104">graphics/Camera.ts:104</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>included: <a href="visualgroup.html" class="tsd-signature-type">VisualGroup</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -279,7 +327,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="component.html">Component</a>.<a href="component.html#parent">parent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/Component.ts#L9">core/Component.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/Component.ts#L9">core/Component.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span>
@@ -299,7 +347,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L66">graphics/Camera.ts:66</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L66">graphics/Camera.ts:66</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span>
@@ -319,7 +367,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L68">graphics/Camera.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L68">graphics/Camera.ts:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -337,7 +385,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L64">graphics/Camera.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L64">graphics/Camera.ts:64</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span>
@@ -348,7 +396,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L51">graphics/Camera.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L51">graphics/Camera.ts:51</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -372,7 +420,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L67">graphics/Camera.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L67">graphics/Camera.ts:67</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span>
@@ -383,7 +431,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L96">graphics/Camera.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L96">graphics/Camera.ts:96</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -406,7 +454,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L70">graphics/Camera.ts:70</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L70">graphics/Camera.ts:70</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="rendertarget.html" class="tsd-signature-type">RenderTarget</a></h4>
@@ -423,7 +471,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L49">graphics/Camera.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L49">graphics/Camera.ts:49</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -437,19 +485,19 @@
 					<a name="canrendergroup" class="tsd-anchor"></a>
 					<h3>can<wbr>Render<wbr>Group</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">can<wbr>Render<wbr>Group<span class="tsd-signature-symbol">(</span>groupId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">can<wbr>Render<wbr>Group<span class="tsd-signature-symbol">(</span>groupId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L170">graphics/Camera.ts:170</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L178">graphics/Camera.ts:178</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>groupId: <span class="tsd-signature-type">string</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> groupId: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -467,7 +515,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#copy">copy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/SerializableObject.ts#L27">core/SerializableObject.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/SerializableObject.ts#L27">core/SerializableObject.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a></h4>
@@ -485,7 +533,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#deserialize">deserialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/SerializableObject.ts#L45">core/SerializableObject.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/SerializableObject.ts#L45">core/SerializableObject.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -509,7 +557,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#destroy">destroy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L150">graphics/Camera.ts:150</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L158">graphics/Camera.ts:158</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -526,7 +574,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L181">graphics/Camera.ts:181</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L190">graphics/Camera.ts:190</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="matrix44.html" class="tsd-signature-type">Matrix44</a></h4>
@@ -543,7 +591,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L255">graphics/Camera.ts:255</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L264">graphics/Camera.ts:264</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -569,7 +617,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L192">graphics/Camera.ts:192</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L201">graphics/Camera.ts:201</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="matrix44.html" class="tsd-signature-type">Matrix44</a></h4>
@@ -586,7 +634,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L244">graphics/Camera.ts:244</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L253">graphics/Camera.ts:253</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -612,7 +660,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L201">graphics/Camera.ts:201</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L210">graphics/Camera.ts:210</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -641,7 +689,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L300">graphics/Camera.ts:300</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L309">graphics/Camera.ts:309</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -659,7 +707,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#isa">isA</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -682,7 +730,7 @@
 												<li class="tsd-description">
 													<aside class="tsd-sources">
 														<ul>
-															<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
+															<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
 														</ul>
 													</aside>
 													<h4 class="tsd-parameters-title">Parameters</h4>
@@ -712,7 +760,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="component.html">Component</a>.<a href="component.html#isloaded">isLoaded</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/Component.ts#L36">core/Component.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/Component.ts#L36">core/Component.ts:36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -730,7 +778,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="component.html">Component</a>.<a href="component.html#reset">reset</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/Component.ts#L40">core/Component.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/Component.ts#L40">core/Component.ts:40</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -748,7 +796,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#serialize">serialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/SerializableObject.ts#L41">core/SerializableObject.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/SerializableObject.ts#L41">core/SerializableObject.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../index.html#serializedobjecttype" class="tsd-signature-type">SerializedObjectType</a></h4>
@@ -766,7 +814,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="component.html">Component</a>.<a href="component.html#setentity">setEntity</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L138">graphics/Camera.ts:138</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L146">graphics/Camera.ts:146</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -790,7 +838,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setproperty">setProperty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L271">graphics/Camera.ts:271</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L280">graphics/Camera.ts:280</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -817,7 +865,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setstate">setState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/core/SerializableObject.ts#L54">core/SerializableObject.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/SerializableObject.ts#L54">core/SerializableObject.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -846,7 +894,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L266">graphics/Camera.ts:266</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L275">graphics/Camera.ts:275</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -864,7 +912,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#upgrade">upgrade</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2e6e9da/src/graphics/Camera.ts#L279">graphics/Camera.ts:279</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/graphics/Camera.ts#L288">graphics/Camera.ts:288</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -909,11 +957,17 @@
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
 								<a href="camera.html#entity" class="tsd-kind-icon">entity</a>
 							</li>
+							<li class=" tsd-kind-set-signature tsd-parent-kind-class">
+								<a href="camera.html#excludedgroups" class="tsd-kind-icon">excluded<wbr>Groups</a>
+							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="camera.html#frustum" class="tsd-kind-icon">frustum</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
 								<a href="camera.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-set-signature tsd-parent-kind-class">
+								<a href="camera.html#includedgroups" class="tsd-kind-icon">included<wbr>Groups</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
 								<a href="camera.html#parent" class="tsd-kind-icon">parent</a>

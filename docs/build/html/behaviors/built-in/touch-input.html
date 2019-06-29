@@ -1,0 +1,178 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  
+  <!-- Licensed under the Apache 2.0 License -->
+  <link rel="stylesheet" type="text/css" href="../../_static/fonts/open-sans/stylesheet.css" />
+  <!-- Licensed under the SIL Open Font License -->
+  <link rel="stylesheet" type="text/css" href="../../_static/fonts/source-serif-pro/source-serif-pro.css" />
+  <link rel="stylesheet" type="text/css" href="../../_static/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../../_static/css/bootstrap-theme.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <title>Touch Input &#8212; Spider Engine  documentation</title>
+    <link rel="stylesheet" href="../../_static/guzzle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Collision" href="collision.html" />
+    <link rel="prev" title="Key Input" href="key-input.html" />
+  
+   
+
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="collision.html" title="Collision"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="key-input.html" title="Key Input"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Spider Engine  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../behavior.html" >Behaviors</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../built-in-blocks.html" accesskey="U">Built-in Blocks</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="container-wrapper">
+
+      <div id="mobile-toggle">
+        <a href="#"><span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span></a>
+      </div>
+  <div id="left-column">
+    <div class="sphinxsidebar">
+<div style="text-align:center;padding:20px;padding-bottom:10px;">
+    <a href="https://spiderengine.io">
+        <img             
+            src="data:image/png;base64,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" 
+        />
+    </a>
+</div>
+
+<div class="sidebar-block">  
+  <div class="sidebar-toc">
+    
+    
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../projects.html">Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core.html">Core Concepts</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../behavior.html">Behaviors</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../behavior.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../behavior.html#block-types">Block Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../behavior.html#code-blocks">Code Blocks</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../behavior.html#built-in-blocks">Built-in Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../behavior.html#custom-data-objects">Custom Data Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../behavior.html#debugging">Debugging</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../2d.html">2D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../3d.html">3D</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../animation.html">Animation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../editor.html">Editor</a></li>
+<li class="toctree-l1"><a class="reference external" href="http://api">API Reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://forum.spiderengine.io">Forum</a></li>
+</ul>
+
+    
+  </div>
+</div>
+<div class="sidebar-block">
+  <div class="sidebar-wrapper">
+    <div id="main-search">
+      <form class="form-inline" action="../../search.html" method="GET" role="form">
+        <div class="input-group">
+          <input name="q" type="text" class="form-control" placeholder="Search...">
+        </div>
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+        <div id="right-column">
+          
+          <div role="navigation" aria-label="breadcrumbs navigation">
+            <ol class="breadcrumb">
+              <li><a href="../../index.html">Docs</a></li>
+              
+                <li><a href="../../behavior.html">Behaviors</a></li>
+              
+                <li><a href="../built-in-blocks.html">Built-in Blocks</a></li>
+              
+              <li>Touch Input</li>
+            </ol>
+          </div>
+          
+          <div class="document clearer body">
+            
+  <div class="section" id="touch-input">
+<h1>Touch Input<a class="headerlink" href="#touch-input" title="Permalink to this headline">¶</a></h1>
+<img alt="../../_images/touch-input.png" src="../../_images/touch-input.png" />
+</div>
+
+
+          </div>
+            
+  <div class="footer-relations">
+    
+      <div class="pull-left">
+        <a class="btn btn-default" href="key-input.html" title="previous chapter (use the left arrow)">Key Input</a>
+      </div>
+    
+      <div class="pull-right">
+        <a class="btn btn-default" href="collision.html" title="next chapter (use the right arrow)">Collision</a>
+      </div>
+    </div>
+    <div class="clearer"></div>
+  
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="collision.html" title="Collision"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="key-input.html" title="Key Input"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Spider Engine  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../behavior.html" >Behaviors</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../built-in-blocks.html" >Built-in Blocks</a> &#187;</li> 
+      </ul>
+    </div>
+<script type="text/javascript">
+  $("#mobile-toggle a").click(function () {
+    $("#left-column").toggle();
+  });
+</script>
+<script type="text/javascript" src="../../_static/js/bootstrap.js"></script>
+  <div class="footer">
+    &copy; Copyright 2019, Frantic Software Inc.</a>
+  </div>
+  </body>
+</html>
