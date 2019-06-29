@@ -6,8 +6,6 @@ import { Quaternion } from "../math/Quaternion";
 import { ScenesInternal, Scenes } from "./Scenes";
 import { Transform } from "./Transform";
 import { Scene } from "../assets/Scene";
-import { Component } from "./Component";
-import { ObjectProps } from "./Types";
 
 namespace Private {
     export const defaultPRS: PRS = {
@@ -59,8 +57,7 @@ export class Entities {
             console.assert((scenes as Scene[]).length === 1);
         }
 
-        const sceneCount = scenes.length;
-        scenes[sceneCount - 1].root.addChild(instance);
+        scenes[0].root.addChild(instance);
         if (EntityInternal.collectEntityOperations) {
             EntityInternal.entitiesJustCreated.push(instance);
         }
