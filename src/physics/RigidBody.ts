@@ -144,6 +144,8 @@ export class RigidBody extends Component {
     }
 
     private _mass = 1;
+
+    @Attributes.enumLiterals(RigidBodyTypeMetadata.literals)
     private _type = RigidBodyType.Dynamic;
 
     @Attributes.unserializable()
