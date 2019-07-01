@@ -69,7 +69,6 @@ export declare class CollisionInfoPin extends TDataPin<CollisionInfo> {
 }
 export declare class ObjectReferencePin extends TDataPin<ObjectReference> {
     declarationId: string;
-    private _declarationId;
     constructor(declarationId: string, id?: string, type?: PinType);
     setProperty(name: string, value: any): void;
 }

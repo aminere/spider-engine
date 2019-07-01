@@ -3,6 +3,7 @@ import { Matrix44 } from "../math/Matrix44";
 import { Entity } from "../core/Entity";
 import { Vector3 } from "../math/Vector3";
 import { RenderTarget } from "./RenderTarget";
+import { VisualGroup } from "./VisualGroup";
 import { PostEffects } from "./postfx/PostEffects";
 import { SerializedObject } from "../core/SerializableObject";
 import { Ray } from "../math/Ray";
@@ -31,6 +32,8 @@ export declare class Camera extends Component {
     readonly priority: number;
     readonly sceneRenderTarget: RenderTarget;
     readonly frustum: Frustum | null;
+    excludedGroups: VisualGroup[];
+    includedGroups: VisualGroup[];
     private _projector;
     private _clearValue;
     private _priority;
@@ -45,7 +48,7 @@ export declare class Camera extends Component {
     constructor(props?: ObjectProps<Camera>);
     setEntity(entity: Entity): void;
     destroy(): void;
-    canRenderGroup(groupId: string): boolean;
+    canRenderGroup(groupId?: string): boolean;
     getProjectionMatrix(): Matrix44;
     getViewMatrix(): Matrix44;
     getWorldRay(screenX: number, screenY: number): Ray | null;
