@@ -14,7 +14,7 @@ export namespace AssetsInternal {
     export function updateLoading() {
         const { loadingMap } = Private;
         if (loadingMap.size === 0) {
-            return;
+            return false;
         }
         const assetsToClear: Asset[] = [];
         loadingMap.forEach((callbacks, asset) => {
@@ -28,6 +28,7 @@ export namespace AssetsInternal {
         for (const asset of assetsToClear) {
             loadingMap.delete(asset);
         }
+        return loadingMap.size > 0;
     }
 }
 

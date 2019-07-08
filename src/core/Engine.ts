@@ -57,6 +57,7 @@ namespace Private {
     export let engineConfig: EngineConfig;
     export let playRequestId: string | null = null;    
     export let engineActive = false;    
+    export let loadingInProgress = false;
     export const keysDown = new Map<number, boolean>();
 
     export function onDownloadProgressChanged(amount: number) {
@@ -335,9 +336,10 @@ export namespace EngineInternal {
             return;
         }
 
-        AssetsInternal.updateLoading();
+        Private.loadingInProgress = AssetsInternal.updateLoading();
 
         if (!DefaultAssetsInternal.isLoaded()) {
+            Private.loadingInProgress = true;
             requestAnimationFrame(() => updateFrame());
             return;
         }
@@ -355,10 +357,12 @@ export namespace EngineInternal {
         }
 
         if (!scenes.every(s => s.isLoaded())) {
+            Private.loadingInProgress = true;
             requestAnimationFrame(() => updateFrame());
             return;
         }
 
+        Private.loadingInProgress = false;
         UpdateInternal.update();
 
         const cameras = Components.ofType(Camera);
@@ -506,5 +510,9 @@ export class Engine {
             window.removeEventListener("keydown", EngineHandlersInternal.onKeyDown);
             EngineInternal.unload();
         }        
+    }
+
+    static isLoadingInProgress() {
+        return Private.loadingInProgress;
     }
 }
