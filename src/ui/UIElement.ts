@@ -12,16 +12,6 @@ export enum UIOverflow {
     Scroll
 }
 
-/**
- * @hidden
- */
-export class UIOverflowMetadata {
-    static literals = {
-        Clip: 0,
-        Scroll: 1        
-    };
-}
-
 export class UIElement extends Component {
         
     get isTouchInside() { return this._touchInside; }

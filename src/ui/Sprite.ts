@@ -10,24 +10,15 @@ export enum SpriteRenderMode {
     Stretch,
     Tile
 }
-/**
- * @hidden
- */
-export class SpriteRenderModeMetadata {
-    static literals = {
-        Stretch: 0,
-        Tile: 1
-    };
-}
 
 export class Sprite extends Asset {
     texture = new AssetReference(Texture2D);
     borderSize = new Vector2();
 
-    @Attributes.enumLiterals(SpriteRenderModeMetadata.literals)
+    @Attributes.enumLiterals(SpriteRenderMode)
     renderMode = SpriteRenderMode.Stretch;
 
-    @Attributes.enumLiterals(SpriteRenderModeMetadata.literals)
+    @Attributes.enumLiterals(SpriteRenderMode)
     borderMode = SpriteRenderMode.Stretch;
 
     destroy() {

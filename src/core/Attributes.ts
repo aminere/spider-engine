@@ -41,11 +41,19 @@ export function helpUrl(url: string) {
     return Reflect.metadata("helpUrl", url);
 }
 
-export function enumLiterals(literals: EnumLiterals, getDisplayName?: (literal: string) => string) {
+export function enumLiterals(enumObject: object, getDisplayName?: (literal: string) => string) {
+
+    const literals = {};
+    const entries = Object.entries(enumObject);
+    console.assert(entries.length % 2 === 0);
+    for (let i = entries.length / 2; i < entries.length; ++i) {
+        Object.assign(literals, { [entries[i][0]]: entries[i][1] });
+    }
+
     return Reflect.metadata("enumLiterals", {
         literals: literals,
         getDisplayName: getDisplayName
-    });
+    } as EnumLiterals);
 }
 
 export function requires(typeName: string) {

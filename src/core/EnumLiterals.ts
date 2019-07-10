@@ -1,9 +1,5 @@
 
 export interface EnumLiterals {
-    [key: string]: number;
-}
-
-export interface EnumLiteralsMetadata {
-    literals: EnumLiterals;
+    literals: object;
     getDisplayName?: (literal: string) => string;
 }

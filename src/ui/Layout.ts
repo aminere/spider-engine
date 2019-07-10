@@ -2,7 +2,7 @@ import { Rect } from "./Rect";
 import { Vector2 } from "../math/Vector2";
 import { Quaternion } from "../math/Quaternion";
 import { Vector3 } from "../math/Vector3";
-import { HorizontalAlignment, VerticalAlignment, HorizontalAlignmentMetadata, VerticalAlignmentMetadata } from "./Alignment";
+import { HorizontalAlignment, VerticalAlignment } from "./Alignment";
 import { UISize } from "./UISize";
 import { Matrix44 } from "../math/Matrix44";
 import * as Attributes from "../core/Attributes";
@@ -85,10 +85,10 @@ export class Layout extends Component {
         return Vector3.fromPool().setFromMatrix(this.worldMatrix);
     }
 
-    @Attributes.enumLiterals(HorizontalAlignmentMetadata.literals)
+    @Attributes.enumLiterals(HorizontalAlignment)
     private _horizontalAlignment = HorizontalAlignment.Left;
 
-    @Attributes.enumLiterals(VerticalAlignmentMetadata.literals)
+    @Attributes.enumLiterals(VerticalAlignment)
     private _verticalAlignment = VerticalAlignment.Top;
 
     private _pivot = new Vector2();

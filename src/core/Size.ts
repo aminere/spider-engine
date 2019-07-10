@@ -5,19 +5,10 @@ export enum SizeType {
     Absolute,
     Relative
 }
-/**
- * @hidden
- */
-export class SizeTypeMetadata {
-    static literals = {
-        Absolute: 0,
-        Relative: 1        
-    };
-}
 
 export class Size {
 
-    @Attributes.enumLiterals(SizeTypeMetadata.literals)
+    @Attributes.enumLiterals(SizeType)
     type: SizeType;
 
     value: number;

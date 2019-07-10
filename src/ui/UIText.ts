@@ -4,7 +4,7 @@ import * as Attributes from "../core/Attributes";
 import { Reference } from "../serialization/Reference";
 import { Font } from "./Font/Font";
 import { Layout } from "./Layout";
-import { TextAlignment, TextAlignmentMetadata } from "./Alignment";
+import { TextAlignment } from "./Alignment";
 import { BitmapFont } from "./Font/BitmapFont";
 import { SerializedObject } from "../core/SerializableObject";
 import { FontFamily } from "./Font/FontFamily";
@@ -41,7 +41,7 @@ export class Text extends UIElement {
     private _font: Reference<Font>;
     private _text!: string;    
 
-    @Attributes.enumLiterals(TextAlignmentMetadata.literals)
+    @Attributes.enumLiterals(TextAlignment)
     private _alignment: TextAlignment;
 
     constructor() {

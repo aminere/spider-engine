@@ -1,5 +1,5 @@
 
-import { BlendingModes, RenderPass, CullModes, BlendingModesMetadata, RenderPassMetadata, CullModesMetadata } from "./GraphicTypes";
+import { BlendingModes, RenderPass, CullModes } from "./GraphicTypes";
 import { Asset } from "../assets/Asset";
 import { Shader } from "./Shader";
 import { SerializableObject, SerializedObject } from "../core/SerializableObject";
@@ -110,13 +110,13 @@ export class Material extends Asset {
         return `${id}`;
     }
 
-    @Attributes.enumLiterals(BlendingModesMetadata.literals)
+    @Attributes.enumLiterals(BlendingModes)
     private _blending = BlendingModes.None;
 
-    @Attributes.enumLiterals(RenderPassMetadata.literals)
+    @Attributes.enumLiterals(RenderPass)
     private _renderPass = RenderPass.Opaque;
 
-    @Attributes.enumLiterals(CullModesMetadata.literals)
+    @Attributes.enumLiterals(CullModes)
     private _cullMode = CullModes.Back;
     private _depthTest = true;
     private _priority = 0;

@@ -2,7 +2,7 @@
 import { Debug } from "../io/Debug";
 import { Texture } from "./Texture";
 import { MathEx } from "../math/MathEx";
-import { TextureFiltering, TextureFilteringMetadata, TextureSizePow2Metadata } from "./GraphicTypes";
+import { TextureFiltering } from "./GraphicTypes";
 import { Color } from "./Color";
 import * as Attributes from "../core/Attributes";
 import { SerializedObject } from "../core/SerializableObject";
@@ -63,13 +63,13 @@ export class Texture2D extends Texture {
 
     get textureData() { return this._textureData as string; }
 
-    @Attributes.enumLiterals(TextureFilteringMetadata.literals)
+    @Attributes.enumLiterals(TextureFiltering)
     protected _filtering = TextureFiltering.Linear;
 
     protected _repeat = true;
     private _mipMaps = true;
 
-    @Attributes.enumLiterals(TexturePublishFormatMetadata.literals)
+    @Attributes.enumLiterals(TexturePublishFormat)
     private _publishFormat = TexturePublishFormat.JPEG;
 
     @Attributes.hidden()

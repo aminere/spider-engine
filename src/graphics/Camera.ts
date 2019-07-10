@@ -29,16 +29,6 @@ export enum CameraClear {
     None
 }
 
-/**
- * @hidden
- */
-export class CameraClearMetadata {
-    static literals = {
-        Environment: 0,
-        None: 1
-    };
-}
-
 namespace Private {
     export const projectorProperty = "_projector";
 }
@@ -107,7 +97,7 @@ export class Camera extends Component {
 
     private _projector = new Reference(Projector);
 
-    @Attributes.enumLiterals(CameraClearMetadata.literals)
+    @Attributes.enumLiterals(CameraClear)
     private _clearValue = CameraClear.Environment;
 
     private _priority = 0;

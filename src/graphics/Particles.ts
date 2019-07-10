@@ -34,15 +34,6 @@ export enum ParticleEmitDirection {
     AwayFromCenter
 }
 
-class ParticleEmitDirectionMetadata {
-    static literals = {
-        Up: 0,
-        Forward: 1,
-        Right: 2,
-        AwayFromCenter: 3
-    };
-}
-
 namespace Private {
     export const shapeWorldPos = new Vector3();
     export const particlePos = new Vector3();
@@ -192,7 +183,7 @@ export class Particles extends Component {
     life = new Range(1, 2);
     gravity = 9.8;
 
-    @Attributes.enumLiterals(ParticleEmitDirectionMetadata.literals)
+    @Attributes.enumLiterals(ParticleEmitDirection)
     direction = ParticleEmitDirection.Up;
 
     initialSpeed = new Range(1, 2);

@@ -8,13 +8,13 @@ import { UniqueObject } from "../core/UniqueObject";
 import { ObjectReference } from "./ObjectReference";
 import { ObjectDefinition } from "../behavior/ObjectDefinition";
 import { ReferenceBase } from "./Reference";
-import { EnumLiteralsMetadata } from "../core/EnumLiterals";
 import { EngineEvents } from "../core/EngineEvents";
 import { Component } from "../core/Component";
 import { IFactoryInternal } from "./IFactory";
 import { RTTI } from "../core/RTTI";
 import { ObjectManagerInternal } from "../core/ObjectManager";
 import { AssetIdDatabase } from "../assets/AssetIdDatabase";
+import { EnumLiterals } from "../core/EnumLiterals";
 
 interface SerializedAssetReference {
     typeName: string;
@@ -326,14 +326,16 @@ export class SerializerUtils {
         } else {
 
             if (typeName === "Number") {
-                const enumLiterals = Reflect.getMetadata("enumLiterals", target, index as string) as EnumLiteralsMetadata;
+                const enumLiterals = Reflect.getMetadata("enumLiterals", target, index as string) as EnumLiterals;
                 if (enumLiterals) {
-                    // deserialize the enum right here
-                    if (typeof (data) === "object") {
-                        // attempt to convert from old enum format
-                        SerializerUtils.setProperty(target, index, data.value, tryUseSetter);
-                    } else {
+                    if (typeof(data) === "number") {
+                        // old format
                         SerializerUtils.setProperty(target, index, data, tryUseSetter);
+                    } else {
+                        // deserialize enums as numbers
+                        const enumValue = enumLiterals.literals[data];
+                        console.assert(enumValue !== undefined);
+                        SerializerUtils.setProperty(target, index, enumValue, tryUseSetter);
                     }
                     return;
                 }
@@ -453,11 +455,23 @@ export class SerializerUtils {
             if (unserializable) {
                 continue;
             }
-            const property = o[key];
+            let property = o[key];
             if (typeof (property) === "function" || property === undefined || property === null) {
                 continue;
             }
-            const typeName = SerializerUtils.getPropertyTypeName(property);
+            let typeName = SerializerUtils.getPropertyTypeName(property);
+
+            if (typeName === "Number") {
+                // Serialize enum names, not values
+                const enumLiterals = Reflect.getMetadata("enumLiterals", o, key) as EnumLiterals;
+                if (enumLiterals) {
+                    const name = Object.keys(enumLiterals.literals).find(k => enumLiterals.literals[k] === property);
+                    console.assert(name);
+                    property = name;
+                    typeName = "String";
+                }
+            }
+
             const serializedData = SerializerUtils.serializeProperty(property, typeName);
             if (serializedData !== "__serializeFailed__") {
                 if (SerializerUtils.isDynamicProperty(o.constructor.name, key)) {

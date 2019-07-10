@@ -11,17 +11,6 @@ export enum PhysicsBroadPhaseType {
     SAP
 }
 
-/**
- * @hidden
- */
-export class PhysicsBroadPhaseTypeMetadata {
-    static literals = {
-        Naive: 0,
-        Grid: 1,
-        SAP: 2
-    };
-}
-
 class PhysicsBroadPhaseFactory {
     static create(type: number) {
         switch (type) {
@@ -69,7 +58,7 @@ export class PhysicsContext extends Component {
 
     private _gravity = new Vector3(0, -9.8, 0);
 
-    @Attributes.enumLiterals(PhysicsBroadPhaseTypeMetadata.literals)
+    @Attributes.enumLiterals(PhysicsBroadPhaseType)
     private _broadPhase = PhysicsBroadPhaseType.Naive;
 
     private _solverIterations = 10;

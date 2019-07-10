@@ -6,20 +6,10 @@ export enum UISizeType {
     Relative,
     Absolute
 }
-/**
- * @hidden
- */
-export class UISizeTypeMetadata {
-    static literals = {  
-        Auto: 0,
-        Relative: 1,
-        Absolute: 2
-    };
-}
 
 export class UISize {   
 
-    @Attributes.enumLiterals(UISizeTypeMetadata.literals)
+    @Attributes.enumLiterals(UISizeType)
     type = UISizeType.Auto;
 
     value = 256;
@@ -34,9 +24,6 @@ export class UISize {
     }
 }
 
-/**
- * @hidden
- */
 export interface SerializedUISize {
     type: number;
     value: number;

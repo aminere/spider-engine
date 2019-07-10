@@ -2,7 +2,7 @@
 import { Debug } from "../io/Debug";
 import { Texture } from "./Texture";
 import { Size, SizeType } from "../core/Size";
-import { TextureFiltering, TextureFilteringMetadata } from "./GraphicTypes";
+import { TextureFiltering } from "./GraphicTypes";
 import * as Attributes from "../core/Attributes";
 import { VoidAsyncEvent } from "ts-events";
 import { Interfaces } from "../core/Interfaces";
@@ -45,7 +45,7 @@ export class RenderTarget extends Texture {
     private _width: Size;
     private _height: Size;
 
-    @Attributes.enumLiterals(TextureFilteringMetadata.literals)
+    @Attributes.enumLiterals(TextureFiltering)
     private _filtering = TextureFiltering.Linear;
 
     @Attributes.unserializable()

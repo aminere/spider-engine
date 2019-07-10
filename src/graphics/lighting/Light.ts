@@ -7,7 +7,7 @@ import { LensFlare } from "./LensFlare";
 import { Component } from "../../core/Component";
 import { Projector } from "../Projector";
 import { Color } from "../Color";
-import { TextureSizePow2Metadata, TextureSizePow2 } from "../GraphicTypes";
+import { TextureSizePow2 } from "../GraphicTypes";
 import { Frustum } from "../Frustum";
 import { OrthographicProjector } from "../OrthographicProjector";
 import { ObjectProps } from "../../core/Types";
@@ -53,11 +53,14 @@ export class Light extends Component {
     intensity = 1;
     color = new Color(1, 1, 1, 1);
     castShadows = true;
-    shadowBias = .001;
+
+    @Attributes.hidden()
+    shadowBias = .000001;
+
     shadowRadius = 4;
 
     @Attributes.enumLiterals(
-        TextureSizePow2Metadata.literals, 
+        TextureSizePow2, 
         name => name.substring(1) // Trim the _ from the display name
     )
     shadowMapSize = TextureSizePow2._2048;    

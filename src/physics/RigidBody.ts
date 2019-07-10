@@ -60,20 +60,9 @@ class PhysicsShapeFactory {
 }
 
 export enum RigidBodyType {
-    Static,
-    Dynamic,
-    Kinematic
-}
-
-/**
- * @hidden
- */
-export class RigidBodyTypeMetadata {
-    static literals = {
-        Static: Cannon.Body.STATIC,
-        Dynamic: Cannon.Body.DYNAMIC,
-        Kinematic: Cannon.Body.KINEMATIC
-    };
+    Static = Cannon.Body.STATIC,
+    Dynamic = Cannon.Body.DYNAMIC,
+    Kinematic = Cannon.Body.KINEMATIC
 }
 
 interface CollideEvent {
@@ -145,7 +134,7 @@ export class RigidBody extends Component {
 
     private _mass = 1;
 
-    @Attributes.enumLiterals(RigidBodyTypeMetadata.literals)
+    @Attributes.enumLiterals(RigidBodyType)
     private _type = RigidBodyType.Dynamic;
 
     @Attributes.unserializable()
