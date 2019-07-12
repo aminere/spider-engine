@@ -11,34 +11,28 @@ import { Vector3 } from "../math/Vector3";
 import { PlaneCollisionShape } from "../collision/PlaneCollisionShape";
 import { Transform } from "../core/Transform";
 import { Component } from "../core/Component";
+import { Quaternion } from "../math/Quaternion";
 
-/**
- * @hidden
- */
 class PhysicsShapeFactory {
-    static create(shape: CollisionShape, scale: Vector3) {
+    static create(shape: CollisionShape, transform: Transform) {
+        const { scale } = transform;
         if (shape.isA(BoxCollisionShape)) {
-            let box = shape as BoxCollisionShape;
-            let cannonExtents = new Cannon.Vec3(box.extent.x * scale.x, box.extent.y * scale.y, box.extent.z * scale.z);
+            const box = shape as BoxCollisionShape;
+            const cannonExtents = new Cannon.Vec3(box.extent.x * scale.x, box.extent.y * scale.y, box.extent.z * scale.z);
             return {
                 shape: new Cannon.Box(cannonExtents),
                 offset: box.center
             };
         } else if (shape.isA(SphereCollisionShape)) {
-            let sphere = shape as SphereCollisionShape;
+            const sphere = shape as SphereCollisionShape;
             return {
                 shape: new Cannon.Sphere(sphere.radius * scale.x),
                 offset: sphere.center
             };
         } else if (shape.isA(PlaneCollisionShape)) {
-            let planeShape = (shape as PlaneCollisionShape);
-            const { plane } = planeShape;
-            let cannonPlane = new Cannon.Plane();
-            cannonPlane.worldNormal.set(plane.normal.x, plane.normal.y, plane.normal.z);
-            cannonPlane.boundingSphereRadius = scale.x * 999999; // TODO is this radius OK for a plane?
             return {
-                shape: cannonPlane,
-                offset: new Vector3().copy(plane.normal).multiply(plane.distFromOrigin)
+                shape: new Cannon.Plane(),
+                offset: transform.worldPosition
             };
         // } else if (shape.isA(MeshCollisionShape)) {
         //     let mesh = (shape as MeshCollisionShape).mesh.asset;
@@ -71,18 +65,7 @@ interface CollideEvent {
     contact: Cannon.ContactEquation;
 }
 
-namespace Private {
-    export function applyTransformToRigidBody(transform: Transform, position: Cannon.Vec3, rotation: Cannon.Quaternion) {
-        {
-            const { x, y, z } = transform.position;
-            position.set(x, y, z);
-        }
-        {
-            const { x, y, z, w } = transform.rotation;
-            rotation.set(x, y, z, w);
-        }
-    }
-
+namespace Private {    
     export function applyRigidBodyToTransform(position: Cannon.Vec3, rotation: Cannon.Quaternion, transform: Transform) {
         {
             const { x, y, z } = position;
@@ -140,31 +123,44 @@ export class RigidBody extends Component {
     @Attributes.unserializable()
     private _rigidBody!: Cannon.Body;
 
+    @Attributes.unserializable()
+    private _cannonPlaneRotationAdjustment = false;
+
     update(context: PhysicsContext) {
+        const { transform } = this.entity;
         if (!this._rigidBody) {
             this._rigidBody = new Cannon.Body();
             this._rigidBody.mass = this._mass;
             this._rigidBody.type = this._type;
-            Private.applyTransformToRigidBody(this.entity.transform, this._rigidBody.position, this._rigidBody.quaternion);
-            let collider = this.entity.getComponent(Collider);
+            const collider = this.entity.getComponent(Collider);
             if (collider) {
-                for (let shape of collider.shapes) {
+                for (const shape of collider.shapes) {
                     if (shape) {
-                        let physicsShapeInfo = PhysicsShapeFactory.create(shape, this.entity.transform.scale);
+                        const physicsShapeInfo = PhysicsShapeFactory.create(shape, this.entity.transform);
                         if (physicsShapeInfo) {
                             const { x, y, z } = physicsShapeInfo.offset;
                             this._rigidBody.addShape(physicsShapeInfo.shape, new Cannon.Vec3(x, y, z));
+
+                            // This is a limitation of cannon.js
+                            // Planes are assumed to have a (0, 0, 1) normal
+                            // Since up direction in spider is (0, 1, 0),
+                            // Need to apply a 90 degrees rotation around X axis to make planes behave as expected.
+                            if (shape.isA(PlaneCollisionShape)) {
+                                this._cannonPlaneRotationAdjustment = true;
+                            }
                         }
                     }
                 }
             }
+            
+            this.applyTransformToRigidBody(transform, this._rigidBody.position, this._rigidBody.quaternion);
             context.world.addBody(this._rigidBody);
             this._rigidBody.addEventListener("collide", this.onCollision);
         } else {
             if (this._type === RigidBodyType.Static) {
-                Private.applyTransformToRigidBody(this.entity.transform, this._rigidBody.position, this._rigidBody.quaternion);
+                this.applyTransformToRigidBody(transform, this._rigidBody.position, this._rigidBody.quaternion);
             } else {
-                Private.applyRigidBodyToTransform(this._rigidBody.position, this._rigidBody.quaternion, this.entity.transform);
+                Private.applyRigidBodyToTransform(this._rigidBody.position, this._rigidBody.quaternion, transform);
             }
         }
     }
@@ -172,7 +168,7 @@ export class RigidBody extends Component {
     destroy() {
         if (this._rigidBody) {
             this._rigidBody.removeEventListener("collide", this.onCollision);
-            let physicsContext = this.entity.getAncestorOfType(PhysicsContext);
+            const physicsContext = this.entity.getAncestorOfType(PhysicsContext);
             if (physicsContext) {
                 physicsContext.world.remove(this._rigidBody);
             }
@@ -180,5 +176,22 @@ export class RigidBody extends Component {
     }
 
     private onCollision(e: CollideEvent) {
-    }   
+    }
+
+    private applyTransformToRigidBody(transform: Transform, position: Cannon.Vec3, quaternion: Cannon.Quaternion) {
+        {
+            const { x, y, z } = transform.position;
+            position.set(x, y, z);
+        }
+        {
+            let rotation = transform.rotation;
+            if (this._cannonPlaneRotationAdjustment) {
+                rotation = Quaternion.fromPool().copy(rotation).multiply(
+                    Quaternion.fromPool().setFromAxisAngle(Vector3.right, -Math.PI / 2)
+                );
+            }
+            const { x, y, z, w } = rotation;
+            quaternion.set(x, y, z, w);
+        }
+    }
 }

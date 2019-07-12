@@ -301,7 +301,7 @@ export class GeometryRenderer {
     static drawPlane(normal: Vector3, distToOrigin: number, color: Color, worldMatrix: Matrix44) {        
         let { basis } = Private;
         basis.setFromNormal(normal);
-        const size = 9999;
+        const size = 15;
         basis.right.multiply(size);
         basis.forward.multiply(size);
         let position = Vector3.fromPool();
