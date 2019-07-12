@@ -1,6 +1,8 @@
 Spider Engine - https://spiderengine.io
 =======================================
 
+![npm](https://img.shields.io/npm/v/@aminere/spider-engine.svg?color=orange)
+
 ![Thumbnails](https://raw.githubusercontent.com/aminere/spider-engine/master/docs/source/images/runtime.jpg)
 
 Spider is a fast game engine, ideal for prototyping in your web browser.
