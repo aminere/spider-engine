@@ -53,6 +53,10 @@ export class Quaternion {
         return new Quaternion().setFromAxisAngle(axis, radians);
     }
 
+    static fromUnitVectors(from: Vector3, to: Vector3) {
+        return new Quaternion().setFromUnitVectors(from, to);
+    }
+
     constructor(x?: number, y?: number, z?: number, w?: number) {
         this._x = x || 0;
         this._y = y || 0;

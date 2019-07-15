@@ -153,6 +153,9 @@ import { BoxGeometry } from "../graphics/geometry/primitives/BoxGeometry";
 import { SphereGeometry } from "../graphics/geometry/primitives/SphereGeometry";
 import { PlaneGeometry } from "../graphics/geometry/primitives/PlaneGeometry";
 import { ConeGeometry } from "../graphics/geometry/primitives/ConeGeometry";
+import { IKSolver } from "../animation/ik/IKSolver";
+import { IKNode } from "../animation/ik/IKNode";
+import { IKChain } from "../animation/ik/IKChain";
 
 /**
  * @hidden
@@ -342,6 +345,9 @@ export class TypeRegistration {
         factory.registerObject(AssetKey, AnimationKey);
         factory.registerObject(AnimationComponent, Component);
         factory.registerObject(AnimationInstance, SerializableObject);
+        factory.registerObject(IKSolver, Component);
+        factory.registerObject(IKChain, Component);
+        factory.registerObject(IKNode, Component);
 
         // Custom Behavior Nodes
         factory.registerObject(Delay, Operator);
