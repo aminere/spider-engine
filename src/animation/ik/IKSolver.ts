@@ -8,6 +8,10 @@ import { Basis } from "../../math/Basis";
 
 const FIK = require("fullik");
 
+namespace Private {
+    export let basis = new Basis();
+}
+
 export class IKSolver extends Component {
 
     @Attributes.unserializable()
@@ -18,7 +22,10 @@ export class IKSolver extends Component {
     private _chains!: IKChain[];
 
     @Attributes.unserializable()
-    private _basis = new Basis();
+    private _lookAtAdjustAngle = 0;
+    
+    @Attributes.unserializable()
+    private _lookAtAdjustAxisUp = true;
 
     update() {
         if (!this._ikSolver) {
@@ -29,6 +36,7 @@ export class IKSolver extends Component {
 
             this._ikSolver = new FIK.Structure3D();
             const chains = this.entity.getComponents(IKChain);
+            const fistBoneDirection = Vector3.fromPool();
 
             for (let i = 0; i < chains.length; ++i) {
                 const chain = chains[i];
@@ -41,30 +49,51 @@ export class IKSolver extends Component {
                 for (let j = 0; j < chain.nodes.length - 1; ++j) {
                     const boneStart = chain.nodes[j].entity.transform.worldPosition;
                     const boneEnd = chain.nodes[j + 1].entity.transform.worldPosition;
+                    
                     ikChain.addBone(new FIK.Bone3D(
                         new FIK.V3(boneStart.x, boneStart.y, boneStart.z),
                         new FIK.V3(boneEnd.x, boneEnd.y, boneEnd.z)
                     ));
+
+                    if (j === 0) {
+                        fistBoneDirection.copy(boneEnd).substract(boneStart).normalize();
+                    }
                 }
+
                 this._ikSolver.add(
                     ikChain,
                     new Proxy(
                         chain.target,
                         {
                             get: (target, prop) => {
-                                // TODO assert that prop is x, y, z
+                                // TODO validate that prop is x, y, z
                                 return target.transform.worldPosition[prop];
                             }
                         }
                     )
                 );
+
+                // Determine look at adjustment
+                const components = fistBoneDirection.asArray();
+                const maxComponent = Math.max(...components.map(Math.abs));
+                const normalizedComponents = components.map(c => Math.abs(c) === maxComponent ? Math.sign(c) : 0);
+                fistBoneDirection.setFromArray(normalizedComponents);
+                this._lookAtAdjustAxisUp = fistBoneDirection.y === 0;
+                this._lookAtAdjustAngle = Math.acos(fistBoneDirection.dot(Vector3.forward));
+                if (fistBoneDirection.x !== 0) {
+                    this._lookAtAdjustAngle *= -Math.sign(fistBoneDirection.x);
+                } else if (fistBoneDirection.y !== 0) {
+                    this._lookAtAdjustAngle *= Math.sign(fistBoneDirection.y);
+                }
             }
             this._chains = chains;
         }
 
+        // TODO only do this if target moved
         this._ikSolver.update();
 
         // Update transforms
+        // TODO only do this if IK was just solved        
         const lookAtDir = Vector3.fromPool();
         const lookAtRotation = Quaternion.fromPool();
         const lookAtAdjust = Quaternion.fromPool();
@@ -74,14 +103,19 @@ export class IKSolver extends Component {
             const chain = this._chains[i];
             const ikChain = this._ikSolver.chains[i];
             for (let j = 0; j < ikChain.numBones; ++j) {
-                const bone = ikChain.bones[j];
-                const node = chain.nodes[j];
+                const bone = ikChain.bones[j];                
                 lookAtDir.copy(bone.end).substract(bone.start).normalize();                
-                this._basis.setFromForward(lookAtDir);
-                // TODO get initial angle between bone at T-pose and world forward
-                lookAtAdjust.setFromAxisAngle(this._basis.up, 0); // -Math.PI / 2);
-                lookAtRotation.lookAt(lookAtDir, this._basis.up).multiply(lookAtAdjust);
+                Private.basis.setFromForward(lookAtDir);                
+                lookAtRotation.lookAt(lookAtDir, Private.basis.up);
+                if (this._lookAtAdjustAngle !== 0) {
+                    lookAtAdjust.setFromAxisAngle(
+                        this._lookAtAdjustAxisUp ? Private.basis.up : Private.basis.right, 
+                        this._lookAtAdjustAngle
+                    );
+                    lookAtRotation.multiply(lookAtAdjust);
+                }                
 
+                const node = chain.nodes[j];
                 if (node.entity.parent) {
                     invParentMatrix.copy(node.entity.parent.transform.worldMatrix).invert();
 
