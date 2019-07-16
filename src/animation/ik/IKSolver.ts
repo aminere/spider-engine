@@ -5,6 +5,9 @@ import { Quaternion } from "../../math/Quaternion";
 import { Vector3 } from "../../math/Vector3";
 import { Matrix44 } from "../../math/Matrix44";
 import { Basis } from "../../math/Basis";
+import { IKNode } from "./IKNode";
+import { IKBallJoint } from "./IKConstraints";
+import { MathEx } from "../../math/MathEx";
 
 const FIK = require("fullik");
 
@@ -35,12 +38,51 @@ export class IKSolver extends Component {
             Object.assign(window, { FIK });
 
             this._ikSolver = new FIK.Structure3D();
-            const chains = this.entity.getComponents(IKChain);
-            const fistBoneDirection = Vector3.fromPool();
+            const chains: IKChain[] = [];
+            this.entity.traverse(
+                child => {
+                    // Stop traversing if found solvers down stream
+                    if (child.hasComponentByType(IKSolver) && child !== this.entity) {
+                        return false;
+                    }
+                    const chain = child.getComponent(IKChain);
+                    if (chain) {
+                        chains.push(chain);
+                    }
+                    return true;
+                },
+                true
+            );
+            
+            const rootBoneDirection = Vector3.fromPool();
 
             for (let i = 0; i < chains.length; ++i) {
                 const chain = chains[i];
-                chain.initialize();
+
+                const nodes: IKNode[] = [];
+                chain.entity.traverse(
+                    child => {
+                        // Stop traversing if found solvers or chains down stream
+                        if ((
+                            child.hasComponentByType(IKSolver)
+                            ||
+                            child.hasComponentByType(IKChain)
+                        )
+                            && child !== chain.entity
+                        ) {
+                            return false;
+                        }
+
+                        const node = child.getComponent(IKNode);
+                        if (node) {
+                            nodes.push(node);
+                        }
+                        return true;
+                    },
+                    true
+                );
+        
+                chain.nodes = nodes;
                 if (chain.nodes.length < 2 || !chain.target) {
                     continue;
                 }
@@ -49,14 +91,37 @@ export class IKSolver extends Component {
                 for (let j = 0; j < chain.nodes.length - 1; ++j) {
                     const boneStart = chain.nodes[j].entity.transform.worldPosition;
                     const boneEnd = chain.nodes[j + 1].entity.transform.worldPosition;
-                    
-                    ikChain.addBone(new FIK.Bone3D(
+                    const bone = new FIK.Bone3D(
                         new FIK.V3(boneStart.x, boneStart.y, boneStart.z),
                         new FIK.V3(boneEnd.x, boneEnd.y, boneEnd.z)
-                    ));
+                    );
+                    ikChain.addBone(bone);
 
-                    if (j === 0) {
-                        fistBoneDirection.copy(boneEnd).substract(boneStart).normalize();
+                    const isRootBone = j === 0;
+                    if (isRootBone) {
+                        rootBoneDirection.copy(boneEnd).substract(boneStart).normalize();
+                        const components = rootBoneDirection.asArray();
+                        const maxComponent = Math.max(...components.map(Math.abs));
+                        const normalizedComponents = components.map(c => Math.abs(c) === maxComponent ? Math.sign(c) : 0);
+                        rootBoneDirection.setFromArray(normalizedComponents);
+                    }
+
+                    const node = chain.nodes[j];
+                    const constraint = node.constraint.instance;
+                    if (constraint) {
+                        if (constraint.isA(IKBallJoint)) {
+                            const ballJoint = constraint as IKBallJoint;
+                            const rangeDegrees = MathEx.toDegrees(ballJoint.rotationRange);
+                            if (isRootBone) {
+                                ikChain.setRotorBaseboneConstraint(
+                                        "local",
+                                        new FIK.V3(rootBoneDirection.x, rootBoneDirection.y, rootBoneDirection.z),
+                                        rangeDegrees
+                                    );
+                            } else {
+                                bone.joint.setAsBallJoint(rangeDegrees);    
+                            }
+                        }
                     }
                 }
 
@@ -73,17 +138,13 @@ export class IKSolver extends Component {
                     )
                 );
 
-                // Determine look at adjustment
-                const components = fistBoneDirection.asArray();
-                const maxComponent = Math.max(...components.map(Math.abs));
-                const normalizedComponents = components.map(c => Math.abs(c) === maxComponent ? Math.sign(c) : 0);
-                fistBoneDirection.setFromArray(normalizedComponents);
-                this._lookAtAdjustAxisUp = fistBoneDirection.y === 0;
-                this._lookAtAdjustAngle = Math.acos(fistBoneDirection.dot(Vector3.forward));
-                if (fistBoneDirection.x !== 0) {
-                    this._lookAtAdjustAngle *= -Math.sign(fistBoneDirection.x);
-                } else if (fistBoneDirection.y !== 0) {
-                    this._lookAtAdjustAngle *= Math.sign(fistBoneDirection.y);
+                // Determine look at adjustment                
+                this._lookAtAdjustAxisUp = rootBoneDirection.y === 0;
+                this._lookAtAdjustAngle = Math.acos(rootBoneDirection.dot(Vector3.forward));
+                if (rootBoneDirection.x !== 0) {
+                    this._lookAtAdjustAngle *= -Math.sign(rootBoneDirection.x);
+                } else if (rootBoneDirection.y !== 0) {
+                    this._lookAtAdjustAngle *= Math.sign(rootBoneDirection.y);
                 }
             }
             this._chains = chains;

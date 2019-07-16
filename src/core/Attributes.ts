@@ -59,3 +59,7 @@ export function enumLiterals(enumObject: object, getDisplayName?: (literal: stri
 export function requires(typeName: string) {
     return Reflect.metadata("requires", typeName);
 }
+
+export function rotationAngle() {
+    return Reflect.metadata("rotationAngle", true);
+}

@@ -156,6 +156,7 @@ import { ConeGeometry } from "../graphics/geometry/primitives/ConeGeometry";
 import { IKSolver } from "../animation/ik/IKSolver";
 import { IKNode } from "../animation/ik/IKNode";
 import { IKChain } from "../animation/ik/IKChain";
+import { IKConstraint, IKBallJoint } from "../animation/ik/IKConstraints";
 
 /**
  * @hidden
@@ -348,6 +349,8 @@ export class TypeRegistration {
         factory.registerObject(IKSolver, Component);
         factory.registerObject(IKChain, Component);
         factory.registerObject(IKNode, Component);
+        factory.registerObject(IKConstraint, SerializableObject);
+        factory.registerObject(IKBallJoint, IKConstraint);
 
         // Custom Behavior Nodes
         factory.registerObject(Delay, Operator);
