@@ -60,88 +60,20 @@ export class CodeBlock extends Asset implements ICodeBlock {
             const _port = (port && port.length > 0) ? `:${port}` : "";
             const finalCode = `${runtimeCode}\r\n//# sourceURL=${protocol}//${hostname}${_port}/${filePath}`;
 
-            if (process.env.CONFIG === "standalone") {
-                // Keep it simple in standalone
-                // Works in all browsers, but sources not visible in Firefox and Edge   
-                this._standaloneScript = document.createElement("script");
-                this._standaloneScript.appendChild(document.createTextNode(finalCode));
-                (document.head as HTMLHeadElement).appendChild(this._standaloneScript);
-                this._isLoading = false;
-                this._isLoaded = true;
-                return;
-            }
-
-            // Doesn't work in Edge (maybe it has a lower limit for data urls??)
-            /* 
-            this._standaloneScript = document.createElement("script");
-            this._standaloneScript.src = `data:text/javascript,${finalCode}`;
-            document.head.appendChild(this._standaloneScript);
-            this._isLoading = false;
-            this._isLoaded = true;
-            */
-
-            // Chrome & Firefox only. Sources have random URL in firefox
-            /*if (this._scriptUrl) {
-                window.URL.revokeObjectURL(this._scriptUrl);
-            }
-            this._scriptUrl = window.URL.createObjectURL(
-                new File(
-                    [finalCode],
-                    this.templatePath,
-                    { type: "text/javascript" }
-                )
-            );
-            this._standaloneScript = document.createElement("script");
-            this._standaloneScript.onload = () => {
-                let wasLoaded = this._isLoaded;
-                this._isLoaded = true;
-                this._isLoading = false;
-                if (!wasLoaded) {
-                    EngineEvents.assetLoaded.post(this);
-                }
-            };
-            this._isLoading = true;
-            this._standaloneScript.src = this._scriptUrl;                
-            */
-
-            // Works in all browsers, but sources not visible in Firefox (and Edge but who gives a fuck) 
+            // Works in all browsers, but sources not visible in Firefox and Edge   
             this._standaloneScript = document.createElement("script");
             this._standaloneScript.appendChild(document.createTextNode(finalCode));
             (document.head as HTMLHeadElement).appendChild(this._standaloneScript);
+          
+        } catch (e) {            
+            this.logRuntimeError(e.message);
+        } finally {
             const wasLoaded = this._isLoaded;
             this._isLoading = false;
             this._isLoaded = true;
             if (!wasLoaded) {
                 EngineEvents.assetLoaded.post(this);
             }
-
-            // window.onerror = (error, url, a, b, c) => {
-            //     if (url) {
-            //         console.log(`Compile error in: ${url}`);
-            //     }
-            // };
-
-            /*
-                // Works in all browsers, not sure if source is visible in Firefox
-                // And requires different invocation code path in editor 
-                this._functions = {};
-                for (var statement of program.body) {
-                    if (statement.type === "FunctionDeclaration") {
-                    let functionCode = EditorBehaviorExecution.generateRuntimeFunctionCode(statement.body);
-                    // TODO make it safe
-                    let functionName = statement.id.name.split("_")[0];
-                    // tslint:disable-next-line
-                    let params = statement.params.map((p: any) => p.name);            
-                    let func = new Function(...params, functionCode);
-                    // TODO: func.prototype.doIt = new Function("console.log('Doing it!!!');");                                    
-                    this._functions[functionName] = func;
-                }
-                this._isLoaded = true;
-            }
-            */
-        } catch (e) {
-            this.logRuntimeError(e.message);
-        } finally {
             BehaviorErrors.checkCodeBlock(this);
         }
     }
@@ -182,7 +114,7 @@ function onUpdate() {
     @Attributes.unserializable()
     private _isLoaded = false;
     @Attributes.unserializable()
-    private _isLoading = false;
+    private _isLoading = true;
 
     @Attributes.unserializable()
     private _standaloneScript!: HTMLScriptElement;
