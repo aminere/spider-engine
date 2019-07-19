@@ -331,6 +331,9 @@ export class SerializerUtils {
                     if (typeof(data) === "number") {
                         // old format
                         SerializerUtils.setProperty(target, index, data, tryUseSetter);
+                    } else if (typeof(data) === "object") {
+                        // old format
+                        SerializerUtils.setProperty(target, index, data.value, tryUseSetter);
                     } else {
                         // deserialize enums as numbers
                         const enumValue = enumLiterals.literals[data];
