@@ -99,8 +99,9 @@ export class BehaviorAPI {
             create: (props?: EntityProps): Entity => Entities.create(props),
             find: (name: string): Entity | null => Entities.find(name)
         },
-        GamePads: {
-            forEach: (handler: (gamePad: Gamepad, index: number) => void) => Gamepads.forEach(handler)
+        Gamepads: {
+            forEach: (handler: (gamePad: Gamepad, index: number) => void) => Gamepads.forEach(handler),
+            get: (index: number) => Gamepads.get(index)
         },
         Time: {
             deltaTime: () => Time.deltaTime,
