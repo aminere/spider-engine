@@ -60,6 +60,10 @@ export function requires(typeName: string) {
     return Reflect.metadata("requires", typeName);
 }
 
+export function exclusiveWith(typeName: string | string[]) {
+    return Reflect.metadata("exclusiveWith", typeName);
+}
+
 export function rotationAngle() {
     return Reflect.metadata("rotationAngle", true);
 }

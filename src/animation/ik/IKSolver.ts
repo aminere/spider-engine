@@ -15,6 +15,7 @@ namespace Private {
     export let basis = new Basis();
 }
 
+@Attributes.exclusiveWith("IKNode")
 export class IKSolver extends Component {
 
     @Attributes.unserializable()
