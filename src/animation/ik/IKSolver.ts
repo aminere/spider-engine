@@ -13,6 +13,13 @@ const FIK = require("fullik");
 
 namespace Private {
     export let basis = new Basis();
+
+    // tslint:disable-next-line
+    export function onChainTransformChanged(chain: IKChain, ikChain: any) { // FIK.Chain3D
+        console.assert(chain.nodes.length > 0);
+        const { x, y, z } = chain.nodes[0].entity.transform.worldPosition;
+        ikChain.setBaseLocation(new FIK.V3(x, y, z));
+    }
 }
 
 @Attributes.exclusiveWith("IKNode")
@@ -47,7 +54,7 @@ export class IKSolver extends Component {
                         return false;
                     }
                     const chain = child.getComponent(IKChain);
-                    if (chain) {
+                    if (chain) {                        
                         chains.push(chain);
                     }
                     return true;
@@ -89,6 +96,8 @@ export class IKSolver extends Component {
                 }
 
                 const ikChain = new FIK.Chain3D();
+                chain.entity.transform.changed.attach(() => Private.onChainTransformChanged(chain, ikChain));
+                
                 for (let j = 0; j < chain.nodes.length - 1; ++j) {
                     const boneStart = chain.nodes[j].entity.transform.worldPosition;
                     const boneEnd = chain.nodes[j + 1].entity.transform.worldPosition;
@@ -196,6 +205,14 @@ export class IKSolver extends Component {
                     lookAtDir.copy(bone.end).substract(bone.start).normalize();
                     node.entity.transform.rotation.copy(lookAtRotation);
                 }
+            }
+        }
+    }
+
+    destroy() {
+        if (this._chains) {
+            for (const chain of this._chains) {
+                chain.entity.transform.changed.detach();
             }
         }
     }
