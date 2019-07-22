@@ -9,6 +9,10 @@ import { Vector4 } from "../math/Vector4";
 import { Component } from "./Component";
 import { ObjectProps } from "./Types";
 
+namespace Private {
+    export let changeCallbacks: VoidSyncEvent[] = [];
+}
+
 /**
  * @hidden
  */
@@ -201,17 +205,22 @@ export class Transform extends Component {
         this._invWorldMatrixDirty = true;
         if (this.entity) {
             this.entity.traverse(e => {
-                let transform = e.transform;
+                const { transform } = e;
                 if (transform) {
                     transform._worldMatrixDirty = true;
                     transform._invWorldMatrixDirty = true;
-                    transform.changed.post();
+                    Private.changeCallbacks.push(transform.changed);
                     return true;
                 } else {
                     return false;
                 }
             });
         }
+
+        for (const changed of Private.changeCallbacks) {
+            changed.post();
+        }
+        Private.changeCallbacks.length = 0;
         this.changed.post();
     }    
 
