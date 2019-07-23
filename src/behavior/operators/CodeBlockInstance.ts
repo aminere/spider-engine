@@ -13,6 +13,7 @@ import { BasePin } from "../Pin";
 import { ExecutionStatus } from "../ExecutionStatus";
 import { BehaviorAPI } from "../BehaviorAPI";
 import { BehaviorAPIFactory } from "../BehaviorAPIFactory";
+import { TDataPin } from "../DataPins";
 
 /**
  * @hidden
@@ -59,8 +60,8 @@ export class CodeBlockInstance extends Operator {
             this.executeFunction("onDestroy");
 
             // attempt to release graphic resources if any
-            for (let variable of Object.keys(this._stateVariables)) {
-                let value = this._stateVariables[variable].value;
+            for (const variable of Object.values(this._stateVariables)) {
+                const value = variable[TDataPin.runtimeValueAccessor];
                 if (value && value.constructor && value.constructor.name === "VertexBuffer") {
                     (value as VertexBuffer).unload(WebGL.context);
                 }
@@ -74,10 +75,15 @@ export class CodeBlockInstance extends Operator {
         super.destroy();
     }
 
+    onBehaviorStarted() {
+        this.initializeStateIfNecessary();
+        this.executeFunction("onBehaviorStarted");
+    }
+
     // Called everytime the start pin is activated
     onStart() {
 
-        let codeBlock = this.codeBlock as CodeBlock;
+        const codeBlock = this.codeBlock as CodeBlock;
 
         this.initializeStateIfNecessary();
         if (codeBlock.runtimeError) {
@@ -90,7 +96,7 @@ export class CodeBlockInstance extends Operator {
             return ExecutionStatus.Continue;
         }
 
-        let result = this.executeFunction("onStart");
+        const result = this.executeFunction("onStart");
         if (result !== undefined) {
             return result;
         } else {
@@ -104,7 +110,7 @@ export class CodeBlockInstance extends Operator {
     }
 
     onUpdate() {
-        let codeBlock = this.codeBlock as CodeBlock;
+        const codeBlock = this.codeBlock as CodeBlock;
         if (codeBlock.runtimeError || codeBlock.isLoading) {
             return ExecutionStatus.Continue;
         }
@@ -119,7 +125,7 @@ export class CodeBlockInstance extends Operator {
         }
 
         if (this._onStartExecutionPending) {
-            let onStartResult = this.executeFunction("onStart");
+            const onStartResult = this.executeFunction("onStart");
             if (onStartResult !== undefined) {
                 this._onStartExecutionPending = false;
                 return onStartResult;
@@ -132,7 +138,7 @@ export class CodeBlockInstance extends Operator {
             }
         }
 
-        let result = this.executeFunction("onUpdate");
+        const result = this.executeFunction("onUpdate");
         if (result !== undefined) {
             return result;
         } else {
@@ -149,7 +155,7 @@ export class CodeBlockInstance extends Operator {
     }
 
     onSignalReceived(inputPinName: string) {
-        let codeBlock = this.codeBlock as CodeBlock;
+        const codeBlock = this.codeBlock as CodeBlock;
         if (codeBlock.runtimeError) {
             return;
         }
@@ -157,7 +163,7 @@ export class CodeBlockInstance extends Operator {
     }
 
     onCodeBlockPinsChanged() {
-        let codeBlock = this.codeBlock as CodeBlock;
+        const codeBlock = this.codeBlock as CodeBlock;
         this._customPins = codeBlock.pins.copy();
         this._stateInitialized = false;
     }
@@ -165,7 +171,7 @@ export class CodeBlockInstance extends Operator {
     findPin(pinId: string) {
         let pin = super.findPin(pinId);
         if (!pin) {
-            let pinRef = this._customPins ? this._customPins.data.find(p => (p.instance as BasePin).id === pinId) : undefined;
+            const pinRef = this._customPins ? this._customPins.data.find(p => (p.instance as BasePin).id === pinId) : undefined;
             pin = pinRef ? pinRef.instance : undefined;
         }
         return pin;
@@ -178,7 +184,7 @@ export class CodeBlockInstance extends Operator {
     findPinByName(pinName: string) {
         let pin = super.findPin(pinName);
         if (!pin) {
-            let pinRef = this._customPins.data.find(p => (p.instance as BasePin).name === pinName);
+            const pinRef = this._customPins.data.find(p => (p.instance as BasePin).name === pinName);
             pin = pinRef ? pinRef.instance : undefined;
         }
         return pin;
@@ -196,7 +202,7 @@ export class CodeBlockInstance extends Operator {
 
     // tslint:disable-next-line
     private executeFunction(functionName: string, ...params: any[]) {
-        let codeBlock = this.codeBlock as CodeBlock;
+        const codeBlock = this.codeBlock as CodeBlock;
         try {
             // Old method, for reference
             // if (process.env.CONFIG === "editor") {
@@ -220,7 +226,7 @@ export class CodeBlockInstance extends Operator {
             //         );
             //     }
             // }
-            let standaloneFunctionName = `${functionName}_${CodeBlockInternal.trimId(codeBlock.id)}`;
+            const standaloneFunctionName = `${functionName}_${CodeBlockInternal.trimId(codeBlock.id)}`;
             if (standaloneFunctionName in window) {
                 this.initializeStateIfNecessary();
                 return window[standaloneFunctionName](
@@ -238,11 +244,11 @@ export class CodeBlockInstance extends Operator {
     }
 
     private onCodeBlockChanged(info: AssetChangedEvent) {
-        let oldBlock = info.oldAsset as CodeBlock;
+        const oldBlock = info.oldAsset as CodeBlock;
         if (oldBlock) {
             oldBlock.pinChanged.detach(this.onCodeBlockPinsChanged);
         }
-        let newBlock = info.newAsset as CodeBlock;
+        const newBlock = info.newAsset as CodeBlock;
         if (newBlock) {
             this._customPins = newBlock.pins.copy();
             this._stateInitialized = false;
@@ -252,7 +258,7 @@ export class CodeBlockInstance extends Operator {
 
     private initializeStateIfNecessary() {
         if (!this._stateInitialized) {
-            let codeBlock = this.codeBlock as CodeBlock;
+            const codeBlock = this.codeBlock as CodeBlock;
             try {
                 this._stateVariables = BehaviorUtils.initializeCodeBlockInstanceState(
                     codeBlock,
