@@ -28,6 +28,7 @@ import { Vector2 } from "../math/Vector2";
 import { Entity } from "../core/Entity";
 import { VoidSyncEvent } from "ts-events";
 import { Random } from "../math/Random";
+import { Input } from "../input/Input";
 
 namespace Private {
     export const transientState = {};
@@ -102,6 +103,15 @@ export class BehaviorAPI {
         Gamepads: {
             forEach: (handler: (gamePad: Gamepad, index: number) => void) => Gamepads.forEach(handler),
             get: (index: number) => Gamepads.get(index)
+        },
+        Input: {
+            touchX: () => Input.touchX,
+            touchY: () => Input.touchY,
+            touchPressed: () => Input.touchPressed,
+            touchMoved: () => Input.touchMoved,
+            touchReleased: () => Input.touchReleased,
+            wheelMoved: () => Input.wheelMoved,
+            keyChanged: () => Input.keyChanged
         },
         Time: {
             deltaTime: () => Time.deltaTime,

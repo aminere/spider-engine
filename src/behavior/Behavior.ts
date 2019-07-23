@@ -115,10 +115,10 @@ export class Behavior extends Asset implements IBehavior {
 
     static isConnectionValid(behavior: Behavior, src: PinReference, dest: PinReference) {
         if (src.operatorId !== dest.operatorId) {
-            let srcPin = behavior.findPin(src.operatorId, src.pinId);
-            let destPin = behavior.findPin(dest.operatorId, dest.pinId);
+            const srcPin = behavior.findPin(src.operatorId, src.pinId);
+            const destPin = behavior.findPin(dest.operatorId, dest.pinId);
             if (srcPin && destPin) {
-                let behaviorId = behavior.id;
+                const behaviorId = behavior.id;
                 if (src.operatorId === behaviorId || dest.operatorId === behaviorId) {
                     // connection between the behavior and an operator
                     if (srcPin.type === destPin.type) {
@@ -142,11 +142,12 @@ export class Behavior extends Asset implements IBehavior {
 
     // IBehavior interface
     sendSignal(operatorId: string, pinId: string) {
-        if (operatorId in this._signalConnectionMap) {
-            if (pinId in this._signalConnectionMap[operatorId]) {
-                let pinReferences = this._signalConnectionMap[operatorId][pinId];
-                for (var pinReference of pinReferences) {
-                    let operator = this.findOperator(pinReference.operatorId);
+        const signal = this._signalConnectionMap[operatorId];
+        if (Boolean(signal)) {
+            const pinReferences = signal[pinId];
+            if (Boolean(pinReferences)) {
+                for (const pinReference of pinReferences) {
+                    const operator = this.findOperator(pinReference.operatorId);
                     if (operator) {
                         this.activateInputPin(operator as Operator, pinReference.pinId);
                         if (process.env.CONFIG === "editor") {
@@ -159,7 +160,7 @@ export class Behavior extends Asset implements IBehavior {
     }
 
     fetchInputData(operatorId: string) {
-        let operatorInfo = this._dataConnectionMap[operatorId];
+        const operatorInfo = this._dataConnectionMap[operatorId];
         if (!operatorInfo) {            
             // let operator = this.findOperator(operatorId);
             // if (operator) {
@@ -170,14 +171,14 @@ export class Behavior extends Asset implements IBehavior {
             // TODO make sure all pins are set to undefined in the other common scenario!
         }
         for (let inputDataPinId of Object.keys(operatorInfo)) {
-            let dataSource = operatorInfo[inputDataPinId];
+            const dataSource = operatorInfo[inputDataPinId];
             let srcPin: BasePin | undefined;
             let srcConverter: Converter | undefined = undefined;
             if (dataSource.operatorId === this.id) {
                 srcPin = this.findBehaviorPin(dataSource.pinId);
             } else {
                 // check operators
-                let operator = this.findOperator(dataSource.operatorId);
+                const operator = this.findOperator(dataSource.operatorId);
                 if (operator) {
                     srcPin = operator.findPin(dataSource.pinId);
                     if (operator.isA(Converter)) {
@@ -191,7 +192,7 @@ export class Behavior extends Asset implements IBehavior {
                 continue;
             }
             if (srcPin.isA(DataPin)) {
-                let expectedSourcePinType = (dataSource.operatorId === this.id) ? PinType.Input : PinType.Output;
+                const expectedSourcePinType = (dataSource.operatorId === this.id) ? PinType.Input : PinType.Output;
                 if (srcPin.type !== expectedSourcePinType) {
                     Debug.log(`Trying to get data from an input pin ${srcPin.name}`);
                 } else {
@@ -201,11 +202,11 @@ export class Behavior extends Asset implements IBehavior {
                         srcConverter.convert();
                         this.checkCodeBlockError(srcConverter);
                     }
-                    let data = (srcPin as DataPin).getData();
-                    let destPin = this.findPin(operatorId, inputDataPinId);
+                    const data = (srcPin as DataPin).getData();
+                    const destPin = this.findPin(operatorId, inputDataPinId);
                     if (destPin) {
                         if (destPin.isA(DataPin)) {
-                            let expectedDestPinType = (operatorId === this.id) ? PinType.Output : PinType.Input;
+                            const expectedDestPinType = (operatorId === this.id) ? PinType.Output : PinType.Input;
                             if (destPin.type !== expectedDestPinType) {
                                 Debug.log(`Trying to set data on an output pin ${destPin.name}`);
                             } else {
@@ -245,7 +246,7 @@ export class Behavior extends Asset implements IBehavior {
     setProperty(name: string, value: any) {        
         super.setProperty(name, value);
         if (name === "_operators") {
-            for (let _operator of this._operators.data) {
+            for (const _operator of this._operators.data) {
                 if (_operator.instance) {
                     _operator.instance.ownerBehavior = this;
                 }
@@ -254,14 +255,14 @@ export class Behavior extends Asset implements IBehavior {
     }
 
     isLoaded() {
-        for (let operatorRef of this._operators.data) {
-            let operator = operatorRef.instance as BehaviorNode;
+        for (const operatorRef of this._operators.data) {
+            const operator = operatorRef.instance as BehaviorNode;
             if (!operator.isLoaded()) {
                 return false;
             }
         }
 
-        for (let v of this._inlineVariables.data) {
+        for (const v of this._inlineVariables.data) {
             if (!BehaviorUtils.isPinLoaded(v.data.instance as BasePin)) {
                 return false;
             }
@@ -274,15 +275,17 @@ export class Behavior extends Asset implements IBehavior {
         this.buildConnectionMaps();
 
         // This is a one-time start event, to be typically used for attaching to events
-        for (var node of this._operators.data) {
+        for (const node of this._operators.data) {
             (node.instance as BehaviorNode).onBehaviorStarted();
         }
 
         // Fire the start signal
-        if (this.id in this._signalConnectionMap) {
-            if (OperatorInternal.startPinId in this._signalConnectionMap[this.id]) {
-                for (var destPin of this._signalConnectionMap[this.id][OperatorInternal.startPinId]) {
-                    let operator = this.findOperator(destPin.operatorId);
+        const signal = this._signalConnectionMap[this.id];
+        if (Boolean(signal)) {
+            const startPinSignal = signal[OperatorInternal.startPinId];
+            if (Boolean(startPinSignal)) {
+                for (const destPin of startPinSignal) {
+                    const operator = this.findOperator(destPin.operatorId);
                     if (operator) {
                         this.activateInputPin(operator as Operator, destPin.pinId);
                         if (process.env.CONFIG === "editor") {
@@ -297,7 +300,7 @@ export class Behavior extends Asset implements IBehavior {
     update() {
 
         this._finishedOperators.length = 0;
-        for (let operator of this._activeOperators) {
+        for (const operator of this._activeOperators) {
             this.fetchInputData(operator.id);
             const status = operator.onUpdate();
             this.checkCodeBlockError(operator);
@@ -307,8 +310,8 @@ export class Behavior extends Asset implements IBehavior {
         }
 
         if (this._finishedOperators.length > 0) {
-            let finishedOperatorIds: string[] = [];
-            for (let operator of this._finishedOperators) {
+            const finishedOperatorIds: string[] = [];
+            for (const operator of this._finishedOperators) {
                 const index = this._activeOperators.indexOf(operator);
                 console.assert(index >= 0);
                 this._activeOperators.splice(index, 1);
@@ -338,7 +341,7 @@ export class Behavior extends Asset implements IBehavior {
     }
 
     removeConnection(connection: Connection) {
-        let index = this._connections.data.indexOf(connection);
+        const index = this._connections.data.indexOf(connection);
         if (index >= 0) {
             this._connections.data.splice(index, 1);
         }
@@ -347,8 +350,8 @@ export class Behavior extends Asset implements IBehavior {
 
     removeVariable(variable: InlineVariable) {
         // remove connections to this variable
-        for (var i = 0; i < this._connections.data.length;) {
-            let c = this._connections.data[i];
+        for (let i = 0; i < this._connections.data.length;) {
+            const c = this._connections.data[i];
             if (c.src.operatorId === variable.id || c.dest.operatorId === variable.id) {
                 this._connections.data.splice(i, 1);
             } else {
@@ -356,8 +359,8 @@ export class Behavior extends Asset implements IBehavior {
             }
         }
 
-        for (i = 0; i < this._inlineVariables.data.length; ++i) {
-            let v = this._inlineVariables.data[i];
+        for (let i = 0; i < this._inlineVariables.data.length; ++i) {
+            const v = this._inlineVariables.data[i];
             if (v.id === variable.id) {
                 this._inlineVariables.data.splice(i, 1);
                 break;
@@ -366,10 +369,10 @@ export class Behavior extends Asset implements IBehavior {
     }
 
     removeNode(node: BehaviorNode) {
-        let removedConnections: Connection[] = [];
+        const removedConnections: Connection[] = [];
         // remove connections to this operator
-        for (var i = 0; i < this._connections.data.length;) {
-            let c = this._connections.data[i];
+        for (let i = 0; i < this._connections.data.length;) {
+            const c = this._connections.data[i];
             if (c.src.operatorId === node.id || c.dest.operatorId === node.id) {
                 removedConnections.push(c);
                 this._connections.data.splice(i, 1);
@@ -378,8 +381,8 @@ export class Behavior extends Asset implements IBehavior {
             }
         }
 
-        for (i = 0; i < this._operators.data.length; ++i) {
-            let o = this._operators.data[i];
+        for (let i = 0; i < this._operators.data.length; ++i) {
+            const o = this._operators.data[i];
             if (o.instance && o.instance === node) {
                 this._operators.data.splice(i, 1);
                 break;
@@ -392,12 +395,12 @@ export class Behavior extends Asset implements IBehavior {
     }
 
     clearOrphanVariables() {
-        let removedVariables: InlineVariable[] = [];
+        const removedVariables: InlineVariable[] = [];
         // Remove orphan variables not connected to anything
-        for (var i = 0; i < this._inlineVariables.data.length;) {
+        for (let i = 0; i < this._inlineVariables.data.length;) {
             let remainingConnections = 0;
-            let variable = this._inlineVariables.data[i];
-            for (var c of this._connections.data) {
+            const variable = this._inlineVariables.data[i];
+            for (const c of this._connections.data) {
                 if (c.src.operatorId === variable.id || c.dest.operatorId === variable.id) {
                     ++remainingConnections;
                 }
@@ -423,7 +426,7 @@ export class Behavior extends Asset implements IBehavior {
 
     findOperator(id: string) {
         // TODO optimize by making operatos in a dictionary instead of an array
-        for (var operator of this._operators.data) {
+        for (const operator of this._operators.data) {
             if (operator.instance && operator.instance.id === id) {
                 return operator.instance;
             }
