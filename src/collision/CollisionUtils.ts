@@ -316,12 +316,11 @@ export class CollisionUtils {
                             }
 
                             // skip if moving away from plane
-                            const dot = plane.normal.dot(velocityNormalized);
-                            if (dot >= 0) {
+                            const nDotVelocity = plane.normal.dot(velocity);
+                            if (nDotVelocity > 0) {
                                 continue;
                             }
-
-                            const nDotVelocity = plane.normal.dot(velocity);
+                            
                             let t0 = -1;
                             let t1 = -1;
                             const distToPlane = plane.getSignedDistance(position);
@@ -348,7 +347,7 @@ export class CollisionUtils {
 
                             } else {
                                 if (Math.abs(distToPlane) < 1) {
-                                    // plane is embedded with the plane and will be colliding with it at all times
+                                    // collider is embedded with the plane and will be colliding with it at all times
                                     t0 = 0;
                                     t1 = 1;
                                     embeddedInPlane = true;
@@ -507,13 +506,13 @@ export class CollisionUtils {
         const firstPlane = Plane.fromPool();
         const secondPlane = Plane.fromPool();
         const toWorldSpace = (local: Vector3) => local.multiply(_radius);
-        const skin = .05;
+        const skin = .01;
         for (let i = 0; i < 3; ++i) {
             const collision = checkCollision(localPosition, _radius, localVelocity);
             if (!collision) {
                 positionOut.copy(toWorldSpace(dest));
                 return;
-            }            
+            }
 
             const shortDist = Math.max(toClosestIntersection - skin, 0);
             localPosition.add(Vector3.fromPool().copy(velocityNormalized).multiply(shortDist));
@@ -523,7 +522,8 @@ export class CollisionUtils {
                 const slidingPlaneNormal = Vector3.fromPool().copy(localPosition).substract(closestColliderIntersectionPoint).normalize();
                 firstPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);    
                 const longRadius = 1 + skin;
-                dest.substract(slidingPlaneNormal.multiply(firstPlane.getSignedDistance(dest) - longRadius));
+                const d = firstPlane.getSignedDistance(dest);
+                dest.substract(slidingPlaneNormal.multiply(d - longRadius));
                 localVelocity.substractVectors(dest, localPosition);
 
             } else if (i === 1) {
