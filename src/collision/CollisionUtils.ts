@@ -13,9 +13,6 @@ import { Triangle } from "../math/Triangle";
 import { defaultAssets } from "../assets/DefaultAssets";
 import { Transform } from "../core/Transform";
 
-/**
- * @hidden
- */
 namespace Private {
     export namespace boxIntersectsWithSphere {
         export let boxMin = new Vector3();
@@ -88,9 +85,6 @@ namespace Private {
     export let sphereMesh: VertexBuffer;
 }
 
-/**
- * @hidden
- */
 export class CollisionUtils {
 
     static get boxMesh() {
@@ -149,12 +143,12 @@ export class CollisionUtils {
         let box1MaxArray = Private.getBoxShapeMax(box1, boxWorldPos1, box1Max);
         let box2MinArray = Private.getBoxShapeMin(box2, boxWorldPos2, box2Min);
         let box2MaxArray = Private.getBoxShapeMax(box2, boxWorldPos2, box2Max);
-        for (var i = 0; i < 3; ++i) {
+        for (let i = 0; i < 3; ++i) {
             if (box1MinArray[i] > box2MaxArray[i]) {
                 return false;
             }
         }
-        for (i = 0; i < 3; ++i) {
+        for (let i = 0; i < 3; ++i) {
             if (box2MinArray[i] > box1MaxArray[i]) {
                 return false;
             }
@@ -168,28 +162,26 @@ export class CollisionUtils {
         sphere2: SphereCollisionShape, 
         sphere2Transform: Transform
     ) {
-        let { _sphere1WorldPos, _sphere2WorldPos } = Private.sphereIntersectsWithSphereShape;
-        let rotatedCenter1 = Vector3.dummy.copy(sphere1.center).rotate(sphere1Transform.worldRotation);
-        let rotatedCenter2 = Vector3.dummy2.copy(sphere2.center).rotate(sphere2Transform.worldRotation);
+        const { _sphere1WorldPos, _sphere2WorldPos } = Private.sphereIntersectsWithSphereShape;
+        const rotatedCenter1 = Vector3.dummy.copy(sphere1.center).rotate(sphere1Transform.worldRotation);
+        const rotatedCenter2 = Vector3.dummy2.copy(sphere2.center).rotate(sphere2Transform.worldRotation);
         _sphere1WorldPos.addVectors(rotatedCenter1, sphere1Transform.worldPosition);
         _sphere2WorldPos.addVectors(rotatedCenter2, sphere2Transform.worldPosition);
         return this.sphereIntersectsWithSphere(_sphere1WorldPos, sphere1.radius, _sphere2WorldPos, sphere2.radius);
     }
 
     static sphereIntersectsWithSphere(sphere1Center: Vector3, sphere1Radius: number, sphere2Center: Vector3, sphere2Radius: number) {
-        let distSquared = Vector3.distanceSq(sphere1Center, sphere2Center);
-        let radii = sphere1Radius + sphere2Radius;
+        const distSquared = Vector3.distanceSq(sphere1Center, sphere2Center);
+        const radii = sphere1Radius + sphere2Radius;
         return (distSquared < (radii * radii));
     }    
 
-    static moveSphere(
+    static moveSphere2(
         _position: Vector3,
         _radius: number,
         _velocity: Vector3,
-        _colliders: Collider[],
+        colliders: Collider[],
         positionOut: Vector3,
-        velocityOut: Vector3,
-        contactNormal?: Vector3,
         include?: CollisionGroup[],
         exclude?: CollisionGroup[]
     ) {
@@ -205,33 +197,29 @@ export class CollisionUtils {
         const closestSphereIntersectionPoint = Vector3.fromPool();
         const closestColliderIntersectionPoint = Vector3.fromPool();
         const contactPlane = Plane.fromPool();
-        let maxRecursions = 3;
-
-        const moveSphereRecursive = (
+        const velocityNormalized = Vector3.fromPool();
+        let toClosestIntersection = 0;
+        const checkCollision = (
             position: Vector3,
             radius: number,
             velocity: Vector3,
-            colliders: Collider[],
-            newPosition: Vector3,
-            newVelocity: Vector3
         ) => {
+            toClosestIntersection = 999999;
             const velocityLength = velocity.length;
             if (velocityLength === 0) {
                 return false;
             }
             let collision = false;
-            let toClosestIntersection = 999999;
-            let velocityNormalized = Vector3.fromPool().copy(velocity).multiply(1 / velocityLength);
-            // let invVelocityNormalized = Vector3.fromPool().copy(velocityNormalized).flip();
+            velocityNormalized.copy(velocity).multiply(1 / velocityLength);
             for (const collider of colliders) {
                 if (collider.group && !collider.group.isAllowed(include, exclude)) {
                     continue;
                 }
-                for (let shape of collider.shapes) {
+                for (const shape of collider.shapes) {
                     if (!shape) {
                         continue;
                     }
-                    let supported = shape.isA(BoxCollisionShape) 
+                    const supported = shape.isA(BoxCollisionShape) 
                     || shape.isA(SphereCollisionShape) 
                     || shape.isA(MeshCollisionShape);
                     if (supported) {
@@ -258,10 +246,10 @@ export class CollisionUtils {
                             vertices = mesh.vertexBuffer.attributes.position as number[];
                         }
 
-                        let triangleCount = (vertices.length / 3) / 3;
+                        const triangleCount = (vertices.length / 3) / 3;
                         const { worldMatrix } = collider.entity.transform;
                         for (let i = 0; i < triangleCount; ++i) {
-                            let index = i * 9;
+                            const index = i * 9;
                             if (box) {
                                 v1.set(
                                     (vertices[index] * box.extent.x) + box.center.x,
@@ -319,7 +307,7 @@ export class CollisionUtils {
                             }
 
                             plane.setFromPoints(v1, v2, v3);
-                            let classification = plane.classifyPoint(position);
+                            const classification = plane.classifyPoint(position);
 
                             // skip planes facing away from the sphere 
                             // TODO is this necessary??
@@ -328,15 +316,15 @@ export class CollisionUtils {
                             }
 
                             // skip if moving away from plane
-                            let dot = plane.normal.dot(velocityNormalized);
+                            const dot = plane.normal.dot(velocityNormalized);
                             if (dot >= 0) {
                                 continue;
                             }
 
-                            let nDotVelocity = plane.normal.dot(velocity);
+                            const nDotVelocity = plane.normal.dot(velocity);
                             let t0 = -1;
                             let t1 = -1;
-                            let distToPlane = plane.getSignedDistance(position);
+                            const distToPlane = plane.getSignedDistance(position);
                             let embeddedInPlane = false;
 
                             if (nDotVelocity !== 0) {
@@ -490,7 +478,7 @@ export class CollisionUtils {
                             }
 
                             // Set result:
-                            if (foundCollision === true) {
+                            if (foundCollision) {
                                 // distance to collision: ’t’ is time of collision
                                 let distToCollision = collisionTime * velocityLength;
                                 // Does this triangle qualify for the closest hit?
@@ -509,71 +497,45 @@ export class CollisionUtils {
                 }
             }
 
-            if (collision) {
-                let destinationPoint = Vector3.fromPool().addVectors(position, velocity);
-                let _newPosition = Vector3.fromPool().copy(position);
-
-                // move close to collision but not quite
-                const skin = .1;
-                if (toClosestIntersection >= skin) {
-                    let v = Vector3.fromPool().copy(velocityNormalized).multiply(toClosestIntersection - skin);
-                    _newPosition.addVectors(position, v);
-                    // Adjust polygon intersection point (so sliding
-                    // plane will be unaffected by the fact that we
-                    // move slightly less than collision tells us)
-                    v.copy(velocityNormalized).multiply(skin);
-                    closestColliderIntersectionPoint.substract(v);
-                }
-
-                let slidingPlaneOrigin = Vector3.fromPool().copy(closestColliderIntersectionPoint);
-                let slidingPlaneNormal = Vector3.fromPool().copy(_newPosition).substract(closestColliderIntersectionPoint).normalize();
-                contactPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);
-                let dist = contactPlane.getSignedDistance(destinationPoint);
-                let newDestinationPoint = Vector3.fromPool().copy(slidingPlaneNormal).multiply(-dist).add(destinationPoint);
-                let _newVelocity = Vector3.fromPool().copy(newDestinationPoint).substract(closestColliderIntersectionPoint);
-                // // determine sliding direction
-                // let perpendicularVelocity = Vector3.fromPool().copy(velocity).projectOnVector(slidingPlaneNormal);
-                // let _newVelocity = Vector3.fromPool().copy(velocity).substract(perpendicularVelocity);
-                // newVelocity.copy(_newVelocity);
-                newVelocity.copy(_newVelocity);
-                newPosition.copy(_newPosition);
-                if (contactNormal) {
-                    contactNormal.copy(slidingPlaneNormal);
-                }
-
-                --maxRecursions;
-                if (maxRecursions < 0) {
-                    if (process.env.NODE_ENV === "development") {
-                        Debug.logWarning("Max collision recursions hit");
-                    }
-                    return true;
-                }
-
-                // velocity too small, stop recursing
-                if (newVelocity.length < .001) {
-                    return true;
-                }
-
-                moveSphereRecursive(_newPosition, radius, _newVelocity, colliders, newPosition, newVelocity);
-                return true;
-            } else {
-                return false;
-            }            
+            return collision;
         };
-        
+
         // convert position & velocity to ellipsoid space
-        let localVelocity = Vector3.fromPool().copy(_velocity).multiply(1 / _radius);
-        let localPosition = Vector3.fromPool().copy(_position).multiply(1 / _radius);
-        let _collision = moveSphereRecursive(localPosition, _radius, localVelocity, _colliders, positionOut, velocityOut);
-        if (_collision) {
-            // convert position & velocity back to world space
-            positionOut.multiply(_radius);
-            velocityOut.multiply(_radius);
-        } else {
-            positionOut.copy(_position);
-            velocityOut.copy(_velocity);
+        const localPosition = Vector3.fromPool().copy(_position).multiply(1 / _radius);
+        const localVelocity = Vector3.fromPool().copy(_velocity).multiply(1 / _radius);
+        const dest = Vector3.fromPool().addVectors(localPosition, localVelocity);
+        const firstPlane = Plane.fromPool();
+        const secondPlane = Plane.fromPool();
+        const toWorldSpace = (local: Vector3) => local.multiply(_radius);
+        const skin = .05;
+        for (let i = 0; i < 3; ++i) {
+            const collision = checkCollision(localPosition, _radius, localVelocity);
+            if (!collision) {
+                positionOut.copy(toWorldSpace(dest));
+                return;
+            }            
+
+            const shortDist = Math.max(toClosestIntersection - skin, 0);
+            localPosition.add(Vector3.fromPool().copy(velocityNormalized).multiply(shortDist));
+            
+            if (i === 0) {
+                const slidingPlaneOrigin = Vector3.fromPool().copy(closestColliderIntersectionPoint);
+                const slidingPlaneNormal = Vector3.fromPool().copy(localPosition).substract(closestColliderIntersectionPoint).normalize();
+                firstPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);    
+                const longRadius = 1 + skin;
+                dest.substract(slidingPlaneNormal.multiply(firstPlane.getSignedDistance(dest) - longRadius));
+                localVelocity.substractVectors(dest, localPosition);
+
+            } else if (i === 1) {
+                const slidingPlaneOrigin = Vector3.fromPool().copy(closestColliderIntersectionPoint);
+                const slidingPlaneNormal = Vector3.fromPool().copy(localPosition).substract(closestColliderIntersectionPoint).normalize();
+                secondPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);  
+                const crease = Vector3.fromPool().crossVectors(firstPlane.normal, secondPlane.normal).normalize(); //.flip();
+                const dist = Vector3.fromPool().substractVectors(dest, localPosition).dot(crease);
+                localVelocity.copy(crease).multiply(dist);
+                dest.addVectors(localPosition, localVelocity);
+            }
         }
-        return _collision;
-        // return moveSphereRecursive(_position, _radius, _velocity, _colliders, positionOut, velocityOut);
+        positionOut.copy(toWorldSpace(localPosition));
     }
 }
