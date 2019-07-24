@@ -14,8 +14,23 @@ import { Components } from "../core/Components";
 import { Entity } from "../core/Entity";
 import { Transform } from "../core/Transform";
 
+interface Collision {
+    selfIntersectionPoint: Vector3;
+    intersectionPoint: Vector3;
+    toIntersection: number;
+}
+
 namespace Private {    
-    
+
+    let boxMesh: VertexBuffer;
+    let sphereMesh: VertexBuffer;
+
+    let collision: Collision = {
+        selfIntersectionPoint: new Vector3(),
+        intersectionPoint: new Vector3(),
+        toIntersection: 0
+    };
+
     export function getLowestRoot(a: number, b: number, c: number, maxR: number) {
         // Check if a solution exists
         let determinant = b * b - 4 * a * c;
@@ -45,9 +60,6 @@ namespace Private {
         }
         return null;
     }
-
-    let boxMesh: VertexBuffer;
-    let sphereMesh: VertexBuffer;
     
     function getBoxMesh() {
         if (!boxMesh) {
@@ -63,36 +75,16 @@ namespace Private {
         return sphereMesh;
     }
 
-    let sphereIntersectionPoint: Vector3;
-    let colliderIntersectionPoint: Vector3;
-    let closestSphereIntersectionPoint: Vector3;
-    let closestColliderIntersectionPoint: Vector3;    
-    let velocityNormalized: Vector3;
-    let contactPlane: Plane;
-    let toClosestIntersection = 0;
-
-    function checkCollision(
+    function detectCollision(
         position: Vector3, 
         velocity: Vector3,
         radius: Vector3,
         include?: CollisionGroup[],
         exclude?: CollisionGroup[]
-    ) {        
-        const velocityLength = velocity.length;
-        if (velocityLength === 0) {
-            return false;
-        }
+    ) {
+        let collisionValid = false;
+        collision.toIntersection = 999999;
 
-        toClosestIntersection = 999999;
-        sphereIntersectionPoint = Vector3.fromPool();
-        colliderIntersectionPoint = Vector3.fromPool();
-        closestSphereIntersectionPoint = Vector3.fromPool();
-        closestColliderIntersectionPoint = Vector3.fromPool();
-        velocityNormalized = Vector3.fromPool();
-        contactPlane = Plane.fromPool();        
-    
-        let collision = false;
-        velocityNormalized.copy(velocity).divide(velocityLength);
         const boxVertices = getBoxMesh().attributes.position as number[];
         const sphereVertices = getSphereMesh().attributes.position as number[];
         const v1 = Vector3.fromPool();
@@ -101,6 +93,10 @@ namespace Private {
         const triangle = Triangle.fromPool();
         const plane = Plane.fromPool();    
         const colliders = Components.ofType(Collider);
+        const selfIntersectionPoint = Vector3.fromPool();
+        const intersectionPoint = Vector3.fromPool();
+        const velocityLength = velocity.length;
+
         for (const collider of colliders) {
             if (collider.group && !collider.group.isAllowed(include, exclude)) {
                 continue;
@@ -249,10 +245,10 @@ namespace Private {
                         let foundCollision = false;
                         let collisionTime = 1;
                         if (!embeddedInPlane) {
-                            sphereIntersectionPoint.copy(plane.normal).flip().add(position);
-                            colliderIntersectionPoint.copy(velocity).multiply(t0).add(sphereIntersectionPoint);
+                            selfIntersectionPoint.copy(plane.normal).flip().add(position);
+                            intersectionPoint.copy(velocity).multiply(t0).add(selfIntersectionPoint);
                             triangle.set(v1, v2, v3);
-                            if (triangle.contains(colliderIntersectionPoint)) {
+                            if (triangle.contains(intersectionPoint)) {
                                 foundCollision = true;
                                 collisionTime = t0;
                             }
@@ -278,7 +274,7 @@ namespace Private {
                             if (lowestRoot !== null) {
                                 collisionTime = lowestRoot;
                                 foundCollision = true;
-                                colliderIntersectionPoint.copy(v1);
+                                intersectionPoint.copy(v1);
                             }
 
                             // P2
@@ -289,7 +285,7 @@ namespace Private {
                             if (lowestRoot !== null) {
                                 collisionTime = lowestRoot;
                                 foundCollision = true;
-                                colliderIntersectionPoint.copy(v2);
+                                intersectionPoint.copy(v2);
                             }
 
                             // P3
@@ -300,7 +296,7 @@ namespace Private {
                             if (lowestRoot !== null) {
                                 collisionTime = lowestRoot;
                                 foundCollision = true;
-                                colliderIntersectionPoint.copy(v3);
+                                intersectionPoint.copy(v3);
                             }
 
                             // Check agains edges:
@@ -323,7 +319,7 @@ namespace Private {
                                     // intersection took place within segment.
                                     collisionTime = lowestRoot;
                                     foundCollision = true;
-                                    colliderIntersectionPoint.copy(edge).multiply(f).add(v1);
+                                    intersectionPoint.copy(edge).multiply(f).add(v1);
                                 }
                             }
 
@@ -342,7 +338,7 @@ namespace Private {
                                 if (f >= 0.0 && f <= 1.0) {
                                     collisionTime = lowestRoot;
                                     foundCollision = true;
-                                    colliderIntersectionPoint.copy(edge).multiply(f).add(v2);
+                                    intersectionPoint.copy(edge).multiply(f).add(v2);
                                 }
                             }
 
@@ -361,24 +357,19 @@ namespace Private {
                                 if (f >= 0.0 && f <= 1.0) {
                                     collisionTime = lowestRoot;
                                     foundCollision = true;
-                                    colliderIntersectionPoint.copy(edge).multiply(f).add(v3);
+                                    intersectionPoint.copy(edge).multiply(f).add(v3);
                                 }
                             }
                         }
-
-                        // Set result:
+                        
                         if (foundCollision) {
-                            // distance to collision: ’t’ is time of collision
-                            let distToCollision = collisionTime * velocityLength;
-                            // Does this triangle qualify for the closest hit?
-                            // it does if it’s the first hit or the closest
-                            if (distToCollision < toClosestIntersection) {
-                                // Collision information nessesary for sliding
-                                closestSphereIntersectionPoint.copy(sphereIntersectionPoint);
-                                closestColliderIntersectionPoint.copy(colliderIntersectionPoint);
-                                toClosestIntersection = distToCollision;
-                                contactPlane.copy(plane);
-                                collision = true;
+                            const toIntersection = collisionTime * velocityLength;
+                            // Keep closest hit only
+                            if (toIntersection < collision.toIntersection) {
+                                collision.selfIntersectionPoint.copy(selfIntersectionPoint);
+                                collision.intersectionPoint.copy(intersectionPoint);
+                                collision.toIntersection = toIntersection;
+                                collisionValid = true;
                             }
                         }                            
                     }
@@ -386,7 +377,7 @@ namespace Private {
             }
         }
 
-        return collision;
+        return collisionValid ? collision : null;
     }
 
     export function collisionDetectionAndResponse(
@@ -397,27 +388,40 @@ namespace Private {
         include?: CollisionGroup[],
         exclude?: CollisionGroup[]
     ) {
+        // Keep a small safe distance from geometry to account for lost floating point precision
+        const skin = .01;
+
         // convert position & velocity to ellipsoid space
         const localPosition = Vector3.fromPool().copy(position).divideVector(radius);
         const localVelocity = Vector3.fromPool().copy(velocity).divideVector(radius);
+        const toWorldSpace = (local: Vector3) => local.multiplyVector(radius);
+
         const dest = Vector3.fromPool().addVectors(localPosition, localVelocity);
         const firstPlane = Plane.fromPool();
         const secondPlane = Plane.fromPool();
-        const toWorldSpace = (local: Vector3) => local.multiplyVector(radius);
-        const skin = .01;
+        const normalizedVelocity = Vector3.fromPool();        
+        
         for (let i = 0; i < 3; ++i) {
-            const collision = checkCollision(localPosition, localVelocity, radius, include, exclude);
-            if (!collision) {
+
+            const velocityLength = localVelocity.length;
+            if (velocityLength === 0) {
+                positionOut.copy(toWorldSpace(dest));
+                return;
+            }
+            
+            const col = detectCollision(localPosition, localVelocity, radius, include, exclude);
+            if (!col) {
                 positionOut.copy(toWorldSpace(dest));
                 return;
             }
 
-            const shortDist = Math.max(toClosestIntersection - skin, 0);
-            localPosition.add(Vector3.fromPool().copy(velocityNormalized).multiply(shortDist));
+            normalizedVelocity.copy(localVelocity).divide(velocityLength);
+            const shortDist = Math.max(col.toIntersection - skin, 0);
+            localPosition.add(Vector3.fromPool().copy(normalizedVelocity).multiply(shortDist));
             
             if (i === 0) {
-                const slidingPlaneOrigin = Vector3.fromPool().copy(closestColliderIntersectionPoint);
-                const slidingPlaneNormal = Vector3.fromPool().copy(localPosition).substract(closestColliderIntersectionPoint).normalize();
+                const slidingPlaneOrigin = Vector3.fromPool().copy(col.intersectionPoint);
+                const slidingPlaneNormal = Vector3.fromPool().copy(localPosition).substract(col.intersectionPoint).normalize();
                 firstPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);    
                 const longRadius = 1 + skin;
                 const d = firstPlane.getSignedDistance(dest);
@@ -425,8 +429,8 @@ namespace Private {
                 localVelocity.substractVectors(dest, localPosition);
 
             } else if (i === 1) {
-                const slidingPlaneOrigin = Vector3.fromPool().copy(closestColliderIntersectionPoint);
-                const slidingPlaneNormal = Vector3.fromPool().copy(localPosition).substract(closestColliderIntersectionPoint).normalize();
+                const slidingPlaneOrigin = Vector3.fromPool().copy(col.intersectionPoint);
+                const slidingPlaneNormal = Vector3.fromPool().copy(localPosition).substract(col.intersectionPoint).normalize();
                 secondPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);  
                 const crease = Vector3.fromPool().crossVectors(firstPlane.normal, secondPlane.normal).normalize();
                 const dist = Vector3.fromPool().substractVectors(dest, localPosition).dot(crease);
@@ -440,7 +444,7 @@ namespace Private {
 
 export class CharacterCollider extends Component {
 
-    gravity = -10;
+    gravity = new Vector3(0, -10, 0);
     radius = new Vector3(1, 1, 1);
 
     set velocity(velocity: Vector3) {
