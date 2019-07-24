@@ -44,7 +44,7 @@ export class Transform extends Component {
     set position(position: Vector3) { this._position.copy(position); }
     set rotation(rotation: Quaternion) { this._rotation.copy(rotation); }
     set scale(scale: Vector3) { this._scale.copy(scale); }
-    set enableChangedEvent(enable: boolean) { this._enableChangedEvent = enable; }
+    set eventsEnabled(enabled: boolean) { this._eventsEnabled = enabled; }
 
     get localMatrix() {
         if (this._localMatrixDirty) {
@@ -141,7 +141,7 @@ export class Transform extends Component {
     @Attributes.unserializable()
     private _disableDirtification = false;
     @Attributes.unserializable()
-    private _enableChangedEvent = true;
+    private _eventsEnabled = true;
 
     constructor(props?: ObjectProps<Transform>) {
         super();
@@ -229,7 +229,7 @@ export class Transform extends Component {
             });
         }
 
-        if (this._enableChangedEvent) {
+        if (this._eventsEnabled) {
             for (const changed of Private.changeCallbacks) {
                 changed.post();
             }

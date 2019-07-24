@@ -172,7 +172,7 @@ export class IKSolver extends Component {
         for (let i = 0; i < this._chains.length; ++i) {
             const chain = this._chains[i];
             const ikChain = this._ikSolver.chains[i];
-            chain.entity.transform.enableChangedEvent = false;
+            chain.entity.transform.eventsEnabled = false;
             for (let j = 0; j < ikChain.numBones; ++j) {
                 const bone = ikChain.bones[j];                
                 lookAtDir.copy(bone.end).substract(bone.start).normalize();                
@@ -206,7 +206,7 @@ export class IKSolver extends Component {
                     node.entity.transform.rotation.copy(lookAtRotation);
                 }
             }
-            chain.entity.transform.enableChangedEvent = true;
+            chain.entity.transform.eventsEnabled = true;
         }
     }
 
