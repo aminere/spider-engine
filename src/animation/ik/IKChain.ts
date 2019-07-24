@@ -5,7 +5,6 @@ import { Entity } from "../../core/Entity";
 import * as Attributes from "../../core/Attributes";
 import { IKNode } from "./IKNode";
 
-@Attributes.exclusiveWith("IKNode")
 export class IKChain extends Component {
     set target(entity: Entity | null) { this._target.entity = entity; }
     get target() { return this._target.entity; }
