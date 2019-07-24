@@ -4,6 +4,7 @@ import { Components } from "../core/Components";
 import { Collider } from "./Collider";
 import { BehaviorComponent } from "../behavior/BehaviorComponent";
 import { CollisionShape } from "./CollisionShape";
+import { CharacterCollider } from "./CharacterCollider";
 
 namespace Private {
     export const collisions = new ObjectPool(CollisionInfo, 64);
@@ -52,6 +53,7 @@ export namespace CollisionSystemInternal {
 
 export class CollisionSystem {
     static update() {
+
         // Check for Collisions
         Private.collisions.flush();
         const collisionChecked: { [id: string]: { [id: string]: boolean } } = {};
@@ -88,6 +90,9 @@ export class CollisionSystem {
                 }
             }
         }
+
+        // Handle more complex colliders
+        Components.ofType(CharacterCollider).forEach(c => c.update());
 
         // call collision callbacks
         for (let i = 0; i < Private.collisions.size; ++i) {

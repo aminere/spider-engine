@@ -104,6 +104,15 @@ export class Transform extends Component {
         return Vector3.fromPool().setFromMatrix(this.worldMatrix);
     }
 
+    set worldPosition(worldPosition: Vector3) {
+        this._position.copy(worldPosition);
+        const { parent } = this.entity;
+        if (parent) {
+            const invParentMatrix = Matrix44.fromPool().copy(parent.transform.worldMatrix).invert();
+            this._position.transform(invParentMatrix);
+        }
+    }
+
     get worldRotation() {
         return this.worldMatrix.getRotation(Quaternion.fromPool());
     }
