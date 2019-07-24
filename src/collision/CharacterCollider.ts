@@ -13,6 +13,8 @@ import { VertexBuffer } from "../graphics/VertexBuffer";
 import { Components } from "../core/Components";
 import { Entity } from "../core/Entity";
 import { Transform } from "../core/Transform";
+import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
+import { AssetReference } from "../serialization/AssetReference";
 
 interface Collision {
     selfIntersectionPoint: Vector3;
@@ -79,8 +81,7 @@ namespace Private {
         position: Vector3, 
         velocity: Vector3,
         radius: Vector3,
-        include?: CollisionGroup[],
-        exclude?: CollisionGroup[]
+        colliders: Collider[]
     ) {
         let collisionValid = false;
         collision.toIntersection = 999999;
@@ -91,16 +92,12 @@ namespace Private {
         const v2 = Vector3.fromPool();
         const v3 = Vector3.fromPool();
         const triangle = Triangle.fromPool();
-        const plane = Plane.fromPool();    
-        const colliders = Components.ofType(Collider);
+        const plane = Plane.fromPool();        
         const selfIntersectionPoint = Vector3.fromPool();
         const intersectionPoint = Vector3.fromPool();
         const velocityLength = velocity.length;
 
-        for (const collider of colliders) {
-            if (collider.group && !collider.group.isAllowed(include, exclude)) {
-                continue;
-            }
+        for (const collider of colliders) {            
             for (const shape of collider.shapes) {
                 if (!shape) {
                     continue;
@@ -384,9 +381,8 @@ namespace Private {
         position: Vector3,
         velocity: Vector3,
         radius: Vector3,
-        positionOut: Vector3,
-        include?: CollisionGroup[],
-        exclude?: CollisionGroup[]
+        colliders: Collider[],
+        positionOut: Vector3
     ) {
         // Keep a small safe distance from geometry to account for lost floating point precision
         const skin = .01;
@@ -400,7 +396,7 @@ namespace Private {
         const firstPlane = Plane.fromPool();
         const secondPlane = Plane.fromPool();
         const normalizedVelocity = Vector3.fromPool();        
-        
+       
         for (let i = 0; i < 3; ++i) {
 
             const velocityLength = localVelocity.length;
@@ -409,7 +405,7 @@ namespace Private {
                 return;
             }
             
-            const col = detectCollision(localPosition, localVelocity, radius, include, exclude);
+            const col = detectCollision(localPosition, localVelocity, radius, colliders);
             if (!col) {
                 positionOut.copy(toWorldSpace(dest));
                 return;
@@ -451,7 +447,17 @@ export class CharacterCollider extends Component {
         this._velocity.copy(velocity);
     }
 
+    set excludedGroups(excluded: CollisionGroup[]) {
+        this._excludedGroups.data = excluded.map(e => new AssetReference(CollisionGroup, e));
+    }
+
+    set includedGroups(included: CollisionGroup[]) {
+        this._includedGroups.data = included.map(e => new AssetReference(CollisionGroup, e));
+    }
+
     private _velocity = new Vector3();
+    private _excludedGroups = new AssetReferenceArray(CollisionGroup);
+    private _includedGroups = new AssetReferenceArray(CollisionGroup);
 
     setEntity(entity: Entity) {
         super.setEntity(entity);
@@ -460,10 +466,28 @@ export class CharacterCollider extends Component {
 
     update() {
         const positionOut = Vector3.fromPool();
+
+        const colliders = Components.ofType(Collider)
+            .filter(collider => {
+                if (collider.entity === this.entity) {
+                    return false;
+                }
+                if (collider.group) {
+                    if (this._excludedGroups.data.some(e => e.asset === collider.group)) {
+                        return false;
+                    }
+                    if (this._includedGroups.data.length > 0) {
+                        return this._includedGroups.data.some(e => e.asset === collider.group);
+                    }
+                }
+                return true;
+            });
+
         Private.collisionDetectionAndResponse(
             this.entity.transform.worldPosition,
             this._velocity,
             this.radius,
+            colliders,
             positionOut
         );
         this.entity.transform.worldPosition = positionOut;

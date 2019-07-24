@@ -4,9 +4,6 @@ import * as Attributes from "../core/Attributes";
 
 @Attributes.displayName("Collision Group")
 export class CollisionGroup extends Asset {
-    /**
-     * @hidden
-     */
     isAllowed(include?: CollisionGroup[], exclude?: CollisionGroup[]) {
         let excluded = exclude ? exclude.some(g => g === this) : false;
         if (excluded) {

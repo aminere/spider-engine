@@ -442,6 +442,7 @@ export class RendererInternal {
                     if (process.env.CONFIG === "editor") {
                         groupId = visual.group.id;
                     } else {
+                        // In standalone, Ids are resolved as literal paths
                         groupId = visual.group.templatePath || visual.group.id;
                     }
                 }
