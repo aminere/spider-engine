@@ -22,7 +22,7 @@ interface Collision {
     toIntersection: number;
 }
 
-namespace Private {    
+namespace Private {
 
     let boxMesh: VertexBuffer;
     let sphereMesh: VertexBuffer;
@@ -62,7 +62,7 @@ namespace Private {
         }
         return null;
     }
-    
+
     function getBoxMesh() {
         if (!boxMesh) {
             boxMesh = defaultAssets.primitives.box.vertexBuffer;
@@ -78,7 +78,7 @@ namespace Private {
     }
 
     function detectCollision(
-        position: Vector3, 
+        position: Vector3,
         velocity: Vector3,
         radius: Vector3,
         colliders: Collider[]
@@ -92,283 +92,286 @@ namespace Private {
         const v2 = Vector3.fromPool();
         const v3 = Vector3.fromPool();
         const triangle = Triangle.fromPool();
-        const plane = Plane.fromPool();        
+        const plane = Plane.fromPool();
         const selfIntersectionPoint = Vector3.fromPool();
         const intersectionPoint = Vector3.fromPool();
         const velocityLength = velocity.length;
 
-        for (const collider of colliders) {            
+        for (const collider of colliders) {
             for (const shape of collider.shapes) {
                 if (!shape) {
                     continue;
                 }
-                const supported = shape.isA(BoxCollisionShape) 
-                || shape.isA(SphereCollisionShape) 
-                || shape.isA(MeshCollisionShape);
-                if (supported) {
-                    let box: BoxCollisionShape | null = null;
-                    let sphere: SphereCollisionShape | null = null;
-                    let vertices: number[];
-                    if (shape.isA(BoxCollisionShape)) {
-                        box = shape as BoxCollisionShape;
-                        vertices = boxVertices;
-                    } else if (shape.isA(SphereCollisionShape)) {                        
-                        sphere = shape as SphereCollisionShape;
-                        vertices = sphereVertices;
+
+                let box: BoxCollisionShape | null = null;
+                let sphere: SphereCollisionShape | null = null;
+                let vertices: number[];
+                
+                if (shape.isA(BoxCollisionShape)) {
+                    box = shape as BoxCollisionShape;
+                    vertices = boxVertices;
+
+                } else if (shape.isA(SphereCollisionShape)) {
+                    sphere = shape as SphereCollisionShape;
+                    vertices = sphereVertices;
+
+                } else if (shape.isA(MeshCollisionShape)) {
+                    let mesh = (shape as MeshCollisionShape).mesh.asset;
+                    if (!mesh) {
+                        continue;
+                    }
+                    if (mesh.vertexBuffer.primitiveType !== "TRIANGLES") {
+                        continue;
+                    }
+                    if (mesh.vertexBuffer.indices) {
+                        continue;
+                    }
+                    vertices = mesh.vertexBuffer.attributes.position as number[];
+
+                } else {
+                    // TODO warning unsupported collision shape
+                    continue;
+                }
+
+                const triangleCount = (vertices.length / 3) / 3;
+                const { worldMatrix } = collider.entity.transform;
+                for (let i = 0; i < triangleCount; ++i) {
+                    const index = i * 9;
+                    if (box) {
+                        v1.set(
+                            (vertices[index] * box.extent.x) + box.center.x,
+                            (vertices[index + 1] * box.extent.y) + box.center.y,
+                            (vertices[index + 2] * box.extent.z) + box.center.z)
+                            .transform(worldMatrix)
+                            .divideVector(radius);
+
+                        v2.set(
+                            (vertices[index + 3] * box.extent.x) + box.center.x,
+                            (vertices[index + 4] * box.extent.y) + box.center.y,
+                            (vertices[index + 5] * box.extent.z) + box.center.z)
+                            .transform(worldMatrix)
+                            .divideVector(radius);
+
+                        v3.set(
+                            (vertices[index + 6] * box.extent.x) + box.center.x,
+                            (vertices[index + 7] * box.extent.y) + box.center.y,
+                            (vertices[index + 8] * box.extent.z) + box.center.z)
+                            .transform(worldMatrix)
+                            .divideVector(radius);
+                    } else if (sphere) {
+                        v1.set(
+                            (vertices[index] * sphere.radius) + sphere.center.x,
+                            (vertices[index + 1] * sphere.radius) + sphere.center.y,
+                            (vertices[index + 2] * sphere.radius) + sphere.center.z)
+                            .transform(worldMatrix)
+                            .divideVector(radius);
+
+                        v2.set(
+                            (vertices[index + 3] * sphere.radius) + sphere.center.x,
+                            (vertices[index + 4] * sphere.radius) + sphere.center.y,
+                            (vertices[index + 5] * sphere.radius) + sphere.center.z)
+                            .transform(worldMatrix)
+                            .divideVector(radius);
+
+                        v3.set(
+                            (vertices[index + 6] * sphere.radius) + sphere.center.x,
+                            (vertices[index + 7] * sphere.radius) + sphere.center.y,
+                            (vertices[index + 8] * sphere.radius) + sphere.center.z)
+                            .transform(worldMatrix)
+                            .divideVector(radius);
                     } else {
-                        let mesh = (shape as MeshCollisionShape).mesh.asset;
-                        if (!mesh) {
-                            continue;
-                        }
-                        if (mesh.vertexBuffer.primitiveType !== "TRIANGLES") {
-                            continue;
-                        }
-                        if (mesh.vertexBuffer.indices) {
-                            continue;
-                        }
-                        vertices = mesh.vertexBuffer.attributes.position as number[];
+                        v1.set(vertices[index], vertices[index + 1], vertices[index + 2])
+                            .transform(worldMatrix)
+                            .divideVector(radius);
+
+                        v2.set(vertices[index + 3], vertices[index + 4], vertices[index + 5])
+                            .transform(worldMatrix)
+                            .divideVector(radius);
+
+                        v3.set(vertices[index + 6], vertices[index + 7], vertices[index + 8])
+                            .transform(worldMatrix)
+                            .divideVector(radius);
                     }
 
-                    const triangleCount = (vertices.length / 3) / 3;
-                    const { worldMatrix } = collider.entity.transform;
-                    for (let i = 0; i < triangleCount; ++i) {
-                        const index = i * 9;
-                        if (box) {
-                            v1.set(
-                                (vertices[index] * box.extent.x) + box.center.x,
-                                (vertices[index + 1] * box.extent.y) + box.center.y,
-                                (vertices[index + 2] * box.extent.z) + box.center.z)
-                                .transform(worldMatrix)
-                                .divideVector(radius);
+                    plane.setFromPoints(v1, v2, v3);
+                    const classification = plane.classifyPoint(position);
 
-                            v2.set(
-                                (vertices[index + 3] * box.extent.x) + box.center.x,
-                                (vertices[index + 4] * box.extent.y) + box.center.y,
-                                (vertices[index + 5] * box.extent.z) + box.center.z)
-                                .transform(worldMatrix)
-                                .divideVector(radius);
+                    // skip planes facing away from the sphere 
+                    // TODO is this necessary??
+                    if (classification !== PlaneClassification.Front) {
+                        continue;
+                    }
 
-                            v3.set(
-                                (vertices[index + 6] * box.extent.x) + box.center.x,
-                                (vertices[index + 7] * box.extent.y) + box.center.y,
-                                (vertices[index + 8] * box.extent.z) + box.center.z)
-                                .transform(worldMatrix)
-                                .divideVector(radius);
-                        } else if (sphere) {
-                            v1.set(
-                                (vertices[index] * sphere.radius) + sphere.center.x,
-                                (vertices[index + 1] * sphere.radius) + sphere.center.y,
-                                (vertices[index + 2] * sphere.radius) + sphere.center.z)
-                                .transform(worldMatrix)
-                                .divideVector(radius);
+                    // skip if moving away from plane
+                    const nDotVelocity = plane.normal.dot(velocity);
+                    if (nDotVelocity > 0) {
+                        continue;
+                    }
 
-                            v2.set(
-                                (vertices[index + 3] * sphere.radius) + sphere.center.x,
-                                (vertices[index + 4] * sphere.radius) + sphere.center.y,
-                                (vertices[index + 5] * sphere.radius) + sphere.center.z)
-                                .transform(worldMatrix)
-                                .divideVector(radius);
+                    let t0 = -1;
+                    let t1 = -1;
+                    const distToPlane = plane.getSignedDistance(position);
+                    let embeddedInPlane = false;
 
-                            v3.set(
-                                (vertices[index + 6] * sphere.radius) + sphere.center.x,
-                                (vertices[index + 7] * sphere.radius) + sphere.center.y,
-                                (vertices[index + 8] * sphere.radius) + sphere.center.z)
-                                .transform(worldMatrix)
-                                .divideVector(radius);
-                        } else {
-                            v1.set(vertices[index], vertices[index + 1], vertices[index + 2])
-                                .transform(worldMatrix)
-                                .divideVector(radius);
+                    if (nDotVelocity !== 0) {
+                        t0 = (1 - distToPlane) / nDotVelocity;
+                        t1 = (-1 - distToPlane) / nDotVelocity;
 
-                            v2.set(vertices[index + 3], vertices[index + 4], vertices[index + 5])
-                                .transform(worldMatrix)
-                                .divideVector(radius);
-
-                            v3.set(vertices[index + 6], vertices[index + 7], vertices[index + 8])
-                                .transform(worldMatrix)
-                                .divideVector(radius);
+                        if (t0 > t1) {
+                            let temp = t1;
+                            t1 = t0;
+                            t0 = temp;
                         }
 
-                        plane.setFromPoints(v1, v2, v3);
-                        const classification = plane.classifyPoint(position);
-
-                        // skip planes facing away from the sphere 
-                        // TODO is this necessary??
-                        if (classification !== PlaneClassification.Front) {
+                        if (t0 > 1 || t1 < 0) {
+                            // no collision can occur for the duration of motion
                             continue;
                         }
 
-                        // skip if moving away from plane
-                        const nDotVelocity = plane.normal.dot(velocity);
-                        if (nDotVelocity > 0) {
+                        // clamp to [0, 1]
+                        t0 = MathEx.clamp(t0, 0, 1);
+                        t1 = MathEx.clamp(t1, 0, 1);
+
+                    } else {
+                        if (Math.abs(distToPlane) < 1) {
+                            // collider is embedded with the plane and will be colliding with it at all times
+                            t0 = 0;
+                            t1 = 1;
+                            embeddedInPlane = true;
+                        } else {
                             continue;
                         }
-                        
-                        let t0 = -1;
-                        let t1 = -1;
-                        const distToPlane = plane.getSignedDistance(position);
-                        let embeddedInPlane = false;
+                    }
 
-                        if (nDotVelocity !== 0) {
-                            t0 = (1 - distToPlane) / nDotVelocity;
-                            t1 = (-1 - distToPlane) / nDotVelocity;
+                    let foundCollision = false;
+                    let collisionTime = 1;
+                    if (!embeddedInPlane) {
+                        selfIntersectionPoint.copy(plane.normal).flip().add(position);
+                        intersectionPoint.copy(velocity).multiply(t0).add(selfIntersectionPoint);
+                        triangle.set(v1, v2, v3);
+                        if (triangle.contains(intersectionPoint)) {
+                            foundCollision = true;
+                            collisionTime = t0;
+                        }
+                    }
 
-                            if (t0 > t1) {
-                                let temp = t1;
-                                t1 = t0;
-                                t0 = temp;
-                            }
+                    if (!foundCollision) {
+                        // Sweep against edges and vertices
+                        let velocitySquaredLength = velocity.lengthSq;
+                        let a, b, c;
+                        let toSphere = Vector3.fromPool();
 
-                            if (t0 > 1 || t1 < 0) {
-                                // no collision can occur for the duration of motion
-                                continue;
-                            }
+                        // For each vertex or edge a quadratic equation have to
+                        // be solved. We parameterize this equation as
+                        // a*t^2 + b*t + c = 0 and below we calculate the
+                        // parameters a,b and c for each test.
+                        // Check against points:
+                        a = velocitySquaredLength;
+                        // P1                      
+                        toSphere.copy(position).substract(v1);
+                        b = 2 * velocity.dot(toSphere);
+                        c = toSphere.lengthSq - 1.0;
+                        let lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
+                        if (lowestRoot !== null) {
+                            collisionTime = lowestRoot;
+                            foundCollision = true;
+                            intersectionPoint.copy(v1);
+                        }
 
-                            // clamp to [0, 1]
-                            t0 = MathEx.clamp(t0, 0, 1);
-                            t1 = MathEx.clamp(t1, 0, 1);
+                        // P2
+                        toSphere.copy(position).substract(v2);
+                        b = 2.0 * velocity.dot(toSphere);
+                        c = toSphere.lengthSq - 1.0;
+                        lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
+                        if (lowestRoot !== null) {
+                            collisionTime = lowestRoot;
+                            foundCollision = true;
+                            intersectionPoint.copy(v2);
+                        }
 
-                        } else {
-                            if (Math.abs(distToPlane) < 1) {
-                                // collider is embedded with the plane and will be colliding with it at all times
-                                t0 = 0;
-                                t1 = 1;
-                                embeddedInPlane = true;
-                            } else {
-                                continue;
+                        // P3
+                        toSphere.copy(position).substract(v3);
+                        b = 2.0 * velocity.dot(toSphere);
+                        c = toSphere.lengthSq - 1.0;
+                        lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
+                        if (lowestRoot !== null) {
+                            collisionTime = lowestRoot;
+                            foundCollision = true;
+                            intersectionPoint.copy(v3);
+                        }
+
+                        // Check agains edges:
+                        // p1 -> p2:                                
+                        let edge = Vector3.fromPool().copy(v2).substract(v1);
+                        let baseToVertex = Vector3.fromPool().copy(v1).substract(position);
+                        let edgeSquaredLength = edge.lengthSq;
+                        let edgeDotVelocity = edge.dot(velocity);
+                        let edgeDotBaseToVertex = edge.dot(baseToVertex);
+                        // Calculate parameters for equation
+                        a = edgeSquaredLength * -velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
+                        b = edgeSquaredLength * (2 * velocity.dot(baseToVertex)) - 2.0 * edgeDotVelocity * edgeDotBaseToVertex;
+                        c = edgeSquaredLength * (1 - baseToVertex.lengthSq) + edgeDotBaseToVertex * edgeDotBaseToVertex;
+                        // Does the swept sphere collide against infinite edge?
+                        lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
+                        if (lowestRoot !== null) {
+                            // Check if intersection is within line segment:
+                            let f = (edgeDotVelocity * lowestRoot - edgeDotBaseToVertex) / edgeSquaredLength;
+                            if (f >= 0.0 && f <= 1.0) {
+                                // intersection took place within segment.
+                                collisionTime = lowestRoot;
+                                foundCollision = true;
+                                intersectionPoint.copy(edge).multiply(f).add(v1);
                             }
                         }
 
-                        let foundCollision = false;
-                        let collisionTime = 1;
-                        if (!embeddedInPlane) {
-                            selfIntersectionPoint.copy(plane.normal).flip().add(position);
-                            intersectionPoint.copy(velocity).multiply(t0).add(selfIntersectionPoint);
-                            triangle.set(v1, v2, v3);
-                            if (triangle.contains(intersectionPoint)) {
+                        // p2 -> p3:
+                        edge.copy(v3).substract(v2);
+                        baseToVertex.copy(v2).substract(position);
+                        edgeSquaredLength = edge.lengthSq;
+                        edgeDotVelocity = edge.dot(velocity);
+                        edgeDotBaseToVertex = edge.dot(baseToVertex);
+                        a = edgeSquaredLength * -velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
+                        b = edgeSquaredLength * (2 * velocity.dot(baseToVertex)) - 2.0 * edgeDotVelocity * edgeDotBaseToVertex;
+                        c = edgeSquaredLength * (1 - baseToVertex.lengthSq) + edgeDotBaseToVertex * edgeDotBaseToVertex;
+                        lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
+                        if (lowestRoot !== null) {
+                            let f = (edgeDotVelocity * lowestRoot - edgeDotBaseToVertex) / edgeSquaredLength;
+                            if (f >= 0.0 && f <= 1.0) {
+                                collisionTime = lowestRoot;
                                 foundCollision = true;
-                                collisionTime = t0;
+                                intersectionPoint.copy(edge).multiply(f).add(v2);
                             }
                         }
 
-                        if (!foundCollision) {
-                            // Sweep against edges and vertices
-                            let velocitySquaredLength = velocity.lengthSq;
-                            let a, b, c;
-                            let toSphere = Vector3.fromPool();
-
-                            // For each vertex or edge a quadratic equation have to
-                            // be solved. We parameterize this equation as
-                            // a*t^2 + b*t + c = 0 and below we calculate the
-                            // parameters a,b and c for each test.
-                            // Check against points:
-                            a = velocitySquaredLength;
-                            // P1                      
-                            toSphere.copy(position).substract(v1);
-                            b = 2 * velocity.dot(toSphere);
-                            c = toSphere.lengthSq - 1.0;
-                            let lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
-                            if (lowestRoot !== null) {
+                        // p3 -> p1:
+                        edge.copy(v1).substract(v3);
+                        baseToVertex.copy(v3).substract(position);
+                        edgeSquaredLength = edge.lengthSq;
+                        edgeDotVelocity = edge.dot(velocity);
+                        edgeDotBaseToVertex = edge.dot(baseToVertex);
+                        a = edgeSquaredLength * -velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
+                        b = edgeSquaredLength * (2 * velocity.dot(baseToVertex)) - 2.0 * edgeDotVelocity * edgeDotBaseToVertex;
+                        c = edgeSquaredLength * (1 - baseToVertex.lengthSq) + edgeDotBaseToVertex * edgeDotBaseToVertex;
+                        lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
+                        if (lowestRoot !== null) {
+                            let f = (edgeDotVelocity * lowestRoot - edgeDotBaseToVertex) / edgeSquaredLength;
+                            if (f >= 0.0 && f <= 1.0) {
                                 collisionTime = lowestRoot;
                                 foundCollision = true;
-                                intersectionPoint.copy(v1);
-                            }
-
-                            // P2
-                            toSphere.copy(position).substract(v2);
-                            b = 2.0 * velocity.dot(toSphere);
-                            c = toSphere.lengthSq - 1.0;
-                            lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
-                            if (lowestRoot !== null) {
-                                collisionTime = lowestRoot;
-                                foundCollision = true;
-                                intersectionPoint.copy(v2);
-                            }
-
-                            // P3
-                            toSphere.copy(position).substract(v3);
-                            b = 2.0 * velocity.dot(toSphere);
-                            c = toSphere.lengthSq - 1.0;
-                            lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
-                            if (lowestRoot !== null) {
-                                collisionTime = lowestRoot;
-                                foundCollision = true;
-                                intersectionPoint.copy(v3);
-                            }
-
-                            // Check agains edges:
-                            // p1 -> p2:                                
-                            let edge = Vector3.fromPool().copy(v2).substract(v1);
-                            let baseToVertex = Vector3.fromPool().copy(v1).substract(position);
-                            let edgeSquaredLength = edge.lengthSq;
-                            let edgeDotVelocity = edge.dot(velocity);
-                            let edgeDotBaseToVertex = edge.dot(baseToVertex);
-                            // Calculate parameters for equation
-                            a = edgeSquaredLength * -velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
-                            b = edgeSquaredLength * (2 * velocity.dot(baseToVertex)) - 2.0 * edgeDotVelocity * edgeDotBaseToVertex;
-                            c = edgeSquaredLength * (1 - baseToVertex.lengthSq) + edgeDotBaseToVertex * edgeDotBaseToVertex;
-                            // Does the swept sphere collide against infinite edge?
-                            lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
-                            if (lowestRoot !== null) {
-                                // Check if intersection is within line segment:
-                                let f = (edgeDotVelocity * lowestRoot - edgeDotBaseToVertex) / edgeSquaredLength;
-                                if (f >= 0.0 && f <= 1.0) {
-                                    // intersection took place within segment.
-                                    collisionTime = lowestRoot;
-                                    foundCollision = true;
-                                    intersectionPoint.copy(edge).multiply(f).add(v1);
-                                }
-                            }
-
-                            // p2 -> p3:
-                            edge.copy(v3).substract(v2);
-                            baseToVertex.copy(v2).substract(position);
-                            edgeSquaredLength = edge.lengthSq;
-                            edgeDotVelocity = edge.dot(velocity);
-                            edgeDotBaseToVertex = edge.dot(baseToVertex);
-                            a = edgeSquaredLength * -velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
-                            b = edgeSquaredLength * (2 * velocity.dot(baseToVertex)) - 2.0 * edgeDotVelocity * edgeDotBaseToVertex;
-                            c = edgeSquaredLength * (1 - baseToVertex.lengthSq) + edgeDotBaseToVertex * edgeDotBaseToVertex;
-                            lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
-                            if (lowestRoot !== null) {
-                                let f = (edgeDotVelocity * lowestRoot - edgeDotBaseToVertex) / edgeSquaredLength;
-                                if (f >= 0.0 && f <= 1.0) {
-                                    collisionTime = lowestRoot;
-                                    foundCollision = true;
-                                    intersectionPoint.copy(edge).multiply(f).add(v2);
-                                }
-                            }
-
-                            // p3 -> p1:
-                            edge.copy(v1).substract(v3);
-                            baseToVertex.copy(v3).substract(position);
-                            edgeSquaredLength = edge.lengthSq;
-                            edgeDotVelocity = edge.dot(velocity);
-                            edgeDotBaseToVertex = edge.dot(baseToVertex);
-                            a = edgeSquaredLength * -velocitySquaredLength + edgeDotVelocity * edgeDotVelocity;
-                            b = edgeSquaredLength * (2 * velocity.dot(baseToVertex)) - 2.0 * edgeDotVelocity * edgeDotBaseToVertex;
-                            c = edgeSquaredLength * (1 - baseToVertex.lengthSq) + edgeDotBaseToVertex * edgeDotBaseToVertex;
-                            lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
-                            if (lowestRoot !== null) {
-                                let f = (edgeDotVelocity * lowestRoot - edgeDotBaseToVertex) / edgeSquaredLength;
-                                if (f >= 0.0 && f <= 1.0) {
-                                    collisionTime = lowestRoot;
-                                    foundCollision = true;
-                                    intersectionPoint.copy(edge).multiply(f).add(v3);
-                                }
+                                intersectionPoint.copy(edge).multiply(f).add(v3);
                             }
                         }
-                        
-                        if (foundCollision) {
-                            const toIntersection = collisionTime * velocityLength;
-                            // Keep closest hit only
-                            if (toIntersection < collision.toIntersection) {
-                                collision.selfIntersectionPoint.copy(selfIntersectionPoint);
-                                collision.intersectionPoint.copy(intersectionPoint);
-                                collision.toIntersection = toIntersection;
-                                collisionValid = true;
-                            }
-                        }                            
+                    }
+
+                    if (foundCollision) {
+                        const toIntersection = collisionTime * velocityLength;
+                        // Keep closest hit only
+                        if (toIntersection < collision.toIntersection) {
+                            collision.selfIntersectionPoint.copy(selfIntersectionPoint);
+                            collision.intersectionPoint.copy(intersectionPoint);
+                            collision.toIntersection = toIntersection;
+                            collisionValid = true;
+                        }
                     }
                 }
             }
@@ -395,8 +398,8 @@ namespace Private {
         const dest = Vector3.fromPool().addVectors(localPosition, localVelocity);
         const firstPlane = Plane.fromPool();
         const secondPlane = Plane.fromPool();
-        const normalizedVelocity = Vector3.fromPool();        
-       
+        const normalizedVelocity = Vector3.fromPool();
+
         for (let i = 0; i < 3; ++i) {
 
             const velocityLength = localVelocity.length;
@@ -404,7 +407,7 @@ namespace Private {
                 positionOut.copy(toWorldSpace(dest));
                 return;
             }
-            
+
             const col = detectCollision(localPosition, localVelocity, radius, colliders);
             if (!col) {
                 positionOut.copy(toWorldSpace(dest));
@@ -414,11 +417,11 @@ namespace Private {
             normalizedVelocity.copy(localVelocity).divide(velocityLength);
             const shortDist = Math.max(col.toIntersection - skin, 0);
             localPosition.add(Vector3.fromPool().copy(normalizedVelocity).multiply(shortDist));
-            
+
             if (i === 0) {
                 const slidingPlaneOrigin = Vector3.fromPool().copy(col.intersectionPoint);
                 const slidingPlaneNormal = Vector3.fromPool().copy(localPosition).substract(col.intersectionPoint).normalize();
-                firstPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);    
+                firstPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);
                 const longRadius = 1 + skin;
                 const d = firstPlane.getSignedDistance(dest);
                 dest.substract(slidingPlaneNormal.multiply(d - longRadius));
@@ -427,7 +430,7 @@ namespace Private {
             } else if (i === 1) {
                 const slidingPlaneOrigin = Vector3.fromPool().copy(col.intersectionPoint);
                 const slidingPlaneNormal = Vector3.fromPool().copy(localPosition).substract(col.intersectionPoint).normalize();
-                secondPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);  
+                secondPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);
                 const crease = Vector3.fromPool().crossVectors(firstPlane.normal, secondPlane.normal).normalize();
                 const dist = Vector3.fromPool().substractVectors(dest, localPosition).dot(crease);
                 localVelocity.copy(crease).multiply(dist);
