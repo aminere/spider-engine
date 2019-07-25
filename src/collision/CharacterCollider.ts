@@ -77,6 +77,8 @@ namespace Private {
         return sphereMesh;
     }
 
+    // Collision Detection
+    // Thanks to Kasper Fauerby - http://www.peroxide.dk/papers/collision/collision.pdf
     function detectCollision(
         position: Vector3,
         velocity: Vector3,
@@ -93,8 +95,11 @@ namespace Private {
         const v3 = Vector3.fromPool();
         const triangle = Triangle.fromPool();
         const plane = Plane.fromPool();
+        const toSelf = Vector3.fromPool();
         const selfIntersectionPoint = Vector3.fromPool();
         const intersectionPoint = Vector3.fromPool();
+        const edge = Vector3.fromPool();
+        const baseToVertex = Vector3.fromPool();
         const velocityLength = velocity.length;
 
         for (const collider of colliders) {
@@ -106,7 +111,7 @@ namespace Private {
                 let box: BoxCollisionShape | null = null;
                 let sphere: SphereCollisionShape | null = null;
                 let vertices: number[];
-                
+
                 if (shape.isA(BoxCollisionShape)) {
                     box = shape as BoxCollisionShape;
                     vertices = boxVertices;
@@ -259,7 +264,6 @@ namespace Private {
                         // Sweep against edges and vertices
                         let velocitySquaredLength = velocity.lengthSq;
                         let a, b, c;
-                        let toSphere = Vector3.fromPool();
 
                         // For each vertex or edge a quadratic equation have to
                         // be solved. We parameterize this equation as
@@ -268,9 +272,9 @@ namespace Private {
                         // Check against points:
                         a = velocitySquaredLength;
                         // P1                      
-                        toSphere.copy(position).substract(v1);
-                        b = 2 * velocity.dot(toSphere);
-                        c = toSphere.lengthSq - 1.0;
+                        toSelf.copy(position).substract(v1);
+                        b = 2 * velocity.dot(toSelf);
+                        c = toSelf.lengthSq - 1.0;
                         let lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
                         if (lowestRoot !== null) {
                             collisionTime = lowestRoot;
@@ -279,9 +283,9 @@ namespace Private {
                         }
 
                         // P2
-                        toSphere.copy(position).substract(v2);
-                        b = 2.0 * velocity.dot(toSphere);
-                        c = toSphere.lengthSq - 1.0;
+                        toSelf.copy(position).substract(v2);
+                        b = 2.0 * velocity.dot(toSelf);
+                        c = toSelf.lengthSq - 1.0;
                         lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
                         if (lowestRoot !== null) {
                             collisionTime = lowestRoot;
@@ -290,9 +294,9 @@ namespace Private {
                         }
 
                         // P3
-                        toSphere.copy(position).substract(v3);
-                        b = 2.0 * velocity.dot(toSphere);
-                        c = toSphere.lengthSq - 1.0;
+                        toSelf.copy(position).substract(v3);
+                        b = 2.0 * velocity.dot(toSelf);
+                        c = toSelf.lengthSq - 1.0;
                         lowestRoot = Private.getLowestRoot(a, b, c, collisionTime);
                         if (lowestRoot !== null) {
                             collisionTime = lowestRoot;
@@ -301,9 +305,9 @@ namespace Private {
                         }
 
                         // Check agains edges:
-                        // p1 -> p2:                                
-                        let edge = Vector3.fromPool().copy(v2).substract(v1);
-                        let baseToVertex = Vector3.fromPool().copy(v1).substract(position);
+                        // p1 -> p2:
+                        edge.substractVectors(v2, v1);
+                        baseToVertex.substractVectors(v1, position);
                         let edgeSquaredLength = edge.lengthSq;
                         let edgeDotVelocity = edge.dot(velocity);
                         let edgeDotBaseToVertex = edge.dot(baseToVertex);
@@ -380,6 +384,8 @@ namespace Private {
         return collisionValid ? collision : null;
     }
 
+    // Collision Response
+    // Thanks to Jeff Linahan - https://arxiv.org/ftp/arxiv/papers/1211/1211.0059.pdf
     export function collisionDetectionAndResponse(
         position: Vector3,
         velocity: Vector3,
@@ -399,6 +405,10 @@ namespace Private {
         const firstPlane = Plane.fromPool();
         const secondPlane = Plane.fromPool();
         const normalizedVelocity = Vector3.fromPool();
+        const slidingPlaneOrigin = Vector3.fromPool();
+        const slidingPlaneNormal = Vector3.fromPool();
+        const crease = Vector3.fromPool();
+        const toDestination = Vector3.fromPool();
 
         for (let i = 0; i < 3; ++i) {
 
@@ -416,11 +426,11 @@ namespace Private {
 
             normalizedVelocity.copy(localVelocity).divide(velocityLength);
             const shortDist = Math.max(col.toIntersection - skin, 0);
-            localPosition.add(Vector3.fromPool().copy(normalizedVelocity).multiply(shortDist));
+            localPosition.add(normalizedVelocity.multiply(shortDist));
 
             if (i === 0) {
-                const slidingPlaneOrigin = Vector3.fromPool().copy(col.intersectionPoint);
-                const slidingPlaneNormal = Vector3.fromPool().copy(localPosition).substract(col.intersectionPoint).normalize();
+                slidingPlaneOrigin.copy(col.intersectionPoint);
+                slidingPlaneNormal.copy(localPosition).substract(col.intersectionPoint).normalize();
                 firstPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);
                 const longRadius = 1 + skin;
                 const d = firstPlane.getSignedDistance(dest);
@@ -428,15 +438,16 @@ namespace Private {
                 localVelocity.substractVectors(dest, localPosition);
 
             } else if (i === 1) {
-                const slidingPlaneOrigin = Vector3.fromPool().copy(col.intersectionPoint);
-                const slidingPlaneNormal = Vector3.fromPool().copy(localPosition).substract(col.intersectionPoint).normalize();
+                slidingPlaneOrigin.copy(col.intersectionPoint);
+                slidingPlaneNormal.copy(localPosition).substract(col.intersectionPoint).normalize();
                 secondPlane.setFromPoint(slidingPlaneNormal, slidingPlaneOrigin);
-                const crease = Vector3.fromPool().crossVectors(firstPlane.normal, secondPlane.normal).normalize();
-                const dist = Vector3.fromPool().substractVectors(dest, localPosition).dot(crease);
+                crease.crossVectors(firstPlane.normal, secondPlane.normal).normalize();
+                const dist = toDestination.substractVectors(dest, localPosition).dot(crease);
                 localVelocity.copy(crease).multiply(dist);
                 dest.addVectors(localPosition, localVelocity);
             }
         }
+
         positionOut.copy(toWorldSpace(localPosition));
     }
 }
@@ -485,14 +496,18 @@ export class CharacterCollider extends Component {
                 }
                 return true;
             });
-
+        
+        // Characters typically have their origin at their feet
+        // Move the collider upwards so it spans the whole character and is not embedded in the ground
+        const offset = Vector3.fromPool().set(0, this.radius.y, 0);
         Private.collisionDetectionAndResponse(
-            this.entity.transform.worldPosition,
+            Vector3.fromPool().copy(this.entity.transform.worldPosition).add(offset),
             this._velocity,
             this.radius,
             colliders,
             positionOut
         );
-        this.entity.transform.worldPosition = positionOut;
+        
+        this.entity.transform.worldPosition = positionOut.substract(offset);
     }
 }
