@@ -55,18 +55,22 @@ namespace Private {
             CollisionSystemInternal.clearCollisions();
             scenes.length = 0;
         }
-        IObjectManagerInternal.instance.loadGraphicObjects();
 
         if (sceneRemovedFromCache) {
             IObjectManagerInternal.instance.addToCache(scene);
         }
         
         scenes.push(scene);
+
         if (isFirstScene) {
             if (process.env.CONFIG === "standalone") {
                 EngineHud.create();
+                IObjectManagerInternal.instance.loadGraphicObjects();
             }
+        } else {
+            IObjectManagerInternal.instance.loadGraphicObjects();
         }
+
         Private.sceneLoadInProgress = null;
         SerializerUtils.clearNonPersistentObjectCache();
         resolve(scene);
@@ -171,7 +175,7 @@ export class Scenes {
             ObjectManagerInternal.loadObjectIgnoreCache(path)
                 .then(tuple => {
                     (Private.sceneLoadInProgress as SceneLoadInfo).scene = tuple[0] as Scene;
-                    if (process.env.CONFIG !== "standalone") {
+                    if (process.env.CONFIG === "editor") {
                         if (ScenesInternal.list().length === 0) {
                             // we are in editor mode and this is the first scene being opened
                             // the editor needs the engine to be ready so it can update it,
