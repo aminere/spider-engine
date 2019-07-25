@@ -282,7 +282,7 @@ export class GeometryRenderer {
         GraphicUtils.drawVertexBuffer(WebGL.context, defaultAssets.primitives.box.vertexBuffer, Private.debugMaterial.shader as Shader);
     }
 
-    static drawSphere(center: Vector3, radius: number, color: Color, worldMatrix: Matrix44) {
+    static drawSphere(center: Vector3, radius: Vector3, color: Color, worldMatrix: Matrix44) {
         Private.debugMaterial.applyParameter("ambient", color);
         let position = Vector3.fromPool();
         let rotation = Quaternion.fromPool();
@@ -290,7 +290,7 @@ export class GeometryRenderer {
         worldMatrix.decompose(position, rotation, scale);
         let rotatedCenter = Vector3.fromPool().copy(center).rotate(rotation);
         position.add(rotatedCenter);
-        scale.multiply(radius);
+        scale.multiplyVector(radius);
         Private.modelViewMatrix.compose(position, rotation, scale);
         Private.debugMaterial.applyParameter(
             "modelViewMatrix",
