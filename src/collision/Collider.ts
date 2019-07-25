@@ -9,6 +9,8 @@ import { CollisionInfo } from "./CollisionInfo";
 import * as Attributes from "../core/Attributes";
 import { SerializedObject } from "../core/SerializableObject";
 import { ObjectProps } from "../core/Types";
+import { Entity } from "../core/Entity";
+import { Transform } from "../core/Transform";
 
 export class Collider extends Component {    
     
@@ -53,6 +55,11 @@ export class Collider extends Component {
             this._shapes.grow(new BoxCollisionShape());
         }
     }    
+
+    setEntity(entity: Entity) {
+        super.setEntity(entity);
+        entity.getOrSetComponent(Transform);
+    }
 
     upgrade(json: SerializedObject, previousVersion: number) {
         if (previousVersion === 1) {
