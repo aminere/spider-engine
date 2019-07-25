@@ -107,9 +107,9 @@ export class Transform extends Component {
 
     set worldPosition(worldPosition: Vector3) {
         this._position.copy(worldPosition);
-        const { parent } = this.entity;
-        if (parent) {
-            const invParentMatrix = Matrix44.fromPool().copy(parent.transform.worldMatrix).invert();
+        const parentTransform = this.entity.parent ? this.entity.parent.transform : null;
+        if (parentTransform) {
+            const invParentMatrix = Matrix44.fromPool().copy(parentTransform.worldMatrix).invert();
             this._position.transform(invParentMatrix);
         }
     }

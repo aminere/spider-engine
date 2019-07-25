@@ -187,8 +187,9 @@ export class IKSolver extends Component {
                 }                
 
                 const node = chain.nodes[j];
-                if (node.entity.parent) {
-                    invParentMatrix.copy(node.entity.parent.transform.worldMatrix).invert();
+                const parentTransform = node.entity.parent ? node.entity.parent.transform : null;
+                if (parentTransform) {
+                    invParentMatrix.copy(parentTransform.worldMatrix).invert();
 
                     // update position 
                     node.entity.transform.position
