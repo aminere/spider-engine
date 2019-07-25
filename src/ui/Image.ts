@@ -7,6 +7,7 @@ import { UIFillUtils } from "./UIFillUtils";
 import { SerializedObject } from "../core/SerializableObject";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { ObjectProps } from "../core/Types";
+import { Entity } from "../core/Entity";
 
 @Attributes.helpUrl("https://docs.spiderengine.io/2d/image.html")
 export class Image extends UIElement {    
@@ -23,6 +24,11 @@ export class Image extends UIElement {
             this.setState(props);
         }
     }  
+
+    setEntity(entity: Entity) {
+        super.setEntity(entity);
+        entity.getOrSetComponent(Layout);
+    }
 
     isLoaded() {
         if (this._fill.instance) {

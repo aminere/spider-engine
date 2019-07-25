@@ -9,6 +9,7 @@ import { BitmapFont } from "./Font/BitmapFont";
 import { SerializedObject } from "../core/SerializableObject";
 import { FontFamily } from "./Font/FontFamily";
 import { VertexBuffer } from "../graphics/VertexBuffer";
+import { Entity } from "../core/Entity";
 
 @Attributes.helpUrl("https://docs.spiderengine.io/2d/text.html")
 export class Text extends UIElement {
@@ -71,9 +72,11 @@ export class Text extends UIElement {
         }
     }
 
-    /**
-     * @hidden
-     */
+    setEntity(entity: Entity) {
+        super.setEntity(entity);
+        entity.getOrSetComponent(Layout);
+    }
+    
     destroy() {
         if (this.font) {
             this.font.destroy();
