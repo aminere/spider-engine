@@ -1,4 +1,5 @@
 import { Entity } from "./Entity";
+import { Component } from "./Component";
 
 export interface TranslatedEntityReferences {
     [entityId: string]: {
@@ -14,6 +15,7 @@ export interface IEntityUtils {
     updateLayoutMatrixIfNecessary: (entity: Entity) => void;
     dirtifyWorldMatrixIfNecessary: (entity: Entity) => void;
     translateReferences: (entity: Entity, oldIdToNewId: {}, translatedRefs?: TranslatedEntityReferences) => void;    
+    sortComponents: (components: Component[]) => Component[];
 }
 
 namespace Private {

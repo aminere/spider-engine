@@ -15,6 +15,7 @@ import { RTTI } from "../core/RTTI";
 import { ObjectManagerInternal } from "../core/ObjectManager";
 import { AssetIdDatabase } from "../assets/AssetIdDatabase";
 import { EnumLiterals } from "../core/EnumLiterals";
+import { IEntityUtilsInternal } from "../core/IEntityUtils";
 
 interface SerializedAssetReference {
     typeName: string;
@@ -51,7 +52,8 @@ export class SerializerUtils {
                 componentsToSerialize.push(component);
             }
         });
-        let components = SerializerUtils.serializeComponents(componentsToSerialize);
+        const sorted = IEntityUtilsInternal.instance.sortComponents(componentsToSerialize);
+        const components = SerializerUtils.serializeComponents(sorted);
         SerializerUtils.serializeNonPersistentObjects(false);
         return {
             id: e.id,
@@ -122,7 +124,8 @@ export class SerializerUtils {
                     componentsToSerialize.push(component);
                 }
             });
-            const components = SerializerUtils.serializeComponents(componentsToSerialize);
+            const sorted = IEntityUtilsInternal.instance.sortComponents(componentsToSerialize);
+            const components = SerializerUtils.serializeComponents(sorted);
             return {
                 id: e.id,
                 name: e.name,

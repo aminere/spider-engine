@@ -252,6 +252,16 @@ export class EntityUtils implements IEntityUtils {
             true
         );
     }
+
+    sortComponents(components: Component[]) {
+        return components.sort((a, b) => {
+            const _sortOrderA = Reflect.getMetadata("sortOrder", a.constructor);
+            const sortOrderA = _sortOrderA === undefined ? -1 : _sortOrderA;
+            const _sortOrderB = Reflect.getMetadata("sortOrder", b.constructor);
+            const sortOrderB = _sortOrderB === undefined ? -1 : _sortOrderB;
+            return sortOrderB - sortOrderA;
+        });
+    }
 }
 
 /**
