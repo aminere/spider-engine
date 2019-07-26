@@ -397,7 +397,7 @@ namespace Private {
         positionOut: Vector3
     ) {
         // Keep a small safe distance from geometry to account for lost floating point precision
-        const skin = .01;
+        const skin = .001;
 
         // convert position & velocity to ellipsoid space
         const localPosition = Vector3.fromPool().copy(position).divideVector(radius);
@@ -416,7 +416,7 @@ namespace Private {
         for (let i = 0; i < 3; ++i) {
 
             const velocityLength = localVelocity.length;
-            if (velocityLength === 0) {
+            if (MathEx.isZero(velocityLength)) {
                 positionOut.copy(toWorldSpace(dest));
                 return;
             }
