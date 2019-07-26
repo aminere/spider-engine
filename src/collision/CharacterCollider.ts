@@ -15,6 +15,9 @@ import { Entity } from "../core/Entity";
 import { Transform } from "../core/Transform";
 import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
 import { AssetReference } from "../serialization/AssetReference";
+import { Time } from "../core/Time";
+
+import * as Attributes from "../core/Attributes";
 
 interface Collision {
     selfIntersectionPoint: Vector3;
@@ -447,19 +450,18 @@ namespace Private {
                 dest.addVectors(localPosition, localVelocity);
             }
         }
-
+        
         positionOut.copy(toWorldSpace(localPosition));
     }
 }
 
 export class CharacterCollider extends Component {
 
-    gravity = new Vector3(0, -10, 0);
+    gravity = -10;
     radius = new Vector3(1, 1, 1);
 
-    set velocity(velocity: Vector3) {
-        this._velocity.copy(velocity);
-    }
+    set desiredVelocity(velocity: Vector3) { this._desiredVelocity.copy(velocity); }
+    get velocity() { return this._velocity; }
 
     set excludedGroups(excluded: CollisionGroup[]) {
         this._excludedGroups.data = excluded.map(e => new AssetReference(CollisionGroup, e));
@@ -468,10 +470,14 @@ export class CharacterCollider extends Component {
     set includedGroups(included: CollisionGroup[]) {
         this._includedGroups.data = included.map(e => new AssetReference(CollisionGroup, e));
     }
-
-    private _velocity = new Vector3();
+    
     private _excludedGroups = new AssetReferenceArray(CollisionGroup);
     private _includedGroups = new AssetReferenceArray(CollisionGroup);
+
+    @Attributes.unserializable()
+    private _velocity = new Vector3();
+    @Attributes.unserializable()
+    private _desiredVelocity = new Vector3();
 
     setEntity(entity: Entity) {
         super.setEntity(entity);
@@ -479,7 +485,6 @@ export class CharacterCollider extends Component {
     }
 
     update() {
-        const positionOut = Vector3.fromPool();
 
         const colliders = Components.ofType(Collider)
             .filter(collider => {
@@ -496,18 +501,31 @@ export class CharacterCollider extends Component {
                 }
                 return true;
             });
-        
+
         // Characters typically have their origin at their feet
         // Move the collider upwards so it spans the whole character and is not embedded in the ground
         const offset = Vector3.fromPool().set(0, this.radius.y, 0);
+        const position = Vector3.fromPool().copy(this.entity.transform.worldPosition).add(offset);
+        const positionOut = Vector3.fromPool();
+
+        this._velocity.set(
+            this._desiredVelocity.x,
+            this._desiredVelocity.y || this._velocity.y,
+            this._desiredVelocity.z
+        );
+
+        this._velocity.y += this.gravity * Time.deltaTime;
+        const velocity = Vector3.fromPool().copy(this._velocity).multiply(Time.deltaTime);
+
         Private.collisionDetectionAndResponse(
-            Vector3.fromPool().copy(this.entity.transform.worldPosition).add(offset),
-            this._velocity,
+            position,
+            velocity,
             this.radius,
             colliders,
             positionOut
         );
-        
+
+        this._velocity.substractVectors(positionOut, position).divide(Time.deltaTime);
         this.entity.transform.worldPosition = positionOut.substract(offset);
     }
 }
