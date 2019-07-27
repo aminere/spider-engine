@@ -11,4 +11,26 @@ export class Components {
         }
         return components;
     }
+
+    static ofTypes(ctors: Constructor<Component>[]): { [typeName: string]: Component[] } { 
+        // TODO optimize / cache components
+        const components = ctors.reduce(
+            (prev, cur) => ({ ...prev, ...{ [cur.name]: [] } }),
+            {}
+        );
+
+        ScenesInternal.list().forEach(scene => {
+            scene.root.traverse(e => {
+                for (const ctor of ctors) {
+                    const component = e.getComponent(ctor);
+                    if (component && component.active) {
+                        components[ctor.name].push(component);
+                    }
+                }
+                return true;
+            });
+        });
+
+        return components;
+    }
 }
