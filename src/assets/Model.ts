@@ -103,17 +103,16 @@ export class ModelSkinnedMesh extends ModelMesh {
         this._bindMatrix.copy(bindMatrix);
     }
 
-    /**
-     * @hidden
-     */
     get boneFbxIds() { return this._bonesFbxIds.data.map(d => d.valueOf()); }
     
     private _bindMatrix = new Matrix44();
+
+    @Attributes.hidden()
     private _bonesFbxIds = new ArrayProperty(Number);
 
     setBones(bones: ModelBone[]) {
         this._bonesFbxIds.data.length = 0;
-        for (let bone of bones) {
+        for (const bone of bones) {
             this._bonesFbxIds.grow(bone.fbxNodeId);
         }
     }
