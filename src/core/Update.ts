@@ -13,6 +13,9 @@ import { Screen } from "../ui/Screen";
 import { CollisionSystem } from "../collision/CollisionSystem";
 import { VoidSyncEvent } from "ts-events";
 import { IKSolver } from "../animation/ik/IKSolver";
+import { IKFootSolver } from "../animation/ik/IKFootSolver";
+import { Constructor } from "./Types";
+import { Component } from "./Component";
 
 namespace Private {
     export const updateHook = new VoidSyncEvent();
@@ -22,18 +25,38 @@ namespace Private {
  * @hidden
  */
 export namespace UpdateInternal {    
+
+    function iterateComponents<T extends Component>(
+        ctor: Constructor<T>,
+        components: { [typeName: string]: Component[] },
+        handler: (component: T) => void
+    ) {
+        (components[ctor.name] as T[]).forEach(handler);
+    }
+
     export function update() {        
         GamepadsInternal.scanGamepads();
 
-        Components.ofType(PhysicsContext).forEach(context => {
+        const components = Components.ofTypes([
+            PhysicsContext,
+            BehaviorComponent,
+            IKSolver,
+            IKFootSolver,
+            Particles,
+            Screen,
+            Raytracer
+        ]);        
+
+        iterateComponents(PhysicsContext, components, context => {
             context.update();
             context.entity.getComponents(RigidBody).forEach(rigidBody => (
                 rigidBody.update(context)
             ));
-        });
+        });       
         
         EntityInternal.collectEntityOperations = true;
-        Components.ofType(BehaviorComponent).forEach(behavior => behavior.update());
+
+        iterateComponents(BehaviorComponent, components, component => component.update());
 
         try {
             Private.updateHook.post();
@@ -66,10 +89,13 @@ export namespace UpdateInternal {
         EntityInternal.entitiesJustCreated.length = 0;
 
         AnimationSystem.update();
-        Components.ofType(IKSolver).forEach(solver => solver.update());
-        Components.ofType(Particles).forEach(particles => particles.update());
-        Components.ofType(Screen).forEach(screen => screen.update());
-        Components.ofType(Raytracer).forEach(raytracer => raytracer.update());
+
+        iterateComponents(IKSolver, components, component => component.update());
+        iterateComponents(IKFootSolver, components, component => component.update());
+        iterateComponents(Particles, components, component => component.update());
+        iterateComponents(Screen, components, component => component.update());
+        iterateComponents(Raytracer, components, component => component.update());
+
         CollisionSystem.update();        
         TimeInternal.incrementCurrentFrame();
     }
