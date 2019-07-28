@@ -65,7 +65,7 @@ export class BehaviorAPI {
         },
         console: {
             // tslint:disable-next-line
-            log: (value: any) => Debug.log(typeof (value) === "string" ? value : JSON.stringify(value)),
+            log: (value: any) => Debug.log(value),
             // tslint:disable-next-line
             assert: (value: any, message?: string) => console.assert(value, message),
             // tslint:disable-next-line
