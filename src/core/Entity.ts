@@ -315,7 +315,7 @@ export class Entity extends UniqueObject {
         if (includeSelf) {
             _continue = handler(this);
         }
-        if (_continue) {
+        if (_continue !== false) {
             this.traverseInternal(this, handler);
         }        
     }
@@ -325,7 +325,7 @@ export class Entity extends UniqueObject {
         if (includeSelf) {
             _continue = handler(this);
         }
-        if (_continue) {
+        if (_continue !== false) {
             this.traverseAncestorsInternal(this, handler);
         }
     }
