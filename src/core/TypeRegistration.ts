@@ -158,6 +158,7 @@ import { IKNode } from "../animation/ik/IKNode";
 import { IKChain } from "../animation/ik/IKChain";
 import { IKConstraint, IKBallJoint } from "../animation/ik/IKConstraints";
 import { CharacterCollider } from "../collision/CharacterCollider";
+import { IKFootSolver } from "../animation/ik/IKFootSolver";
 
 /**
  * @hidden
@@ -349,6 +350,7 @@ export class TypeRegistration {
         factory.registerObject(AnimationComponent, Component);
         factory.registerObject(AnimationInstance, SerializableObject);
         factory.registerObject(IKSolver, Component);
+        factory.registerObject(IKFootSolver, Component);
         factory.registerObject(IKChain, Component);
         factory.registerObject(IKNode, Component);
         factory.registerObject(IKConstraint, SerializableObject);

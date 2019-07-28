@@ -1,0 +1,77 @@
+import { Component } from "../../core/Component";
+import { Entity } from "../../core/Entity";
+import { EntityReference } from "../../serialization/EntityReference";
+import { IKNode } from "./IKNode";
+import { Vector3 } from "../../math/Vector3";
+import { Quaternion } from "../../math/Quaternion";
+import { Matrix44 } from "../../math/Matrix44";
+
+/**
+ * Solves IK for two bones
+ * - Works in 2D. Solves joint angles using cosine rule
+ * - Then rotates root bone towards the target
+ */
+export class IKFootSolver extends Component {
+
+    set target(entity: Entity | null) { this._target.entity = entity; }
+    get target() { return this._target.entity; }
+
+    private _target = new EntityReference();
+
+    update() {
+        if (!this._target.entity) {
+            return;
+        }
+
+        if (!this.entity.parent) {
+            return;
+        }
+
+        const nodes = this.entity.getComponents(IKNode);
+        const [a, b, c] = nodes;
+        const [pa, pb, pc] = nodes.map(n => n.entity.transform.worldPosition);
+        const target = this._target.entity.transform.worldPosition;
+        
+        // Rotate target so as it sits on the ZY plane of the leg
+        // While preserving the same distance as with the original target
+        const { worldForward, worldUp, worldMatrix } = this.entity.parent.transform;
+        const verticalComponent = Vector3.fromPool().copy(target).substract(pa).projectOnVector(worldUp);        
+        const toTarget = Vector3.distance(Vector3.fromPool().copy(target).substract(verticalComponent), pa);        
+        const localTarget2D = Vector3.fromPool().copy(worldForward).multiply(toTarget).add(pa).add(verticalComponent);
+
+        // Can't use transform.worldToLocal() to compute local target
+        // Because we don't want to feed the influence of the rotation that we are doing to the root bone.
+        // So basically do the equivalent of worldToLocal() but with a zero local rotation
+        const localMatrix = Matrix44.fromPool().compose(this.entity.transform.position, Quaternion.identity, this.entity.transform.scale);        
+        const invWorldMatrix = Matrix44.fromPool().multiplyMatrices(worldMatrix, localMatrix).invert();
+        const localTarget = Vector3.fromPool().copy(localTarget2D)
+            .transform(invWorldMatrix)
+            .normalize();    
+
+        const ab = Vector3.distance(pa, pb);
+        const bc = Vector3.distance(pb, pc);
+        const at = Vector3.distance(pa, localTarget2D);
+        const angle0 = Math.atan2(localTarget.z, -localTarget.y);
+
+        // To compute hip angle, we must compute local position of original target
+        // Not it's 2D projection
+        localTarget.copy(target).transform(invWorldMatrix).normalize();
+        const hipAngle = Math.atan2(localTarget.x, localTarget.z);
+
+        if (at >= ab + bc) {
+            // target too far, keep leg straight
+            a.entity.transform.rotation.setFromEulerAngles(-angle0, hipAngle, 0);
+            b.entity.transform.rotation = Quaternion.identity;
+            return;
+        }
+
+        // Use cosine rule to compute joint angles
+        // Rotate first joint
+        const angle1 = Math.acos((bc * bc - ab * ab - at * at) / (-2 * ab * at));   
+        a.entity.transform.rotation.setFromEulerAngles(-(angle0 + angle1), hipAngle, 0);
+
+        // Rotate second joint
+        const angle2 = Math.acos((at * at - ab * ab - bc * bc) / (-2 * ab * bc));
+        b.entity.transform.rotation.setFromEulerAngles(Math.PI - angle2, 0, 0);
+    }
+}
