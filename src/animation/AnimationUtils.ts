@@ -5,14 +5,24 @@ import { Entity, EntityInternal } from "../core/Entity";
 import { Material } from "../graphics/Material";
 import { Animation } from "./Animation";
 import { AnimationTargets, AnimationInstance } from "./AnimationInstance";
+import { AnimationTrackDefinition } from "./AnimationTrackDefinition";
+import { MathEx } from "../math/MathEx";
 
 namespace Private {
-    export function animateProperty(obj: SerializableObject, tokens: string[], currentToken: number, track: AnimationTrack, time: number) {
+    export function evaluateProperty(
+        obj: SerializableObject, 
+        tokens: string[], 
+        currentToken: number, 
+        track: AnimationTrack, 
+        time: number,
+        // tslint:disable-next-line
+        handler: (property: string, value: any) => void
+    ) {
         if (currentToken === tokens.length - 1) {
             if (obj) {
                 const value = track.getSample(time, obj[tokens[currentToken]]);
                 if (value !== undefined) {
-                    obj[tokens[currentToken]] = value;
+                    handler(tokens[currentToken], value);                    
                 }
             }
         } else {
@@ -20,14 +30,16 @@ namespace Private {
                 const subProperty = tokens[currentToken];
                 if (obj.constructor.name === "Visual" && subProperty === "_material") {
                     const visual = obj as Visual;
-                    if (!visual.animatedMaterial && visual.material) {
+                    let animatedMaterial = visual.animatedMaterial as Material;
+                    if (!animatedMaterial && visual.material) {
                         // Creating unique animatedMaterial instance
-                        visual.animatedMaterial = visual.material.copy() as Material;                        
+                        animatedMaterial = visual.material.copy() as Material;                        
+                        visual.animatedMaterial = animatedMaterial;
                     }
                     // +2 instead of +1 because we skip the AssetReference.asset property and go straight to the material
-                    Private.animateProperty(visual.animatedMaterial as Material, tokens, currentToken + 2, track, time);
+                    Private.evaluateProperty(animatedMaterial, tokens, currentToken + 2, track, time, handler);
                 } else {
-                    Private.animateProperty(obj[subProperty], tokens, currentToken + 1, track, time);
+                    Private.evaluateProperty(obj[subProperty], tokens, currentToken + 1, track, time, handler);
                 }
             }
         }
@@ -35,7 +47,15 @@ namespace Private {
 }
 
 export class AnimationUtils {
-    static applyTrack(track: AnimationTrack, propertyPath: string, entity: Entity, time: number) {
+
+    static evaluateTrack(
+        track: AnimationTrack, 
+        propertyPath: string, 
+        entity: Entity, 
+        time: number,
+        // tslint:disable-next-line
+        handler: (component: any, property: string, value: any) => void
+    ) {
         let tokens = track.tokenCache[propertyPath];
         if (!tokens) {
             tokens = propertyPath.split("/");
@@ -45,12 +65,51 @@ export class AnimationUtils {
             const typeName = tokens[0];
             const component = EntityInternal.getComponentByName(entity, typeName);
             if (component) {
-                Private.animateProperty(component, tokens, 1, track, time);
+                Private.evaluateProperty(
+                    component,
+                    tokens, 
+                    1, 
+                    track, 
+                    time, 
+                    (prop, value) => handler(component, prop, value)
+                );
             }
         }
     }
 
-    static applyAnimation(animation: Animation, rootTarget: Entity, time: number, targets?: AnimationTargets) {
+    static applyTrack(
+        track: AnimationTrackDefinition,
+        entity: Entity, 
+        time: number
+    ) {
+        AnimationUtils.evaluateTrack(
+            track.track.instance as AnimationTrack,
+            track.propertyPath,
+            entity,
+            time,
+            (target, prop, value) => {
+                if (track.transition) {                    
+                    if (time < track.transition.duration) {
+                        const blendFactor = time / track.transition.duration;
+                        target[prop] = track.transition.blend(track.transition.sourceValue, value, blendFactor);
+                    } else {
+                        // Transition is over, evaluate at factor = 1 then clear it
+                        target[prop] = track.transition.blend(track.transition.sourceValue, value, 1);
+                        delete track.transition;
+                    }
+                } else {
+                    target[prop] = value;
+                }
+            }
+        );
+    }    
+
+    static evaluateAnimation(
+        animation: Animation, 
+        rootTarget: Entity, 
+        handler: (track: AnimationTrackDefinition, target: Entity) => void,
+        targets?: AnimationTargets        
+    ) {
         for (const track of animation.tracks.data) {
             if (!track.track.instance) {
                 continue;
@@ -69,11 +128,29 @@ export class AnimationUtils {
                     continue;
                 }
             }
-            AnimationUtils.applyTrack(track.track.instance, track.propertyPath, target, time);
+
+            handler(track, target);
         }
     }
 
+    static applyAnimation(animation: Animation, rootTarget: Entity, time: number, targets?: AnimationTargets) {
+        AnimationUtils.evaluateAnimation(
+            animation,
+            rootTarget,
+            (track, target) => {
+                AnimationUtils.applyTrack(track, target, time);
+            },
+            targets
+        );
+    }
+
     static playAnimation(owner: Entity, anim: AnimationInstance, reset?: boolean, loopCount?: number) {
+        AnimationUtils.playAnimationInstance(owner, anim, reset, loopCount);
+        AnimationUtils.fetchTargetsIfNecessary(owner, anim);
+        AnimationUtils.resetAnimationTransition(anim);
+    }
+
+    static playAnimationInstance(owner: Entity, anim: AnimationInstance, reset?: boolean, loopCount?: number) {
         const _reset = reset !== undefined ? reset : true;
         if (_reset) {
             anim.localTime = 0;
@@ -84,19 +161,28 @@ export class AnimationUtils {
         }
         anim.isPlaying = true;
         anim.playCount = 0;
-        if (loopCount !== undefined) {
-            anim.loopCount = loopCount;
-        }
+        anim.loopCount = (loopCount !== undefined) ? loopCount : 0;
+    }
 
-        // fetch targets
+    static fetchTargetsIfNecessary(entity: Entity, anim: AnimationInstance) {
+        if (anim.targets) {
+            return;
+        }
         anim.targets = {};
         for (const a of (anim.animation as Animation).tracks.data) {
             if (a.targetName) {
-                const target = owner.name === a.targetName ? owner : owner.findChild(a.targetName);
+                const target = entity.name === a.targetName ? entity : entity.findChild(a.targetName);
                 if (target) {
                     anim.targets[a.targetName] = target;
                 }
             }
+        }        
+    }
+
+    static resetAnimationTransition(anim: AnimationInstance) {
+        // reset transition information
+        for (const a of (anim.animation as Animation).tracks.data) {            
+            delete a.transition;
         }
     }
 }

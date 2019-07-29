@@ -6,12 +6,34 @@ import { Component } from "../core/Component";
 import { AnimationInstance } from "./AnimationInstance";
 import { AnimationUtils } from "./AnimationUtils";
 import { Animation } from "./Animation";
+import { ITransitionOptions } from "./AnimationTypes";
+import { MathEx } from "../math/MathEx";
+import { AnimationTrack } from "./tracks/AnimationTrack";
+import { Debug } from "../io/Debug";
+import { Vector3 } from "../math/Vector3";
+import { Quaternion } from "../math/Quaternion";
 
 /**
  * @hidden
  */
 export namespace AnimationComponentInternal {
     export const animationsKey = "_animations";
+
+    export function getAnimationInstance(id: string | number, animations: AnimationInstance[]) {
+        const instance = animations[id];
+        if (instance) {
+            return instance as AnimationInstance;
+        }
+        
+        for (const a of animations) {
+            const anim = a.animation;
+            if (anim && anim.name === id) {
+                return a;
+            }
+        }
+
+        return null;
+    }
 }
 
 @Attributes.displayName("AnimationComponent")
@@ -55,24 +77,105 @@ export class AnimationComponent extends Component {
         }
     }
 
-    playAnimation(id: string | number, reset?: boolean, loopCount?: number) {
-        let animInstance = this.animations[id];
-        if (!animInstance) {
-            for (const a of this.animations) {
-                const anim = a.animation;
-                if (anim && anim.name === id) {
-                    animInstance = a;
-                    break;
-                }
-            }
-        }
+    playAnimation(id: string | number, reset?: boolean, loopCount?: number) {        
+        const animInstance = AnimationComponentInternal.getAnimationInstance(id, this.animations);
         if (animInstance) {
             AnimationUtils.playAnimation(this.entity, animInstance, reset, loopCount);
         }
     }
 
+    /**
+     * Plays an animation while attempting to transition from an existing active animation
+     * @param sourceAnimId The index or the name of the source animation that is already playing
+     * @param destAnimId The index or the name of the destination animation to play
+     * @param options Transition options
+     */
+    transitionToAnimation(sourceAnimId: string | number, destAnimId: string | number, options: ITransitionOptions) {
+        const sourceInstance = AnimationComponentInternal.getAnimationInstance(sourceAnimId, this.animations);
+        const destInstance = AnimationComponentInternal.getAnimationInstance(destAnimId, this.animations);
+        
+        if (!destInstance || !destInstance.animation) {
+            return;
+        }
+
+        if (!sourceInstance || !sourceInstance.animation || MathEx.isZero(options.duration)) {
+            // Nothing to transition from, just play the animation
+            AnimationUtils.playAnimation(this.entity, destInstance, undefined, options.loopCount);
+            return;
+        }
+
+        destInstance.localTime = 0;
+        sourceInstance.isPlaying = false;
+        const defaultTransitionDuration = .3;
+
+        // Setup the transition        
+        const destAnimation = destInstance.animation as Animation;
+        AnimationUtils.evaluateAnimation(
+            sourceInstance.animation,
+            this.entity,
+            (track, target) => {
+                const destTrack = destAnimation.tracks.data.find(t => {
+                    return t.propertyPath === track.propertyPath
+                        && (t.targetName === track.targetName);
+                });
+                if (destTrack) {
+                    AnimationUtils.evaluateTrack(
+                        track.track.instance as AnimationTrack, 
+                        track.propertyPath, 
+                        target,
+                        sourceInstance.localTime,
+                        (component, prop, value) => {
+
+                            // Determine function used for blending between animation tracks
+                            const blend = (() => {
+                                if (value.constructor.name === "Vector3") {
+                                    return (src: Vector3, dest: Vector3, factor: number) => (
+                                        Vector3.fromPool().lerpVectors(src, dest, factor)
+                                    );
+                                } else if (value.constructor.name === "Quaternion") {
+                                    return (src: Quaternion, dest: Quaternion, factor: number) => (
+                                        Quaternion.fromPool().slerpQuaternions(src, dest, factor)
+                                    );
+                                } else if (value.constructor.name === "Number") {
+                                    return (src: number, dest: number, factor: number) => (
+                                       MathEx.lerp(src, dest, factor)
+                                    );
+                                } else {
+                                    Debug.logWarning(`Animation transitions not supported for tracks of type '${value.constructor.name}'`);
+                                    return null;
+                                }
+                            // No need to make blend function definition too complex
+                            // tslint:disable-next-line                            
+                            })() as any;
+                            
+                            if (blend) {
+                                const transitionDuration = options.duration || defaultTransitionDuration;
+                                const animDuration = (destInstance.animation as Animation).duration;
+                                const duration = MathEx.clamp(transitionDuration, 0, animDuration - MathEx.EPSILON);
+                                if (!MathEx.isZero(duration)) {
+                                    destTrack.transition = {
+                                        sourceValue: JSON.parse(JSON.stringify(value)),
+                                        duration,
+                                        blend
+                                    };
+                                }                                
+                            }                            
+                        }
+                    );
+                }
+            }
+        );
+
+        AnimationUtils.playAnimationInstance(this.entity, destInstance, undefined, options.loopCount);
+        AnimationUtils.fetchTargetsIfNecessary(this.entity, destInstance);
+    }
+
     stopAllAnimations(waitForEnd?: boolean) {
         for (const animInstance of this.animations) {
+            if (!animInstance.isPlaying) {
+                continue;
+            }
+
             if (waitForEnd === true) {
                 animInstance.requestStop();
             } else {
@@ -85,17 +188,8 @@ export class AnimationComponent extends Component {
     }
 
     stopAnimation(id: string | number, waitForEnd?: boolean) {
-        let animInstance = this.animations[id];
-        if (!animInstance) {
-            for (const a of this.animations) {
-                const anim = a.animation;
-                if (anim && anim.name === id) {
-                    animInstance = a;
-                    break;
-                }
-            }
-        }
-        if (animInstance) {
+        const animInstance = AnimationComponentInternal.getAnimationInstance(id, this.animations);
+        if (animInstance && animInstance.isPlaying) {
             if (waitForEnd === true) {
                 animInstance.requestStop();
             } else {

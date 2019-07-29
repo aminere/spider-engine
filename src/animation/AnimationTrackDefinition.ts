@@ -4,6 +4,7 @@ import { SerializableObject, SerializedObject } from "../core/SerializableObject
 import { EngineUtils } from "../core/EngineUtils";
 import * as Attributes from "../core/Attributes";
 import { AnimationTrack } from "./tracks/AnimationTrack";
+import { AnimationTrackTransition } from "./AnimationTypes";
 
 export class AnimationTrackDefinition extends SerializableObject {
 
@@ -14,6 +15,9 @@ export class AnimationTrackDefinition extends SerializableObject {
     @Attributes.hidden()
     track!: Reference<AnimationTrack>;
     targetName?: string;
+
+    @Attributes.unserializable()    
+    transition!: AnimationTrackTransition;
 
     private _id: string;
     

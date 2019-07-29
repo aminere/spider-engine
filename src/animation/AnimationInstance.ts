@@ -14,19 +14,17 @@ export class AnimationInstance extends SerializableObject {
     get version() { return 3; }
     
     get animation() { return this._animation.asset; }
-    set animation(value: Animation | null) { this._animation.asset = value; }
+    set animation(value: Animation | null) { 
+        delete this.targets;
+        this._animation.asset = value;
+    }
     loopCount = 0;
     speed = 1;
     autoPlay = true;
 
     get isPlaying() { return this._isPlaying; }
     set isPlaying(playing: boolean) { 
-        this._isPlaying = playing; 
-        if (playing) {
-            this._hasPlayedOnce = true;
-        } else {
-            this._stopRequested = false;
-        }
+        this._isPlaying = playing;
     }    
     get localTime() { return this._localTime; }
     set localTime(time: number) { this._localTime = time; }
@@ -34,8 +32,7 @@ export class AnimationInstance extends SerializableObject {
     get stopRequested() { return this._stopRequested; }        
     get playCount() { return this._playCount; }
     
-    set playCount(value: number) { this._playCount = value; }
-    get hasPlayedOnce() { return this._hasPlayedOnce; }
+    set playCount(value: number) { this._playCount = value; }    
 
     /**
      * @hidden
@@ -47,8 +44,6 @@ export class AnimationInstance extends SerializableObject {
     private _isPlaying = false;
     @Attributes.unserializable()
     private _localTime = 0;
-    @Attributes.unserializable()
-    private _hasPlayedOnce = false;
     @Attributes.unserializable()
     private _stopRequested = false;
     @Attributes.unserializable()
@@ -80,6 +75,7 @@ export class AnimationInstance extends SerializableObject {
     }
     
     destroy() {
+        delete this.targets;
         this._animation.detach();
         super.destroy();
     }

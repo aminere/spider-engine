@@ -15,8 +15,9 @@ export class AnimationSystem {
                 }
 
                 if (!instance.isPlaying) {
-                    if (instance.autoPlay && !instance.hasPlayedOnce) {
+                    if (instance.autoPlay) {
                         AnimationUtils.playAnimation(animator.entity, instance);
+                        instance.autoPlay = false;
                     } else {
                         return;
                     }
