@@ -74,8 +74,8 @@ export class Vector3 {
     }
 
     crossVectors(a: Vector3, b: Vector3) {
-        let ax = a.x, ay = a.y, az = a.z;
-        let bx = b.x, by = b.y, bz = b.z;
+        let ax = a._x, ay = a._y, az = a._z;
+        let bx = b._x, by = b._y, bz = b._z;
         this._x = ay * bz - az * by;
         this._y = az * bx - ax * bz;
         this.z = ax * by - ay * bx;
@@ -83,7 +83,7 @@ export class Vector3 {
     }
 
     dot(other: Vector3) {
-        return (this.x * other.x) + (this.y * other.y) + (this.z * other.z);
+        return (this._x * other._x) + (this._y * other._y) + (this._z * other._z);
     }
 
     substract(other: Vector3) {
@@ -91,9 +91,9 @@ export class Vector3 {
     }
 
     substractVectors(a: Vector3, b: Vector3) {
-        this._x = a.x - b.x;
-        this._y = a.y - b.y;
-        this.z = a.z - b.z;
+        this._x = a._x - b._x;
+        this._y = a._y - b._y;
+        this.z = a._z - b._z;
         return this;
     }
 
@@ -102,9 +102,9 @@ export class Vector3 {
     }
 
     addVectors(a: Vector3, b: Vector3) {
-        this._x = a.x + b.x;
-        this._y = a.y + b.y;
-        this.z = a.z + b.z;
+        this._x = a._x + b._x;
+        this._y = a._y + b._y;
+        this.z = a._z + b._z;
         return this;
     }
 
@@ -116,9 +116,9 @@ export class Vector3 {
     }
 
     multiplyVector(other: Vector3) {
-        this._x *= other.x;
-        this._y *= other.y;
-        this.z *= other.z;
+        this._x *= other._x;
+        this._y *= other._y;
+        this.z *= other._z;
         return this;
     }
 
@@ -130,20 +130,18 @@ export class Vector3 {
     }
 
     divideVector(other: Vector3) {
-        this._x /= other.x;
-        this._y /= other.y;
-        this.z /= other.z;
+        this._x /= other._x;
+        this._y /= other._y;
+        this.z /= other._z;
         return this;
     }
 
     min() {
-        const { x, y, z } = this;
-        return Math.min(x, Math.min(y, z));
+        return Math.min(this._x, this._y, this._z);
     }
 
     max() {
-        const { x, y, z } = this;
-        return Math.max(x, Math.max(y, z));
+        return Math.max(this._x, this._y, this._z);
     }
 
     normalize() {
@@ -163,9 +161,9 @@ export class Vector3 {
     }
 
     lerpVectors(v1: Vector3, v2: Vector3, factor: number) {
-        this._x = v1.x + (v2.x - v1.x) * factor;
-        this._y = v1.y + (v2.y - v1.y) * factor;
-        this.z = v1.z + (v2.z - v1.z) * factor;
+        this._x = v1._x + (v2._x - v1._x) * factor;
+        this._y = v1._y + (v2._y - v1._y) * factor;
+        this.z = v1._z + (v2._z - v1._z) * factor;
         return this;
     }
 
@@ -194,9 +192,9 @@ export class Vector3 {
     }
 
     distFromSq(other: Vector3) {
-        const dx = this.x - other.x;
-        const dy = this.y - other.y;
-        const dz = this.z - other.z;
+        const dx = this._x - other._x;
+        const dy = this._y - other._y;
+        const dz = this._z - other._z;
         return dx * dx + dy * dy + dz * dz;
     }
 
@@ -233,14 +231,14 @@ export class Vector3 {
 
     rotate(q: Quaternion) {
         // based on Threejs
-        const { x, y, z } = this;
+        const { _x, _y, _z } = this;
         const qx = q.x, qy = q.y, qz = q.z, qw = q.w;
 
         // calculate quat * vector
-        const ix = qw * x + qy * z - qz * y;
-        const iy = qw * y + qz * x - qx * z;
-        const iz = qw * z + qx * y - qy * x;
-        const iw = -qx * x - qy * y - qz * z;
+        const ix = qw * _x + qy * _z - qz * _y;
+        const iy = qw * _y + qz * _x - qx * _z;
+        const iz = qw * _z + qx * _y - qy * _x;
+        const iw = -qx * _x - qy * _y - qz * _z;
 
         // calculate result * inverse quat
         this._x = ix * qw + iw * - qx + iy * - qz - iz * - qy;
@@ -257,53 +255,53 @@ export class Vector3 {
     }
 
     transform(m: Matrix44) {
-        const { x, y, z } = this;
+        const { _x, _y, _z } = this;
         const e = m.data;
-        this._x = e[0] * x + e[4] * y + e[8] * z + e[12];
-        this._y = e[1] * x + e[5] * y + e[9] * z + e[13];
-        this._z = e[2] * x + e[6] * y + e[10] * z + e[14];
-        const w = e[3] * x + e[7] * y + e[11] * z + e[15];
+        this._x = e[0] * _x + e[4] * _y + e[8] * _z + e[12];
+        this._y = e[1] * _x + e[5] * _y + e[9] * _z + e[13];
+        this._z = e[2] * _x + e[6] * _y + e[10] * _z + e[14];
+        const w = e[3] * _x + e[7] * _y + e[11] * _z + e[15];
         return this.multiply(1 / w);
     }
 
     transformDirection(m: Matrix44) {
         // based on Three.js
         // vector interpreted as a direction
-        const { x, y, z } = this;
+        const { _x, _y, _z } = this;
         const e = m.data;
-        this._x = e[0] * x + e[4] * y + e[8] * z;
-        this._y = e[1] * x + e[5] * y + e[9] * z;
-        this._z = e[2] * x + e[6] * y + e[10] * z;
+        this._x = e[0] * _x + e[4] * _y + e[8] * _z;
+        this._y = e[1] * _x + e[5] * _y + e[9] * _z;
+        this._z = e[2] * _x + e[6] * _y + e[10] * _z;
         return this.normalize();
     }
 
     copy(other: Vector3) {
-        this._x = other.x;
-        this._y = other.y;
-        this.z = other.z;
+        this._x = other._x;
+        this._y = other._y;
+        this.z = other._z;
         return this;
     }
 
     equals(other: Vector3) {
-        return this.x === other.x && this.y === other.y && this.z === other.z;
+        return this._x === other._x && this._y === other._y && this._z === other._z;
     }
 
     asArray() {
         if (!this._array) {
-            this._array = [this.x, this.y, this.z];
+            this._array = [this._x, this._y, this._z];
             return this._array;
         }
 
-        this._array[0] = this.x;
-        this._array[1] = this.y;
-        this._array[2] = this.z;
+        this._array[0] = this._x;
+        this._array[1] = this._y;
+        this._array[2] = this._z;
         return this._array;
     }
 
     toArray(a: number[], offset: number) {
-        a[offset] = this.x;
-        a[offset + 1] = this.y;
-        a[offset + 2] = this.z;
+        a[offset] = this._x;
+        a[offset + 1] = this._y;
+        a[offset + 2] = this._z;
         return a;
     }
 

@@ -226,8 +226,8 @@ export class Quaternion {
 
     multiplyQuaternions(b: Quaternion, a: Quaternion) {
         // based on Threejs
-        const qax = a.x, qay = a.y, qaz = a.z, qaw = a.w;
-        const qbx = b.x, qby = b.y, qbz = b.z, qbw = b.w;
+        const qax = a._x, qay = a._y, qaz = a._z, qaw = a._w;
+        const qbx = b._x, qby = b._y, qbz = b._z, qbw = b._w;
         this._x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
         this._y = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
         this._z = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
@@ -240,17 +240,17 @@ export class Quaternion {
     }
 
     equals(other: Quaternion) {
-        return this.x === other.x
-            && this.y === other.y
-            && this.z === other.z
-            && this.w === other.w;
+        return this._x === other._x
+            && this._y === other._y
+            && this._z === other._z
+            && this._w === other._w;
     }
 
     copy(other: Quaternion) {
-        this._x = other.x;
-        this._y = other.y;
-        this._z = other.z;
-        this.w = other.w;
+        this._x = other._x;
+        this._y = other._y;
+        this._z = other._z;
+        this.w = other._w;
         return this;
     }
 
@@ -283,42 +283,42 @@ export class Quaternion {
             return this.copy(qb);
         }
 
-        const x = this.x, y = this.y, z = this.z, w = this.w;
+        const { _x, _y, _z, _w } = this;        
         // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
-        let cosHalfTheta = w * qb.w + x * qb.x + y * qb.y + z * qb.z;
+        let cosHalfTheta = _w * qb._w + _x * qb._x + _y * qb._y + _z * qb._z;
         if (cosHalfTheta < 0) {
-            this._w = - qb.w;
-            this._x = - qb.x;
-            this._y = - qb.y;
-            this._z = - qb.z;
+            this._w = - qb._w;
+            this._x = - qb._x;
+            this._y = - qb._y;
+            this._z = - qb._z;
             cosHalfTheta = -cosHalfTheta;
         } else {
             this.copy(qb);
         }
 
         if (cosHalfTheta >= 1.0) {
-            this._w = w;
-            this._x = x;
-            this._y = y;
-            this.z = z;
+            this._w = _w;
+            this._x = _x;
+            this._y = _y;
+            this.z = _z;
             return this;
         }
 
         const sinHalfTheta = Math.sqrt(1.0 - cosHalfTheta * cosHalfTheta);
         if (Math.abs(sinHalfTheta) < 0.001) {
-            this._w = 0.5 * (w + this.w);
-            this._x = 0.5 * (x + this.x);
-            this._y = 0.5 * (y + this.y);
-            this.z = 0.5 * (z + this.z);
+            this._w = 0.5 * (_w + this.w);
+            this._x = 0.5 * (_x + this.x);
+            this._y = 0.5 * (_y + this.y);
+            this.z = 0.5 * (_z + this.z);
             return this;
         }
 
         const halfTheta = Math.atan2(sinHalfTheta, cosHalfTheta);
         const ratioA = Math.sin((1 - t) * halfTheta) / sinHalfTheta, ratioB = Math.sin(t * halfTheta) / sinHalfTheta;
-        this._w = (w * ratioA + this.w * ratioB);
-        this._x = (x * ratioA + this.x * ratioB);
-        this._y = (y * ratioA + this.y * ratioB);
-        this.z = (z * ratioA + this.z * ratioB);
+        this._w = (_w * ratioA + this.w * ratioB);
+        this._x = (_x * ratioA + this.x * ratioB);
+        this._y = (_y * ratioA + this.y * ratioB);
+        this.z = (_z * ratioA + this.z * ratioB);
         return this;
     }
 }
