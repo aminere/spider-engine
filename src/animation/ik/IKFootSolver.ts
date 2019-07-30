@@ -1,40 +1,32 @@
-import { Component } from "../../core/Component";
-import { Entity } from "../../core/Entity";
-import { EntityReference } from "../../serialization/EntityReference";
+
 import { IKNode } from "./IKNode";
 import { Vector3 } from "../../math/Vector3";
 import { Quaternion } from "../../math/Quaternion";
 import { Matrix44 } from "../../math/Matrix44";
+import { IKSolverBase } from "./IKSolverBase";
 
 /**
  * Solves IK for two bones
  * - Works in 2D. Solves joint angles using cosine rule
  * - Then rotates root bone towards the target
  */
-export class IKFootSolver extends Component {
-
-    set target(entity: Entity | null) { this._target.entity = entity; }
-    get target() { return this._target.entity; }
-
-    private _target = new EntityReference();
-
+export class IKFootSolver extends IKSolverBase {
     update() {
-        if (!this._target.entity) {
+
+        const entity = this.getEntity();
+        const effector = this.getEffector();
+        if (!entity || !effector || !entity.parent) {
             return;
         }
 
-        if (!this.entity.parent) {
-            return;
-        }
-
-        const nodes = this.entity.getComponents(IKNode);
+        const nodes = entity.getComponents(IKNode);
         const [a, b, c] = nodes;
         const [pa, pb, pc] = nodes.map(n => n.entity.transform.worldPosition);
-        const target = this._target.entity.transform.worldPosition;
+        const target = effector.transform.worldPosition;
         
         // Rotate target so as it sits on the ZY plane of the leg
         // While preserving the same distance as with the original target
-        const { worldForward, worldUp, worldMatrix } = this.entity.parent.transform;
+        const { worldForward, worldUp, worldMatrix } = entity.parent.transform;
         const verticalComponent = Vector3.fromPool().copy(target).substract(pa).projectOnVector(worldUp);        
         const toTarget = Vector3.distance(Vector3.fromPool().copy(target).substract(verticalComponent), pa);        
         const localTarget2D = Vector3.fromPool().copy(worldForward).multiply(toTarget).add(pa).add(verticalComponent);
@@ -42,7 +34,7 @@ export class IKFootSolver extends Component {
         // Can't use transform.worldToLocal() to compute local target
         // Because we don't want to feed the influence of the rotation that we are doing to the root bone.
         // So basically do the equivalent of worldToLocal() but with a zero local rotation
-        const localMatrix = Matrix44.fromPool().compose(this.entity.transform.position, Quaternion.identity, this.entity.transform.scale);        
+        const localMatrix = Matrix44.fromPool().compose(entity.transform.position, Quaternion.identity, entity.transform.scale);        
         const invWorldMatrix = Matrix44.fromPool().multiplyMatrices(worldMatrix, localMatrix).invert();
         const localTarget = Vector3.fromPool().copy(localTarget2D)
             .transform(invWorldMatrix)

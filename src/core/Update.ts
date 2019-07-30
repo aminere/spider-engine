@@ -12,10 +12,9 @@ import { EntityInternal } from "./Entity";
 import { Screen } from "../ui/Screen";
 import { CollisionSystem } from "../collision/CollisionSystem";
 import { VoidSyncEvent } from "ts-events";
-import { IKSolver } from "../animation/ik/IKSolver";
-import { IKFootSolver } from "../animation/ik/IKFootSolver";
 import { Constructor } from "./Types";
 import { Component } from "./Component";
+import { IKSolver } from "../animation/ik/IKSolver";
 
 namespace Private {
     export const updateHook = new VoidSyncEvent();
@@ -41,7 +40,6 @@ export namespace UpdateInternal {
             PhysicsContext,
             BehaviorComponent,
             IKSolver,
-            IKFootSolver,
             Particles,
             Screen,
             Raytracer
@@ -89,9 +87,8 @@ export namespace UpdateInternal {
         EntityInternal.entitiesJustCreated.length = 0;
 
         AnimationSystem.update();
-
+        
         iterateComponents(IKSolver, components, component => component.update());
-        iterateComponents(IKFootSolver, components, component => component.update());
         iterateComponents(Particles, components, component => component.update());
         iterateComponents(Screen, components, component => component.update());
         iterateComponents(Raytracer, components, component => component.update());

@@ -10,7 +10,6 @@ import { SerializableObject } from "../SerializableObject";
 import { Entity, EntityInternal } from "../Entity";
 import { Entities } from "../Entities";
 import { IObjectManagerInternal } from "../IObjectManager";
-import { EntityUtilsInternal } from "../EntityUtils";
 
 export class HudControl extends SerializableObject {
     name: string;

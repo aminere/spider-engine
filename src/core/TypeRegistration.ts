@@ -153,12 +153,14 @@ import { BoxGeometry } from "../graphics/geometry/primitives/BoxGeometry";
 import { SphereGeometry } from "../graphics/geometry/primitives/SphereGeometry";
 import { PlaneGeometry } from "../graphics/geometry/primitives/PlaneGeometry";
 import { ConeGeometry } from "../graphics/geometry/primitives/ConeGeometry";
-import { IKSolver } from "../animation/ik/IKSolver";
 import { IKNode } from "../animation/ik/IKNode";
-import { IKChain } from "../animation/ik/IKChain";
 import { IKConstraint, IKBallJoint } from "../animation/ik/IKConstraints";
 import { CharacterCollider } from "../collision/CharacterCollider";
 import { IKFootSolver } from "../animation/ik/IKFootSolver";
+import { IKGenericSolver } from "../animation/ik/IKGenericSolver";
+import { IKSolver } from "../animation/ik/IKSolver";
+import { IKEffector } from "../animation/ik/IKEffector";
+import { IKSolverBase } from "../animation/ik/IKSolverBase";
 
 /**
  * @hidden
@@ -350,8 +352,10 @@ export class TypeRegistration {
         factory.registerObject(AnimationComponent, Component);
         factory.registerObject(AnimationInstance, SerializableObject);
         factory.registerObject(IKSolver, Component);
-        factory.registerObject(IKFootSolver, Component);
-        factory.registerObject(IKChain, Component);
+        factory.registerObject(IKSolverBase, SerializableObject);
+        factory.registerObject(IKGenericSolver, IKSolverBase);
+        factory.registerObject(IKFootSolver, IKSolverBase);
+        factory.registerObject(IKEffector, Component);
         factory.registerObject(IKNode, Component);
         factory.registerObject(IKConstraint, SerializableObject);
         factory.registerObject(IKBallJoint, IKConstraint);

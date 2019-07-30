@@ -2,9 +2,6 @@ import { Entity } from "../core/Entity";
 import { Debug } from "../io/Debug";
 import { Entities } from "../core/Entities";
 
-/**
- * @hidden
- */
 export class EntityReference {    
 
     get id() { return this._id; }
