@@ -53,7 +53,8 @@ export class Factory implements IFactory {
             // TODO find legit was of casting from Constructor<T extends SerializableObject> to Constructor<Asset>
             // tslint:disable-next-line
             createAssetReference: () => new AssetReference(ctor as any),
-            createComponentReference: () => new ComponentReference(ctor , undefined),
+            // tslint:disable-next-line
+            createComponentReference: () => new ComponentReference(ctor as any),
             createObjectArray: (data?: SerializableObject[]) => new ArrayProperty(ctor, data),
             createReferenceArray: (data?: ReferenceBase[]) => new ReferenceArray(ctor, data),
             // tslint:disable-next-line

@@ -4,6 +4,7 @@ import { SerializableObject } from "../core/SerializableObject";
 import { Entities } from "../core/Entities";
 import { Component } from "../core/Component";
 import { RTTI } from "../core/RTTI";
+import { Constructor } from "../core/Types";
 
 export interface SerializedComponentReference {
     entityId?: string;
@@ -58,7 +59,7 @@ export class ComponentReference<T extends Component> {
     private _entity: Entity | null = null;
     private _resolved = false;
 
-    constructor(ctor: new() => SerializableObject, entityId?: string) {        
+    constructor(ctor: Constructor<T>, entityId?: string) {        
         this._componentTypeName = ctor.name;
         this._entityId = entityId;
         this._resolved = false;
