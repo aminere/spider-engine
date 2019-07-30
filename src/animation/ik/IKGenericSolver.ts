@@ -80,9 +80,9 @@ export class IKGenericSolver extends IKSolverBase {
                 const ikChain = new FIK.Chain3D();
 
                 this._entity = entity;
-                entity.transform.changed.attach(() => Private.onRootTransformChanged(entity.transform, ikChain));
+                entity.transform.changed.attach(() => Private.onRootTransformChanged(nodes[0].entity.transform, ikChain));
 
-                for (let j = 0; j < nodes.length - 1; ++j) {
+                for (let j = 0; j < nodes.length - 1; ++j) {                    
                     const boneStart = nodes[j].entity.transform.worldPosition;
                     const boneEnd = nodes[j + 1].entity.transform.worldPosition;
                     const bone = new FIK.Bone3D(
@@ -93,7 +93,12 @@ export class IKGenericSolver extends IKSolverBase {
 
                     const isRootBone = j === 0;
                     if (isRootBone) {
-                        rootBoneDirection.copy(boneEnd).substract(boneStart).normalize();
+                        rootBoneDirection
+                            .substractVectors(boneEnd, boneStart)
+                            // Remove influence of root rotation because it will be applied anyway by the scene graph
+                            // After the bone lookAts are resolved
+                            .rotate(entity.transform.worldRotation.getInverse(Quaternion.fromPool()))
+                            .normalize();
                         const components = rootBoneDirection.asArray();
                         const maxComponent = Math.max(...components.map(Math.abs));
                         const normalizedComponents = components.map(c => Math.abs(c) === maxComponent ? Math.sign(c) : 0);
@@ -132,7 +137,10 @@ export class IKGenericSolver extends IKSolverBase {
                     )
                 );
 
-                // Determine look at adjustment                
+                // Determine look at adjustment
+                // Quaternion.lookAt() assumes the geometry is aligned along the forward (Z axis)
+                // If it's not the case, introduce a rotation adjustment to make sure
+                // Resolved lookAt rotations give the intended result
                 this._lookAtAdjustAxisUp = rootBoneDirection.y === 0;
                 this._lookAtAdjustAngle = Math.acos(rootBoneDirection.dot(Vector3.forward));
                 if (rootBoneDirection.x !== 0) {
