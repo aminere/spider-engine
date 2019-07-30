@@ -22,7 +22,7 @@ export class IKFootSolver extends IKSolverBase {
         const nodes = entity.getComponents(IKNode);
         const [a, b, c] = nodes;
         const [pa, pb, pc] = nodes.map(n => n.entity.transform.worldPosition);
-        const target = effector.transform.worldPosition;
+        const target = effector.entity.transform.worldPosition;
         
         // Rotate target so as it sits on the ZY plane of the leg
         // While preserving the same distance as with the original target
@@ -50,20 +50,25 @@ export class IKFootSolver extends IKSolverBase {
         localTarget.copy(target).transform(invWorldMatrix).normalize();
         const hipAngle = Math.atan2(localTarget.x, localTarget.z);
 
+        const aRotation = Quaternion.fromPool();
+        const bRotation = Quaternion.fromPool();
         if (at >= ab + bc) {
             // target too far, keep leg straight
-            a.entity.transform.rotation.setFromEulerAngles(-angle0, hipAngle, 0);
-            b.entity.transform.rotation = Quaternion.identity;
-            return;
+            aRotation.setFromEulerAngles(-angle0, hipAngle, 0);
+            bRotation.copy(Quaternion.identity);
+
+        } else {
+            // Use cosine rule to compute joint angles
+            // Rotate first joint
+            const angle1 = Math.acos((bc * bc - ab * ab - at * at) / (-2 * ab * at));
+            aRotation.setFromEulerAngles(-(angle0 + angle1), hipAngle, 0);
+
+            // Rotate second joint
+            const angle2 = Math.acos((at * at - ab * ab - bc * bc) / (-2 * ab * bc));
+            bRotation.setFromEulerAngles(Math.PI - angle2, 0, 0);
         }
 
-        // Use cosine rule to compute joint angles
-        // Rotate first joint
-        const angle1 = Math.acos((bc * bc - ab * ab - at * at) / (-2 * ab * at));   
-        a.entity.transform.rotation.setFromEulerAngles(-(angle0 + angle1), hipAngle, 0);
-
-        // Rotate second joint
-        const angle2 = Math.acos((at * at - ab * ab - bc * bc) / (-2 * ab * bc));
-        b.entity.transform.rotation.setFromEulerAngles(Math.PI - angle2, 0, 0);
+        a.entity.transform.rotation.slerp(aRotation, effector.influence);
+        b.entity.transform.rotation.slerp(bRotation, effector.influence);
     }
 }

@@ -131,7 +131,7 @@ export class IKGenericSolver extends IKSolverBase {
                         {
                             get: (target, prop) => {
                                 // TODO validate that prop is x, y, z
-                                return target.transform.worldPosition[prop];
+                                return target.entity.transform.worldPosition[prop];
                             }
                         }
                     )
@@ -188,14 +188,16 @@ export class IKGenericSolver extends IKSolverBase {
                 invParentMatrix.copy(parentTransform.worldMatrix).invert();
 
                 // update position 
-                node.entity.transform.position
+                const position = Vector3.fromPool()
                     .set(bone.start.x, bone.start.y, bone.start.z)
                     .transform(invParentMatrix);
+                node.entity.transform.position.lerp(position, effector.influence);
 
                 // update rotation                    
-                invParentMatrix
+                const rotation = invParentMatrix
                     .multiply(rotationMatrix.setRotation(lookAtRotation))
-                    .getRotation(node.entity.transform.rotation);
+                    .getRotation(Quaternion.fromPool());
+                node.entity.transform.rotation.slerp(rotation, effector.influence);
 
             } else {
                 node.entity.transform.position.set(bone.start.x, bone.start.y, bone.start.z);

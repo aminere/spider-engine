@@ -30,7 +30,7 @@ export class IKSolver extends Component {
         if (solver) {
             Object.assign(solver, {
                 getEntity: () => this.entity,
-                getEffector: () => this.effector ? this.effector.entity : null
+                getEffector: () => this.effector
             });
         }
     }
