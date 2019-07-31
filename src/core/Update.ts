@@ -15,6 +15,9 @@ import { VoidSyncEvent } from "ts-events";
 import { Constructor } from "./Types";
 import { Component } from "./Component";
 import { IKSolver } from "../animation/ik/IKSolver";
+import { AnimationComponent } from "../animation/AnimationComponent";
+import { Collider } from "../collision/Collider";
+import { CharacterCollider } from "../collision/CharacterCollider";
 
 namespace Private {
     export const updateHook = new VoidSyncEvent();
@@ -36,14 +39,11 @@ export namespace UpdateInternal {
     export function update() {        
         GamepadsInternal.scanGamepads();
 
-        const components = Components.ofTypes([
+        let components = Components.ofTypes([
             PhysicsContext,
             BehaviorComponent,
-            IKSolver,
-            Particles,
-            Screen,
-            Raytracer
-        ]);        
+            AnimationComponent
+        ]);
 
         iterateComponents(PhysicsContext, components, context => {
             context.update();
@@ -53,6 +53,8 @@ export namespace UpdateInternal {
         });       
         
         EntityInternal.collectEntityOperations = true;
+
+        AnimationSystem.update(components.AnimationComponent as AnimationComponent[]);
 
         iterateComponents(BehaviorComponent, components, component => component.update());
 
@@ -85,15 +87,28 @@ export namespace UpdateInternal {
             }
         }
         EntityInternal.entitiesJustCreated.length = 0;
-
-        AnimationSystem.update();
         
+        // We're doing another lookup here because BehaviorComponent.update() might
+        // have deactivated some components
+        components = Components.ofTypes([
+            IKSolver,
+            Particles,
+            Screen,
+            Raytracer,
+            Collider,
+            CharacterCollider
+        ]);
+
         iterateComponents(IKSolver, components, component => component.update());
         iterateComponents(Particles, components, component => component.update());
         iterateComponents(Screen, components, component => component.update());
         iterateComponents(Raytracer, components, component => component.update());
 
-        CollisionSystem.update();        
+        CollisionSystem.update(
+            components.Collider as Collider[],
+            components.CharacterCollider as CharacterCollider[]
+        );
+
         TimeInternal.incrementCurrentFrame();
     }
 }

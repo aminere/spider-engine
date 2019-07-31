@@ -4,9 +4,9 @@ import { AnimationComponent } from "./AnimationComponent";
 import { AnimationUtils } from "./AnimationUtils";
 
 export class AnimationSystem {
-    static update() {
+    static update(animators: AnimationComponent[]) {
 
-        Components.ofType(AnimationComponent).forEach(animator => {
+        animators.forEach(animator => {
 
             animator.animations.forEach(instance => {
                 const { animation } = instance;

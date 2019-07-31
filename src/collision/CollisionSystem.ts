@@ -52,12 +52,14 @@ export namespace CollisionSystemInternal {
 }
 
 export class CollisionSystem {
-    static update() {
+    static update(
+        colliders: Collider[],
+        characterColliders: CharacterCollider[]
+    ) {
 
         // Check for Collisions
         Private.collisions.flush();
         const collisionChecked: { [id: string]: { [id: string]: boolean } } = {};
-        const colliders = Components.ofType(Collider);
         for (const collider1 of colliders) {
             for (const collider2 of colliders) {
                 if (collider1 === collider2) {
@@ -92,7 +94,7 @@ export class CollisionSystem {
         }
 
         // Handle more complex colliders
-        Components.ofType(CharacterCollider).forEach(c => c.update());
+        characterColliders.forEach(c => c.update());
 
         // call collision callbacks
         for (let i = 0; i < Private.collisions.size; ++i) {
