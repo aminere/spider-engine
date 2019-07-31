@@ -45,7 +45,10 @@ export class IKGenericSolver extends IKSolverBase {
     private _entity: Entity | null = null;
 
     @Attributes.unserializable()
-    private _transformChanged = false;
+    private _chainTransformChanged = false;
+
+    @Attributes.unserializable()
+    private _effectorTransformChanged = false;
 
     update() {
         const entity = this.getEntity();
@@ -81,14 +84,8 @@ export class IKGenericSolver extends IKSolverBase {
             Object.assign(window, { FIK });
             this._ikSolver = new FIK.Structure3D();
             this._nodes = nodes;
-            this._entity = entity;       
-            this._transformChanged = true;    
-
-            // Connect to change callbacks
-            entity.transform.changed.attach(() => {
-                this._transformChanged = true;
-            });
-            effector.entity.transform.changed.attach(() => this._transformChanged = true);
+            this._entity = entity;
+            this._chainTransformChanged = true;
 
             const ikChain = new FIK.Chain3D();
             for (let j = 0; j < nodes.length - 1; ++j) {
@@ -114,24 +111,33 @@ export class IKGenericSolver extends IKSolverBase {
                 )
             );
 
+            // Connect to change callbacks
+            entity.transform.changed.attach(() => {
+                this._chainTransformChanged = true;
+            });
+            effector.entity.transform.changed.attach(() => {
+                this._effectorTransformChanged = true;
+            });
+
         } else {
-            if (this._transformChanged) {
+            if (this._chainTransformChanged) {
+                const ikChain = this._ikSolver.chains[0];
                 const rootPos = this._nodes[0].entity.transform.worldPosition;
-                this._ikSolver.chains[0].setBaseLocation(Private.dummy.set(rootPos.x, rootPos.y, rootPos.z));
+                ikChain.setBaseLocation(Private.dummy.set(rootPos.x, rootPos.y, rootPos.z));
                 for (let i = 0; i < this._nodes.length - 1; ++i) {
                     const boneStart = this._nodes[i].entity.transform.worldPosition;
                     const boneEnd = this._nodes[i + 1].entity.transform.worldPosition;
-                    this._ikSolver.chains[0].bones[i].start.set(boneStart.x, boneStart.y, boneStart.z);
-                    this._ikSolver.chains[0].bones[i].end.set(boneEnd.x, boneEnd.y, boneEnd.z);
+                    ikChain.bones[i].start.set(boneStart.x, boneStart.y, boneStart.z);
+                    ikChain.bones[i].end.set(boneEnd.x, boneEnd.y, boneEnd.z);
                 }
-                this._ikSolver.chains[0].updateChainLength();
-                this._ikSolver.chains[0].resetTarget();
+                ikChain.updateChainLength();
+                ikChain.resetTarget();
             }
         }
 
-        if (!this._transformChanged) {
+        if (!this._chainTransformChanged && !this._effectorTransformChanged) {
             return;
-        }        
+        }
 
         this._ikSolver.update();
 
@@ -182,18 +188,12 @@ export class IKGenericSolver extends IKSolverBase {
                 node.entity.transform.rotation.slerp(rotation, effector.influence);
 
             } else {
-                node.entity.transform.position.set(bone.start.x, bone.start.y, bone.start.z);
-                lookAtDir.set(
-                    bone.end.x - bone.start.x,
-                    bone.end.y - bone.start.y,
-                    bone.end.z - bone.start.z
-                )
-                    .normalize();
-                node.entity.transform.rotation.copy(lookAtRotation);
+                node.entity.transform.rotation.slerp(lookAtRotation, effector.influence);
             }
         }
         entity.transform.eventsEnabled = true;
-        this._transformChanged = false;
+        this._chainTransformChanged = false;
+        this._effectorTransformChanged = false;
     }
 
     destroy() {
