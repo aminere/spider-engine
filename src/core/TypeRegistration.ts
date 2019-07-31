@@ -154,10 +154,10 @@ import { SphereGeometry } from "../graphics/geometry/primitives/SphereGeometry";
 import { PlaneGeometry } from "../graphics/geometry/primitives/PlaneGeometry";
 import { ConeGeometry } from "../graphics/geometry/primitives/ConeGeometry";
 import { IKNode } from "../animation/ik/IKNode";
-import { IKConstraint, IKBallJoint } from "../animation/ik/IKConstraints";
+import { IKConstraint } from "../animation/ik/IKConstraints";
 import { CharacterCollider } from "../collision/CharacterCollider";
 import { IKFootSolver } from "../animation/ik/IKFootSolver";
-import { IKGenericSolver } from "../animation/ik/IKGenericSolver";
+import { IKGenericSolver, BaseRotation } from "../animation/ik/IKGenericSolver";
 import { IKSolver } from "../animation/ik/IKSolver";
 import { IKEffector } from "../animation/ik/IKEffector";
 import { IKSolverBase } from "../animation/ik/IKSolverBase";
@@ -355,10 +355,10 @@ export class TypeRegistration {
         factory.registerObject(IKSolverBase, SerializableObject);
         factory.registerObject(IKGenericSolver, IKSolverBase);
         factory.registerObject(IKFootSolver, IKSolverBase);
-        factory.registerObject(IKEffector, Component);
+        factory.registerObject(IKEffector, Component);        
         factory.registerObject(IKNode, Component);
         factory.registerObject(IKConstraint, SerializableObject);
-        factory.registerObject(IKBallJoint, IKConstraint);
+        factory.registerObject(BaseRotation, SerializableObject);
 
         // Custom Behavior Nodes
         factory.registerObject(Delay, Operator);
