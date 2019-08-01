@@ -74,7 +74,6 @@ namespace Private {
         "projectionMatrix": true,
         "viewMatrix": true,
         "worldMatrix": true,
-        "localMatrix": true,
         "normalMatrix": true,
         "modelViewMatrix": true,
         "boneTexture": true,
