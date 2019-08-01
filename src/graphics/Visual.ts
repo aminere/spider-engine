@@ -44,10 +44,6 @@ export class Visual extends Component {
         return this.entity.transform.worldMatrix;
     }
 
-    get localTransform(): Matrix44 {
-        return this.entity.transform.localMatrix;
-    }   
-
     get bucketId() {
         let id = 0;
         if (this.receiveShadows) {

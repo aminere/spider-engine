@@ -64,7 +64,7 @@ namespace Private {
     export let defaultPerspectiveCamera: Camera | null = null;
 
     export const screenSize = new Vector2();
-    export const matrix = new Matrix44();
+    export const dummyMatrix = new Matrix44();
     export const normalMatrix = new Matrix33();
     export const uiProjectionMatrix = new Matrix44();
     export const cameraToRenderPassMap = new Map<Camera, RenderPassToDefinitionMap>();
@@ -120,8 +120,11 @@ namespace Private {
                         // TODO handle multiple lights
                         const light = Private.lights[0];
                         if (visualBucket.reference.receiveShadows) {
-                            Private.matrix.multiplyMatrices(light.getProjectionMatrix(), light.viewMatrix);
-                            shader.applyParameter("lightMatrix", Private.matrix, visualBucketId);
+                            const lightMatrix = Private.dummyMatrix.multiplyMatrices(
+                                light.getProjectionMatrix(), 
+                                light.viewMatrix
+                            );
+                            shader.applyParameter("lightMatrix", lightMatrix, visualBucketId);
                             shader.applyReferenceParameter("shadowMap", Private.shadowMaps[0], visualBucketId);
                         }                                                                        
                         
@@ -158,11 +161,12 @@ namespace Private {
                                 vertexBuffer.updateBufferDatas(gl);
                             }
                             const worldMatrix = renderPassDefinition.makeWorldMatrix(visual.worldTransform);
-                            Private.matrix.multiplyMatrices(viewMatrix, worldMatrix);
-                            Private.normalMatrix.getNormalMatrix(Private.matrix);
+                            const modelViewMatrix = visual.isSkinned
+                                ? viewMatrix
+                                : Private.dummyMatrix.multiplyMatrices(viewMatrix, worldMatrix);
+                            Private.normalMatrix.getNormalMatrix(modelViewMatrix);
                             shader.applyParameter("worldMatrix", worldMatrix, visualBucketId);
-                            shader.applyParameter("localMatrix", visual.localTransform, visualBucketId);
-                            shader.applyParameter("modelViewMatrix", Private.matrix, visualBucketId);
+                            shader.applyParameter("modelViewMatrix", modelViewMatrix, visualBucketId);
                             shader.applyParameter("normalMatrix", Private.normalMatrix, visualBucketId);
                             shader.applyParameter("screenSize", screenSize, visualBucketId);
                             shader.applyParameter("time", Time.time, visualBucketId);
@@ -285,8 +289,7 @@ namespace Private {
                             let skinnedMesh = visual.geometry as SkinnedMesh;
                             if (!skinnedMesh.boneTexture) {
                                 continue;
-                            }
-                            currentShader.applyParameter("localMatrix", visual.localTransform);
+                            }                            
                             currentShader.applyParameter("bindMatrix", skinnedMesh.bindMatrix);
                             currentShader.applyParameter("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
                             if (WebGL.extensions.OES_texture_float) {
@@ -297,8 +300,11 @@ namespace Private {
                                 currentShader.applyParameter("boneMatrices", skinnedMesh.boneMatrices);
                             }
                         } else {
-                            Private.matrix.multiplyMatrices(Private.lights[i].viewMatrix, visual.worldTransform);
-                            currentShader.applyParameter("modelViewMatrix", Private.matrix);
+                            const modelViewMatrix = Private.dummyMatrix.multiplyMatrices(
+                                Private.lights[i].viewMatrix, 
+                                visual.worldTransform
+                            );
+                            currentShader.applyParameter("modelViewMatrix", modelViewMatrix);
                         }
                         vertexBuffer.draw(context);
                     }
