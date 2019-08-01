@@ -7,6 +7,7 @@ import { Animation } from "./Animation";
 import { AnimationTargets, AnimationInstance } from "./AnimationInstance";
 import { AnimationTrackDefinition } from "./AnimationTrackDefinition";
 import { MathEx } from "../math/MathEx";
+import { IPlayAnimationOptions } from "./AnimationTypes";
 
 namespace Private {
     export function evaluateProperty(
@@ -80,17 +81,18 @@ export class AnimationUtils {
     static applyTrack(
         track: AnimationTrackDefinition,
         entity: Entity, 
-        time: number
+        evalTime: number,
+        playTime: number
     ) {
         AnimationUtils.evaluateTrack(
             track.track.instance as AnimationTrack,
             track.propertyPath,
             entity,
-            time,
+            evalTime,
             (target, prop, value) => {
                 if (track.transition) {                    
-                    if (time < track.transition.duration) {
-                        const blendFactor = time / track.transition.duration;
+                    if (playTime < track.transition.duration) {
+                        const blendFactor = playTime / track.transition.duration;
                         target[prop] = track.transition.blend(track.transition.sourceValue, value, blendFactor);
                     } else {
                         // Transition is over, evaluate at factor = 1 then clear it
@@ -133,35 +135,39 @@ export class AnimationUtils {
         }
     }
 
-    static applyAnimation(animation: Animation, rootTarget: Entity, time: number, targets?: AnimationTargets) {
+    static applyAnimation(
+        animation: Animation, 
+        rootTarget: Entity, 
+        evalTime: number, 
+        playTime: number,
+        targets?: AnimationTargets
+    ) {
         AnimationUtils.evaluateAnimation(
             animation,
             rootTarget,
             (track, target) => {
-                AnimationUtils.applyTrack(track, target, time);
+                AnimationUtils.applyTrack(track, target, evalTime, playTime);
             },
             targets
         );
     }
 
-    static playAnimation(owner: Entity, anim: AnimationInstance, reset?: boolean, loopCount?: number) {
-        AnimationUtils.playAnimationInstance(owner, anim, reset, loopCount);
+    static playAnimation(owner: Entity, anim: AnimationInstance, options?: IPlayAnimationOptions) {
+        AnimationUtils.playAnimationInstance(owner, anim, options);
         AnimationUtils.fetchTargetsIfNecessary(owner, anim);
         AnimationUtils.resetAnimationTransition(anim);
     }
 
-    static playAnimationInstance(owner: Entity, anim: AnimationInstance, reset?: boolean, loopCount?: number) {
-        const _reset = reset !== undefined ? reset : true;
-        if (_reset) {
-            anim.localTime = 0;
-        } else {
-            if (!anim.isPlaying) {
-                anim.localTime = 0;
-            }
+    static playAnimationInstance(owner: Entity, anim: AnimationInstance, options?: IPlayAnimationOptions) {
+        
+        if (options && options.startTime !== undefined) {
+            anim.localTime = (anim.animation as Animation).duration * MathEx.clamp(options.startTime, 0, 1);
         }
+
         anim.isPlaying = true;
         anim.playCount = 0;
-        anim.loopCount = (loopCount !== undefined) ? loopCount : 0;
+        anim.playTime = 0;
+        anim.loopCount = options ? (options.loopCount !== undefined ? options.loopCount : 0) : 0;
     }
 
     static fetchTargetsIfNecessary(entity: Entity, anim: AnimationInstance) {

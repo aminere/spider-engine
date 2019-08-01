@@ -23,8 +23,17 @@ export class AnimationSystem {
                     }
                 }
 
-                instance.localTime += Time.deltaTime * instance.speed;
-                AnimationUtils.applyAnimation(animation, animator.entity, instance.localTime, instance.targets);
+                const dt = Time.smoothDeltaTime * instance.speed;
+                instance.localTime += dt;
+                instance.playTime += dt;
+
+                AnimationUtils.applyAnimation(
+                    animation, 
+                    animator.entity, 
+                    instance.localTime,
+                    instance.playTime,
+                    instance.targets
+                );
 
                 if (instance.localTime < animation.duration) {
                     return;

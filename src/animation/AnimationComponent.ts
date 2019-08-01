@@ -6,7 +6,7 @@ import { Component } from "../core/Component";
 import { AnimationInstance } from "./AnimationInstance";
 import { AnimationUtils } from "./AnimationUtils";
 import { Animation } from "./Animation";
-import { ITransitionOptions } from "./AnimationTypes";
+import { ITransitionOptions, IPlayAnimationOptions } from "./AnimationTypes";
 import { MathEx } from "../math/MathEx";
 import { AnimationTrack } from "./tracks/AnimationTrack";
 import { Debug } from "../io/Debug";
@@ -70,17 +70,17 @@ export class AnimationComponent extends Component {
         super.destroy();
     }
 
-    playAnimationByIndex(index: number, reset?: boolean) {
+    playAnimationByIndex(index: number, options?: IPlayAnimationOptions) {
         if (index < this.animations.length) {
             const animInstance = this.animations[index];
-            AnimationUtils.playAnimation(this.entity, animInstance, reset);
+            AnimationUtils.playAnimation(this.entity, animInstance, options);
         }
     }
 
-    playAnimation(id: string | number, reset?: boolean, loopCount?: number) {        
+    playAnimation(id: string | number, options?: IPlayAnimationOptions) {        
         const animInstance = AnimationComponentInternal.getAnimationInstance(id, this.animations);
         if (animInstance) {
-            AnimationUtils.playAnimation(this.entity, animInstance, reset, loopCount);
+            AnimationUtils.playAnimation(this.entity, animInstance, options);
         }
     }
 
@@ -91,27 +91,29 @@ export class AnimationComponent extends Component {
      * @param options Transition options
      */
     transitionToAnimation(sourceAnimId: string | number, destAnimId: string | number, options: ITransitionOptions) {
-        const sourceInstance = AnimationComponentInternal.getAnimationInstance(sourceAnimId, this.animations);
-        const destInstance = AnimationComponentInternal.getAnimationInstance(destAnimId, this.animations);
         
-        if (!destInstance || !destInstance.animation) {
+        const destInstance = AnimationComponentInternal.getAnimationInstance(destAnimId, this.animations) as AnimationInstance;
+        const destAnimation = destInstance ? destInstance.animation : null;        
+
+        if (!destAnimation) {
             return;
         }
 
-        if (!sourceInstance || !sourceInstance.animation || MathEx.isZero(options.duration)) {
+        const sourceInstance = AnimationComponentInternal.getAnimationInstance(sourceAnimId, this.animations) as AnimationInstance;
+        const sourceAnimation = sourceInstance ? sourceInstance.animation : null;
+
+        if (!sourceAnimation || MathEx.isZero(options.duration)) {
             // Nothing to transition from, just play the animation
-            AnimationUtils.playAnimation(this.entity, destInstance, undefined, options.loopCount);
+            AnimationUtils.playAnimation(this.entity, destInstance, options);
             return;
         }
 
-        destInstance.localTime = 0;
         sourceInstance.isPlaying = false;
         const defaultTransitionDuration = .3;
 
-        // Setup the transition        
-        const destAnimation = destInstance.animation as Animation;
+        // Setup the transition
         AnimationUtils.evaluateAnimation(
-            sourceInstance.animation,
+            sourceAnimation,
             this.entity,
             (track, target) => {
                 const destTrack = destAnimation.tracks.data.find(t => {
@@ -166,7 +168,7 @@ export class AnimationComponent extends Component {
             }
         );
 
-        AnimationUtils.playAnimationInstance(this.entity, destInstance, undefined, options.loopCount);
+        AnimationUtils.playAnimationInstance(this.entity, destInstance, options);
         AnimationUtils.fetchTargetsIfNecessary(this.entity, destInstance);
     }
 

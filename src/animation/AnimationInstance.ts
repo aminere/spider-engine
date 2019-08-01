@@ -28,6 +28,9 @@ export class AnimationInstance extends SerializableObject {
     }    
     get localTime() { return this._localTime; }
     set localTime(time: number) { this._localTime = time; }
+
+    get playTime() { return this._playTime; }
+    set playTime(time: number) { this._playTime = time; }
     
     get stopRequested() { return this._stopRequested; }        
     get playCount() { return this._playCount; }
@@ -44,6 +47,8 @@ export class AnimationInstance extends SerializableObject {
     private _isPlaying = false;
     @Attributes.unserializable()
     private _localTime = 0;
+    @Attributes.unserializable()
+    private _playTime = 0;
     @Attributes.unserializable()
     private _stopRequested = false;
     @Attributes.unserializable()
