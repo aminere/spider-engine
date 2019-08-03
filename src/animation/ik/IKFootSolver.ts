@@ -19,7 +19,11 @@ export class IKFootSolver extends IKSolverBase {
             return;
         }
 
-        const nodes = entity.getComponents(IKNode);
+        const nodes = entity.getComponents(IKNode).filter(n => n.active);
+        if (nodes.length < 3) {
+            return;
+        }
+        
         const [a, b, c] = nodes;
         const [pa, pb, pc] = nodes.map(n => n.entity.transform.worldPosition);
         const target = effector.entity.transform.worldPosition;

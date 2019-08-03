@@ -67,7 +67,7 @@ export class IKGenericSolver extends IKSolverBase {
                     }
 
                     const node = child.getComponent(IKNode);
-                    if (node) {
+                    if (node && node.active) {
                         nodes.push(node);
                     }
                     return true;
