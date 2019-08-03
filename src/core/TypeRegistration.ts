@@ -161,6 +161,7 @@ import { IKGenericSolver, BaseRotation } from "../animation/ik/IKGenericSolver";
 import { IKSolver } from "../animation/ik/IKSolver";
 import { IKEffector } from "../animation/ik/IKEffector";
 import { IKSolverBase } from "../animation/ik/IKSolverBase";
+import { AnimationTransition } from "../animation/AnimationTransition";
 
 /**
  * @hidden
@@ -333,6 +334,7 @@ export class TypeRegistration {
         
         // Animation
         factory.registerObject(Animation, Asset);
+        factory.registerObject(AnimationTransition, Asset);
         factory.registerObject(AnimationTrack, SerializableObject);
         factory.registerObject(AnimationKey, SerializableObject);
         factory.registerObject(AnimationTrackDefinition, SerializableObject);

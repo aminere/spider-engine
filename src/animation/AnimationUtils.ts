@@ -167,7 +167,6 @@ export class AnimationUtils {
         anim.isPlaying = true;
         anim.playCount = 0;
         anim.playTime = 0;
-        anim.loopCount = options ? (options.loopCount !== undefined ? options.loopCount : 0) : 0;
     }
 
     static fetchTargetsIfNecessary(entity: Entity, anim: AnimationInstance) {
