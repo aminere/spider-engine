@@ -1,10 +1,8 @@
 
 import { ReferenceBase, Reference, SerializedReference } from "./Reference";
 import { SerializableObject } from "../core/SerializableObject";
+import { Constructor } from "../core/Types";
 
-/**
- * @hidden
- */
 export class ReferenceArrayBase {
   // tslint:disable-next-line
   grow!: (instance?: any) => void;
@@ -12,16 +10,13 @@ export class ReferenceArrayBase {
   getData!: () => ReferenceBase[];  
 }
 
-/**
- * @hidden
- */
 export class ReferenceArray<T extends SerializableObject> extends ReferenceArrayBase {
 
     data: Reference<T>[];
 
     private _clone: () => ReferenceArray<T>;
 
-    constructor(ctor: { new(): T; }, data?: Reference<T>[]) {
+    constructor(ctor: Constructor<T>, data?: Reference<T>[]) {
         super();
         this.grow = (instance?: T) => this.data.push(new Reference(ctor, instance));
         this.typeName = () => ctor.name;
@@ -52,9 +47,6 @@ export class ReferenceArray<T extends SerializableObject> extends ReferenceArray
     }
 }
 
-/**
- * @hidden
- */
 export interface SerializedReferenceArray {
     typeName: string;
     data: SerializedReference[];

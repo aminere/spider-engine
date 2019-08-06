@@ -1,31 +1,23 @@
 
 import { SerializableObject, SerializedObject } from "../core/SerializableObject";
+import { Constructor } from "../core/Types";
 
-/**
- * @hidden
- */
 export class ReferenceBase {
   baseTypeName!: () => string;  
   getInstance!: () => SerializableObject | undefined;
 }
 
-/**
- * @hidden
- */
 export class Reference<T extends SerializableObject> extends ReferenceBase {
     instance?: T;
 
-    constructor(ctor: { new(): T; }, instance?: T) {    
+    constructor(ctor: Constructor<T>, instance?: T) {    
         super();
         this.baseTypeName = () =>  ctor.name;
         this.getInstance = () => this.instance;
-        this.instance = instance || undefined;        
+        this.instance = instance;        
     }    
 }
 
-/**
- * @hidden
- */
 export interface SerializedReference {
     baseTypeName: string;
     data?: SerializedObject;
