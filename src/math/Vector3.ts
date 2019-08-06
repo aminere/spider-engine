@@ -123,9 +123,10 @@ export class Vector3 {
     }
 
     divide(scalar: number) {
-        this._x /= scalar;
-        this._y /= scalar;
-        this.z /= scalar;
+        const inv = 1 / scalar;
+        this._x *= inv;
+        this._y *= inv;
+        this.z *= inv;
         return this;
     }
 
@@ -146,13 +147,13 @@ export class Vector3 {
 
     normalize() {
         const len = this.length;
-        if (len < Number.EPSILON) {
+        if (len === 0) {
             if (process.env.NODE_ENV === "development") {
                 console.assert(false, "Normalizing a zero Vector3");
             }
             return this;
         } else {
-            return this.multiply(1 / len);
+            return this.divide(len);
         }
     }
 
