@@ -30,12 +30,16 @@ export class Debug {
     }
 
     static logVector3(v: Vector3) {
+        const log = `${v.x}, ${v.y}, ${v.z}`;
         // tslint:disable-next-line
-        console.log(`${v.x}, ${v.y}, ${v.z}`);
+        console.log(log);
+        DebugInternal.externalLogger(log);
     }
 
     static logVector2(v: Vector2) {
+        const log = `${v.x}, ${v.y}`;
         // tslint:disable-next-line
-        console.log(`${v.x}, ${v.y}`);
+        console.log(log);
+        DebugInternal.externalLogger(log);
     }
 }
