@@ -18,6 +18,7 @@ import { EnumLiterals } from "../core/EnumLiterals";
 import { IEntityUtilsInternal } from "../core/IEntityUtils";
 import { EntityReference } from "./EntityReference";
 import { ComponentReference } from "./ComponentReference";
+import { ReferenceArrayBase } from "./ReferenceArray";
 
 interface SerializedAssetReference {
     typeName: string;
@@ -424,6 +425,8 @@ export class SerializerUtils {
                         propertyValue.set.call(target, (value as EntityReference).entity);
                     } else if (value.constructor.name === "ComponentReference") {
                         propertyValue.set.call(target, (value as ComponentReference<Component>).component);
+                    } else if (value.constructor.name === "ReferenceArray") {
+                        propertyValue.set.call(target, (value as ReferenceArrayBase).getData().map(r => r.getInstance()));
                     } else {
                         propertyValue.set.call(target, value);
                     }
