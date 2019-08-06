@@ -13,6 +13,7 @@ import { AABB } from "../math/AABB";
 import { RaycastResult } from "../collision/RaycastResult";
 import { Matrix44 } from "../math/Matrix44";
 import { Triangle } from "../math/Triangle";
+import { CollisionFilter } from "../collision/CollisionFilter";
 
 namespace Private {
     export let aabb = new AABB();
@@ -28,7 +29,7 @@ namespace Private {
 }
 
 export class Physics {
-    static rayCast(ray: Ray, include?: CollisionGroup[], exclude?: CollisionGroup[]) {
+    static rayCast(ray: Ray, filter?: CollisionFilter) {
         let colliders = Components.ofType(Collider);
         let collision = false;
         let toClosestIntersection = 999999;
@@ -46,7 +47,7 @@ export class Physics {
         } = Private;
 
         for (let collider of colliders) {
-            if (collider.group && !collider.group.isAllowed(include, exclude)) {
+            if (collider.group && !collider.group.isAllowed(filter)) {
                 continue;
             }
             let shape = collider.shapes[0];
