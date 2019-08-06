@@ -21,6 +21,14 @@ export function referencable(param: boolean) {
     return Reflect.metadata("referencable", param);
 }
 
+export function defaultType(typeName: string) {
+    return Reflect.metadata("defaultType", typeName);
+}
+
+export function nullable(param: boolean) {
+    return Reflect.metadata("nullable", param);
+}
+
 export function mandatory() {
     return Reflect.metadata("mandatory", true);
 }
