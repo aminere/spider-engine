@@ -1,6 +1,5 @@
 import { ObjectPool } from "../core/ObjectPool";
 import { CollisionInfo } from "./CollisionInfo";
-import { Components } from "../core/Components";
 import { Collider } from "./Collider";
 import { BehaviorComponent } from "../behavior/BehaviorComponent";
 import { CollisionShape } from "./CollisionShape";
@@ -94,7 +93,7 @@ export class CollisionSystem {
         }
 
         // Handle more complex colliders
-        characterColliders.forEach(c => c.update());
+        characterColliders.forEach(c => c.update(colliders));
 
         // call collision callbacks
         for (let i = 0; i < Private.collisions.size; ++i) {

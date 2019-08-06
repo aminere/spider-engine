@@ -1,6 +1,3 @@
-import { CollisionShape } from "./CollisionShape";
-import { BoxCollisionShape } from "./BoxCollisionShape";
-import { ReferenceArray } from "../serialization/ReferenceArray";
 import { AssetReference } from "../serialization/AssetReference";
 import { CollisionGroup } from "./CollisionGroup";
 import { Component } from "../core/Component";
@@ -11,6 +8,11 @@ import { SerializedObject } from "../core/SerializableObject";
 import { ObjectProps } from "../core/Types";
 import { Entity } from "../core/Entity";
 import { Transform } from "../core/Transform";
+import { Reference } from "../serialization/Reference";
+import { CollisionFilter } from "./CollisionFilter";
+import { CollisionShape } from "./CollisionShape";
+import { ReferenceArray } from "../serialization/ReferenceArray";
+import { BoxCollisionShape } from "./BoxCollisionShape";
 
 export class Collider extends Component {    
     
@@ -41,6 +43,10 @@ export class Collider extends Component {
     get collision() { return this._collision; }
 
     private _group = new AssetReference(CollisionGroup);
+    private _filter = new Reference(CollisionFilter);
+
+    @Attributes.defaultType("BoxCollisionShape")
+    @Attributes.nullable(false)
     private _shapes = new ReferenceArray(CollisionShape);
 
     @Attributes.unserializable()
@@ -64,13 +70,9 @@ export class Collider extends Component {
     upgrade(json: SerializedObject, previousVersion: number) {
         if (previousVersion === 1) {
             Object.assign(json.properties, { _shapes: json.properties.shapes });
-            delete json.properties.shapes;
+            delete json.properties.shapes;      
         }
         return json;
-    }
-
-    addShape(shape: CollisionShape) {
-        this._shapes.grow(shape);
     }
 
     destroy() {

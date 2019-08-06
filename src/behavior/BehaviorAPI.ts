@@ -29,6 +29,7 @@ import { Entity } from "../core/Entity";
 import { VoidSyncEvent } from "ts-events";
 import { Random } from "../math/Random";
 import { Input } from "../input/Input";
+import { CollisionFilter } from "../collision/CollisionFilter";
 
 namespace Private {
     export const transientState = {};
@@ -202,8 +203,8 @@ export class BehaviorAPI {
             from: (a: any) => Array.from(a)
         },
         Physics: {
-            rayCast: (ray: Ray, include?: CollisionGroup[], exclude?: CollisionGroup[]): RaycastResult | null => (
-                Physics.rayCast(ray, include, exclude)
+            rayCast: (ray: Ray, filter?: CollisionFilter): RaycastResult | null => (
+                Physics.rayCast(ray, filter)
             )
         },
         Collision: {

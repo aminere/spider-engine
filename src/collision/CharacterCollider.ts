@@ -10,14 +10,12 @@ import { MeshCollisionShape } from "./MeshCollisionShape";
 import { MathEx } from "../math/MathEx";
 import { defaultAssets } from "../assets/DefaultAssets";
 import { VertexBuffer } from "../graphics/VertexBuffer";
-import { Components } from "../core/Components";
-import { Entity } from "../core/Entity";
-import { Transform } from "../core/Transform";
-import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
 import { AssetReference } from "../serialization/AssetReference";
 import { Time } from "../core/Time";
 
 import * as Attributes from "../core/Attributes";
+import { Reference } from "../serialization/Reference";
+import { CollisionFilter } from "./CollisionFilter";
 
 interface Collision {
     selfIntersectionPoint: Vector3;
@@ -463,44 +461,19 @@ export class CharacterCollider extends Component {
     set desiredVelocity(velocity: Vector3) { this._desiredVelocity.copy(velocity); }
     get velocity() { return this._velocity; }
 
-    set excludedGroups(excluded: CollisionGroup[]) {
-        this._excludedGroups.data = excluded.map(e => new AssetReference(CollisionGroup, e));
-    }
+    get group() { return this._group.asset; }
 
-    set includedGroups(included: CollisionGroup[]) {
-        this._includedGroups.data = included.map(e => new AssetReference(CollisionGroup, e));
-    }
-    
-    private _excludedGroups = new AssetReferenceArray(CollisionGroup);
-    private _includedGroups = new AssetReferenceArray(CollisionGroup);
+    private _group = new AssetReference(CollisionGroup);
+    private _filter = new Reference(CollisionFilter);
 
     @Attributes.unserializable()
     private _velocity = new Vector3();
     @Attributes.unserializable()
     private _desiredVelocity = new Vector3();
 
-    setEntity(entity: Entity) {
-        super.setEntity(entity);
-        entity.getOrSetComponent(Transform);
-    }
+    update(colliders: Collider[]) {
 
-    update() {
-
-        const colliders = Components.ofType(Collider)
-            .filter(collider => {
-                if (collider.entity === this.entity) {
-                    return false;
-                }
-                if (collider.group) {
-                    if (this._excludedGroups.data.some(e => e.asset === collider.group)) {
-                        return false;
-                    }
-                    if (this._includedGroups.data.length > 0) {
-                        return this._includedGroups.data.some(e => e.asset === collider.group);
-                    }
-                }
-                return true;
-            });
+        // TODO apply filter on colliders
 
         // Characters typically have their origin at their feet
         // Move the collider upwards so it spans the whole character and is not embedded in the ground

@@ -155,13 +155,14 @@ import { PlaneGeometry } from "../graphics/geometry/primitives/PlaneGeometry";
 import { ConeGeometry } from "../graphics/geometry/primitives/ConeGeometry";
 import { IKNode } from "../animation/ik/IKNode";
 import { IKConstraint } from "../animation/ik/IKConstraints";
-import { CharacterCollider } from "../collision/CharacterCollider";
 import { IKFootSolver } from "../animation/ik/IKFootSolver";
 import { IKGenericSolver, BaseRotation } from "../animation/ik/IKGenericSolver";
 import { IKSolver } from "../animation/ik/IKSolver";
 import { IKEffector } from "../animation/ik/IKEffector";
 import { IKSolverBase } from "../animation/ik/IKSolverBase";
 import { AnimationTransition } from "../animation/AnimationTransition";
+import { CollisionFilter, InclusionCollisionFilter, ExclusionCollisionFilter, MixedCollisionFilter } from "../collision/CollisionFilter";
+import { CharacterCollider } from "../collision/CharacterCollider";
 
 /**
  * @hidden
@@ -254,7 +255,8 @@ export class TypeRegistration {
         factory.registerObject(MeshParticle, ParticleShape);
         
         // Physics / Collision
-        factory.registerObject(Collider, Component);        
+        factory.registerObject(Collider, Component);       
+        factory.registerObject(CharacterCollider, Component);
         factory.registerObject(CollisionGroup, Asset);
         factory.registerObject(CollisionShape, SerializableObject);
         factory.registerObject(SphereCollisionShape, CollisionShape);
@@ -265,8 +267,11 @@ export class TypeRegistration {
         factory.registerObject(PlaneCollisionShape, CollisionShape);
         factory.registerObject(CollisionInfoPin, DataPin);        
         factory.registerObject(PhysicsContext, Component);
-        factory.registerObject(RigidBody, Component);      
-        factory.registerObject(CharacterCollider, Component);
+        factory.registerObject(RigidBody, Component);
+        factory.registerObject(CollisionFilter, SerializableObject, true);
+        factory.registerObject(InclusionCollisionFilter, CollisionFilter);
+        factory.registerObject(ExclusionCollisionFilter, CollisionFilter);
+        factory.registerObject(MixedCollisionFilter, CollisionFilter);
 
         // UI
         factory.registerObject(UIElement, Component);
