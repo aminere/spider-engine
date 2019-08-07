@@ -42,7 +42,7 @@ import { CodeBlock } from "../behavior/CodeBlock";
 
 import { StaticMesh } from "../graphics/geometry/StaticMesh";
 import { StaticMeshAsset } from "../assets/StaticMeshAsset";
-import { Model, ModelElement, ModelBone, ModelMesh, ModelSkinnedMesh } from "../assets/Model";
+import { Model } from "../assets/model/Model";
 import { VisualGroup } from "../graphics/VisualGroup";
 import { Scene } from "../assets/Scene";
 import { Button } from "../ui/Button";
@@ -164,6 +164,11 @@ import { AnimationTransition } from "../animation/AnimationTransition";
 import { CollisionFilter, InclusionCollisionFilter, ExclusionCollisionFilter } from "../collision/CollisionFilter";
 import { CharacterCollider } from "../collision/CharacterCollider";
 import { VisualFilter, InclusionVisualFilter, ExclusionVisualFilter } from "../graphics/VisualFilter";
+import { ModelElement } from "../assets/model/ModelElement";
+import { ModelMesh } from "../assets/model/ModelMesh";
+import { ModelSkinnedMesh } from "../assets/model/ModelSkinnedMesh";
+import { ModelBone } from "../assets/model/ModelBone";
+import { ModelMultiMesh } from "../assets/model/ModelMultiMesh";
 
 /**
  * @hidden
@@ -222,6 +227,7 @@ export class TypeRegistration {
         factory.registerObject(Model, Asset);
         factory.registerObject(ModelElement, UniqueObject);
         factory.registerObject(ModelMesh, ModelElement);
+        factory.registerObject(ModelMultiMesh, ModelElement);
         factory.registerObject(ModelSkinnedMesh, ModelMesh);        
         factory.registerObject(ModelBone, ModelElement);        
         factory.registerObject(Volume, SerializableObject);

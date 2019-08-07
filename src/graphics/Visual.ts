@@ -10,7 +10,6 @@ import * as Attributes from "../core/Attributes";
 import { Shader } from "./Shader";
 import { SerializedObject } from "../core/SerializableObject";
 import { VertexBuffer } from "./VertexBuffer";
-import { Matrix44 } from "../math/Matrix44";
 import { Component } from "../core/Component";
 import { ObjectProps } from "../core/Types";
 import { Entity } from "../core/Entity";

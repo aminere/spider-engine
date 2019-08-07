@@ -5,7 +5,7 @@ export * from "./core/Interfaces";
 export * from "./core/Entities";
 export * from "./core/Component";
 export * from "./core/SerializableObject";
-export * from "./assets/Model";
+export * from "./assets/model/Model";
 export * from "./input/Input";
 export { Scenes } from "./core/Scenes";
 export { Update } from "./core/Update";
