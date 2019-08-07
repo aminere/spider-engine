@@ -21,6 +21,9 @@ export class Components {
 
         ScenesInternal.list().forEach(scene => {
             scene.root.traverse(e => {
+                if (!e.active) {
+                    return false;
+                }
                 for (const ctor of ctors) {
                     const component = e.getComponent(ctor);
                     if (component && component.active) {
