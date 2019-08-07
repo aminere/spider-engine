@@ -471,9 +471,10 @@ export class CharacterCollider extends Component {
     @Attributes.unserializable()
     private _desiredVelocity = new Vector3();
 
-    update(colliders: Collider[]) {
-
-        // TODO apply filter on colliders
+    update(_colliders: Collider[]) {
+        
+        const filter = this._filter.instance;
+        const colliders = filter ? _colliders.filter(c => filter.canCollideWith(c.group)) : _colliders;
 
         // Characters typically have their origin at their feet
         // Move the collider upwards so it spans the whole character and is not embedded in the ground

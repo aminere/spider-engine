@@ -70,8 +70,18 @@ export class CollisionSystem {
                     continue;
                 }
 
-                // collision test
-                Private.checkCollision(collider1, collider2);
+                // check collisions
+                const collisionEnabled = collider1.filter
+                    ? (collider1.filter.canCollideWith(collider2.group))
+                    : (
+                        collider2.filter
+                            ? collider2.filter.canCollideWith(collider1.group)
+                            : true
+                    );
+
+                if (collisionEnabled) {
+                    Private.checkCollision(collider1, collider2);
+                }
 
                 if (collider1Checked) {
                     collider1Checked[collider2.id] = true;

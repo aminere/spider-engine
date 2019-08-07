@@ -47,7 +47,7 @@ export class Physics {
         } = Private;
 
         for (let collider of colliders) {
-            if (collider.group && !collider.group.isAllowed(filter)) {
+            if (filter && !filter.canCollideWith(collider.group)) {
                 continue;
             }
             let shape = collider.shapes[0];

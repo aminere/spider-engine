@@ -25,6 +25,8 @@ export class Collider extends Component {
             .map(r => r.instance as CollisionShape); 
     }
 
+    get filter() { return this._filter.instance; }
+
     set shapes(shapes: CollisionShape[]) {
         this._shapes.clear();
         shapes.forEach(shape => this._shapes.grow(shape));
@@ -78,5 +80,8 @@ export class Collider extends Component {
     destroy() {
         super.destroy();
         this._collision.detach();
+        if (this.filter) {
+            this.filter.detach();
+        }
     }
 }
