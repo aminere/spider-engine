@@ -23,6 +23,7 @@ import { Component } from "../core/Component";
 import { Interfaces } from "../core/Interfaces";
 import { Transform } from "../core/Transform";
 import { ObjectProps } from "../core/Types";
+import { VisualFilter } from "./VisualFilter";
 
 export enum CameraClear {
     Environment,
@@ -36,7 +37,7 @@ namespace Private {
 @Attributes.helpUrl("https://docs.spiderengine.io/3d/camera.html")
 export class Camera extends Component {    
     
-    get version() { return 2; }
+    get version() { return 3; }
 
     set projector(projector: Projector | undefined) { 
         let oldProjector = this._projector.instance;
@@ -87,22 +88,13 @@ export class Camera extends Component {
         this._renderTarget.asset = renderTarget;
     }    
 
-    set excludedGroups(excluded: VisualGroup[]) {
-        this._excludedGroups.data = excluded.map(e => new AssetReference(VisualGroup, e));
-    }
-
-    set includedGroups(included: VisualGroup[]) {
-        this._includedGroups.data = included.map(e => new AssetReference(VisualGroup, e));
-    }
-
     private _projector = new Reference(Projector);
 
     @Attributes.enumLiterals(CameraClear)
     private _clearValue = CameraClear.Environment;
 
     private _priority = 0;
-    private _excludedGroups = new AssetReferenceArray(VisualGroup);
-    private _includedGroups = new AssetReferenceArray(VisualGroup);
+    private _filter = new Reference(VisualFilter);
     private _renderTarget = new AssetReference(RenderTarget);
     private _postEffects = new Reference(PostEffects);
 
@@ -146,8 +138,9 @@ export class Camera extends Component {
     }  
     
     destroy() {
-        this._excludedGroups.detach();
-        this._includedGroups.detach();
+        if (this._filter.instance) {
+            this._filter.instance.detach();
+        }        
         this._renderTarget.detach();
         if (this._sceneRenderTarget) {
             this._sceneRenderTarget.destroy();
@@ -165,16 +158,8 @@ export class Camera extends Component {
         super.destroy();
     }
 
-    canRenderGroup(groupId?: string) {
-        const definedGroup = Boolean(groupId);
-        const excluded = definedGroup ? this._excludedGroups.data.some(g => g.id === groupId) : false;
-        if (excluded) {
-            return false;
-        }
-        if (this._includedGroups.data.length > 0) {
-            return definedGroup && this._includedGroups.data.some(g => g.id === groupId);
-        }
-        return true;
+    canRenderGroup(group: VisualGroup | null) {
+        return this._filter.instance ? this._filter.instance.canRender(group) : true;        
     }
 
     getProjectionMatrix() {
@@ -292,6 +277,41 @@ export class Camera extends Component {
             delete json.properties.includedGroups;
             delete json.properties.renderTarget;
             delete json.properties.priority;
+        } else if (previousVersion === 2) {
+            // tslint:disable-next-line
+            const excludedIds = json.properties._excludedGroups.data.map((g: any) => g.id).filter(Boolean);
+            // tslint:disable-next-line
+            const includedIds = json.properties._includedGroups.data.map((g: any) => g.id).filter(Boolean);            
+            if (excludedIds.length > 0 || includedIds.length > 0) {
+                let filter = "ExclusionVisualFilter";
+                let ids = excludedIds;
+                let key = "_excluded";
+                if (excludedIds.length === 0) {
+                    filter = "InclusionVisualFilter";
+                    ids = includedIds;
+                    key = "_included";
+                }
+                Object.assign(json.properties, {
+                    _filter: {
+                        baseTypeName: "VisualFilter",
+                        data: {
+                            typeName: filter,
+                            version: 1,
+                            properties: {
+                                [key]: {
+                                    typeName: "VisualGroup",
+                                    data: ids.map((i: string) => ({
+                                        typeName: "VisualGroup",
+                                        id: i
+                                    }))
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            delete json.properties._excludedGroups;
+            delete json.properties._includedGroups;
         }
         return json;
     }

@@ -161,8 +161,9 @@ import { IKSolver } from "../animation/ik/IKSolver";
 import { IKEffector } from "../animation/ik/IKEffector";
 import { IKSolverBase } from "../animation/ik/IKSolverBase";
 import { AnimationTransition } from "../animation/AnimationTransition";
-import { CollisionFilter, InclusionCollisionFilter, ExclusionCollisionFilter, MixedCollisionFilter } from "../collision/CollisionFilter";
+import { CollisionFilter, InclusionCollisionFilter, ExclusionCollisionFilter } from "../collision/CollisionFilter";
 import { CharacterCollider } from "../collision/CharacterCollider";
+import { VisualFilter, InclusionVisualFilter, ExclusionVisualFilter } from "../graphics/VisualFilter";
 
 /**
  * @hidden
@@ -246,6 +247,9 @@ export class TypeRegistration {
         factory.registerObject(Desaturate, SerializableObject);
         factory.registerObject(FastDesaturate, Desaturate);
         factory.registerObject(Raytracer, Component);       
+        factory.registerObject(VisualFilter, SerializableObject);
+        factory.registerObject(InclusionVisualFilter, VisualFilter);
+        factory.registerObject(ExclusionVisualFilter, VisualFilter);
 
         // Particles
         factory.registerObject(Particles, Component);
@@ -271,7 +275,6 @@ export class TypeRegistration {
         factory.registerObject(CollisionFilter, SerializableObject, true);
         factory.registerObject(InclusionCollisionFilter, CollisionFilter);
         factory.registerObject(ExclusionCollisionFilter, CollisionFilter);
-        factory.registerObject(MixedCollisionFilter, CollisionFilter);
 
         // UI
         factory.registerObject(UIElement, Component);

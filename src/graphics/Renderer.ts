@@ -443,16 +443,7 @@ export class RendererInternal {
                 continue;
             }
             for (const camera of cameras) {
-                let groupId: string | undefined = undefined;
-                if (visual.group) {
-                    if (process.env.CONFIG === "editor") {
-                        groupId = visual.group.id;
-                    } else {
-                        // In standalone, Ids are resolved as literal paths
-                        groupId = visual.group.templatePath || visual.group.id;
-                    }
-                }
-                if (camera.canRenderGroup(groupId)) {
+                if (camera.canRenderGroup(visual.group)) {
                     Private.addToRenderMap(camera, visual);
                 }
             }
