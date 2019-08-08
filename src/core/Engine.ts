@@ -249,9 +249,20 @@ export namespace EngineInternal {
         const contextOptions = { 
             alpha: EngineSettings.instance.canvasAlpha 
         };
-        const context = canvas.getContext("webgl", contextOptions) || canvas.getContext("experimental-webgl", contextOptions);
+
+        const webgl2 = canvas.getContext("webgl2", contextOptions);
+        const context = webgl2
+            || canvas.getContext("webgl", contextOptions) 
+            || canvas.getContext("experimental-webgl", contextOptions);
+
         if (!context) {
             return Promise.reject(EngineError.WebGLContextCreationFailed);
+        }
+
+        if (webgl2) {
+            WebGL.caps.webglVersion = 2;
+        } else {
+            WebGL.caps.webglVersion = 1;
         }
 
         WebGL.create(context as WebGLRenderingContext);

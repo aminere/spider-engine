@@ -222,9 +222,17 @@ export class Texture2D extends Texture {
                 } 
             }
         } else {
-            // WebGL doesn't support repeat mode on non-pow-2 textures, must use clamp to edge.
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);            
+
+            if (WebGL.caps.webglVersion > 1) {
+                const repeat = this._repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE;
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, repeat);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, repeat);
+            } else {
+                // WebGL 1 doesn't support repeat mode on non-pow-2 textures, must use clamp to edge.            
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);               
+            }
+            
             if (this._filtering === TextureFiltering.Nearest) {
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
             } else {

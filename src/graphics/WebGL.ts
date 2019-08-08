@@ -14,7 +14,8 @@ export class WebGL {
     };
 
     static caps = {
-        maxVertexUniforms: 0
+        maxVertexUniforms: 0,
+        webglVersion: 1
     };
 
     static get context() { return Private.context; }
