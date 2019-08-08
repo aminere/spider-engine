@@ -8,6 +8,7 @@ import * as Attributes from "../core/Attributes";
 import { SerializedObject } from "../core/SerializableObject";
 import { WebGL } from "./WebGL";
 import { ObjectProps } from "../core/Types";
+import { Vector2 } from "../math/Vector2";
 
 /**
  * @hidden
@@ -71,6 +72,9 @@ export class Texture2D extends Texture {
 
     @Attributes.enumLiterals(TexturePublishFormat)
     private _publishFormat = TexturePublishFormat.JPEG;
+
+    @Attributes.editable(false)
+    private _originalSize?: Vector2;
 
     @Attributes.hidden()
     private _textureData?: string;
