@@ -250,7 +250,7 @@ export namespace EngineInternal {
             alpha: EngineSettings.instance.canvasAlpha 
         };
 
-        const webgl2 = canvas.getContext("webgl2", contextOptions);
+        const webgl2 = null; // canvas.getContext("webgl2", contextOptions);
         const context = webgl2
             || canvas.getContext("webgl", contextOptions) 
             || canvas.getContext("experimental-webgl", contextOptions);
@@ -259,13 +259,7 @@ export namespace EngineInternal {
             return Promise.reject(EngineError.WebGLContextCreationFailed);
         }
 
-        if (webgl2) {
-            WebGL.caps.webglVersion = 2;
-        } else {
-            WebGL.caps.webglVersion = 1;
-        }
-
-        WebGL.create(context as WebGLRenderingContext);
+        WebGL.create(context as WebGLRenderingContext, webgl2 ? 2 : 1);
         GamepadsInternal.initialize();
 
         if (process.env.CONFIG !== "editor") {

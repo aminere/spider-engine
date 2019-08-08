@@ -197,9 +197,9 @@ export class Texture2D extends Texture {
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         }    
 
-        let mipmapsSupported = false;
-        if (MathEx.isPowerOf2(this._image.width) && MathEx.isPowerOf2(this._image.height)) {
-            mipmapsSupported = true;
+        let mipmapsSupported = WebGL.version > 1;
+        if (!mipmapsSupported) {
+            mipmapsSupported = MathEx.isPowerOf2(this._image.width) && MathEx.isPowerOf2(this._image.height);
         }
         
         if (mipmapsSupported) {
@@ -223,15 +223,9 @@ export class Texture2D extends Texture {
             }
         } else {
 
-            if (WebGL.caps.webglVersion > 1) {
-                const repeat = this._repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE;
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, repeat);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, repeat);
-            } else {
-                // WebGL 1 doesn't support repeat mode on non-pow-2 textures, must use clamp to edge.            
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);               
-            }
+            // WebGL 1 doesn't support repeat mode on non-pow-2 textures, must use clamp to edge.            
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
             
             if (this._filtering === TextureFiltering.Nearest) {
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);

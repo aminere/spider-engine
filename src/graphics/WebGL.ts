@@ -13,14 +13,15 @@ export class WebGL {
         OES_standard_derivatives: false
     };
 
+    static version = 1;
+
     static caps = {
-        maxVertexUniforms: 0,
-        webglVersion: 1
+        maxVertexUniforms: 0
     };
 
     static get context() { return Private.context; }
     
-    static create(context: WebGLRenderingContext) {        
+    static create(context: WebGLRenderingContext, version: number) {        
         context.enable(context.DEPTH_TEST);
         context.clearDepth(1);
         context.depthFunc(context.LEQUAL);
@@ -36,13 +37,23 @@ export class WebGL {
             TRIANGLES: context.TRIANGLES
         };        
 
+        // These extensions are available by default in Webgl 2        
+        WebGL.extensions.OES_texture_float = version > 1;
+        WebGL.extensions.OES_standard_derivatives = version > 1;
+
+        if (WebGL.extensions.OES_standard_derivatives) {
+            // tslint:disable-next-line
+            context.hint((context as any).FRAGMENT_SHADER_DERIVATIVE_HINT, context.FASTEST);
+        }
+
         for (const extension of Object.keys(this.extensions)) {
-            this.extensions[extension] = context.getExtension(extension) !== null;
+            this.extensions[extension] = this.extensions[extension] || context.getExtension(extension);
         }
 
         console.assert(this.extensions.OES_texture_float, "OES_texture_float extension is required for skinning.");
         console.assert(this.extensions.OES_standard_derivatives, "OES_standard_derivatives not supported, required for enhanced wireframe visualization.");
         WebGL.caps.maxVertexUniforms = context.getParameter(context.MAX_VERTEX_UNIFORM_VECTORS);
+        WebGL.version = version;
         Private.context = context;
     }
 

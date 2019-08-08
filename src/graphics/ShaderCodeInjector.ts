@@ -89,8 +89,7 @@ export class ShaderCodeInjector {
         if (needInjection) {
             let sections = Private.getSections(vertexCode);
             if (sections) {
-                return `  
-                    ${directives}
+                return `${directives}
                     ${sections.qualifiers}
                     ${definitions}
                     ${sections.coreMeat}
@@ -115,11 +114,14 @@ export class ShaderCodeInjector {
 
         if (Interfaces.renderer.showWireFrame) {
             // Wireframe visualization
-            let extensions = WebGL.extensions;
-            if (extensions.OES_standard_derivatives) {
+            if (WebGL.extensions.OES_standard_derivatives) {
+                if (WebGL.version === 1) {
+                    directives = `${directives}
+    #extension GL_OES_standard_derivatives: enable`;
+                }
                 directives = `${directives}
-    #extension GL_OES_standard_derivatives: enable
-    #define Supports_GL_OES_standard_derivatives`;
+    #define Supports_GL_OES_standard_derivatives                
+                `;
             }
 
             definitions = `${definitions}
@@ -172,8 +174,7 @@ export class ShaderCodeInjector {
         if (needInjection) {
             let sections = Private.getSections(fragmentCode);
             if (sections) {
-                return `
-                    ${directives}
+                return `${directives}
                     ${sections.qualifiers}                    
                     ${definitions}
                     ${sections.coreMeat}
