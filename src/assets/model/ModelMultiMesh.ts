@@ -1,15 +1,25 @@
 import { ModelElement } from "./ModelElement";
 import { StaticMeshAsset } from "../StaticMeshAsset";
 import { Material } from "../../graphics/Material";
-import { AssetReferenceArray } from "../../serialization/AssetReferenceArray";
+import { SerializableObject } from "../../core/SerializableObject";
+import { AssetReference } from "../../serialization/AssetReference";
+import { ArrayProperty } from "../../serialization/ArrayProperty";
 
-export class ModelMultiMesh extends ModelElement {
-    
-    materials = new AssetReferenceArray(Material);
-    meshes = new AssetReferenceArray(StaticMeshAsset);
+export class ModelSubMesh extends SerializableObject {
+    geometry = new AssetReference(StaticMeshAsset);
+    material = new AssetReference(Material);
 
     destroy() {
-        this.materials.detach();
-        this.meshes.detach();
+        this.geometry.detach();
+        this.material.detach();
+    }
+}
+
+export class ModelMultiMesh extends ModelElement {    
+    
+    subMeshes = new ArrayProperty(ModelSubMesh);
+
+    destroy() {
+        this.subMeshes.data.forEach(m => m.destroy());
     }
 }

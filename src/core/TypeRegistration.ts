@@ -168,7 +168,7 @@ import { ModelElement } from "../assets/model/ModelElement";
 import { ModelMesh } from "../assets/model/ModelMesh";
 import { ModelSkinnedMesh } from "../assets/model/ModelSkinnedMesh";
 import { ModelBone } from "../assets/model/ModelBone";
-import { ModelMultiMesh } from "../assets/model/ModelMultiMesh";
+import { ModelMultiMesh, ModelSubMesh } from "../assets/model/ModelMultiMesh";
 
 /**
  * @hidden
@@ -228,6 +228,7 @@ export class TypeRegistration {
         factory.registerObject(ModelElement, UniqueObject);
         factory.registerObject(ModelMesh, ModelElement);
         factory.registerObject(ModelMultiMesh, ModelElement);
+        factory.registerObject(ModelSubMesh, SerializableObject);
         factory.registerObject(ModelSkinnedMesh, ModelMesh);        
         factory.registerObject(ModelBone, ModelElement);        
         factory.registerObject(Volume, SerializableObject);
