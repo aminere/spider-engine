@@ -482,13 +482,14 @@ export class CharacterCollider extends Component {
         const position = Vector3.fromPool().copy(this.entity.transform.worldPosition).add(offset);
         const positionOut = Vector3.fromPool();
 
+        const verticalVelocity = this._velocity.y;
+
+        // planar pass
         this._velocity.set(
             this._desiredVelocity.x,
-            this._desiredVelocity.y || this._velocity.y,
+            0, 
             this._desiredVelocity.z
         );
-
-        this._velocity.y += this.gravity * Time.deltaTime;
         const velocity = Vector3.fromPool().copy(this._velocity).multiply(Time.deltaTime);
 
         Private.collisionDetectionAndResponse(
@@ -499,7 +500,35 @@ export class CharacterCollider extends Component {
             positionOut
         );
 
-        this._velocity.substractVectors(positionOut, position).divide(Time.deltaTime);
+        // vertical pass
+        this._velocity.set(
+            0,
+            this._desiredVelocity.y || verticalVelocity,
+            0
+        );
+        this._velocity.y += this.gravity * Time.deltaTime;
+        velocity.copy(this._velocity).multiply(Time.deltaTime);
+
+        position.copy(positionOut);
+        Private.collisionDetectionAndResponse(
+            position,
+            velocity,
+            this.radius,
+            colliders,
+            positionOut
+        );
+
+        if (!MathEx.isEqual(positionOut.y, position.y + velocity.y)) {
+            // vertical motion encountered a collider, 
+            // so zero the vertical velocity for next frame
+            this._velocity.y = 0;
+        }
+
+        // This is useless for the collider but only done to keep 
+        // velocity read from gameplay code accurate
+        this._velocity.x = (positionOut.x - position.x) / Time.deltaTime;
+        this._velocity.z = (positionOut.z - position.z) / Time.deltaTime;        
+
         this.entity.transform.worldPosition = positionOut.substract(offset);
     }
 }
