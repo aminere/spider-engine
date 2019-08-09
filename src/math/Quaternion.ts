@@ -168,28 +168,28 @@ export class Quaternion {
             this._w = 0.25 / s;
             this._x = (m32 - m23) * s;
             this._y = (m13 - m31) * s;
-            this.z = (m21 - m12) * s;
+            this._z = (m21 - m12) * s;
 
         } else if (m11 > m22 && m11 > m33) {
             s = 2.0 * Math.sqrt(1.0 + m11 - m22 - m33);
             this._w = (m32 - m23) / s;
             this._x = 0.25 * s;
             this._y = (m12 + m21) / s;
-            this.z = (m13 + m31) / s;
+            this._z = (m13 + m31) / s;
 
         } else if (m22 > m33) {
             s = 2.0 * Math.sqrt(1.0 + m22 - m11 - m33);
             this._w = (m13 - m31) / s;
             this._x = (m12 + m21) / s;
             this._y = 0.25 * s;
-            this.z = (m23 + m32) / s;
+            this._z = (m23 + m32) / s;
 
         } else {
             s = 2.0 * Math.sqrt(1.0 + m33 - m11 - m22);
             this._w = (m21 - m12) / s;
             this._x = (m13 + m31) / s;
             this._y = (m23 + m32) / s;
-            this.z = 0.25 * s;
+            this._z = 0.25 * s;
         }
         return this.normalize();
     }
@@ -202,14 +202,10 @@ export class Quaternion {
 
     normalize() {
         let l = this.length;
-        if (l < Number.EPSILON) {
+        if (l === 0) {
             if (process.env.NODE_ENV === "development") {
                 console.assert(false, "Normalizing a zero Quaternion");
             }
-            this._x = 0;
-            this._y = 0;
-            this._z = 0;
-            this.w = 1;
         } else {
             l = 1 / l;
             this._x *= l;
