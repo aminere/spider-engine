@@ -73,9 +73,6 @@ export class Texture2D extends Texture {
     @Attributes.enumLiterals(TexturePublishFormat)
     private _publishFormat = TexturePublishFormat.JPEG;
 
-    @Attributes.editable(false)
-    private _originalSize?: Vector2;
-
     @Attributes.hidden()
     private _textureData?: string;
     @Attributes.unserializable()
