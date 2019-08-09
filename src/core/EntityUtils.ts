@@ -75,13 +75,15 @@ export class EntityUtils implements IEntityUtils {
             const { invParentMatrix } = Private;
             const worldMatrix = transform.worldMatrix;
             invParentMatrix.copy(parentWorldMatrix).invert();
+            transform.eventsEnabled = false;
             transform.position.setFromMatrix(worldMatrix).transform(invParentMatrix);
             const absoluteScale = transform.worldScale;
             invParentMatrix.getScale(transform.scale); // .applyQuaternion(transform.localRotation);
             transform.scale.x *= absoluteScale.x;
             transform.scale.y *= absoluteScale.y;
-            transform.scale.z *= absoluteScale.z;
-            invParentMatrix.multiply(worldMatrix).getRotation(transform.rotation);
+            transform.scale.z *= absoluteScale.z;            
+            invParentMatrix.multiply(worldMatrix).getRotation(transform.rotation);            
+            transform.eventsEnabled = true;
 
         } else {
             const layout = entity.getComponent(Layout);

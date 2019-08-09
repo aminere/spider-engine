@@ -183,19 +183,18 @@ export class Entity extends UniqueObject {
     addChild(c: Entity, preserveWorldPosition: boolean = false) {
         const oldParent = c.parent;
         if (oldParent) {
-            if (preserveWorldPosition) {
+            if (preserveWorldPosition) {                
                 IEntityUtilsInternal.instance.preserveWorldPosition(c, this);
-            } else {
-                IEntityUtilsInternal.instance.dirtifyWorldMatrixIfNecessary(c);
             }
             oldParent.removeChild(c);
         }
 
         c.parent = this;
         this.children.push(c);
-        if (!preserveWorldPosition) {
-            IEntityUtilsInternal.instance.updateLayoutMatrixIfNecessary(c);
-        }
+
+        IEntityUtilsInternal.instance.dirtifyWorldMatrixIfNecessary(c);
+        IEntityUtilsInternal.instance.updateLayoutMatrixIfNecessary(c);
+        
         if (CommonEditorEvents) {
             CommonEditorEvents.entityHierarchyChanged.post();
         }
@@ -207,18 +206,16 @@ export class Entity extends UniqueObject {
         if (oldParent) {
             if (preserveWorldPosition) {
                 IEntityUtilsInternal.instance.preserveWorldPosition(c, this);
-            } else {
-                IEntityUtilsInternal.instance.dirtifyWorldMatrixIfNecessary(c);
             }
-
             oldParent.removeChild(c);
         }
 
         c.parent = this;
         this.children.splice(index, 0, c);
-        if (!preserveWorldPosition) {
-            IEntityUtilsInternal.instance.updateLayoutMatrixIfNecessary(c);
-        }
+        
+        IEntityUtilsInternal.instance.dirtifyWorldMatrixIfNecessary(c);
+        IEntityUtilsInternal.instance.updateLayoutMatrixIfNecessary(c);
+
         if (CommonEditorEvents) {
             CommonEditorEvents.entityHierarchyChanged.post();
         }
