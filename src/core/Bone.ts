@@ -2,6 +2,7 @@ import { Matrix44 } from "../math/Matrix44";
 import { SerializedObject } from "./SerializableObject";
 import { Component } from "./Component";
 import { ObjectProps } from "./Types";
+import * as Attributes from "../core/Attributes";
 
 export class Bone extends Component {    
     
@@ -9,6 +10,8 @@ export class Bone extends Component {
 
     worldMatrix = new Matrix44();
     inverseMatrix = new Matrix44();    
+
+    @Attributes.hidden()
     fbxId = 0;
 
     constructor(props?: ObjectProps<Bone>) {
