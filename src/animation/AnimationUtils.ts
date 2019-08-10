@@ -17,13 +17,13 @@ namespace Private {
         track: AnimationTrack, 
         time: number,
         // tslint:disable-next-line
-        handler: (property: string, value: any) => void
+        handler: (target: object, property: string, value: any) => void
     ) {
         if (currentToken === tokens.length - 1) {
             if (obj) {
                 const value = track.getSample(time, obj[tokens[currentToken]]);
                 if (value !== undefined) {
-                    handler(tokens[currentToken], value);                    
+                    handler(obj, tokens[currentToken], value);                    
                 }
             }
         } else {
@@ -55,7 +55,7 @@ export class AnimationUtils {
         entity: Entity, 
         time: number,
         // tslint:disable-next-line
-        handler: (component: any, property: string, value: any) => void
+        handler: (target: object, property: string, value: any) => void
     ) {
         let tokens = track.tokenCache[propertyPath];
         if (!tokens) {
@@ -72,7 +72,7 @@ export class AnimationUtils {
                     1, 
                     track, 
                     time, 
-                    (prop, value) => handler(component, prop, value)
+                    (target, prop, value) => handler(target, prop, value)
                 );
             }
         }

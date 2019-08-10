@@ -126,7 +126,7 @@ export class AnimationComponent extends Component {
                         track.propertyPath, 
                         target,
                         sourceInstance.localTime,
-                        (component, prop, value) => {
+                        (target, prop, value) => {
 
                             // Determine function used for blending between animation tracks
                             const blend = (() => {
