@@ -56,20 +56,14 @@ export class Shader extends GraphicAsset {
     codeChanged = new AsyncEvent<string>();
     
     get vertexCode() { return this._vertexCode; }    
-    get fragmentCode() { return this._fragmentCode; }    
+    get fragmentCode() { return this._fragmentCode; }
     set vertexCode(vertexCode: string) {
-        this.invalidateProgram();
         this._vertexCode = vertexCode;
-        if (this._fragmentCode) {
-            this._instances[0].params = this.extractUniforms(this._vertexCode, this._fragmentCode);
-        }
+        this.invalidateProgram();
     }    
     set fragmentCode(fragmentCode: string) {
-        this.invalidateProgram();
         this._fragmentCode = fragmentCode;
-        if (this._vertexCode) {
-            this._instances[0].params = this.extractUniforms(this._vertexCode, this._fragmentCode);
-        }
+        this.invalidateProgram();
     }
 
     @Attributes.unserializable()
@@ -242,6 +236,9 @@ export class Shader extends GraphicAsset {
         this._executedOnce = false;
         this._shaderError = false;
         this.graphicUnload();
+        if (this._vertexCode && this._fragmentCode) {
+            this._instances[0].params = this.extractUniforms(this._vertexCode, this._fragmentCode);
+        }
     }
     
     getAttributes(bucketId?: string) {
