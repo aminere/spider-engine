@@ -149,6 +149,7 @@ export class Behavior extends Asset implements IBehavior {
                 for (const pinReference of pinReferences) {
                     const operator = this.findOperator(pinReference.operatorId);
                     if (operator) {
+                        this.fetchInputData(operator.id);
                         this.activateInputPin(operator as Operator, pinReference.pinId);
                         if (process.env.CONFIG === "editor") {
                             this.recordSignalFired(operatorId, pinId, operator.id, pinReference.pinId);
@@ -276,7 +277,9 @@ export class Behavior extends Asset implements IBehavior {
 
         // This is a one-time start event, to be typically used for attaching to events
         for (const node of this._operators.data) {
-            (node.instance as BehaviorNode).onBehaviorStarted();
+            const operator = (node.instance as BehaviorNode);
+            this.fetchInputData(operator.id);
+            operator.onBehaviorStarted();
         }
 
         // Fire the start signal
@@ -577,7 +580,6 @@ export class Behavior extends Asset implements IBehavior {
     }
 
     private activateInputPin(operator: Operator, pinId: string) {
-        this.fetchInputData(operator.id);
         if (pinId === OperatorInternal.startPinId) {
             this.startOperator(operator);
         } else {
