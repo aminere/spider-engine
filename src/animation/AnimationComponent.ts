@@ -115,7 +115,7 @@ export class AnimationComponent extends Component {
         AnimationUtils.evaluateAnimation(
             sourceAnimation,
             this.entity,
-            (track, target) => {
+            (track, entity) => {
                 const destTrack = destAnimation.tracks.data.find(t => {
                     return t.propertyPath === track.propertyPath
                         && (t.targetName === track.targetName);
@@ -124,7 +124,7 @@ export class AnimationComponent extends Component {
                     AnimationUtils.evaluateTrack(
                         track.track.instance as AnimationTrack, 
                         track.propertyPath, 
-                        target,
+                        entity,
                         sourceInstance.localTime,
                         (target, prop, value) => {
 
