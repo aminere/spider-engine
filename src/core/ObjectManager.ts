@@ -52,11 +52,7 @@ export namespace ObjectManagerInternal {
             }
         }
 
-        const loadingCallbacks: ObjectLoadingCallbacks = {
-            loaded: loaded,
-            error: error
-        };
-
+        const loadingCallbacks: ObjectLoadingCallbacks = { loaded, error };
         const existingCallbacks = Private.objectLoadingInProgress[path];
         if (existingCallbacks) {
             existingCallbacks.push(loadingCallbacks);
