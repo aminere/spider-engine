@@ -9,7 +9,7 @@ import { WebGL } from "../../graphics/WebGL";
 import { BehaviorUtils } from "../BehaviorUtils";
 import { Operator } from "../Operator";
 import { CodeBlock, CodeBlockInternal } from "../CodeBlock";
-import { BasePin } from "../Pin";
+import { BasePin, DataPin } from "../Pin";
 import { ExecutionStatus } from "../ExecutionStatus";
 import { BehaviorAPI } from "../BehaviorAPI";
 import { BehaviorAPIFactory } from "../BehaviorAPIFactory";
@@ -61,6 +61,13 @@ export class CodeBlockInstance extends Operator {
 
             // attempt to release graphic resources if any
             for (const variable of Object.values(this._stateVariables)) {
+
+                // This is intended for state variables owned by this code block instance
+                // Ignore data pins
+                if (variable.isA && variable.isA(DataPin)) {
+                    continue;
+                }
+
                 const value = variable[TDataPin.runtimeValueAccessor];
                 if (value && value.constructor && value.constructor.name === "VertexBuffer") {
                     (value as VertexBuffer).unload(WebGL.context);
