@@ -3,7 +3,7 @@ import { Asset } from "./Asset";
  * @hidden
  */
 export declare namespace AssetsInternal {
-    function updateLoading(): void;
+    function updateLoading(): boolean;
 }
 export declare class Assets {
     static load(path: string): Promise<Asset>;

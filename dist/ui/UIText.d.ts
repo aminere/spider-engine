@@ -3,6 +3,7 @@ import { Color } from "../graphics/Color";
 import { Font } from "./Font/Font";
 import { SerializedObject } from "../core/SerializableObject";
 import { VertexBuffer } from "../graphics/VertexBuffer";
+import { Entity } from "../core/Entity";
 export declare class Text extends UIElement {
     readonly version: number;
     text: string;
@@ -18,9 +19,7 @@ export declare class Text extends UIElement {
      * @hidden
      */
     setProperty(name: string, value: any): void;
-    /**
-     * @hidden
-     */
+    setEntity(entity: Entity): void;
     destroy(): void;
     isLoaded(): boolean;
     getVertexBuffer(): VertexBuffer;

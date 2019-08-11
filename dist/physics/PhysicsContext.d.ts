@@ -6,16 +6,6 @@ export declare enum PhysicsBroadPhaseType {
     Grid = 1,
     SAP = 2
 }
-/**
- * @hidden
- */
-export declare class PhysicsBroadPhaseTypeMetadata {
-    static literals: {
-        Naive: number;
-        Grid: number;
-        SAP: number;
-    };
-}
 export declare class PhysicsContext extends Component {
     broadPhase: number;
     gravity: Vector3;

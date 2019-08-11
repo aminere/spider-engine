@@ -1,7 +1,4 @@
 import { Entity } from "../core/Entity";
-/**
- * @hidden
- */
 export declare class EntityReference {
     id: string | undefined;
     entity: Entity | null;

@@ -24,7 +24,7 @@ export declare class GeometryRenderer {
     static drawCircle(color: Color, worldMatrix: Matrix44): void;
     static drawAABB(aabb: AABB, color: Color, worldMatrix: Matrix44): void;
     static drawBox(box: BoxCollisionShape, color: Color, worldMatrix: Matrix44): void;
-    static drawSphere(center: Vector3, radius: number, color: Color, worldMatrix: Matrix44): void;
+    static drawSphere(center: Vector3, radius: Vector3, color: Color, worldMatrix: Matrix44): void;
     static drawPlane(normal: Vector3, distToOrigin: number, color: Color, worldMatrix: Matrix44): void;
     static draw2DRect(minX: number, minY: number, maxX: number, maxY: number, color: Color, matrix: Matrix44): void;
     static draw2DCross(x: number, y: number, size: number, color: Color, matrix: Matrix44): void;

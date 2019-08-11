@@ -26,6 +26,7 @@ export declare class Transform extends Component {
     position: Vector3;
     rotation: Quaternion;
     scale: Vector3;
+    eventsEnabled: boolean;
     readonly localMatrix: Matrix44;
     readonly worldMatrix: Matrix44;
     readonly invWorldMatrix: Matrix44;
@@ -35,7 +36,7 @@ export declare class Transform extends Component {
     readonly right: Vector3;
     readonly forward: Vector3;
     readonly up: Vector3;
-    readonly worldPosition: Vector3;
+    worldPosition: Vector3;
     readonly worldRotation: Quaternion;
     readonly worldScale: Vector3;
     private _position;
@@ -48,6 +49,7 @@ export declare class Transform extends Component {
     private _localMatrix;
     private _localMatrixDirty;
     private _disableDirtification;
+    private _eventsEnabled;
     constructor(props?: ObjectProps<Transform>);
     /**
      * @hidden

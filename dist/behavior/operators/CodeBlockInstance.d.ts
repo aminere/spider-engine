@@ -20,6 +20,7 @@ export declare class CodeBlockInstance extends Operator {
     constructor();
     isLoaded(): boolean;
     destroy(): void;
+    onBehaviorStarted(): void;
     onStart(): any;
     onUpdate(): any;
     onFinish(): void;

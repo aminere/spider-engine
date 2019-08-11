@@ -10,18 +10,10 @@ import { Ray } from "../math/Ray";
 import { Frustum } from "./Frustum";
 import { Component } from "../core/Component";
 import { ObjectProps } from "../core/Types";
+import { VisualFilter } from "./VisualFilter";
 export declare enum CameraClear {
     Environment = 0,
     None = 1
-}
-/**
- * @hidden
- */
-export declare class CameraClearMetadata {
-    static literals: {
-        Environment: number;
-        None: number;
-    };
 }
 export declare class Camera extends Component {
     readonly version: number;
@@ -32,13 +24,11 @@ export declare class Camera extends Component {
     readonly priority: number;
     readonly sceneRenderTarget: RenderTarget;
     readonly frustum: Frustum | null;
-    excludedGroups: VisualGroup[];
-    includedGroups: VisualGroup[];
+    filter: VisualFilter;
     private _projector;
     private _clearValue;
     private _priority;
-    private _excludedGroups;
-    private _includedGroups;
+    private _filter;
     private _renderTarget;
     private _postEffects;
     private _sceneRenderTarget?;
@@ -48,7 +38,7 @@ export declare class Camera extends Component {
     constructor(props?: ObjectProps<Camera>);
     setEntity(entity: Entity): void;
     destroy(): void;
-    canRenderGroup(groupId?: string): boolean;
+    canRenderGroup(group: VisualGroup | null): boolean;
     getProjectionMatrix(): Matrix44;
     getViewMatrix(): Matrix44;
     getWorldRay(screenX: number, screenY: number): Ray | null;

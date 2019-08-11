@@ -48,4 +48,5 @@ export declare class Engine {
      */
     static create(config: EngineConfig): Promise<void>;
     static destroy(): void;
+    static isLoadingInProgress(): boolean;
 }

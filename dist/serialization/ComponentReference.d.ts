@@ -1,5 +1,5 @@
-import { SerializableObject } from "../core/SerializableObject";
 import { Component } from "../core/Component";
+import { Constructor } from "../core/Types";
 export interface SerializedComponentReference {
     entityId?: string;
     componentTypeName: string;
@@ -12,5 +12,5 @@ export declare class ComponentReference<T extends Component> {
     private _componentTypeName;
     private _entity;
     private _resolved;
-    constructor(ctor: new () => SerializableObject, entityId?: string);
+    constructor(ctor: Constructor<T>, entityId?: string);
 }

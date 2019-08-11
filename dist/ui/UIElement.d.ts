@@ -5,15 +5,6 @@ export declare enum UIOverflow {
     Clip = 0,
     Scroll = 1
 }
-/**
- * @hidden
- */
-export declare class UIOverflowMetadata {
-    static literals: {
-        Clip: number;
-        Scroll: number;
-    };
-}
 export declare class UIElement extends Component {
     readonly isTouchInside: boolean;
     readonly isTouchPressed: boolean;

@@ -1,5 +1,5 @@
-import { Collider } from "./Collider";
 import { CollisionShape } from "./CollisionShape";
+import { Collider } from "./Collider";
 export declare class CollisionInfo {
     self: Collider;
     collider: Collider;

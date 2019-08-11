@@ -2,19 +2,9 @@ import * as Cannon from "cannon";
 import { PhysicsContext } from "./PhysicsContext";
 import { Component } from "../core/Component";
 export declare enum RigidBodyType {
-    Static = 0,
-    Dynamic = 1,
-    Kinematic = 2
-}
-/**
- * @hidden
- */
-export declare class RigidBodyTypeMetadata {
-    static literals: {
-        Static: number;
-        Dynamic: number;
-        Kinematic: number;
-    };
+    Static,
+    Dynamic,
+    Kinematic
 }
 export declare class RigidBody extends Component {
     mass: number;
@@ -23,7 +13,9 @@ export declare class RigidBody extends Component {
     private _mass;
     private _type;
     private _rigidBody;
+    private _cannonPlaneRotationAdjustment;
     update(context: PhysicsContext): void;
     destroy(): void;
     private onCollision;
+    private applyTransformToRigidBody;
 }

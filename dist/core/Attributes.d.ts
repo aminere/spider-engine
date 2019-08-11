@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import { EnumLiterals } from "./EnumLiterals";
 export declare function hidden(): {
     (target: Function): void;
     (target: Object, propertyKey: string | symbol): void;
@@ -17,6 +16,14 @@ export declare function creatable(param: boolean): {
     (target: Object, propertyKey: string | symbol): void;
 };
 export declare function referencable(param: boolean): {
+    (target: Function): void;
+    (target: Object, propertyKey: string | symbol): void;
+};
+export declare function defaultType(typeName: string): {
+    (target: Function): void;
+    (target: Object, propertyKey: string | symbol): void;
+};
+export declare function nullable(param: boolean): {
     (target: Function): void;
     (target: Object, propertyKey: string | symbol): void;
 };
@@ -40,11 +47,19 @@ export declare function helpUrl(url: string): {
     (target: Function): void;
     (target: Object, propertyKey: string | symbol): void;
 };
-export declare function enumLiterals(literals: EnumLiterals, getDisplayName?: (literal: string) => string): {
+export declare function enumLiterals(enumObject: object, getDisplayName?: (literal: string) => string): {
     (target: Function): void;
     (target: Object, propertyKey: string | symbol): void;
 };
 export declare function requires(typeName: string): {
+    (target: Function): void;
+    (target: Object, propertyKey: string | symbol): void;
+};
+export declare function exclusiveWith(typeName: string | string[]): {
+    (target: Function): void;
+    (target: Object, propertyKey: string | symbol): void;
+};
+export declare function rotationAngle(): {
     (target: Function): void;
     (target: Object, propertyKey: string | symbol): void;
 };

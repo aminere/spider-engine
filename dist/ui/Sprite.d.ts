@@ -7,15 +7,6 @@ export declare enum SpriteRenderMode {
     Stretch = 0,
     Tile = 1
 }
-/**
- * @hidden
- */
-export declare class SpriteRenderModeMetadata {
-    static literals: {
-        Stretch: number;
-        Tile: number;
-    };
-}
 export declare class Sprite extends Asset {
     texture: AssetReference<Texture2D>;
     borderSize: Vector2;

@@ -12,16 +12,16 @@ export declare class AnimationInstance extends SerializableObject {
     autoPlay: boolean;
     isPlaying: boolean;
     localTime: number;
+    playTime: number;
     readonly stopRequested: boolean;
     playCount: number;
-    readonly hasPlayedOnce: boolean;
     /**
      * @hidden
      */
     targets: AnimationTargets;
     private _isPlaying;
     private _localTime;
-    private _hasPlayedOnce;
+    private _playTime;
     private _stopRequested;
     private _playCount;
     private _animation;

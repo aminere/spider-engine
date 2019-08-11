@@ -5,7 +5,6 @@ import { VisualGroup } from "./VisualGroup";
 import { Shader } from "./Shader";
 import { SerializedObject } from "../core/SerializableObject";
 import { VertexBuffer } from "./VertexBuffer";
-import { Matrix44 } from "../math/Matrix44";
 import { Component } from "../core/Component";
 import { ObjectProps } from "../core/Types";
 import { Entity } from "../core/Entity";
@@ -16,8 +15,7 @@ export declare class Visual extends Component {
     group: VisualGroup | null;
     readonly vertexBuffer: VertexBuffer | null;
     animatedMaterial: Material | undefined;
-    readonly worldTransform: Matrix44;
-    readonly localTransform: Matrix44;
+    readonly worldTransform: import("../spider-engine").Matrix44;
     readonly bucketId: string;
     readonly isSkinned: boolean;
     readonly hasVertexColor: boolean;

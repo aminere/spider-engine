@@ -3,7 +3,6 @@ import { Vector3 } from "../math/Vector3";
 import { Matrix44 } from "../math/Matrix44";
 import { Quaternion } from "../math/Quaternion";
 import { Color } from "../graphics/Color";
-import { CollisionGroup } from "../collision/CollisionGroup";
 import { Ray, RaySphereCollisionResult } from "../math/Ray";
 import { Basis } from "../math/Basis";
 import { Plane } from "../math/Plane";
@@ -15,6 +14,7 @@ import { Asset } from "../assets/Asset";
 import { Vector2 } from "../math/Vector2";
 import { Entity } from "../core/Entity";
 import { VoidSyncEvent } from "ts-events";
+import { CollisionFilter } from "../collision/CollisionFilter";
 export declare class BehaviorAPI {
     static api: {
         Math: {
@@ -78,8 +78,18 @@ export declare class BehaviorAPI {
             create: (props?: EntityProps | undefined) => Entity;
             find: (name: string) => Entity | null;
         };
-        GamePads: {
+        Gamepads: {
             forEach: (handler: (gamePad: Gamepad, index: number) => void) => void;
+            get: (index: number) => Gamepad | null;
+        };
+        Input: {
+            touchX: () => number;
+            touchY: () => number;
+            touchPressed: () => import("ts-events").SyncEvent<import("../input/Input").TouchEvent>;
+            touchMoved: () => import("ts-events").SyncEvent<import("../input/Input").TouchEvent>;
+            touchReleased: () => import("ts-events").SyncEvent<import("../input/Input").TouchEvent>;
+            wheelMoved: () => import("ts-events").SyncEvent<number>;
+            keyChanged: () => import("ts-events").SyncEvent<import("../input/Input").KeyEvent>;
         };
         Time: {
             deltaTime: () => number;
@@ -162,7 +172,7 @@ export declare class BehaviorAPI {
             from: (a: any) => {}[];
         };
         Physics: {
-            rayCast: (ray: Ray, include?: CollisionGroup[] | undefined, exclude?: CollisionGroup[] | undefined) => RaycastResult | null;
+            rayCast: (ray: Ray, filter?: CollisionFilter | undefined) => RaycastResult | null;
         };
         Collision: {
             rayCastOnSphere: (ray: Ray, center: Vector3, radius: number) => RaySphereCollisionResult | null;

@@ -26,6 +26,7 @@ export declare class Quaternion {
      */
     static fromEulerAngles(x: number, y: number, z: number, order?: RotationOrder): Quaternion;
     static fromAxisAngle(axis: Vector3, radians: number): Quaternion;
+    static fromUnitVectors(from: Vector3, to: Vector3): Quaternion;
     constructor(x?: number, y?: number, z?: number, w?: number);
     set(x: number, y: number, z: number, w: number): void;
     setFromAxisAngle(axis: Vector3, radians: number): this;
