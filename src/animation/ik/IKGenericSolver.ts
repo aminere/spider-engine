@@ -11,7 +11,7 @@ import { IKSolverBase } from "./IKSolverBase";
 import { Entity } from "../../core/Entity";
 import { SerializableObject } from "../../core/SerializableObject";
 
-const FIK = require("fullik");
+const FIK = require("@aminere/fullik");
 
 namespace Private {
     export let basis = new Basis();
