@@ -6,7 +6,6 @@ import { Entity } from "../core/Entity";
 import { Vector3 } from "../math/Vector3";
 import { AssetReference, AssetChangedEvent } from "../serialization/AssetReference";
 import { RenderTarget } from "./RenderTarget";
-import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
 import { VisualGroup } from "./VisualGroup";
 import { MathEx } from "../math/MathEx";
 import { PerspectiveProjector } from "./PerspectiveProjector";
@@ -87,6 +86,10 @@ export class Camera extends Component {
     set renderTarget(renderTarget: RenderTarget | null) {
         this._renderTarget.asset = renderTarget;
     }    
+
+    set filter(filter: VisualFilter) {
+        this._filter.instance = filter;
+    }
 
     private _projector = new Reference(Projector);
 

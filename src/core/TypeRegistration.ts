@@ -163,12 +163,13 @@ import { IKSolverBase } from "../animation/ik/IKSolverBase";
 import { AnimationTransition } from "../animation/AnimationTransition";
 import { CollisionFilter, InclusionCollisionFilter, ExclusionCollisionFilter } from "../collision/CollisionFilter";
 import { CharacterCollider } from "../collision/CharacterCollider";
-import { VisualFilter, InclusionVisualFilter, ExclusionVisualFilter } from "../graphics/VisualFilter";
+import { VisualFilter } from "../graphics/VisualFilter";
 import { ModelElement } from "../assets/model/ModelElement";
 import { ModelMesh } from "../assets/model/ModelMesh";
 import { ModelSkinnedMesh } from "../assets/model/ModelSkinnedMesh";
 import { ModelBone } from "../assets/model/ModelBone";
 import { ModelMultiMesh, ModelSubMesh } from "../assets/model/ModelMultiMesh";
+import { InclusionVisualFilter, ExclusionVisualFilter } from "../graphics/VisualFilters";
 
 /**
  * @hidden
@@ -253,7 +254,7 @@ export class TypeRegistration {
         factory.registerObject(FastBloom, Bloom);
         factory.registerObject(Desaturate, SerializableObject);
         factory.registerObject(FastDesaturate, Desaturate);
-        factory.registerObject(Raytracer, Component);       
+        factory.registerObject(Raytracer, Component);
         factory.registerObject(VisualFilter, SerializableObject);
         factory.registerObject(InclusionVisualFilter, VisualFilter);
         factory.registerObject(ExclusionVisualFilter, VisualFilter);

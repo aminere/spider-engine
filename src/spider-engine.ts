@@ -41,6 +41,7 @@ export * from "./graphics/Color";
 export * from "./graphics/VertexBuffer";
 export * from "./graphics/VisualGroup";
 export * from "./graphics/RenderTarget";
+export * from "./graphics/VisualFilters";
 
 // Animation
 export { Animation } from "./animation/Animation";
