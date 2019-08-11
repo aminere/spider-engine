@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>EnumLiteralsMetadata | Spider Engine API</title>
+	<title>ITransitionOptions | Spider Engine API</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="enumliteralsmetadata.html">EnumLiteralsMetadata</a>
+					<a href="itransitionoptions.html">ITransitionOptions</a>
 				</li>
 			</ul>
-			<h1>Interface EnumLiteralsMetadata</h1>
+			<h1>Interface ITransitionOptions</h1>
 		</div>
 	</div>
 </header>
@@ -70,7 +70,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">EnumLiteralsMetadata</span>
+						<a href="iplayanimationoptions.html" class="tsd-signature-type">IPlayAnimationOptions</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">ITransitionOptions</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -81,8 +86,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="enumliteralsmetadata.html#getdisplayname" class="tsd-kind-icon">get<wbr>Display<wbr>Name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="enumliteralsmetadata.html#literals" class="tsd-kind-icon">literals</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="itransitionoptions.html#duration" class="tsd-kind-icon">duration</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="itransitionoptions.html#starttime" class="tsd-kind-icon">start<wbr>Time</a></li>
 							</ul>
 						</section>
 					</div>
@@ -91,24 +96,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="getdisplayname" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> get<wbr>Display<wbr>Name</h3>
-					<div class="tsd-signature tsd-kind-icon">get<wbr>Display<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span></div>
+					<a name="duration" class="tsd-anchor"></a>
+					<h3>duration</h3>
+					<div class="tsd-signature tsd-kind-icon">duration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/EnumLiterals.ts#L8">core/EnumLiterals.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/animation/AnimationTypes.ts#L14">animation/AnimationTypes.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="literals" class="tsd-anchor"></a>
-					<h3>literals</h3>
-					<div class="tsd-signature tsd-kind-icon">literals<span class="tsd-signature-symbol">:</span> <a href="enumliterals.html" class="tsd-signature-type">EnumLiterals</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="starttime" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> start<wbr>Time</h3>
+					<div class="tsd-signature tsd-kind-icon">start<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="iplayanimationoptions.html">IPlayAnimationOptions</a>.<a href="iplayanimationoptions.html#starttime">startTime</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/3e28edb/src/core/EnumLiterals.ts#L7">core/EnumLiterals.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/animation/AnimationTypes.ts#L10">animation/AnimationTypes.ts:10</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Normalized time in the range [0, 1]
+								Indicates where to start the animation
+							If undefined, attempts to resume the animation wherever it was stopped</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -125,13 +138,13 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="enumliteralsmetadata.html" class="tsd-kind-icon">Enum<wbr>Literals<wbr>Metadata</a>
+						<a href="itransitionoptions.html" class="tsd-kind-icon">ITransition<wbr>Options</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="enumliteralsmetadata.html#getdisplayname" class="tsd-kind-icon">get<wbr>Display<wbr>Name</a>
+								<a href="itransitionoptions.html#duration" class="tsd-kind-icon">duration</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="enumliteralsmetadata.html#literals" class="tsd-kind-icon">literals</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="itransitionoptions.html#starttime" class="tsd-kind-icon">start<wbr>Time</a>
 							</li>
 						</ul>
 					</li>
