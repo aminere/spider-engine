@@ -40,6 +40,7 @@ namespace Private {
  */
 export namespace SerializerUtilsInternal {
     export let serializeIdsAsPaths = false;
+    export let tryUsePropertySetter = false;
 }
 
 export class SerializerUtils {    
@@ -254,8 +255,7 @@ export class SerializerUtils {
         index: string | number,
         typeName: string,
         // tslint:disable-next-line
-        data: any,
-        tryUseSetter: boolean = false
+        data: any
     ) {
         if (["AssetReference", "ObjectReference"].indexOf(typeName) >= 0) {
             const assetRefData = data as SerializedAssetReference;
@@ -279,13 +279,13 @@ export class SerializerUtils {
             if (id) {
                 if (Private.nonPersistentObjectCache && id in Private.nonPersistentObjectCache) {
                     assetRef.asset = Private.nonPersistentObjectCache[id] as Asset;
-                    SerializerUtils.setProperty(target, index, assetRef, tryUseSetter);
+                    SerializerUtils.setProperty(target, index, assetRef);
                 } else {
                     const loadSuccess = (obj: UniqueObject, fromCache: boolean) => {
                         const asset = obj as Asset;
                         const _assetRef = target[index] as AssetReference<Asset>;
                         _assetRef.asset = asset;
-                        SerializerUtils.setProperty(target, index, _assetRef, tryUseSetter);
+                        SerializerUtils.setProperty(target, index, _assetRef);
                         if (fromCache === false) {
                             // Only send this event on the first load
                             EngineEvents.assetLoaded.post(asset);
@@ -295,7 +295,7 @@ export class SerializerUtils {
                         const _assetRef = target[index] as AssetReference<Asset>;
                         _assetRef.setAssetFast(null);
                         _assetRef.state = AssetReferenceState.Resolved;
-                        SerializerUtils.setProperty(target, index, _assetRef, tryUseSetter);
+                        SerializerUtils.setProperty(target, index, _assetRef);
                         // get either the asset path or the typename (in case this is reference by a non-asset like an Entity component)
                         let targetInfo = (target as UniqueObject).templatePath;
                         if (targetInfo) {
@@ -314,19 +314,19 @@ export class SerializerUtils {
                 }
             } else {
                 assetRef.asset = null;
-                SerializerUtils.setProperty(target, index, assetRef, tryUseSetter);
+                SerializerUtils.setProperty(target, index, assetRef);
             }
            
         } else if (typeName === "Entity") {
             const instance = new Entity();
             SerializerUtils.deserializeEntity(instance, data as SerializedEntity, true);
-            SerializerUtils.setProperty(target, index, instance, tryUseSetter);
+            SerializerUtils.setProperty(target, index, instance);
 
         } else if (RTTI.isObjectOfType(typeName, "SerializableObject")) {
             const instance = IFactoryInternal.instance.createObject(typeName);
             if (instance) {
                 instance.deserialize(data);
-                SerializerUtils.setProperty(target, index, instance, tryUseSetter);
+                SerializerUtils.setProperty(target, index, instance);
             }
 
         } else {
@@ -336,15 +336,15 @@ export class SerializerUtils {
                 if (enumLiterals) {
                     if (typeof(data) === "number") {
                         // old format
-                        SerializerUtils.setProperty(target, index, data, tryUseSetter);
+                        SerializerUtils.setProperty(target, index, data);
                     } else if (typeof(data) === "object") {
                         // old format
-                        SerializerUtils.setProperty(target, index, data.value, tryUseSetter);
+                        SerializerUtils.setProperty(target, index, data.value);
                     } else {
                         // deserialize enums as numbers
                         const enumValue = enumLiterals.literals[data];
                         console.assert(enumValue !== undefined);
-                        SerializerUtils.setProperty(target, index, enumValue, tryUseSetter);
+                        SerializerUtils.setProperty(target, index, enumValue);
                     }
                     return;
                 }
@@ -353,7 +353,7 @@ export class SerializerUtils {
             const properties = PropertyFactory.properties;
             const value = (typeName in properties) ? properties[typeName].readProperty(data, target, index) : data;
             if (value !== undefined) {
-                SerializerUtils.setProperty(target, index, value, tryUseSetter);
+                SerializerUtils.setProperty(target, index, value);
             }
         }
     }
@@ -400,8 +400,7 @@ export class SerializerUtils {
         target: SerializableObject | any[],
         property: string | number,
         // tslint:disable-next-line
-        value: any,
-        tryUseSetter: boolean = false
+        value: any
     ) {
         const setProperty = () => {
             if (Array.isArray(target)) {
@@ -411,7 +410,8 @@ export class SerializerUtils {
             }
         };
 
-        if (tryUseSetter) {
+        const { tryUsePropertySetter } = SerializerUtilsInternal;
+        if (tryUsePropertySetter) {
             if (typeof (property) === "string" && property.startsWith("_")) {
                 // if setter exists, use it!
                 const propertyKey = property.slice(1);
