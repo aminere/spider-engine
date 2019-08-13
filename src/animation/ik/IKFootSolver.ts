@@ -4,13 +4,14 @@ import { Vector3 } from "../../math/Vector3";
 import { Quaternion } from "../../math/Quaternion";
 import { Matrix44 } from "../../math/Matrix44";
 import { IKSolverBase } from "./IKSolverBase";
+import { MathEx } from "../../math/MathEx";
 
 namespace Private {
     export const dummyTransform = {
         worldForward: Vector3.forward,
         worldUp: Vector3.up,
         worldMatrix: Matrix44.identity
-    }
+    };
 }
 
 /**
@@ -72,11 +73,13 @@ export class IKFootSolver extends IKSolverBase {
         } else {
             // Use cosine rule to compute joint angles
             // Rotate first joint
-            const angle1 = Math.acos((bc * bc - ab * ab - at * at) / (-2 * ab * at));
+            const t = (bc * bc - ab * ab - at * at) / (-2 * ab * at);
+            const angle1 = Math.acos(MathEx.clamp(t, -1, 1));
             aRotation.setFromEulerAngles(-(angle0 + angle1), hipAngle, 0);
 
             // Rotate second joint
-            const angle2 = Math.acos((at * at - ab * ab - bc * bc) / (-2 * ab * bc));
+            const t2 = (at * at - ab * ab - bc * bc) / (-2 * ab * bc);
+            const angle2 = Math.acos(MathEx.clamp(t2, -1, 1));
             bRotation.setFromEulerAngles(Math.PI - angle2, 0, 0);
         }
 
