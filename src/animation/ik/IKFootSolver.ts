@@ -5,6 +5,14 @@ import { Quaternion } from "../../math/Quaternion";
 import { Matrix44 } from "../../math/Matrix44";
 import { IKSolverBase } from "./IKSolverBase";
 
+namespace Private {
+    export const dummyTransform = {
+        worldForward: Vector3.forward,
+        worldUp: Vector3.up,
+        worldMatrix: Matrix44.identity
+    }
+}
+
 /**
  * Solves IK for two bones
  * - Works in 2D. Solves joint angles using cosine rule
@@ -30,7 +38,7 @@ export class IKFootSolver extends IKSolverBase {
         
         // Rotate target so as it sits on the ZY plane of the leg
         // While preserving the same distance as with the original target
-        const { worldForward, worldUp, worldMatrix } = entity.parent.transform;
+        const { worldForward, worldUp, worldMatrix } = entity.parent.transform || Private.dummyTransform;
         const verticalComponent = Vector3.fromPool().copy(target).substract(pa).projectOnVector(worldUp);        
         const toTarget = Vector3.distance(Vector3.fromPool().copy(target).substract(verticalComponent), pa);        
         const localTarget2D = Vector3.fromPool().copy(worldForward).multiply(toTarget).add(pa).add(verticalComponent);
