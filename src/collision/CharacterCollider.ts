@@ -476,10 +476,14 @@ export class CharacterCollider extends Component {
         const filter = this._filter.instance;
         const colliders = filter ? _colliders.filter(c => filter.canCollideWith(c.group)) : _colliders;
 
+        const { worldPosition, worldScale, worldUp } = this.entity.transform;
+
+        const radius = Vector3.fromPool().copy(this.radius).multiplyVector(worldScale);
+
         // Characters typically have their origin at their feet
         // Move the collider upwards so it spans the whole character and is not embedded in the ground
-        const offset = Vector3.fromPool().set(0, this.radius.y, 0);
-        const position = Vector3.fromPool().copy(this.entity.transform.worldPosition).add(offset);
+        const offset = Vector3.fromPool().copy(worldUp).multiply(radius.y);        
+        const position = Vector3.fromPool().copy(worldPosition).add(offset);
         const positionOut = Vector3.fromPool();
 
         const verticalVelocity = this._velocity.y;
@@ -495,7 +499,7 @@ export class CharacterCollider extends Component {
         Private.collisionDetectionAndResponse(
             position,
             velocity,
-            this.radius,
+            radius,
             colliders,
             positionOut
         );
@@ -513,7 +517,7 @@ export class CharacterCollider extends Component {
         Private.collisionDetectionAndResponse(
             position,
             velocity,
-            this.radius,
+            radius,
             colliders,
             positionOut
         );
