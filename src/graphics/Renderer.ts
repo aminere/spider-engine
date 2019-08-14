@@ -437,8 +437,14 @@ export class RendererInternal {
         // collect rendrables
         Private.defaultPerspectiveCamera = null;
         Private.shadowCasters.clear();
-        const visuals = Components.ofType(Visual);
-        for (const visual of visuals) {
+
+        const components = Components.ofTypes([
+            Visual,
+            Light,
+            Screen
+        ]);
+
+        for (const visual of components.Visual as Visual[]) {
             if (!visual.vertexBuffer) {
                 continue;
             }
@@ -461,7 +467,7 @@ export class RendererInternal {
         }
 
         const gl = WebGL.context;
-        Private.lights = Components.ofType(Light);
+        Private.lights = components.Light as Light[];
 
         // gl.depthMask(true);
         if (Private.cameraToRenderPassMap.size > 0) {
@@ -580,8 +586,7 @@ export class RendererInternal {
         IRendererInternal.instance.renderTarget = null;
         gl.disable(gl.DEPTH_TEST);
         defaultAssets.materials.ui.queueParameter("projectionMatrix", Private.uiProjectionMatrix);
-        const screens = Components.ofType(Screen);
-        for (const screen of screens) {
+        for (const screen of components.Screen as Screen[]) {
             screen.updateTransforms();
             screen.render(defaultAssets.materials.ui);
         }
