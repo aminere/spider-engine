@@ -145,6 +145,7 @@ export class BehaviorAPI {
             right: () => Vector3.fromPool().copy(Vector3.right),
             forward: () => Vector3.fromPool().copy(Vector3.forward),
             zero: () => Vector3.fromPool().copy(Vector3.zero),
+            one: () => Vector3.fromPool().copy(Vector3.one),
             distance: (a: Vector3, b: Vector3) => Vector3.distance(a, b),
             distanceSq: (a: Vector3, b: Vector3) => Vector3.distanceSq(a, b),
             fromPool: () => Vector3.fromPool()
