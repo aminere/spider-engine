@@ -16,6 +16,7 @@ import { Time } from "../core/Time";
 import * as Attributes from "../core/Attributes";
 import { Reference } from "../serialization/Reference";
 import { CollisionFilter } from "./CollisionFilter";
+import { SerializedObject } from "../core/SerializableObject";
 
 interface Collision {
     selfIntersectionPoint: Vector3;
@@ -455,14 +456,21 @@ namespace Private {
 
 export class CharacterCollider extends Component {
 
-    gravity = -10;
-    radius = new Vector3(1, 1, 1);
+    get version() { return 2; }
+
+    set gravity(gravity: Vector3) { this._gravity.copy(gravity); }
+    get gravity() { return this._gravity; }
+
+    set radius(radius: Vector3) { this._radius.copy(radius); }
+    get radius() { return this._radius; }
 
     set desiredVelocity(velocity: Vector3) { this._desiredVelocity.copy(velocity); }
     get velocity() { return this._velocity; }
 
     get group() { return this._group.asset; }
 
+    private _gravity = new Vector3(0, -40, 0);
+    private _radius = new Vector3(1, 1, 1);
     private _group = new AssetReference(CollisionGroup);
     private _filter = new Reference(CollisionFilter);
 
@@ -484,16 +492,15 @@ export class CharacterCollider extends Component {
         // Move the collider upwards so it spans the whole character and is not embedded in the ground
         const offset = Vector3.fromPool().copy(worldUp).multiply(radius.y);        
         const position = Vector3.fromPool().copy(worldPosition).add(offset);
-        const positionOut = Vector3.fromPool();
+        const positionOut = Vector3.fromPool();        
 
-        const verticalVelocity = this._velocity.y;
+        const previousVerticalVelocity = Vector3.fromPool().copy(this._velocity).projectOnVector(this._gravity);
 
         // planar pass
-        this._velocity.set(
-            this._desiredVelocity.x,
-            0, 
-            this._desiredVelocity.z
-        );
+        const verticalVelocity = Vector3.fromPool().copy(this._desiredVelocity).projectOnVector(this._gravity);
+        const planarVelocity = Vector3.fromPool().substractVectors(this._desiredVelocity, verticalVelocity);
+
+        this._velocity.copy(planarVelocity);
         const velocity = Vector3.fromPool().copy(this._velocity).multiply(Time.deltaTime);
 
         Private.collisionDetectionAndResponse(
@@ -505,12 +512,13 @@ export class CharacterCollider extends Component {
         );
 
         // vertical pass
-        this._velocity.set(
-            0,
-            this._desiredVelocity.y || verticalVelocity,
-            0
-        );
-        this._velocity.y += this.gravity * Time.deltaTime;
+        if (verticalVelocity.lengthSq > 0) {
+            this._velocity.copy(verticalVelocity);
+        } else {
+            this._velocity.copy(previousVerticalVelocity);
+        }
+        
+        this._velocity.add(Vector3.fromPool().copy(this._gravity).multiply(Time.deltaTime));
         velocity.copy(this._velocity).multiply(Time.deltaTime);
 
         position.copy(positionOut);
@@ -522,17 +530,23 @@ export class CharacterCollider extends Component {
             positionOut
         );
 
-        if (!MathEx.isEqual(positionOut.y, position.y + velocity.y)) {
-            // vertical motion encountered a collider, 
-            // so zero the vertical velocity for next frame
-            this._velocity.y = 0;
-        }
-
-        // This is useless for the collider but only done to keep 
-        // velocity read from gameplay code accurate
-        this._velocity.x = (positionOut.x - position.x) / Time.deltaTime;
-        this._velocity.z = (positionOut.z - position.z) / Time.deltaTime;        
-
+        this._velocity.substractVectors(positionOut, position).divide(Time.deltaTime);
         this.entity.transform.worldPosition = positionOut.substract(offset);
+    }
+
+    upgrade(json: SerializedObject, previousVersion: number) {
+        if (previousVersion === 1) {
+            Object.assign(json.properties, {
+                _gravity: {
+                    _x: 0,
+                    _y: json.properties.gravity,
+                    _z: 0
+                },
+                _radius: json.properties.radius
+            });
+            delete json.properties.gravity;
+            delete json.properties.radius;
+        }
+        return json;
     }
 }
