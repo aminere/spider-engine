@@ -168,7 +168,7 @@ export class AnimationComponent extends Component {
             }
         );
 
-        AnimationUtils.playAnimationInstance(this.entity, destInstance, options);
+        AnimationUtils.playAnimationInstance(destInstance, options);
         AnimationUtils.fetchTargetsIfNecessary(this.entity, destInstance);
     }
 

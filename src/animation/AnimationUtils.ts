@@ -153,15 +153,23 @@ export class AnimationUtils {
     }
 
     static playAnimation(owner: Entity, anim: AnimationInstance, options?: IPlayAnimationOptions) {
-        AnimationUtils.playAnimationInstance(owner, anim, options);
+        AnimationUtils.playAnimationInstance(anim, options);
         AnimationUtils.fetchTargetsIfNecessary(owner, anim);
         AnimationUtils.resetAnimationTransition(anim);
     }
 
-    static playAnimationInstance(owner: Entity, anim: AnimationInstance, options?: IPlayAnimationOptions) {
+    static playAnimationInstance(anim: AnimationInstance, options?: IPlayAnimationOptions) {
         
+        const duration = (anim.animation as Animation).duration;
         if (options && options.startTime !== undefined) {
-            anim.localTime = (anim.animation as Animation).duration * MathEx.clamp(options.startTime, 0, 1);
+            anim.localTime = duration * MathEx.clamp(options.startTime, 0, 1);
+        } else {
+            // If no startTime is specified,
+            // play from beginning only if animation is elapsed.
+            // Otherwise, continue playing wherever the animation was stopped.
+            if (anim.localTime >= duration) {
+                anim.localTime = 0;
+            }
         }
 
         anim.isPlaying = true;
