@@ -173,7 +173,7 @@ export class TextureFill extends UIFill {
 
     get version() { return 3; }
     get texture() { return this._texture.asset; }
-    set texture(texture: Texture | null) { this._texture.setAssetFast(texture); }
+    set texture(texture: Texture | null) { this._texture.asset = texture; }
     get textureRef() { return this._texture; }
     get color() { return this._color; }
     set color(color: Color) { 
