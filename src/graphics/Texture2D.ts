@@ -8,7 +8,6 @@ import * as Attributes from "../core/Attributes";
 import { SerializedObject } from "../core/SerializableObject";
 import { WebGL } from "./WebGL";
 import { ObjectProps } from "../core/Types";
-import { Vector2 } from "../math/Vector2";
 
 /**
  * @hidden
@@ -21,16 +20,8 @@ if (process.env.CONFIG === "editor") {
 
 export enum TexturePublishFormat {
     JPEG,
-    PNG
-}
-/**
- * @hidden
- */
-export class TexturePublishFormatMetadata {
-    static literals = {
-        JPEG: 0,
-        PNG: 1
-    };
+    PNG,
+    SVG
 }
 
 namespace Private {
