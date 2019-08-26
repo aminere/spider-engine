@@ -7,33 +7,44 @@ import { ScenesInternal, Scenes } from "./Scenes";
 import { Transform } from "./Transform";
 import { Scene } from "../assets/Scene";
 
+export interface EntityProps {
+    name?: string;
+    prefab?: Prefab;
+    prs?: PRS;
+    children?: EntityProps[];
+}
+
 namespace Private {
     export const defaultPRS: PRS = {
         position: Vector3.zero,
         rotation: Quaternion.identity,
         scale: Vector3.one
     };
-}
 
-export interface EntityProps {
-    prefab?: Prefab;
-    prs?: PRS;
-    children?: EntityProps[];
+    export const emptyProps: EntityProps = {
+        name: undefined,
+        prefab: undefined,
+        prs: undefined,
+        children: undefined
+    };
 }
 
 export class Entities {
-    static create(props?: EntityProps) {        
+    static create(props?: EntityProps) {
+        const { name, prefab, prs, children } = props || Private.emptyProps;
         let instance: Entity;
-        const prefab = props ? props.prefab : null;
+
         if (prefab) {
             instance = prefab.root.copy() as Entity;
-            instance.name = prefab.name;                
+            instance.name = name || prefab.name;                
         } else {
             instance = new Entity();
+            if (name) {
+                instance.name = name;
+            }
         }
 
         // initialize transform        
-        const prs = props ? props.prs : null;
         if (prs) {
             instance.setComponent(Transform, {
                 position: prs.position || Private.defaultPRS.position,
@@ -43,7 +54,6 @@ export class Entities {
         }
 
         // initialize children
-        const children = props ? props.children : null;
         if (children) {
             for (const childProp of children) {
                 instance.addChild(Entities.create(childProp));
