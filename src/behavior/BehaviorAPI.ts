@@ -30,6 +30,8 @@ import { VoidSyncEvent } from "ts-events";
 import { Random } from "../math/Random";
 import { Input } from "../input/Input";
 import { CollisionFilter } from "../collision/CollisionFilter";
+import { VertexBuffer } from "../graphics/VertexBuffer";
+import { AABB } from "../math/AABB";
 
 namespace Private {
     export const transientState = {};
@@ -215,6 +217,9 @@ export class BehaviorAPI {
         },
         EngineHud: {
             setControls: (controls: HudControl[]) => EngineHud.setControls(controls)
+        },
+        AABB: {
+            fromVertexBuffer: (vb: VertexBuffer) => AABB.fromVertexBuffer(vb)
         },
         Config: {
             isWeb: () => Config.isWeb(),
