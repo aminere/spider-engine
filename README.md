@@ -1,7 +1,7 @@
 Spider Engine - https://spiderengine.io
 =======================================
 
-[https://img.shields.io/npm/v/@aminere/spider-engine.svg?color=orange](https://www.npmjs.com/package/@aminere/spider-engine)
+[![npm](https://img.shields.io/npm/v/@aminere/spider-engine.svg?color=orange)](https://www.npmjs.com/package/@aminere/spider-engine)
 
 ![Thumbnails](https://raw.githubusercontent.com/aminere/spider-engine/master/docs/source/images/runtime.jpg)
 
