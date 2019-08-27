@@ -12,6 +12,7 @@ import { SpriteSheet } from "./SpriteSheet";
 import { Layout } from "./Layout";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { WebGL } from "../graphics/WebGL";
+import { UISettings } from "./UISettings";
 
 export class UIFill extends SerializableObject {
     isLoaded() {
@@ -114,16 +115,8 @@ export class SpriteFill extends UIFill {
             this._isDirty = true;
         }
 
-        // floor to keep vertices as integers which preserves the pixel perfect look
-        // tslint:disable-next-line
-        /*
-        let xOffset = -Math.floor(layout.pivot.x * layout.actualWidth);
-        let yOffset = -Math.floor(layout.pivot.y * layout.actualHeight);
-        /*/
-        let xOffset = -layout.pivot.x * layout.actualWidth;
-        let yOffset = -layout.pivot.y * layout.actualHeight;
-        // tslint:disable-next-line
-        //*/
+        const xOffset = -layout.pivot.x * layout.actualWidth;
+        const yOffset = -layout.pivot.y * layout.actualHeight;        
 
         if (xOffset !== this._offsetX) {
             this._offsetX = xOffset;
@@ -298,17 +291,13 @@ export class SpriteSheetFill extends UIFill {
 
         let texture = this.texture;
         if (texture) {
-            // floor to keep vertices as integers which preserves the pixel perfect look
-            // tslint:disable-next-line
-            /*
-            let xOffset = -Math.floor(layout.pivot.x * layout.actualWidth);
-            let yOffset = -Math.floor(layout.pivot.y * layout.actualHeight);
-            /*/
             let xOffset = -layout.pivot.x * layout.actualWidth;
             let yOffset = -layout.pivot.y * layout.actualHeight;
-            // tslint:disable-next-line
-            //*/
-             
+            if (UISettings.integerPixels) {
+                xOffset = Math.floor(xOffset);
+                yOffset = Math.floor(yOffset);
+            }
+
             if (xOffset !== this._offsetX) {
                 this._offsetX = xOffset;
                 this._isDirty = true;

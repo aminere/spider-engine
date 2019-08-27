@@ -5,6 +5,7 @@ import { Vector2 } from "../math/Vector2";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { EngineUtils } from "../core/EngineUtils";
 import * as Attributes from "../core/Attributes";
+import { UISettings } from "./UISettings";
 
 export enum SpriteRenderMode {
     Stretch,
@@ -292,20 +293,18 @@ export class Sprite extends Asset {
         vb.dirtifyAttribute("uv");
     }
 
-    private makeQuadPos(a: number[], index: number, x: number, y: number, w: number, h: number, offsetX: number, offsetY: number) {
-        // tslint:disable-next-line
-        /*
-        let left = Math.floor(x + offsetX);
-        let right = Math.floor(x + w + offsetX);
-        let top = Math.floor(y + offsetY);
-        let bottom = Math.floor(y + h + offsetY);
-        /*/
+    private makeQuadPos(a: number[], index: number, x: number, y: number, w: number, h: number, offsetX: number, offsetY: number) {        
         let left = x + offsetX;
         let right = x + w + offsetX;
         let top = y + offsetY;
         let bottom = y + h + offsetY;
-        // tslint:disable-next-line
-        //*/
+        if (UISettings.integerPixels) {
+            left = Math.floor(left);
+            right = Math.floor(right);
+            top = Math.floor(top);
+            bottom = Math.floor(bottom);
+        }
+        
         a[index + 0] = left; a[index + 1] = top; a[index + 2] = 0;
         a[index + 3] = right; a[index + 4] = top; a[index + 5] = 0;
         a[index + 6] = left; a[index + 7] = bottom; a[index + 8] = 0;

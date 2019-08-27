@@ -30,6 +30,7 @@ import { Interfaces } from "../core/Interfaces";
 import { WebGL } from "../graphics/WebGL";
 import { Transform } from "../core/Transform";
 import { Image } from "./Image";
+import { UISettings } from "./UISettings";
 
 /**
  * @hidden
@@ -71,6 +72,8 @@ export class Screen extends Component {
 
     @Attributes.displayName("Scaling")
     private _resolution = new Reference(Resolution);
+
+    private _integerPixels = true;
 
     @Attributes.unserializable()
     @Attributes.hidden()
@@ -135,12 +138,16 @@ export class Screen extends Component {
             if (resolution.adaptiveWidth) {
                 let widthInScreenSpace = screenSize.y * targetRatio;
                 this._translationX = (screenSize.x - widthInScreenSpace) / 2;
-                // this._translationX = Math.floor((screenSize.x - widthInScreenSpace) / 2);
+                if (this._integerPixels) {
+                    this._translationX = Math.floor(this._translationX);
+                }
                 this._scale = screenSize.y / resolution.size.y;
             } else {
                 let heightInScreenSpace = screenSize.x / targetRatio;
                 this._translationY = (screenSize.y - heightInScreenSpace) / 2;
-                // this._translationY = Math.floor((screenSize.y - heightInScreenSpace) / 2);
+                if (this._integerPixels) {
+                    this._translationY = Math.floor(this._translationY);
+                }
                 this._scale = screenSize.x / resolution.size.x;
             }
             // convert the screen translation to resolution space
@@ -158,15 +165,12 @@ export class Screen extends Component {
         this._offset.x = Math.max(-this._translationX, 0);
         this._offset.y = Math.max(-this._translationY, 0);
         // Transform offset from screen space to resolution space, because layouting works in resolution space
-        /*
-        this._offset.x = Math.floor(this._offset.x / this._scale);
-        this._offset.y = Math.floor(this._offset.y / this._scale);
-        /*/
         this._offset.x = this._offset.x / this._scale;
         this._offset.y = this._offset.y / this._scale;
-        // tslint:disable-next-line
-        //*/
-
+        if (this._integerPixels) {
+            this._offset.x = Math.floor(this._offset.x);
+            this._offset.y = Math.floor(this._offset.y);
+        }
         // update transforms
         this.entity.traverse(e => {
             let layout = e.getComponent(Layout);
@@ -222,22 +226,15 @@ export class Screen extends Component {
 
         let modelView = Matrix44.fromPool();
         let gl = WebGL.context;
+        UISettings.integerPixels = this._integerPixels;
         for (let i = 0; i < this._cacheIndex; ++i) {
             let elem = this._cache[i].element;
             let worldMatrix = elem.worldMatrix;
-            // Keep positions as integers to keep the pixel perfect look
-            // tslint:disable-next-line
-            /*
-            worldMatrix.data[12] = Math.floor(worldMatrix.data[12]);
-            worldMatrix.data[13] = Math.floor(worldMatrix.data[13]);
-            worldMatrix.data[14] = Math.floor(worldMatrix.data[14]);
-            /*/
-            worldMatrix.data[12] = worldMatrix.data[12];
-            worldMatrix.data[13] = worldMatrix.data[13];
-            worldMatrix.data[14] = worldMatrix.data[14];
-            // tslint:disable-next-line
-            //*/
-
+            if (this._integerPixels) {
+                worldMatrix.data[12] = Math.floor(worldMatrix.data[12]);
+                worldMatrix.data[13] = Math.floor(worldMatrix.data[13]);
+                worldMatrix.data[14] = Math.floor(worldMatrix.data[14]);
+            }
             modelView.multiplyMatrices(this._screenTransform, worldMatrix);
             uiMaterial.queueParameter("modelViewMatrix", modelView);
 

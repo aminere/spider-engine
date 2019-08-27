@@ -10,6 +10,7 @@ import { AssetReference } from "../serialization/AssetReference";
 import { Texture } from "../graphics/Texture";
 import { GeometryProvider } from "../graphics/geometry/GeometryProvider";
 import { defaultAssets } from "../assets/DefaultAssets";
+import { UISettings } from "./UISettings";
 
 namespace Private {
 
@@ -20,16 +21,13 @@ namespace Private {
         const pos = quad.attributes.position as number[];
         const w = layout.actualWidth;
         const h = layout.actualHeight;
-        // floor to keep vertices as integers which preserves the pixel perfect look
-        // tslint:disable-next-line
-        /*
-        let xOffset = -Math.floor(layout.pivot.x * w);
-        let yOffset = -Math.floor(layout.pivot.y * h);
-        /*/
-        const xOffset = -layout.pivot.x * w;
-        const yOffset = -layout.pivot.y * h;
-        // tslint:disable-next-line
-        //*/
+
+        let xOffset = -layout.pivot.x * w;
+        let yOffset = -layout.pivot.y * h;
+        if (UISettings.integerPixels) {
+            xOffset = Math.floor(xOffset);
+            yOffset = Math.floor(yOffset);
+        }
 
         pos[0] = 0 + xOffset; pos[1] = 0 + yOffset; pos[2] = 0; // Top left
         pos[3] = w + xOffset; pos[4] = 0 + yOffset; pos[5] = 0; // Top right
