@@ -41,17 +41,6 @@ export class Color {
 
     private _array!: number[];
 
-    static lerp(src: Color, dest: Color, factor: number, target?: Color) {
-        if (!target) {
-            target = Color.dummy;
-        }
-        target.r = MathEx.lerp(src.r, dest.r, factor);
-        target.g = MathEx.lerp(src.g, dest.g, factor);
-        target.b = MathEx.lerp(src.b, dest.b, factor);
-        target.a = MathEx.lerp(src.a, dest.a, factor);
-        return target;
-    }
-
     constructor(r?: number, g?: number, b?: number, a?: number) {
         this.set(r || 0, g || 0, b || 0, a);
     }
@@ -154,6 +143,18 @@ export class Color {
             this.g = Private.hue2rgb(q, p, h);
             this.b = Private.hue2rgb(q, p, h - 1 / 3);
         }
+        return this;
+    }
+
+    lerp(dest: Color, factor: number) {        
+        return this.lerpColors(this, dest, factor);
+    }
+
+    lerpColors(a: Color, b: Color, factor: number) {        
+        this.r = MathEx.lerp(a.r, b.r, factor);
+        this.g = MathEx.lerp(a.g, b.g, factor);
+        this.b = MathEx.lerp(a.b, b.b, factor);
+        this.a = MathEx.lerp(a.a, b.a, factor);
         return this;
     }
 }

@@ -144,7 +144,8 @@ export class ParticleColorOverLife extends ParticleValueOverLife {
         super(life, value || new Color()); 
     }
     protected lerp(src: Color, dest: Color, factor: number, target?: Color) {
-        return Color.lerp(src, dest, factor, target);
+        const _target = target || Color.dummy;
+        return _target.copy(src).lerp(dest, factor);
     }
 }
 

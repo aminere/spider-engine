@@ -3,7 +3,8 @@ import { Color } from "../../graphics/Color";
 
 export class ColorKey extends TAnimationKey<Color> {
     lerp(src: ColorKey, dest: ColorKey, factor: number, target?: Color) {
-        return Color.lerp(src.value, dest.value, factor, target);
+        const _target = target || Color.dummy;
+        return _target.copy(src.value).lerp(dest.value, factor);
     }
 
     setValue(value: Color) {
