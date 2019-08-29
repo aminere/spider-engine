@@ -67,11 +67,11 @@ export class Vector2 {
             }
             return this;
         } else {
-            return this.multiplyScalar(1 / len);
+            return this.multiply(1 / len);
         }
     }
 
-    multiplyScalar(scalar: number) {
+    multiply(scalar: number) {
         this.x = this.x * scalar;
         this.y = this.y * scalar;
         return this;

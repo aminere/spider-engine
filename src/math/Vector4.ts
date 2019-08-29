@@ -60,7 +60,7 @@ export class Vector4 {
         return this;
     }
 
-    multiplyScalar(scalar: number) {
+    multiply(scalar: number) {
         this.x = this.x * scalar;
         this.y = this.y * scalar;
         this.z = this.z * scalar;

@@ -152,6 +152,11 @@ export class BehaviorAPI {
             distanceSq: (a: Vector3, b: Vector3) => Vector3.distanceSq(a, b),
             fromPool: () => Vector3.fromPool()
         },
+        Vector2: {
+            zero: () => Vector2.fromPool().copy(Vector2.zero),
+            one: () => Vector2.fromPool().copy(Vector2.one),
+            fromPool: () => Vector2.fromPool()
+        },
         Plane: {
             fromPool: () => Plane.fromPool()
         },
