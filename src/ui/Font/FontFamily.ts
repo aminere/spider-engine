@@ -3,6 +3,7 @@ import { Reference } from "../../serialization/Reference";
 import { FontShadow, DefaultFontShadow } from "./FontShadow";
 import { FontTexture } from "./FontTexture";
 import * as Attributes from "../../core/Attributes";
+import { TextureFiltering } from "../../graphics/GraphicTypes";
 
 export class FontFamily extends Font {
 
@@ -28,12 +29,16 @@ export class FontFamily extends Font {
     
     private _shadow = new Reference(FontShadow);
 
+    @Attributes.enumLiterals(TextureFiltering)
+    private _filtering = TextureFiltering.Nearest;
+
     constructor() {
         super();
 
         this.texture = new FontTexture();
         this.texture.size = this.size;
         this.texture.family = this.family;
+        this.texture.filtering = this._filtering;
 
         this.onShadowPropertyChanged = this.onShadowPropertyChanged.bind(this);
         this.shadow = new DefaultFontShadow();
@@ -58,10 +63,7 @@ export class FontFamily extends Font {
     getHeight() {
         return this.texture.getHeight();
     }
-
-    /**
-     * @hidden
-     */
+    
     // tslint:disable-next-line
     setProperty(name: string, value: any) {
         super.setProperty(name, value);
@@ -73,22 +75,18 @@ export class FontFamily extends Font {
             this.texture.bold = value;
         } else if (name === "italic") {
             this.texture.italic = value;
-        } else if (name === "_shadow") {            
+        } else if (name === "_shadow") {
             this.shadow = value.instance;
+        } else if (name === "_filtering") {
+            this.texture.filtering = value;
         }
     }
 
-    /**
-     * @hidden
-     */
     prepareForRendering(screenScaleFactor: number, maxWidth: number) {
         this.texture.scaleFactor = screenScaleFactor;
         this.texture.maxWidth = maxWidth;
     }
 
-    /**
-     * @hidden
-     */
     destroy() {
         this.texture.destroy();
         if (this._shadow.instance) {

@@ -3,6 +3,7 @@ import * as Attributes from "../../core/Attributes";
 import { FontShadow, DefaultFontShadow } from "./FontShadow";
 import { WebGL } from "../../graphics/WebGL";
 import { TextAlignment } from "../Alignment";
+import { TextureFiltering } from "../../graphics/GraphicTypes";
 
 namespace Private {    
     export function wordWrap(context: CanvasRenderingContext2D, text: string, maxWidth: number) {
@@ -109,6 +110,16 @@ export class FontTexture extends Texture {
         }
     }
 
+    set filtering(filtering: TextureFiltering) {
+        if (this._filtering !== filtering) {
+            this._filtering = filtering;
+            if (this.tryUpdateTextureInEditor()) {
+                return;
+            }
+            this._isDirty = true;
+        }
+    }
+
     private _canvas!: HTMLCanvasElement;
     private _isDirty = true;
     private _text!: string;
@@ -120,7 +131,8 @@ export class FontTexture extends Texture {
     private _maxWidth = 0;
     private _alignment!: number;
     // This is to compensate for the screen trying to adapt to the reference resolution
-    private _scaleFactor = 1;   
+    private _scaleFactor = 1; 
+    private _filtering = TextureFiltering.Nearest;  
 
     dirtify() {
         this._isDirty = true;
@@ -225,8 +237,15 @@ export class FontTexture extends Texture {
         gl.bindTexture(gl.TEXTURE_2D, this._textureId);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
         gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+
+        if (this._filtering === TextureFiltering.Nearest) {
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        } else {            
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        }    
+        
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._canvas);
