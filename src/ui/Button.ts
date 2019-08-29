@@ -62,16 +62,14 @@ export class Button extends UIElement {
             this.setState(props);
         }
 
-        this._touchInteractions = new TouchInteractions({
-            active: this._enabled,
-            controller: this
-        });
+        this._touchInteractions = new TouchInteractions({ controller: this });
     }
 
     setEntity(entity: Entity) {
         super.setEntity(entity);     
         entity.getOrSetComponent(Layout);
         EntityInternal.setComponentFromInstance(entity, this._touchInteractions);
+        this._touchInteractions.active = this._enabled;
     }
 
     destroy() {
