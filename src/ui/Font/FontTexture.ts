@@ -133,9 +133,6 @@ export class FontTexture extends Texture {
         return this._canvas ? (this._canvas.height / this._scaleFactor) : 0;
     }
 
-    /**
-     * @hidden
-     */
     begin(stage: number): boolean {
         let gl = WebGL.context;
         let textureValid = true;
@@ -163,9 +160,6 @@ export class FontTexture extends Texture {
         return false;
     }
 
-    /**
-     * @hidden
-     */
     destroy() {
         delete this._canvas;
         super.destroy();
@@ -254,7 +248,7 @@ export class FontTexture extends Texture {
     private drawText(context: CanvasRenderingContext2D, font: string, lines: string[], lineHeight: number) {
         // Some kind of Canvas bug, need to set font properties again after changing canvas dimensions for text to render properly!        
         context.font = font;
-        context.textBaseline = "top";
+        context.textBaseline = "middle";
         context.fillStyle = "white"; // Must be white, actual tint in done in the shader        
         
         if (this._shadow) {
@@ -265,6 +259,7 @@ export class FontTexture extends Texture {
 
         context.clearRect(0, 0, this._canvas.width, this._canvas.height);
 
+        const halfLine = Math.ceil(lineHeight / 2);
         for (let i = 0; i < lines.length; ++i) {
             let x = 0;
             if (this._alignment === TextAlignment.Center) {
@@ -272,7 +267,7 @@ export class FontTexture extends Texture {
             } else if (this._alignment === TextAlignment.Right) {
                 x = this._canvas.width - context.measureText(lines[i]).width;
             }
-            context.fillText(lines[i], x, i * lineHeight);
+            context.fillText(lines[i], x, (i * lineHeight) + halfLine);
         }
     }
 }
