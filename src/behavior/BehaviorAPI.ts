@@ -193,16 +193,16 @@ export class BehaviorAPI {
             all: (promises: Promise<any>[]) => Promise.all(promises)
         },
         HorizontalAlignment: {
-            left: () => 0,
-            center: () => 1,
-            right: () => 2,
-            stretch: () => 3
+            Left: () => 0,
+            Center: () => 1,
+            Right: () => 2,
+            Stretch: () => 3
         },
         VerticalAlignment: {
-            top: () => 0,
-            center: () => 1,
-            bottom: () => 2,
-            stretch: () => 3
+            Top: () => 0,
+            Center: () => 1,
+            Bottom: () => 2,
+            Stretch: () => 3
         },
         Array: {
             // tslint:disable-next-line
