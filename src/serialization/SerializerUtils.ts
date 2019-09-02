@@ -1,6 +1,6 @@
 import { Entity, SerializedEntity, EntityInternal } from "../core/Entity";
 import { SerializableObject, SerializedObject } from "../core/SerializableObject";
-import { PropertyFactory } from "./PropertyFactory";
+import { PropertyFactory, PropertyFactoryInternal } from "./PropertyFactory";
 import { Debug } from "../io/Debug";
 import { AssetReference, AssetReferenceState } from "./AssetReference";
 import { Asset } from "../assets/Asset";
@@ -244,7 +244,7 @@ export class SerializerUtils {
                 //     // TODO generic native object serialization, 
                 //     return data;    
                 // }
-                return "__serializeFailed__";
+                return PropertyFactoryInternal.noOp;
             }
         }
     }
@@ -488,7 +488,7 @@ export class SerializerUtils {
             }
 
             const serializedData = SerializerUtils.serializeProperty(property, typeName);
-            if (serializedData !== "__serializeFailed__") {
+            if (serializedData !== PropertyFactoryInternal.noOp) {
                 if (SerializerUtils.isDynamicProperty(o.constructor.name, key)) {
                     json.properties[key] = {
                         typeName: typeName,

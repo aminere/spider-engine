@@ -23,7 +23,6 @@ import { Size, SerializedSize, SizeType } from "../core/Size";
 import { AssetReferenceArray, SerializedAssetReferenceArray } from "./AssetReferenceArray";
 import { AssetReference } from "./AssetReference";
 import { SerializerUtils } from "./SerializerUtils";
-import { SerializedPropertyType } from "./SerializedTypes";
 import { NativeArray, INativeArray, NativeArrayFactory, NativeType } from "./NativeArray";
 import { SerializedObject, SerializableObject } from "../core/SerializableObject";
 import { NativeU8Array } from "./NativeU8Array";
@@ -31,21 +30,21 @@ import { Plane } from "../math/Plane";
 import { Component } from "../core/Component";
 import { RTTI } from "../core/RTTI";
 import { Interfaces } from "../core/Interfaces";
+import { Constructor } from "../core/Types";
+
+export namespace PropertyFactoryInternal {
+    export const noOp = "_noOp";
+}
 
 // Serializer for when the json layout exactly matches the object definition
 // Definition must only contain native types (number, string, native arrays, etc.)
 // Do not use on complex types!
-/**
- * @hidden
- */
-export class NativeSerializer<T> {
-    // tslint:disable-next-line
-    type: { new(...args: any[]): T; };
+class NativeSerializer<T> {
+    type: Constructor<T>;
     readProperty: (json: T) => T;
     writeProperty(data: T) { return data; }
 
-    // tslint:disable-next-line
-    constructor(ctor: { new(...args: any[]): T; }) {
+    constructor(ctor: Constructor<T>) {
         this.type = ctor;
         this.readProperty = (json: T) => {
 
@@ -87,20 +86,15 @@ export class NativeSerializer<T> {
     }
 }
 
-/**
- * @hidden
- */
-export interface IProperty {
-    // tslint:disable-next-line
-    type: any;
-    readProperty: (json: SerializedPropertyType) => void;
-    // tslint:disable-next-line
-    writeProperty: (p: any) => SerializedPropertyType;
+class NullSerializer<T> {
+    type: Constructor<T>;
+    readProperty(json: T) {}
+    writeProperty(data: T) { return PropertyFactoryInternal.noOp; }
+    constructor(ctor: Constructor<T>) {
+        this.type = ctor;
+    }
 }
 
-/**
- * @hidden
- */
 export class PropertyFactory {
 
     static properties = {
@@ -109,8 +103,8 @@ export class PropertyFactory {
         Vector4: new NativeSerializer(Vector4),
         Quaternion: new NativeSerializer(Quaternion),
         Color: new NativeSerializer(Color),
-        Matrix44: new NativeSerializer(Matrix44),
-        Matrix33: new NativeSerializer(Matrix33),
+        Matrix44: new NullSerializer(Matrix44),
+        Matrix33: new NullSerializer(Matrix33),
         Rect: new NativeSerializer(Rect),
         FileProperty: new NativeSerializer(FileProperty),
         ThumbnailProperty: new NativeSerializer(ThumbnailProperty),
