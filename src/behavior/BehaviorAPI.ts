@@ -32,6 +32,7 @@ import { Input } from "../input/Input";
 import { CollisionFilter } from "../collision/CollisionFilter";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { AABB } from "../math/AABB";
+import { IHttpRequestOptions, Http } from "../network/HTTP";
 
 namespace Private {
     export const transientState = {};
@@ -233,6 +234,12 @@ export class BehaviorAPI {
             isDevelopment: () => Config.isDevelopment(),
             isEditor: () => Config.isEditor(),
             isStandalone: () => Config.isStandalone()
-        }
+        },
+        Http: {
+            request: (options: IHttpRequestOptions) => Http.request(options)
+        },
+        Date: {
+            now: () => Date.now()
+        }        
     };
 }
