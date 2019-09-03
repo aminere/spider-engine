@@ -6,6 +6,7 @@ import { BasePin } from "./Pin";
 import * as Attributes from "../core/Attributes";
 import { BehaviorUtils } from "./BehaviorUtils";
 import { Asset } from "../assets/Asset";
+import { IObjectManagerInternal } from "../core/IObjectManager";
 
 @Attributes.displayName("Object Definition")
 @Attributes.creatable(false)
@@ -72,7 +73,7 @@ export class ObjectDefinition extends Asset {
             BehaviorUtils.buildPins(this, this.declaration);
             BehaviorUtils.updatePinAccessors(this);
             if (process.env.CONFIG === "editor") {
-                this.save();
+                IObjectManagerInternal.instance.saveObject(this);
             }
         }
     }

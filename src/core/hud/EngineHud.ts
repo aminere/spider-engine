@@ -105,7 +105,7 @@ namespace Private {
 export class EngineHud {
 
     static load() {
-        Promise.all(
+        return Promise.all(
             Object.keys(Private.factory).map(a => {
                 return new Promise((resolve, reject) => {
                     IObjectManagerInternal.instance.loadObject(Private.factory[a].path)

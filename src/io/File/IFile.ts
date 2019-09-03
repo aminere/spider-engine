@@ -6,11 +6,12 @@ export interface IFile {
     write: (path: string, data: any) => Promise<void>;
     delete: (path: string) => Promise<void>;
     renameFile: (oldPath: string, newPath: string) => Promise<void>;
-    renameFolder: (oldPath: string, newPath: string) => Promise<void>;    
+    renameFolder: (oldPath: string, newPath: string) => Promise<void>;
     clearAllFiles: () => Promise<void>;
 }
 namespace Private {
     export let instance: IFile;
+    export let defaultAssets: { [path: string]: string } = {};
 }
 
 /**
@@ -22,5 +23,13 @@ export class IFileInternal {
     }
     static get instance() {
         return Private.instance;
+    }
+
+    static set defaultAssets(defaultAssets: { [path: string]: string }) {
+        Private.defaultAssets = defaultAssets;
+    }
+
+    static getDefaultAsset(path: string) {
+        return Private.defaultAssets[path];
     }
 }

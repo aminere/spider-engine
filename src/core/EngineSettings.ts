@@ -1,7 +1,6 @@
 
 import { UniqueObject } from "./UniqueObject";
 import { SerializedObject } from "./SerializableObject";
-import { ObjectManagerInternal } from "./ObjectManager";
 import { IObjectManagerInternal } from "./IObjectManager";
 import { EngineError } from "./EngineError";
 import { AssetIdDatabase } from "../assets/AssetIdDatabase";
@@ -21,12 +20,13 @@ export class EngineSettings extends UniqueObject {
 
     canvasAlpha = true;
     startupScene?: string = undefined; // must be assigned for deserializer to write into it.
+    useCustomDefaultAssets?: boolean = undefined;
 
     static load() {
         return new Promise((resolve, reject) => {
-            ObjectManagerInternal.loadObjectIgnoreCache(EngineSettingsInternal.path)
-                .then(tuple => {
-                    this._instance = tuple[0] as EngineSettings;
+            IObjectManagerInternal.instance.loadObject(EngineSettingsInternal.path)
+                .then(([settings]) => {
+                    this._instance = settings as EngineSettings;
                     resolve();
                 })
                 .catch(() => {

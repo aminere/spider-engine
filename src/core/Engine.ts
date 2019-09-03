@@ -66,8 +66,7 @@ namespace Private {
         }
     }
 
-    export function createFileInterface(): Promise<void> {
-        let useAssetsBundle = false;
+    export function createFileInterface(): Promise<void> {        
         const fileCtor = function () {
             if (process.env.CONFIG === "editor") {
                 if (process.env.PLATFORM === "web") {
@@ -81,7 +80,6 @@ namespace Private {
                     if (useInMemoryFileSystem) {
                         return require("../io/File/FileInMemory").FileInMemory;
                     } else {
-                        useAssetsBundle = true;
                         return require("../io/File/FileStandaloneWeb").FileStandaloneWeb;
                     }
                 } else if (process.env.PLATFORM === "electron") {
@@ -92,30 +90,11 @@ namespace Private {
         }();
 
         console.assert(fileCtor);
-        if (process.env.CONFIG === "standalone"
-            && process.env.PLATFORM === "web"
-            && useAssetsBundle) {
-            return import(/* webpackChunkName: "default-assets" */ "../assets/default-assets.json")
-                .then(esmodule => esmodule as { [path: string]: {} })
-                .then(({ default: bundle }) => {
-                    const defaultAssets = Object.entries(bundle).reduce(
-                        (prev, [path, data]) => {                            
-                            return {
-                                ...prev, 
-                                ...{ [`Assets/DefaultAssets/${path}`]: JSON.stringify(data) } 
-                            };
-                        },
-                        {}
-                    );
-                    IFileInternal.instance = new fileCtor(defaultAssets);
-                });
-        } else {
-            IFileInternal.instance = new fileCtor();
-            if (process.env.CONFIG === "editor" && process.env.PLATFORM === "web") {
-                const dbName = `spider-${process.env.CONFIG}`;
-                const dbVersion = 1;
-                return require("../io/IndexedDb").IndexedDb.initialize(dbName, dbVersion);
-            }
+        IFileInternal.instance = new fileCtor();
+        if (process.env.CONFIG === "editor" && process.env.PLATFORM === "web") {
+            const dbName = `spider-${process.env.CONFIG}`;
+            const dbVersion = 1;
+            return require("../io/IndexedDb").IndexedDb.initialize(dbName, dbVersion);
         }
         return Promise.resolve();
     }
@@ -416,6 +395,26 @@ export class Engine {
                         }
                     })
                     .then(() => EngineSettings.load())
+                    .then(() => {
+                        if (!EngineSettings.instance.useCustomDefaultAssets) {
+                            // load default assets bundle
+                            return import(/* webpackChunkName: "default-assets" */ "../assets/default-assets.json")
+                                .then(esmodule => esmodule as { [path: string]: {} })
+                                .then(({ default: bundle }) => {
+                                    const defaultAssets = Object.entries(bundle).reduce(
+                                        (prev, [path, data]) => {
+                                            return {
+                                                ...prev,
+                                                ...{ [`Assets/DefaultAssets/${path}`]: JSON.stringify(data) }
+                                            };
+                                        },
+                                        {}
+                                    );
+                                    IFileInternal.defaultAssets = defaultAssets;
+                                });
+                        }
+                        return Promise.resolve();
+                    })
                     .then(() => EngineInternal.initializeWithCanvas(Private.targetCanvas));
             } else {
                 // Headless engine, with no canvas

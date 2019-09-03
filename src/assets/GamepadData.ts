@@ -3,6 +3,7 @@ import { Asset } from "./Asset";
 import { SerializedObjectType } from "../serialization/SerializedTypes";
 import * as Attributes from "../core/Attributes";
 import { GamepadDataLoad, SerializedGamepadData } from "./GamepadDataLoad";
+import { IObjectManagerInternal } from "../core/IObjectManager";
 
 @Attributes.displayName("Gamepad Data")
 export class GamepadData extends Asset {
@@ -11,7 +12,7 @@ export class GamepadData extends Asset {
 
     set data(data: GamepadDataLoad) {
         this._data = data;
-        this.save();
+        IObjectManagerInternal.instance.saveObject(this);
     }
 
     get data() {

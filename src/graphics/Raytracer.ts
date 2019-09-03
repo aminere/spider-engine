@@ -8,6 +8,7 @@ import { ScenesInternal } from "../core/Scenes";
 import { Component } from "../core/Component";
 import { Interfaces } from "../core/Interfaces";
 import { ObjectProps } from "../core/Types";
+import { IObjectManagerInternal } from "../core/IObjectManager";
 
 namespace Private {
     export let worker: Worker | null = null;
@@ -43,7 +44,7 @@ export class Raytracer extends Component {
             if (this._savePending) {
                 let target = this._target.asset;
                 if (target) {
-                    target.save();
+                    IObjectManagerInternal.instance.saveObject(target);
                 }
                 this._savePending = false;
             }

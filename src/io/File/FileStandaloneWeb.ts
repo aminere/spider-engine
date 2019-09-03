@@ -1,18 +1,9 @@
-import { IFile } from "./IFile";
+import { IFile, IFileInternal } from "./IFile";
 
-namespace Private {
-    export let defaultAssets: { [path: string]: string };
-}
+export class FileStandaloneWeb implements IFile {    
 
-export class FileStandaloneWeb implements IFile {
-    constructor(defaultAssets: { [path: string]: string }) {
-        console.assert(!Private.defaultAssets);
-        console.assert(defaultAssets);
-        Private.defaultAssets = defaultAssets;
-    }
-
-    read(path: string) {
-        const defaultAsset = Private.defaultAssets[path];
+    read(path: string) {        
+        const defaultAsset = IFileInternal.getDefaultAsset(path);
         if (defaultAsset) {
             return Promise.resolve(defaultAsset);
         }
