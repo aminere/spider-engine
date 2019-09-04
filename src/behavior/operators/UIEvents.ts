@@ -37,9 +37,8 @@ export class UIEvents extends BehaviorNode {
         this.createPin("_touchDown", PinType.Output, SignalPin);        
         this.createPin("_touchMove", PinType.Output, SignalPin);
         this.createPin("_touchUp", PinType.Output, SignalPin);
-        // TODO
-        // this.createPin("_touchEnter", PinType.Output, SignalPin);
-        // this.createPin("_touchLeave", PinType.Output, SignalPin);
+        this.createPin("_touchEnter", PinType.Output, SignalPin);
+        this.createPin("_touchLeave", PinType.Output, SignalPin);
         this.createPin("_longPress", PinType.Output, SignalPin);
         this.createPin("_target", PinType.Output, EntityReferencePin);
         this.createPin("_touchPos", PinType.Output, Vector2Pin);

@@ -456,18 +456,18 @@ export class Screen extends Component {
             if (_2dPickingAABB.contains(localCoords)) {
                 if (!uiElement.isTouchInside) {
                     if (firstHit) {
-                        uiElement.setTouchInside(true);
+                        this.onElementHovered(e, uiElement, true);
                         hoveredElement = uiElement;
                     }
                 } else {
                     if (!firstHit) {
-                        uiElement.setTouchInside(false);
+                        this.onElementHovered(e, uiElement, false);
                     }
                 }
                 firstHit = false;
             } else {
                 if (uiElement.isTouchInside) {
-                    uiElement.setTouchInside(false);
+                    this.onElementHovered(e, uiElement, false);
                     hoveredElement = null;
                 }
             }
@@ -505,5 +505,19 @@ export class Screen extends Component {
             currentHandler = currentHandler.parent;
         }
         EntityInternal.collectEntityOperations = false;
+    }
+
+    private onElementHovered(e: TouchEvent, uiElement: UIElement, hovered: boolean) {
+        uiElement.setTouchInside(hovered);
+        const entity = uiElement.entity;
+        this.onEvent(entity, (uiOperator, currentHandler) => {
+            uiOperator._target.value.entity = entity;
+            uiOperator._touchPos.getData().set(
+                e.x / this._scale - this._translationX,
+                e.y / this._scale - this._translationY
+            );
+            uiOperator.sendSignal(hovered ? uiOperator._touchEnter.name : uiOperator._touchLeave.name);
+            return uiOperator._stopPropagation.getData();
+        });
     }
 }
