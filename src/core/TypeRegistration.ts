@@ -170,6 +170,8 @@ import { ModelSkinnedMesh } from "../assets/model/ModelSkinnedMesh";
 import { ModelBone } from "../assets/model/ModelBone";
 import { ModelMultiMesh, ModelSubMesh } from "../assets/model/ModelMultiMesh";
 import { InclusionVisualFilter, ExclusionVisualFilter } from "../graphics/VisualFilters";
+import * as html from "../ui/Html";
+import { Css } from "../ui/Css";
 
 /**
  * @hidden
@@ -311,6 +313,12 @@ export class TypeRegistration {
         factory.registerObject(FontMetrics, Asset);
         factory.registerObject(Resolution, SerializableObject);
         factory.registerObject(CustomResolution, Resolution);
+        factory.registerObject(html.Html, Component);
+        factory.registerObject(html.Content, SerializableObject);
+        factory.registerObject(html.InnerHtml, html.Content);
+        factory.registerObject(html.InnerText, html.Content);
+        factory.registerObject(html.KeyValue, SerializableObject);
+        factory.registerObject(Css, Component);
 
         // Behavior
         factory.registerObject(ObjectDeclaration, Asset);

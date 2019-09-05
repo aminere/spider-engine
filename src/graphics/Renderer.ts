@@ -55,6 +55,7 @@ type ShaderToVisualBucketsMap = Map<Shader, VisualBucketsMap>;
 type RenderStateBucketsMap = Map<string, RenderStateBucket>;
 
 namespace Private {
+    export let canvas: HTMLCanvasElement;
     export const initialShadowCastersPoolSize = 128;
     export const numRenderPasses = RenderPass.Transparent + 1;
     export const initialCameraPoolSize = 8;
@@ -364,6 +365,7 @@ namespace Private {
 export class Renderer implements IRenderer {   
     get screenSize() { return Private.screenSize; }
     get defaultPerspectiveCamera() { return Private.defaultPerspectiveCamera; }    
+    get canvas() { return Private.canvas; }
     get renderTarget() { return Private.currentRenderTarget; }
     set renderTarget(rt: RenderTarget | null) { 
         const gl = WebGL.context;
@@ -413,6 +415,7 @@ export class RendererInternal {
     static create(canvas: HTMLCanvasElement) {
         IRendererInternal.instance = new Renderer();
         RendererInternal.processCanvasDimensions(canvas);
+        Private.canvas = canvas;
     }
 
     static render(
