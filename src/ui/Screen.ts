@@ -349,8 +349,8 @@ export class Screen extends Component {
             this.onEvent(pressedElement.entity, (uiOperator, currentHandler) => {
                 uiOperator._target.value.entity = pressedElement.entity;
                 uiOperator._touchPos.getData().set(
-                    e.x / this._scale - this._translationX,
-                    e.y / this._scale - this._translationY
+                    (e.x - this._translationX) / this._scale,
+                    (e.y - this._translationY) / this._scale
                 );
                 uiOperator.sendSignal(uiOperator._touchDown.name);
                 return uiOperator._stopPropagation.getData();
@@ -376,8 +376,8 @@ export class Screen extends Component {
             this.onEvent(touchMoveTarget.entity, (uiOperator, currentHandler) => {
                 uiOperator._target.value.entity = touchMoveTarget.entity;
                 uiOperator._touchPos.getData().set(
-                    e.x / this._scale - this._translationX,
-                    e.y / this._scale - this._translationY
+                    (e.x - this._translationX) / this._scale,
+                    (e.y - this._translationY) / this._scale
                 );
                 uiOperator.sendSignal(uiOperator._touchMove.name);
                 return uiOperator._stopPropagation.getData();
@@ -394,8 +394,8 @@ export class Screen extends Component {
             this.onEvent(entity, (uiOperator, currentHandler) => {
                 uiOperator._target.value.entity = entity;
                 uiOperator._touchPos.getData().set(
-                    e.x / this._scale - this._translationX,
-                    e.y / this._scale - this._translationY
+                    (e.x - this._translationX) / this._scale,
+                    (e.y - this._translationY) / this._scale
                 );
                 uiOperator.sendSignal(uiOperator._touchUp.name);
                 return uiOperator._stopPropagation.getData();
@@ -415,8 +415,8 @@ export class Screen extends Component {
                 this.onEvent(entity, (uiOperator, currentHandler) => {
                     uiOperator._target.value.entity = entity;
                     uiOperator._touchPos.getData().set(
-                        e.x / this._scale - this._translationX,
-                        e.y / this._scale - this._translationY
+                        (e.x - this._translationX) / this._scale,
+                        (e.y - this._translationY) / this._scale
                     );
                     uiOperator.sendSignal(uiOperator._click.name);
                     return uiOperator._stopPropagation.getData();
@@ -513,8 +513,8 @@ export class Screen extends Component {
         this.onEvent(entity, (uiOperator, currentHandler) => {
             uiOperator._target.value.entity = entity;
             uiOperator._touchPos.getData().set(
-                e.x / this._scale - this._translationX,
-                e.y / this._scale - this._translationY
+                (e.x - this._translationX) / this._scale,
+                (e.y - this._translationY) / this._scale
             );
             uiOperator.sendSignal(hovered ? uiOperator._touchEnter.name : uiOperator._touchLeave.name);
             return uiOperator._stopPropagation.getData();
