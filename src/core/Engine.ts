@@ -245,15 +245,15 @@ export namespace EngineInternal {
             // tslint:disable-next-line
             const isMobile = "isMobile" in window ? (window as any).isMobile.any : false;
             if (isMobile) {
-                window.addEventListener("touchstart", EngineHandlersInternal.onTouchStart);
-                window.addEventListener("touchend", EngineHandlersInternal.onTouchEnd);
-                window.addEventListener("touchcancel", EngineHandlersInternal.onTouchCancel);
-                window.addEventListener("touchmove", EngineHandlersInternal.onTouchMove);
+                canvas.addEventListener("touchstart", EngineHandlersInternal.onTouchStart);
+                canvas.addEventListener("touchend", EngineHandlersInternal.onTouchEnd);
+                canvas.addEventListener("touchcancel", EngineHandlersInternal.onTouchCancel);
+                canvas.addEventListener("touchmove", EngineHandlersInternal.onTouchMove);
             } else {
-                window.addEventListener("mousemove", EngineHandlersInternal.onMouseMove);
-                window.addEventListener("mouseup", EngineHandlersInternal.onMouseUp);
-                window.addEventListener("mousedown", EngineHandlersInternal.onMouseDown);
-                window.addEventListener("wheel", EngineHandlersInternal.onMouseWheel, { passive: false });
+                canvas.addEventListener("mousemove", EngineHandlersInternal.onMouseMove);
+                canvas.addEventListener("mouseup", EngineHandlersInternal.onMouseUp);
+                canvas.addEventListener("mousedown", EngineHandlersInternal.onMouseDown);
+                canvas.addEventListener("wheel", EngineHandlersInternal.onMouseWheel, { passive: false });
             }
         }
         window.addEventListener("resize", EngineHandlersInternal.onWindowResized);
@@ -496,16 +496,17 @@ export class Engine {
             if (process.env.CONFIG !== "editor") {
                 // tslint:disable-next-line
                 const isMobile = "isMobile" in window ? (window as any).isMobile.any : false;
-                if (isMobile) {
-                    window.removeEventListener("touchstart", EngineHandlersInternal.onTouchStart);
-                    window.removeEventListener("touchend", EngineHandlersInternal.onTouchEnd);
-                    window.removeEventListener("touchcancel", EngineHandlersInternal.onTouchCancel);
-                    window.removeEventListener("touchmove", EngineHandlersInternal.onTouchMove);
+                const { targetCanvas } = Private;
+                if (isMobile) {                    
+                    targetCanvas.removeEventListener("touchstart", EngineHandlersInternal.onTouchStart);
+                    targetCanvas.removeEventListener("touchend", EngineHandlersInternal.onTouchEnd);
+                    targetCanvas.removeEventListener("touchcancel", EngineHandlersInternal.onTouchCancel);
+                    targetCanvas.removeEventListener("touchmove", EngineHandlersInternal.onTouchMove);
                 } else {
-                    window.removeEventListener("mousemove", EngineHandlersInternal.onMouseMove);
-                    window.removeEventListener("mouseup", EngineHandlersInternal.onMouseUp);
-                    window.removeEventListener("mousedown", EngineHandlersInternal.onMouseDown);
-                    window.removeEventListener("wheel", EngineHandlersInternal.onMouseWheel);
+                    targetCanvas.removeEventListener("mousemove", EngineHandlersInternal.onMouseMove);
+                    targetCanvas.removeEventListener("mouseup", EngineHandlersInternal.onMouseUp);
+                    targetCanvas.removeEventListener("mousedown", EngineHandlersInternal.onMouseDown);
+                    targetCanvas.removeEventListener("wheel", EngineHandlersInternal.onMouseWheel);
                 }
             }
 
