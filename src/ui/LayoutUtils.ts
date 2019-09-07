@@ -7,6 +7,7 @@ import { Vector2 } from "../math/Vector2";
 import { HorizontalAlignment, VerticalAlignment } from "./Alignment";
 import { UIFillUtils } from "./UIFillUtils";
 import { CheckBox } from "./CheckBox";
+import { Mask } from "./Mask";
 
 /**
  * @hidden
@@ -24,25 +25,31 @@ export class LayoutUtils {
         let actualSize = 0;
         if (!stretch) {
             if (size.type === UISizeType.Auto) {
-                let image = layout.entity.getComponent(Image);
+                const image = layout.entity.getComponent(Image);
                 if (image && image.fill) {
                     return UIFillUtils.getFillSize(image.fill, horizontal);
                 }
 
-                let button = layout.entity.getComponent(Button);
+                const button = layout.entity.getComponent(Button);
                 if (button && button.currentFill) {
                     return UIFillUtils.getFillSize(button.currentFill, horizontal);
                 }
 
-                let checkBox = layout.entity.getComponent(CheckBox);
+                const checkBox = layout.entity.getComponent(CheckBox);
                 if (checkBox && checkBox.currentFill) {
                     return UIFillUtils.getFillSize(checkBox.currentFill, horizontal);
                 }
 
-                let text = layout.entity.getComponent(Text);
-                let font = text ? text.font : null;
+                const text = layout.entity.getComponent(Text);
+                const font = text ? text.font : null;
                 if (font) {
                     return horizontal ? font.getWidth() : font.getHeight();
+                }
+
+                const mask = layout.entity.getComponent(Mask);
+                if (mask) {                    
+                    const texture = mask.texture;
+                    return texture ? (horizontal ? texture.getWidth() : texture.getHeight()) : 0;
                 }
             } else if (size.type === UISizeType.Relative) {
                 actualSize = (parentSize * size.value) - margin;

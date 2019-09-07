@@ -172,6 +172,7 @@ import { ModelMultiMesh, ModelSubMesh } from "../assets/model/ModelMultiMesh";
 import { InclusionVisualFilter, ExclusionVisualFilter } from "../graphics/VisualFilters";
 import * as html from "../ui/Html";
 import { Css } from "../ui/Css";
+import { Mask } from "../ui/Mask";
 
 /**
  * @hidden
@@ -294,6 +295,7 @@ export class TypeRegistration {
         factory.registerObject(CheckBox, UIElement);
         factory.registerObject(Image, UIElement);
         factory.registerObject(Text, UIElement);
+        factory.registerObject(Mask, Component);
         factory.registerObject(Screen, Component);        
         factory.registerObject(Sprite, Asset);
         factory.registerObject(SpriteSheet, Asset);        

@@ -2,12 +2,10 @@ import { Component } from "../../core/Component";
 import { Entity } from "../../core/Entity";
 import { IKSolverBase } from "./IKSolverBase";
 import { Reference } from "../../serialization/Reference";
-import * as Attributes from "../../core/Attributes";
 import { ComponentReference } from "../../serialization/ComponentReference";
 import { IKEffector } from "./IKEffector";
 import { IKGenericSolver } from "./IKGenericSolver";
 
-@Attributes.exclusiveWith("IKEffector")
 export class IKSolver extends Component {
 
     set effector(effector: IKEffector | null) {        

@@ -13,6 +13,8 @@ import { Layout } from "./Layout";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { WebGL } from "../graphics/WebGL";
 import { UISettings } from "./UISettings";
+import { ComponentReference } from "../serialization/ComponentReference";
+import { Mask } from "./Mask";
 
 export class UIFill extends SerializableObject {
     isLoaded() {
@@ -169,12 +171,13 @@ export class TextureFill extends UIFill {
     set texture(texture: Texture | null) { this._texture.asset = texture; }
     get textureRef() { return this._texture; }
     get color() { return this._color; }
-    set color(color: Color) { 
-        this._color.copy(color); 
-    }    
+    set color(color: Color) { this._color.copy(color); }
+    get mask() { return this._mask.component; }    
+    set mask(mask: Mask | null) { this._mask.component = mask; }
 
     private _color = new Color(1, 1, 1, 1);
     private _texture = new AssetReference(Texture);
+    private _mask = new ComponentReference(Mask);
 
     constructor(texture?: Texture, color?: Color) {
         super();
