@@ -1,6 +1,5 @@
 import { Entity, EntityInternal } from "../core/Entity";
 import { Debug } from "../io/Debug";
-import { SerializableObject } from "../core/SerializableObject";
 import { Entities } from "../core/Entities";
 import { Component } from "../core/Component";
 import { RTTI } from "../core/RTTI";
@@ -8,7 +7,7 @@ import { Constructor } from "../core/Types";
 
 export interface SerializedComponentReference {
     entityId?: string;
-    componentTypeName: string;
+    typeName: string;
 }
 
 export class ComponentReference<T extends Component> {    
@@ -22,14 +21,14 @@ export class ComponentReference<T extends Component> {
         this._entityId = id; 
         this._resolved = false;
     }
-    get componentTypeName() { return this._componentTypeName; }
+    get typeName() { return this._typeName; }
 
     set component(component: T | null) {        
         if (component) {
             if (process.env.CONFIG === "editor") {
-                console.assert(RTTI.isObjectOfType(component.constructor.name, this._componentTypeName));
+                console.assert(RTTI.isObjectOfType(component.constructor.name, this._typeName));
             }
-            this._componentTypeName = component.constructor.name;
+            this._typeName = component.constructor.name;
             this._entity = component.entity;
             this._entityId = component.entity.id;
         } else {
@@ -50,17 +49,17 @@ export class ComponentReference<T extends Component> {
             }
             this._resolved = true;
         }
-        return this._entity ? EntityInternal.getComponentByName(this._entity, this._componentTypeName) as T : null;
+        return this._entity ? EntityInternal.getComponentByName(this._entity, this._typeName) as T : null;
     }
 
     private _entityId?: string;
-    private _componentTypeName: string;
+    private _typeName: string;
 
     private _entity: Entity | null = null;
     private _resolved = false;
 
     constructor(ctor: Constructor<T>, entityId?: string) {        
-        this._componentTypeName = ctor.name;
+        this._typeName = ctor.name;
         this._entityId = entityId;
         this._resolved = false;
     }

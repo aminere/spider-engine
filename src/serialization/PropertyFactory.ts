@@ -367,27 +367,17 @@ export class PropertyFactory {
         // ComponentReference
         ComponentReference: {
             type: ComponentReference,
-            readProperty: (json: SerializedComponentReference) => {
-
-                // TODO remove after all projects are saved
-                // TODO remove this obsolete stuff
-                // if (json.componentTypeName === "UIImage") {
-                //     console.assert(false);
-                //     json.componentTypeName = "Image";
-                // } else if (json.componentTypeName === "UIText") {
-                //     console.assert(false);
-                //     json.componentTypeName = "Text";
-                // }
-
-                let typeName = json.componentTypeName;
-                let ref = Interfaces.factory.createComponentReference(typeName) as ComponentReference<Component>;
+            readProperty: (json: SerializedComponentReference) => {     
+                // tslint:disable-next-line
+                const typeName = json.typeName || (json as any).componentTypeName; // Support old format
+                const ref = Interfaces.factory.createComponentReference(typeName) as ComponentReference<Component>;
                 ref.entityId = json.entityId;
                 return ref;
             },
             writeProperty: (p: ComponentReference<Component>): SerializedComponentReference => {
                 return {
                     entityId: p.entityId,
-                    componentTypeName: p.componentTypeName
+                    typeName: p.typeName
                 };
             }
         }
