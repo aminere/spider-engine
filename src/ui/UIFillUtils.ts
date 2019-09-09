@@ -11,10 +11,16 @@ import { Texture } from "../graphics/Texture";
 import { GeometryProvider } from "../graphics/geometry/GeometryProvider";
 import { defaultAssets } from "../assets/DefaultAssets";
 import { UISettings } from "./UISettings";
+import { Interfaces } from "../core/Interfaces";
+import { Vector2 } from "../math/Vector2";
+import { Vector3 } from "../math/Vector3";
+import { Mask } from "./Mask";
 
 namespace Private {
 
-    export let tint = new Color();
+    export const tint = new Color();
+    export const maskStart = new Vector2();
+    export const maskEnd = new Vector2();
 
     export function getUIElementVertexBuffer(layout: Layout) {
         const quad = GeometryProvider.uiQuad;
@@ -43,6 +49,21 @@ namespace Private {
 /**
  * @hidden
  */
+export interface UIFillRenderOptions {
+    fill: UIFill;
+    material: Material;
+    modelView: Matrix44;
+    vertexBuffer: VertexBuffer;
+    context: WebGLRenderingContext;
+    tint: Color;
+    screenOffset: Vector2;
+    screenPosition: Vector3;
+    screenScale: number;
+}
+
+/**
+ * @hidden
+ */
 export class UIFillUtils {
 
     static uiShaderTextureParam = "diffuse";
@@ -61,70 +82,101 @@ export class UIFillUtils {
         return Private.getUIElementVertexBuffer(layout);
     }
 
-    static renderFill(
-        _fill: UIFill,
-        uiMaterial: Material,
-        modelView: Matrix44,
-        vertexBuffer: VertexBuffer,
-        gl: WebGLRenderingContext,
-        tint: Color
-    ) {
+    static renderFill(options: UIFillRenderOptions) {
+        const {
+            fill: _fill,
+            material: uiMaterial,
+            vertexBuffer,
+            modelView,
+            tint,
+            context,
+            screenOffset,
+            screenPosition,            
+            screenScale,
+        } = options;
+
         if (_fill.isA(MaterialFill)) {
-            let fill = _fill as MaterialFill;
-            let material = fill.material;
+            const fill = _fill as MaterialFill;
+            const material = fill.material;
             if (material && material.shader) {
                 material.queueParameter("projectionMatrix", uiMaterial.getParameter("projectionMatrix"));
                 material.queueParameter("modelViewMatrix", modelView);
                 material.queueParameter("tint", tint);
                 if (material.begin()) {
-                    GraphicUtils.drawVertexBuffer(gl, vertexBuffer, material.shader);
+                    GraphicUtils.drawVertexBuffer(context, vertexBuffer, material.shader);
                 }
             }
         } else if (_fill.isA(ColorFill)) {
-            let fill = _fill as ColorFill;
-            let texture = defaultAssets.whiteTexture;
+            const fill = _fill as ColorFill;
+            const texture = defaultAssets.whiteTexture;
             uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, texture);
             uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
             if (uiMaterial.begin()) {
-                GraphicUtils.drawVertexBuffer(gl, vertexBuffer, uiMaterial.shader as Shader);
+                GraphicUtils.drawVertexBuffer(context, vertexBuffer, uiMaterial.shader as Shader);
             }
         } else if (_fill.isA(TextureFill)) {
-            let fill = _fill as TextureFill;
+            const fill = _fill as TextureFill;
             if (fill.texture) {
+                const maskTexture = fill.mask ? fill.mask.texture : null;
+                if (maskTexture) {
+                    const { screenSize } = Interfaces.renderer;
+                    uiMaterial.queueParameter("useMask", true);
+                    uiMaterial.queueReferenceParameter("mask", maskTexture);
+                    // convert from layout space to real screen space
+                    const translationX = screenOffset.x + screenPosition.x * screenScale;
+                    const translationY = screenOffset.y + screenPosition.y * screenScale;
+                    const maskLayout = (fill.mask as Mask).entity.getComponent(Layout) as Layout;
+                    const offsetX = maskLayout.absolutePos.x * screenScale + translationX;
+                    const offsetY = maskLayout.absolutePos.y * screenScale + translationY;
+                    let maskWidth = maskLayout.actualWidth * maskLayout.absoluteScale.x * screenScale;
+                    let maskHeight = maskLayout.actualHeight * maskLayout.absoluteScale.y * screenScale;
+                    // convert to NDC [-1, 1]. Y is inverted.
+                    maskWidth = (maskWidth / screenSize.x) * 2;
+                    maskHeight = (maskHeight / screenSize.y) * 2;                    
+                    const screenX = ((offsetX / screenSize.x) * 2) - 1;
+                    const screenY = -(((offsetY / screenSize.y) * 2) - 1);                    
+                    const { maskStart, maskEnd } = Private;
+                    maskStart.set(screenX, screenY - maskHeight);
+                    maskEnd.set(maskStart.x + maskWidth, maskStart.y + maskHeight);
+                    uiMaterial.queueParameter("maskStart", maskStart);
+                    uiMaterial.queueParameter("maskEnd", maskEnd);
+                } else {
+                    uiMaterial.queueParameter("useMask", false);
+                }
                 uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, fill.texture);
                 uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
                 if (uiMaterial.begin()) {
-                    GraphicUtils.drawVertexBuffer(gl, vertexBuffer, uiMaterial.shader as Shader);
+                    GraphicUtils.drawVertexBuffer(context, vertexBuffer, uiMaterial.shader as Shader);
                 }
             }
         } else if (_fill.isA(SpriteFill)) {
-            let fill = _fill as SpriteFill;
-            let spriteTexture = fill.sprite.asset ? fill.sprite.asset.texture.asset : null;
+            const fill = _fill as SpriteFill;
+            const spriteTexture = fill.sprite.asset ? fill.sprite.asset.texture.asset : null;
             if (spriteTexture) {
                 uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, spriteTexture);
                 uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
                 if (uiMaterial.begin()) {
-                    GraphicUtils.drawVertexBuffer(gl, vertexBuffer, uiMaterial.shader as Shader);
+                    GraphicUtils.drawVertexBuffer(context, vertexBuffer, uiMaterial.shader as Shader);
                 }
             }
         } else if (_fill.isA(SpriteSheetMaterialFill)) {
-            let fill = _fill as SpriteSheetMaterialFill;
-            let material = fill.material;
+            const fill = _fill as SpriteSheetMaterialFill;
+            const material = fill.material;
             if (material && material.shader) {
                 material.queueParameter("projectionMatrix", uiMaterial.getParameter("projectionMatrix"));
                 material.queueParameter("modelViewMatrix", modelView);
                 material.queueParameter("tint", tint);
                 if (material.begin()) {
-                    GraphicUtils.drawVertexBuffer(gl, vertexBuffer, material.shader);
-                }                
+                    GraphicUtils.drawVertexBuffer(context, vertexBuffer, material.shader);
+                }
             }
         } else if (_fill.isA(SpriteSheetFill)) {
-            let fill = _fill as SpriteSheetFill;
+            const fill = _fill as SpriteSheetFill;
             if (fill.texture) {
                 uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, fill.texture);
                 uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
                 if (uiMaterial.begin()) {
-                    GraphicUtils.drawVertexBuffer(gl, vertexBuffer, uiMaterial.shader as Shader);                
+                    GraphicUtils.drawVertexBuffer(context, vertexBuffer, uiMaterial.shader as Shader);
                 }
             }
         }

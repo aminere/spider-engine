@@ -15,7 +15,7 @@ import { UISizeType } from "./UISize";
 import { BehaviorComponent } from "../behavior/BehaviorComponent";
 import { UIEvents } from "../behavior/operators/UIEvents";
 import { LayoutUtils } from "./LayoutUtils";
-import { UIFillUtils } from "./UIFillUtils";
+import { UIFillUtils, UIFillRenderOptions } from "./UIFillUtils";
 import { Color } from "../graphics/Color";
 import { GraphicUtils } from "../graphics/GraphicUtils";
 import { SerializedObject } from "../core/SerializableObject";
@@ -44,6 +44,13 @@ namespace Private {
     export const _2dPickingAABB = new AABB();
     export const localCoords = new Vector3();
     export let dummyLayout: Layout;
+    
+    export const renderOptions: UIFillRenderOptions = {
+        tint: new Color(),
+        screenOffset: new Vector2(),
+        screenPosition: new Vector3()
+    // tslint:disable-next-line
+    } as any;
 }
 
 /**
@@ -125,7 +132,7 @@ export class Screen extends Component {
     }
 
     updateTransforms() {
-        let screenSize = Interfaces.renderer.screenSize;
+        const { screenSize } = Interfaces.renderer;
         this._scale = 1;
         this._translationX = 0;
         this._translationY = 0;
@@ -224,33 +231,48 @@ export class Screen extends Component {
         //     return aOrder - bOrder;
         // });
 
-        let modelView = Matrix44.fromPool();
-        let gl = WebGL.context;
+        const modelView = Matrix44.fromPool();
+        const { context } = WebGL;
+        const { renderOptions } = Private;
         UISettings.integerPixels = this._integerPixels;
+        renderOptions.material = uiMaterial;
+        renderOptions.context = context;
+        renderOptions.screenOffset.set(this._translationX, this._translationY);
+        renderOptions.screenPosition.copy(this.entity.transform.worldPosition);
+        renderOptions.screenScale = this._scale;        
+
         for (let i = 0; i < this._cacheIndex; ++i) {
-            let elem = this._cache[i].element;
-            let worldMatrix = elem.worldMatrix;
+            const elem = this._cache[i].element;
+            const worldMatrix = elem.worldMatrix;
             if (this._integerPixels) {
                 worldMatrix.data[12] = Math.floor(worldMatrix.data[12]);
                 worldMatrix.data[13] = Math.floor(worldMatrix.data[13]);
                 worldMatrix.data[14] = Math.floor(worldMatrix.data[14]);
             }
-            modelView.multiplyMatrices(this._screenTransform, worldMatrix);
+            modelView.multiplyMatrices(this._screenTransform, worldMatrix);            
             uiMaterial.queueParameter("modelViewMatrix", modelView);
+
+            renderOptions.modelView = modelView;
+            renderOptions.tint.copy(elem.finalTint);
 
             const image = elem.entity.getComponent(Image);
             if (image) {
-                if (image.active && image.fill) {
-                    UIFillUtils.renderFill(image.fill, uiMaterial, modelView, image.getVertexBuffer(), gl, elem.finalTint);
+                const fill = image.fill;
+                if (image.active && fill) {
+                    renderOptions.fill = fill;
+                    renderOptions.vertexBuffer = image.getVertexBuffer();
+                    UIFillUtils.renderFill(renderOptions);
                 }
                 continue;
             }
 
             const button = elem.entity.getComponent(Button);
             if (button) {
-                const buttonFill = button.currentFill;
-                if (button.active && buttonFill) {
-                    UIFillUtils.renderFill(buttonFill, uiMaterial, modelView, button.getVertexBuffer(), gl, elem.finalTint);
+                const fill = button.currentFill;
+                if (button.active && fill) {
+                    renderOptions.fill = fill;
+                    renderOptions.vertexBuffer = button.getVertexBuffer();
+                    UIFillUtils.renderFill(renderOptions);
                 }
                 continue;
             }
@@ -259,14 +281,10 @@ export class Screen extends Component {
             if (checkBox) {
                 const fill = checkBox.currentFill;
                 if (checkBox.active && fill) {
-                    UIFillUtils.renderFill(
-                        fill,
-                        uiMaterial,
-                        modelView,
-                        checkBox.getVertexBuffer(),
-                        gl,
-                        elem.finalTint.multiplyColor(checkBox.currentColor)
-                    );
+                    renderOptions.fill = fill;
+                    renderOptions.vertexBuffer = checkBox.getVertexBuffer();
+                    renderOptions.tint.multiplyColor(checkBox.currentColor);
+                    UIFillUtils.renderFill(renderOptions);
                 }
                 continue;
             }
@@ -284,7 +302,7 @@ export class Screen extends Component {
                     uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, font.getTexture());
                     uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, tintColor.copy(text.color).multiplyColor(elem.finalTint));
                     if (uiMaterial.begin()) {
-                        GraphicUtils.drawVertexBuffer(gl, text.getVertexBuffer(), uiMaterial.shader as Shader);
+                        GraphicUtils.drawVertexBuffer(context, text.getVertexBuffer(), uiMaterial.shader as Shader);
                     }
                 }
                 continue;
