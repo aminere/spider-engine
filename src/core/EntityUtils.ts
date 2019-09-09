@@ -17,6 +17,7 @@ import { HorizontalAlignment, VerticalAlignment } from "../ui/Alignment";
 import { Vector3 } from "../math/Vector3";
 import { TranslatedEntityReferences, IEntityUtils, IEntityUtilsInternal } from "./IEntityUtils";
 import { IRendererInternal } from "../graphics/IRenderer";
+import { UIFill, TextureFill } from "../ui/UIFill";
 
 namespace Private {
     export function translateEntityRef(entityRef: EntityReference, oldIdToNewId: {}, translatedRefs?: TranslatedEntityReferences) {
@@ -228,26 +229,42 @@ export class EntityUtils implements IEntityUtils {
                                     }
                                 }
                             }
-
-                            // surgically handle visual.skinnedMesh.skeleton instead
+                        } else if (typeName === "Reference") {
+                            // surgically handle some references instead
                             // of writing slow generic code since engine code is slow moving
-                        } else if (property === "_geometry" && typeName === "Reference") {
-                            const geometryRef = component[property] as Reference<Geometry>;
-                            if (geometryRef.instance && geometryRef.instance.isA(SkinnedMesh)) {
-                                const skinnedMesh = geometryRef.instance as SkinnedMesh;
-                                const entityRef = skinnedMesh[SkinnedMesh.skeletonPropertyKey] as EntityReference;
-                                if (Private.translateEntityRef(entityRef, oldIdToNewId)) {
-                                    Private.recordTranslatedReference(
-                                        translatedRefs, 
-                                        e.id, 
-                                        component.constructor.name, 
-                                        property, 
-                                        component[property]
-                                    );
+                            if (property === "_geometry") {
+                                const geometryRef = component[property] as Reference<Geometry>;
+                                if (geometryRef.instance && geometryRef.instance.isA(SkinnedMesh)) {
+                                    const skinnedMesh = geometryRef.instance as SkinnedMesh;
+                                    const entityRef = skinnedMesh[SkinnedMesh.skeletonPropertyKey] as EntityReference;
+                                    if (Private.translateEntityRef(entityRef, oldIdToNewId)) {
+                                        Private.recordTranslatedReference(
+                                            translatedRefs,
+                                            e.id,
+                                            component.constructor.name,
+                                            property,
+                                            component[property]
+                                        );
+                                    }
+                                }
+                            } else if (property === "_fill") {
+                                const fillRef = component[property] as Reference<UIFill>;
+                                if (fillRef.instance && fillRef.instance.isA(TextureFill)) {
+                                    const textureFill = fillRef.instance as TextureFill;
+                                    const componentRef = textureFill[TextureFill.maskPropertyKey] as ComponentReference<Component>;
+                                    if (Private.translateComponentRef(componentRef, oldIdToNewId)) {
+                                        Private.recordTranslatedReference(
+                                            translatedRefs,
+                                            e.id,
+                                            component.constructor.name,
+                                            property,
+                                            componentRef
+                                        );
+                                    }
                                 }
                             }
                         }
-                    }
+                    }                    
                 });
                 return true;
             },

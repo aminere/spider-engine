@@ -166,6 +166,8 @@ export class SpriteFill extends UIFill {
 @Attributes.displayName("Texture")
 export class TextureFill extends UIFill {
 
+    static maskPropertyKey = "_mask";
+
     get version() { return 3; }
     get texture() { return this._texture.asset; }
     set texture(texture: Texture | null) { this._texture.asset = texture; }
