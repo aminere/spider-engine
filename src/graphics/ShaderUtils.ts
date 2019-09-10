@@ -274,7 +274,7 @@ namespace Private {
         },
         "bool": {
             typeName: "Boolean",
-            create: () => 0,
+            create: () => false,
             apply: (gl, param, value) => {
                 if (!param.uniformLocation) {
                     return false;
