@@ -32,6 +32,9 @@ import { RTTI } from "../core/RTTI";
 import { Interfaces } from "../core/Interfaces";
 import { Constructor } from "../core/Types";
 
+/**
+ * @hidden
+ */
 export namespace PropertyFactoryInternal {
     export const noOp = "_noOp";
 }
