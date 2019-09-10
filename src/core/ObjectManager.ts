@@ -149,12 +149,12 @@ export class ObjectManager implements IObjectManager {
     saveObjectAtPath(
         obj: UniqueObject,
         path: string,        
-        dontRecordWriteTime?: boolean
+        recordWriteTime?: boolean
     ) {        
         return new Promise<void>((resolve, reject) => {
             const data = JSON.stringify(obj.serialize(), null, 2);
             const saved = () => {
-                if (!dontRecordWriteTime) {
+                if (recordWriteTime !== false) {
                     IOUtils.recordAssetChange(AssetChangeAction.update, [obj.id]);
                 }
                 EngineEvents.objectSaved.post(obj);

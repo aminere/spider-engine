@@ -44,7 +44,7 @@ export namespace FoldersInternal {
         });
     }
 
-    export function save() {
-        return IObjectManagerInternal.instance.saveObjectAtPath(folders, foldersPath);
+    export function save(recordWriteTime?: boolean) {
+        return IObjectManagerInternal.instance.saveObjectAtPath(folders, foldersPath, recordWriteTime);
     }
 }
