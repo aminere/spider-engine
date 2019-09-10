@@ -287,7 +287,7 @@ namespace Private {
                     vertexBuffer.begin(context, currentShader);
                     for (const visual of visuals) {
                         if (hasSkinning) {
-                            let skinnedMesh = visual.geometry as SkinnedMesh;
+                            const skinnedMesh = visual.geometry as SkinnedMesh;
                             if (!skinnedMesh.boneTexture) {
                                 continue;
                             }                            

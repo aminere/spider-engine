@@ -4,7 +4,7 @@ import { EntityReference } from "../../serialization/EntityReference";
 import { Entity } from "../../core/Entity";
 import { GraphicUpdateResult } from "./Geometry";
 import * as Attributes from "../../core/Attributes";
-import { Matrix44 } from "../../math/Matrix44";
+import { Matrix44, SerializableMatrix44 } from "../../math/Matrix44";
 import { Bone } from "../../core/Bone";
 import { MathEx } from "../../math/MathEx";
 import { ArrayProperty } from "../../serialization/ArrayProperty";
@@ -44,8 +44,8 @@ export class SkinnedMesh extends StaticMesh {
 
     @Attributes.hidden()
     private _skeleton: EntityReference;
-    private _bindMatrix = new Matrix44();
-    private _bindMatrixInverse = new Matrix44();
+    private _bindMatrix = new SerializableMatrix44();
+    private _bindMatrixInverse = new SerializableMatrix44();
     @Attributes.hidden()
     private _boneFbxIds = new ArrayProperty(Number);
 

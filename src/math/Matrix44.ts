@@ -512,3 +512,6 @@ export class Matrix44 {
         return array;
     }
 }
+
+export class SerializableMatrix44 extends Matrix44 {    
+}

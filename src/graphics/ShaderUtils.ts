@@ -166,12 +166,7 @@ namespace Private {
                 if (!param.uniformLocation) {
                     return false;
                 }
-                const singleValue = (value.constructor.name) === "Matrix44";
-                if (singleValue) {
-                    gl.uniformMatrix4fv(param.uniformLocation, false, value.data);
-                } else {
-                    gl.uniformMatrix4fv(param.uniformLocation, false, flattenMatrices(value.data));
-                }
+                gl.uniformMatrix4fv(param.uniformLocation, false, value.data);
                 return true;
             }
         },
@@ -182,12 +177,7 @@ namespace Private {
                 if (!param.uniformLocation) {
                     return false;
                 }
-                const singleValue = (value.constructor.name) === "Matrix33";
-                if (singleValue) {
-                    gl.uniformMatrix3fv(param.uniformLocation, false, value.data);
-                } else {
-                    gl.uniformMatrix3fv(param.uniformLocation, false, flattenMatrices(value.data));
-                }
+                gl.uniformMatrix3fv(param.uniformLocation, false, value.data);
                 return true;
             }
         },

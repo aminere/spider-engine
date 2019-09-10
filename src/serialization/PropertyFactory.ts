@@ -3,7 +3,7 @@ import { Vector2 } from "../math/Vector2";
 import { Vector4 } from "../math/Vector4";
 import { Quaternion } from "../math/Quaternion";
 import { Color } from "../graphics/Color";
-import { Matrix44 } from "../math/Matrix44";
+import { Matrix44, SerializableMatrix44 } from "../math/Matrix44";
 import { Matrix33 } from "../math/Matrix33";
 import { AABB } from "../math/AABB";
 import { UISize, SerializedUISize, UISizeType } from "../ui/UISize";
@@ -47,36 +47,6 @@ class NativeSerializer<T> {
     constructor(ctor: Constructor<T>) {
         this.type = ctor;
         this.readProperty = (json: T) => {
-
-            // temporary conversion from old format
-            // TODO delete this obsolete stuff
-            // if (this.type.name === "Matrix44" && Array.isArray(json)) {
-            //     console.assert(false);
-            //     let m = new Matrix44();
-            //     // tslint:disable-next-line
-            //     m.data = json as any;
-            //     // tslint:disable-next-line
-            //     return m as any;
-
-            // } else if (this.type.name === "Vector3" && "x" in json && json.constructor.name === "Object") {
-            //     console.assert(false);
-            //     Object.assign(json, {
-            //         // tslint:disable-next-line
-            //         "_x": json["x"], "_y": json["y"], "_z": json["z"]
-            //     });
-            //     // tslint:disable-next-line
-            //     delete json["x"]; delete json["y"]; delete json["z"];
-
-            // } else if (this.type.name === "Quaternion" && "x" in json && json.constructor.name === "Object") {
-            //     console.assert(false);
-            //     Object.assign(json, {
-            //         // tslint:disable-next-line
-            //         "_x": json["x"], "_y": json["y"], "_z": json["z"], "_w": json["w"]
-            //     });
-            //     // tslint:disable-next-line
-            //     delete json["x"]; delete json["y"]; delete json["z"]; delete json["w"];
-            // }
-
             if (typeof (json) === "object") {
                 return new ctor(...Object.keys(json).map(k => json[k]));
             } else {
@@ -104,6 +74,7 @@ export class PropertyFactory {
         Quaternion: new NativeSerializer(Quaternion),
         Color: new NativeSerializer(Color),
         Matrix44: new NullSerializer(Matrix44),
+        SerializableMatrix44: new NativeSerializer(SerializableMatrix44),
         Matrix33: new NullSerializer(Matrix33),
         Rect: new NativeSerializer(Rect),
         FileProperty: new NativeSerializer(FileProperty),
