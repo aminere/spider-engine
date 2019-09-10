@@ -39,6 +39,7 @@ import { SavedDataInternal } from "../io/SavedData";
 import { IObjectManagerInternal } from "./IObjectManager";
 import { EngineError } from "./EngineError";
 import { BehaviorErrors } from "../behavior/BehaviorErrors";
+import { Http } from "../network/HTTP";
 
 export interface EngineConfig {
     container?: HTMLCanvasElement;
@@ -396,22 +397,30 @@ export class Engine {
                     })
                     .then(() => EngineSettings.load())
                     .then(() => {
-                        if (!EngineSettings.instance.useCustomDefaultAssets) {
-                            // load default assets bundle
-                            return import(/* webpackChunkName: "default-assets" */ "../assets/default-assets.json")
-                                .then(esmodule => esmodule as { [path: string]: {} })
-                                .then(({ default: bundle }) => {
-                                    const defaultAssets = Object.entries(bundle).reduce(
-                                        (prev, [path, data]) => {
-                                            return {
-                                                ...prev,
-                                                ...{ [`Assets/DefaultAssets/${path}`]: JSON.stringify(data) }
-                                            };
-                                        },
-                                        {}
-                                    );
-                                    IFileInternal.defaultAssets = defaultAssets;
-                                });
+                        if (process.env.CONFIG === "standalone" && process.env.PLATFORM === "web") {
+                            const useInMemoryFileSystem = Boolean(Private.engineConfig.startupUrl);
+                            if (!useInMemoryFileSystem) {
+                                if (!EngineSettings.instance.useCustomDefaultAssets) {
+                                    // load default assets bundle
+                                    return Http.request({
+                                        method: "GET",
+                                        url: "/dist/default-assets.json"
+                                    })
+                                    .then(_data => {
+                                        const bundle = JSON.parse(_data);
+                                        const defaultAssets = Object.entries(bundle).reduce(
+                                            (prev, [path, data]) => {
+                                                return {
+                                                    ...prev,
+                                                    ...{ [`Assets/DefaultAssets/${path}`]: JSON.stringify(data) }
+                                                };
+                                            },
+                                            {}
+                                        );
+                                        IFileInternal.defaultAssets = defaultAssets;
+                                    });
+                                }
+                            }
                         }
                         return Promise.resolve();
                     })

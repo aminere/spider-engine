@@ -22,7 +22,8 @@ export class Http {
             onUploadProgress
         } = options;
 
-        return new Promise((resolve, reject) => {
+        // tslint:disable-next-line
+        return new Promise<any>((resolve, reject) => {
             const request = new XMLHttpRequest();
             request.onreadystatechange = () => {
                 if (request.readyState === XMLHttpRequest.DONE) {
