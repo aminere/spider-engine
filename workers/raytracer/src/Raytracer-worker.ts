@@ -79,7 +79,7 @@ class Node {
     worldMatrix = new Matrix44();
     shapes: CollisionShape[] = [];
     color = new Color();
-    cullMode = 0;
+    cullMode: string;
     name: string;
 }
 
@@ -131,8 +131,8 @@ class SphereCollisionShape extends CollisionShape {
         localRay.copy(ray).transform(invWorld);
         let raySphereResult = localRay.castOnSphere(Vector3.zero, this.radius);
         if (raySphereResult) {
-            const useBackFaces = node.cullMode === 1;
-            let rayOutSideSphere = localRay.origin.length > this.radius;
+            const useBackFaces = node.cullMode === "Front";
+            const rayOutSideSphere = localRay.origin.length > this.radius;
             if (rayOutSideSphere) {
                 if (useBackFaces) {
                     collisionResult.intersection.copy(raySphereResult.intersection2).transform(node.worldMatrix);
@@ -167,7 +167,7 @@ class BoxCollisionShape extends CollisionShape {
         localRay.copy(ray).transform(invWorld);
         let rayBoxResult = localRay.castOnAABB(this.aabb);
         if (rayBoxResult) {
-            const useBackFaces = node.cullMode === 1;
+            const useBackFaces = node.cullMode === "Front";
             let rayOutsideBox = !this.aabb.contains(localRay.origin);
             if (rayOutsideBox) {
                 if (useBackFaces) {
@@ -237,7 +237,7 @@ class MeshCollisionShape extends CollisionShape {
         localRay.copy(ray).transform(invWorld);
         let { v1, v2, v3, plane, triangle, intersection, normal } = Internal;
         if (localRay.castOnAABB(this.aabb)) {
-            const useBackFaces = node.cullMode === 1;
+            const useBackFaces = node.cullMode === "Front";
             const { positions, normals, uvs } = this;
             let distToClosest = 0;
             let noIntersection = true;
