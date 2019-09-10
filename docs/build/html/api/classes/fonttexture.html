@@ -106,6 +106,7 @@
 								<li class="tsd-kind-set-signature tsd-parent-kind-class"><a href="fonttexture.html#alignment" class="tsd-kind-icon">alignment</a></li>
 								<li class="tsd-kind-set-signature tsd-parent-kind-class"><a href="fonttexture.html#bold" class="tsd-kind-icon">bold</a></li>
 								<li class="tsd-kind-set-signature tsd-parent-kind-class"><a href="fonttexture.html#family" class="tsd-kind-icon">family</a></li>
+								<li class="tsd-kind-set-signature tsd-parent-kind-class"><a href="fonttexture.html#filtering" class="tsd-kind-icon">filtering</a></li>
 								<li class="tsd-kind-set-signature tsd-parent-kind-class"><a href="fonttexture.html#italic" class="tsd-kind-icon">italic</a></li>
 								<li class="tsd-kind-set-signature tsd-parent-kind-class"><a href="fonttexture.html#maxwidth" class="tsd-kind-icon">max<wbr>Width</a></li>
 								<li class="tsd-kind-set-signature tsd-parent-kind-class"><a href="fonttexture.html#scalefactor" class="tsd-kind-icon">scale<wbr>Factor</a></li>
@@ -118,8 +119,10 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="fonttexture.html#begin" class="tsd-kind-icon">begin</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="fonttexture.html#copy" class="tsd-kind-icon">copy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="fonttexture.html#deserialize" class="tsd-kind-icon">deserialize</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="fonttexture.html#destroy" class="tsd-kind-icon">destroy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="fonttexture.html#dirtify" class="tsd-kind-icon">dirtify</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="fonttexture.html#getheight" class="tsd-kind-icon">get<wbr>Height</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="fonttexture.html#getwidth" class="tsd-kind-icon">get<wbr>Width</a></li>
@@ -127,7 +130,6 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="fonttexture.html#graphicunload" class="tsd-kind-icon">graphic<wbr>Unload</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="fonttexture.html#isa" class="tsd-kind-icon">isA</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="fonttexture.html#isloaded" class="tsd-kind-icon">is<wbr>Loaded</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="fonttexture.html#save" class="tsd-kind-icon">save</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="fonttexture.html#serialize" class="tsd-kind-icon">serialize</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="fonttexture.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="fonttexture.html#setstate" class="tsd-kind-icon">set<wbr>State</a></li>
@@ -150,7 +152,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="uniqueobject.html">UniqueObject</a>.<a href="uniqueobject.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/UniqueObject.ts#L16">core/UniqueObject.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/UniqueObject.ts#L16">core/UniqueObject.ts:16</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="fonttexture.html" class="tsd-signature-type">FontTexture</a></h4>
@@ -167,7 +169,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="texture.html">Texture</a>.<a href="texture.html#_textureid">_textureId</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/Texture.ts#L12">graphics/Texture.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/Texture.ts#L12">graphics/Texture.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -178,7 +180,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#deleted">deleted</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/assets/Asset.ts#L13">assets/Asset.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/assets/Asset.ts#L12">assets/Asset.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -189,7 +191,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="uniqueobject.html">UniqueObject</a>.<a href="uniqueobject.html#id">id</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/UniqueObject.ts#L10">core/UniqueObject.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/UniqueObject.ts#L10">core/UniqueObject.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -200,7 +202,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#ispersistent">isPersistent</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/assets/Asset.ts#L10">assets/Asset.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/assets/Asset.ts#L9">assets/Asset.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -211,7 +213,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="uniqueobject.html">UniqueObject</a>.<a href="uniqueobject.html#name">name</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/UniqueObject.ts#L13">core/UniqueObject.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/UniqueObject.ts#L13">core/UniqueObject.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -222,7 +224,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="uniqueobject.html">UniqueObject</a>.<a href="uniqueobject.html#templatepath">templatePath</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/UniqueObject.ts#L16">core/UniqueObject.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/UniqueObject.ts#L16">core/UniqueObject.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -239,7 +241,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L92">ui/Font/FontTexture.ts:92</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L93">ui/Font/FontTexture.ts:93</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -262,7 +264,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L72">ui/Font/FontTexture.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L73">ui/Font/FontTexture.ts:73</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -285,13 +287,36 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L45">ui/Font/FontTexture.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L46">ui/Font/FontTexture.ts:46</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>family: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-set-signature tsd-parent-kind-class">
+					<a name="filtering" class="tsd-anchor"></a>
+					<h3>filtering</h3>
+					<ul class="tsd-signatures tsd-kind-set-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">set</span> filtering<span class="tsd-signature-symbol">(</span>filtering<span class="tsd-signature-symbol">: </span><a href="../enums/texturefiltering.html" class="tsd-signature-type">TextureFiltering</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L113">ui/Font/FontTexture.ts:113</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>filtering: <a href="../enums/texturefiltering.html" class="tsd-signature-type">TextureFiltering</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -308,7 +333,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L82">ui/Font/FontTexture.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L83">ui/Font/FontTexture.ts:83</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -331,7 +356,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L38">ui/Font/FontTexture.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L39">ui/Font/FontTexture.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -354,7 +379,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L31">ui/Font/FontTexture.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L32">ui/Font/FontTexture.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -377,7 +402,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L102">ui/Font/FontTexture.ts:102</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L103">ui/Font/FontTexture.ts:103</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -400,7 +425,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L62">ui/Font/FontTexture.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L63">ui/Font/FontTexture.ts:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -423,7 +448,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L52">ui/Font/FontTexture.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L53">ui/Font/FontTexture.ts:53</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -447,7 +472,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="texture.html">Texture</a>.<a href="texture.html#textureid">textureId</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/Texture.ts#L9">graphics/Texture.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/Texture.ts#L9">graphics/Texture.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span>
@@ -460,6 +485,30 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="begin" class="tsd-anchor"></a>
+					<h3>begin</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">begin<span class="tsd-signature-symbol">(</span>stage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="texture.html">Texture</a>.<a href="texture.html#begin">begin</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L148">ui/Font/FontTexture.ts:148</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stage: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="copy" class="tsd-anchor"></a>
 					<h3>copy</h3>
@@ -472,7 +521,7 @@
 								<p>Inherited from <a href="uniqueobject.html">UniqueObject</a>.<a href="uniqueobject.html#copy">copy</a></p>
 								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#copy">copy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/UniqueObject.ts#L24">core/UniqueObject.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/UniqueObject.ts#L24">core/UniqueObject.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="uniqueobject.html" class="tsd-signature-type">UniqueObject</a></h4>
@@ -490,7 +539,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#deserialize">deserialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L45">core/SerializableObject.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L45">core/SerializableObject.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -500,6 +549,24 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="destroy" class="tsd-anchor"></a>
+					<h3>destroy</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">destroy<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="graphicasset.html">GraphicAsset</a>.<a href="graphicasset.html#destroy">destroy</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L175">ui/Font/FontTexture.ts:175</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -513,7 +580,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L125">ui/Font/FontTexture.ts:125</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L137">ui/Font/FontTexture.ts:137</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -531,7 +598,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="texture.html">Texture</a>.<a href="texture.html#getheight">getHeight</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L132">ui/Font/FontTexture.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L144">ui/Font/FontTexture.ts:144</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -549,7 +616,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="texture.html">Texture</a>.<a href="texture.html#getwidth">getWidth</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/ui/Font/FontTexture.ts#L129">ui/Font/FontTexture.ts:129</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/ui/Font/FontTexture.ts#L141">ui/Font/FontTexture.ts:141</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -567,7 +634,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="graphicasset.html">GraphicAsset</a>.<a href="graphicasset.html#graphicload">graphicLoad</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/GraphicAsset.ts#L12">graphics/GraphicAsset.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/GraphicAsset.ts#L12">graphics/GraphicAsset.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -586,7 +653,7 @@
 								<p>Inherited from <a href="texture.html">Texture</a>.<a href="texture.html#graphicunload">graphicUnload</a></p>
 								<p>Overrides <a href="graphicasset.html">GraphicAsset</a>.<a href="graphicasset.html#graphicunload">graphicUnload</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/Texture.ts#L21">graphics/Texture.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/Texture.ts#L21">graphics/Texture.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -604,7 +671,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#isa">isA</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -627,7 +694,7 @@
 												<li class="tsd-description">
 													<aside class="tsd-sources">
 														<ul>
-															<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
+															<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
 														</ul>
 													</aside>
 													<h4 class="tsd-parameters-title">Parameters</h4>
@@ -657,28 +724,10 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#isloaded">isLoaded</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/assets/Asset.ts#L15">assets/Asset.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/assets/Asset.ts#L14">assets/Asset.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-					<a name="save" class="tsd-anchor"></a>
-					<h3>save</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">save<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#save">save</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/assets/Asset.ts#L19">assets/Asset.ts:19</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -693,7 +742,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#serialize">serialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L41">core/SerializableObject.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L41">core/SerializableObject.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../index.html#serializedobjecttype" class="tsd-signature-type">SerializedObjectType</a></h4>
@@ -711,7 +760,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setproperty">setProperty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L37">core/SerializableObject.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L37">core/SerializableObject.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -738,7 +787,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setstate">setState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L54">core/SerializableObject.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L54">core/SerializableObject.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -768,7 +817,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#upgrade">upgrade</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L50">core/SerializableObject.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L50">core/SerializableObject.ts:50</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -832,6 +881,9 @@
 								<a href="fonttexture.html#family" class="tsd-kind-icon">family</a>
 							</li>
 							<li class=" tsd-kind-set-signature tsd-parent-kind-class">
+								<a href="fonttexture.html#filtering" class="tsd-kind-icon">filtering</a>
+							</li>
+							<li class=" tsd-kind-set-signature tsd-parent-kind-class">
 								<a href="fonttexture.html#italic" class="tsd-kind-icon">italic</a>
 							</li>
 							<li class=" tsd-kind-set-signature tsd-parent-kind-class">
@@ -852,11 +904,17 @@
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
 								<a href="fonttexture.html#textureid" class="tsd-kind-icon">texture<wbr>Id</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="fonttexture.html#begin" class="tsd-kind-icon">begin</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="fonttexture.html#copy" class="tsd-kind-icon">copy</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="fonttexture.html#deserialize" class="tsd-kind-icon">deserialize</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="fonttexture.html#destroy" class="tsd-kind-icon">destroy</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="fonttexture.html#dirtify" class="tsd-kind-icon">dirtify</a>
@@ -878,9 +936,6 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="fonttexture.html#isloaded" class="tsd-kind-icon">is<wbr>Loaded</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="fonttexture.html#save" class="tsd-kind-icon">save</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="fonttexture.html#serialize" class="tsd-kind-icon">serialize</a>

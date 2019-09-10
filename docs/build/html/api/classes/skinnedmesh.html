@@ -86,13 +86,12 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="skinnedmesh.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="skinnedmesh.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="skinnedmesh.html#mesh" class="tsd-kind-icon">mesh</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="skinnedmesh.html#skeletonpropertykey" class="tsd-kind-icon">skeleton<wbr>Property<wbr>Key</a></li>
 							</ul>
 						</section>
@@ -105,7 +104,9 @@
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="skinnedmesh.html#bonematrices" class="tsd-kind-icon">bone<wbr>Matrices</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="skinnedmesh.html#bonetexture" class="tsd-kind-icon">bone<wbr>Texture</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="skinnedmesh.html#bonetexturesize" class="tsd-kind-icon">bone<wbr>Texture<wbr>Size</a></li>
+								<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><a href="skinnedmesh.html#mesh" class="tsd-kind-icon">mesh</a></li>
 								<li class="tsd-kind-accessor tsd-parent-kind-class"><a href="skinnedmesh.html#skeleton" class="tsd-kind-icon">skeleton</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="skinnedmesh.html#version" class="tsd-kind-icon">version</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -122,7 +123,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="skinnedmesh.html#serialize" class="tsd-kind-icon">serialize</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="skinnedmesh.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="skinnedmesh.html#setstate" class="tsd-kind-icon">set<wbr>State</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="skinnedmesh.html#upgrade" class="tsd-kind-icon">upgrade</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="skinnedmesh.html#upgrade" class="tsd-kind-icon">upgrade</a></li>
 							</ul>
 						</section>
 					</div>
@@ -130,17 +131,18 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 						<li class="tsd-signature tsd-kind-icon">new <wbr>Skinned<wbr>Mesh<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="skinnedmesh.html" class="tsd-signature-type">SkinnedMesh</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Overrides <a href="staticmesh.html">StaticMesh</a>.<a href="staticmesh.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L63">graphics/geometry/SkinnedMesh.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L63">graphics/geometry/SkinnedMesh.ts:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="skinnedmesh.html" class="tsd-signature-type">SkinnedMesh</a></h4>
@@ -150,24 +152,13 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="mesh" class="tsd-anchor"></a>
-					<h3>mesh</h3>
-					<div class="tsd-signature tsd-kind-icon">mesh<span class="tsd-signature-symbol">:</span> <a href="assetreference.html" class="tsd-signature-type">AssetReference</a><span class="tsd-signature-symbol">&lt;</span><a href="staticmeshasset.html" class="tsd-signature-type">StaticMeshAsset</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new AssetReference(StaticMeshAsset)</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="staticmesh.html">StaticMesh</a>.<a href="staticmesh.html#mesh">mesh</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/StaticMesh.ts#L10">graphics/geometry/StaticMesh.ts:10</a></li>
-						</ul>
-					</aside>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="skeletonpropertykey" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> skeleton<wbr>Property<wbr>Key</h3>
 					<div class="tsd-signature tsd-kind-icon">skeleton<wbr>Property<wbr>Key<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;_skeleton&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L25">graphics/geometry/SkinnedMesh.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L25">graphics/geometry/SkinnedMesh.ts:25</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -185,7 +176,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L29">graphics/geometry/SkinnedMesh.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L29">graphics/geometry/SkinnedMesh.ts:29</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="matrix44.html" class="tsd-signature-type">Matrix44</a></h4>
@@ -193,7 +184,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L34">graphics/geometry/SkinnedMesh.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L34">graphics/geometry/SkinnedMesh.ts:34</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -210,16 +201,16 @@
 					<a name="bindmatrixinverse" class="tsd-anchor"></a>
 					<h3>bind<wbr>Matrix<wbr>Inverse</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> bindMatrixInverse<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="matrix44.html" class="tsd-signature-type">Matrix44</a></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> bindMatrixInverse<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="serializablematrix44.html" class="tsd-signature-type">SerializableMatrix44</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L30">graphics/geometry/SkinnedMesh.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L30">graphics/geometry/SkinnedMesh.ts:30</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="matrix44.html" class="tsd-signature-type">Matrix44</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="serializablematrix44.html" class="tsd-signature-type">SerializableMatrix44</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -233,7 +224,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L38">graphics/geometry/SkinnedMesh.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L38">graphics/geometry/SkinnedMesh.ts:38</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -256,7 +247,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L33">graphics/geometry/SkinnedMesh.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L33">graphics/geometry/SkinnedMesh.ts:33</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Float32Array</span></h4>
@@ -273,7 +264,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L31">graphics/geometry/SkinnedMesh.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L31">graphics/geometry/SkinnedMesh.ts:31</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="memorytexture.html" class="tsd-signature-type">MemoryTexture</a></h4>
@@ -290,10 +281,47 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L32">graphics/geometry/SkinnedMesh.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L32">graphics/geometry/SkinnedMesh.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited">
+					<a name="mesh" class="tsd-anchor"></a>
+					<h3>mesh</h3>
+					<ul class="tsd-signatures tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> mesh<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="staticmeshasset.html" class="tsd-signature-type">StaticMeshAsset</a></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">set</span> mesh<span class="tsd-signature-symbol">(</span>mesh<span class="tsd-signature-symbol">: </span><a href="staticmeshasset.html" class="tsd-signature-type">StaticMeshAsset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="staticmesh.html">StaticMesh</a>.<a href="staticmesh.html#mesh">mesh</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/StaticMesh.ts#L15">graphics/geometry/StaticMesh.ts:15</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<a href="staticmeshasset.html" class="tsd-signature-type">StaticMeshAsset</a>
+							</h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="staticmesh.html">StaticMesh</a>.<a href="staticmesh.html#mesh">mesh</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/StaticMesh.ts#L14">graphics/geometry/StaticMesh.ts:14</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>mesh: <a href="staticmeshasset.html" class="tsd-signature-type">StaticMeshAsset</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -308,7 +336,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L28">graphics/geometry/SkinnedMesh.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L28">graphics/geometry/SkinnedMesh.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span>
@@ -319,7 +347,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L27">graphics/geometry/SkinnedMesh.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L27">graphics/geometry/SkinnedMesh.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -329,6 +357,24 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="version" class="tsd-anchor"></a>
+					<h3>version</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> version<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="staticmesh.html">StaticMesh</a>.<a href="staticmesh.html#version">version</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/StaticMesh.ts#L12">graphics/geometry/StaticMesh.ts:12</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -346,7 +392,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#copy">copy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L27">core/SerializableObject.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L27">core/SerializableObject.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a></h4>
@@ -364,7 +410,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#deserialize">deserialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L45">core/SerializableObject.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L45">core/SerializableObject.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -388,7 +434,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="staticmesh.html">StaticMesh</a>.<a href="staticmesh.html#destroy">destroy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L134">graphics/geometry/SkinnedMesh.ts:134</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L134">graphics/geometry/SkinnedMesh.ts:134</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -407,7 +453,7 @@
 								<p>Inherited from <a href="staticmesh.html">StaticMesh</a>.<a href="staticmesh.html#getboundingbox">getBoundingBox</a></p>
 								<p>Overrides <a href="geometry.html">Geometry</a>.<a href="geometry.html#getboundingbox">getBoundingBox</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/StaticMesh.ts#L17">graphics/geometry/StaticMesh.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/StaticMesh.ts#L31">graphics/geometry/StaticMesh.ts:31</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="aabb.html" class="tsd-signature-type">AABB</a>
@@ -428,7 +474,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="staticmesh.html">StaticMesh</a>.<a href="staticmesh.html#getvertexbuffer">getVertexBuffer</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L70">graphics/geometry/SkinnedMesh.ts:70</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L70">graphics/geometry/SkinnedMesh.ts:70</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span>
@@ -449,7 +495,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="geometry.html">Geometry</a>.<a href="geometry.html#getworldtransform">getWorldTransform</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/Geometry.ts#L24">graphics/geometry/Geometry.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/Geometry.ts#L24">graphics/geometry/Geometry.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -473,7 +519,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="geometry.html">Geometry</a>.<a href="geometry.html#graphicupdate">graphicUpdate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/graphics/geometry/SkinnedMesh.ts#L74">graphics/geometry/SkinnedMesh.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/SkinnedMesh.ts#L74">graphics/geometry/SkinnedMesh.ts:74</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -509,7 +555,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#isa">isA</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -532,7 +578,7 @@
 												<li class="tsd-description">
 													<aside class="tsd-sources">
 														<ul>
-															<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
+															<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
 														</ul>
 													</aside>
 													<h4 class="tsd-parameters-title">Parameters</h4>
@@ -562,7 +608,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#serialize">serialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L41">core/SerializableObject.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L41">core/SerializableObject.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../index.html#serializedobjecttype" class="tsd-signature-type">SerializedObjectType</a></h4>
@@ -580,7 +626,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setproperty">setProperty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L37">core/SerializableObject.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L37">core/SerializableObject.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -607,7 +653,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setstate">setState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L54">core/SerializableObject.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/core/SerializableObject.ts#L54">core/SerializableObject.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -626,18 +672,19 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="upgrade" class="tsd-anchor"></a>
 					<h3>upgrade</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">upgrade<span class="tsd-signature-symbol">(</span>json<span class="tsd-signature-symbol">: </span><a href="../interfaces/serializedobject.html" class="tsd-signature-type">SerializedObject</a>, previousVersion<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/serializedobject.html" class="tsd-signature-type">SerializedObject</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#upgrade">upgrade</a></p>
+								<p>Inherited from <a href="staticmesh.html">StaticMesh</a>.<a href="staticmesh.html#upgrade">upgrade</a></p>
+								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#upgrade">upgrade</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/2f1a7fa/src/core/SerializableObject.ts#L50">core/SerializableObject.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/b8786c2/src/graphics/geometry/StaticMesh.ts#L41">graphics/geometry/StaticMesh.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -670,11 +717,8 @@
 					<li class="current tsd-kind-class">
 						<a href="skinnedmesh.html" class="tsd-kind-icon">Skinned<wbr>Mesh</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="skinnedmesh.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="skinnedmesh.html#mesh" class="tsd-kind-icon">mesh</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="skinnedmesh.html#skeletonpropertykey" class="tsd-kind-icon">skeleton<wbr>Property<wbr>Key</a>
@@ -697,8 +741,14 @@
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="skinnedmesh.html#bonetexturesize" class="tsd-kind-icon">bone<wbr>Texture<wbr>Size</a>
 							</li>
+							<li class=" tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited">
+								<a href="skinnedmesh.html#mesh" class="tsd-kind-icon">mesh</a>
+							</li>
 							<li class=" tsd-kind-accessor tsd-parent-kind-class">
 								<a href="skinnedmesh.html#skeleton" class="tsd-kind-icon">skeleton</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="skinnedmesh.html#version" class="tsd-kind-icon">version</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="skinnedmesh.html#copy" class="tsd-kind-icon">copy</a>
@@ -733,7 +783,7 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 								<a href="skinnedmesh.html#setstate" class="tsd-kind-icon">set<wbr>State</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="skinnedmesh.html#upgrade" class="tsd-kind-icon">upgrade</a>
 							</li>
 						</ul>
