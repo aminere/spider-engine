@@ -29,8 +29,6 @@ export class Raytracer extends Component {
 
     @Attributes.unserializable()
     private _initialized = false;
-    @Attributes.unserializable()
-    private _savePending = false;
 
     constructor(props?: ObjectProps<Raytracer>) {
         super();
@@ -40,14 +38,7 @@ export class Raytracer extends Component {
     }
 
     update() {
-        if (this._initialized) {
-            if (this._savePending) {
-                let target = this._target.asset;
-                if (target) {
-                    IObjectManagerInternal.instance.saveObject(target);
-                }
-                this._savePending = false;
-            }
+        if (this._initialized) {            
             return;
         }
         let { worker } = Private;
@@ -110,7 +101,6 @@ export class Raytracer extends Component {
             } else {
                 Debug.log("Raytracer finished.");
                 Private.worker = null;
-                this._savePending = true;
             }
         };
         Private.worker = worker;

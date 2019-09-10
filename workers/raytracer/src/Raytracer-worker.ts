@@ -328,12 +328,12 @@ const extractMeshesAndMaterials = (entity: any, parentWorldMatrix: Matrix44, loa
                 lightNode.worldMatrix.multiplyMatrices(parentWorldMatrix, localMatrix);
                 worldMatrix = lightNode.worldMatrix;
             }
-            const { color, intensity, type } = light.properties;
+            const { color, intensity, _type } = light.properties;
             const { r, g, b, a } = color;
             lightNode.color.set(r, g, b, a);
             lightNode.intensity = intensity;
-            if (type.data) {
-                lightNode.type = type.data.typeName;
+            if (_type.data) {
+                lightNode.type = _type.data.typeName;
             }
             lights.push(lightNode);
         } else {
@@ -353,11 +353,16 @@ const extractMeshesAndMaterials = (entity: any, parentWorldMatrix: Matrix44, loa
                         const { radius, center } = shape.properties;
                         const { _x, _y, _z } = center;
                         node.shapes.push(new SphereCollisionShape(radius, new Vector3(_x, _y, _z)));
+
                     } else if (shape.typeName === "PlaneCollisionShape") {
-                        const { plane } = shape.properties;
-                        const { normal, distFromOrigin } = plane;
+                        const position = Vector3.fromPool();
+                        node.worldMatrix.decompose(position, Quaternion.dummy, Vector3.dummy);
+                        const normal = Vector3.fromPool().copy(Vector3.up).rotate(Quaternion.dummy).normalize();
                         const { x, y, z } = normal;
+                        let distFromOrigin = position.length;
+                        distFromOrigin *= position.divide(distFromOrigin).dot(normal);
                         node.shapes.push(new PlaneCollisionShape(new Plane(new Vector3(x, y, z), distFromOrigin)));
+
                     } else if (shape.typeName === "BoxCollisionShape") {
                         let aabb = new AABB();
                         const { center, extent } = shape.properties;
