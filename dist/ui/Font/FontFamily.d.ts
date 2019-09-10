@@ -9,23 +9,15 @@ export declare class FontFamily extends Font {
     shadow: FontShadow | undefined;
     texture: FontTexture;
     private _shadow;
+    private _filtering;
     constructor();
     setText(text: string): void;
     setAlignment(alignment: number): void;
     getTexture(): FontTexture;
     getWidth(): number;
     getHeight(): number;
-    /**
-     * @hidden
-     */
     setProperty(name: string, value: any): void;
-    /**
-     * @hidden
-     */
     prepareForRendering(screenScaleFactor: number, maxWidth: number): void;
-    /**
-     * @hidden
-     */
     destroy(): void;
     private onShadowPropertyChanged;
 }

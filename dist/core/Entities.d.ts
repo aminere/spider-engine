@@ -2,6 +2,7 @@ import { Entity } from "./Entity";
 import { Prefab } from "../assets/Prefab";
 import { PRS } from "../math/PRS";
 export interface EntityProps {
+    name?: string;
     prefab?: Prefab;
     prs?: PRS;
     children?: EntityProps[];

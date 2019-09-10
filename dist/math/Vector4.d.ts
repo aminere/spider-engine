@@ -19,7 +19,7 @@ export declare class Vector4 {
     constructor(x?: number, y?: number, z?: number, w?: number);
     set(x: number, y: number, z: number, w: number): this;
     copy(other: Vector4): this;
-    multiplyScalar(scalar: number): this;
+    multiply(scalar: number): this;
     toArray(): number[];
     transform(m: Matrix44): this;
     getVec3(out: Vector3): Vector3;

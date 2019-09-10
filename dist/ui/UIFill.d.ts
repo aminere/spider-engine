@@ -8,6 +8,7 @@ import { Vector2 } from "../math/Vector2";
 import { SpriteSheet } from "./SpriteSheet";
 import { Layout } from "./Layout";
 import { VertexBuffer } from "../graphics/VertexBuffer";
+import { Mask } from "./Mask";
 export declare class UIFill extends SerializableObject {
     isLoaded(): boolean;
 }
@@ -40,12 +41,15 @@ export declare class SpriteFill extends UIFill {
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
 }
 export declare class TextureFill extends UIFill {
+    static maskPropertyKey: string;
     readonly version: number;
     texture: Texture | null;
     readonly textureRef: AssetReference<Texture>;
     color: Color;
+    mask: Mask | null;
     private _color;
     private _texture;
+    private _mask;
     constructor(texture?: Texture, color?: Color);
     isLoaded(): boolean;
     destroy(): void;

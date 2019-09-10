@@ -36,6 +36,6 @@ export declare namespace defaultAssets {
  * @hidden
  */
 export declare namespace DefaultAssetsInternal {
-    function load(): Promise<void>;
+    function load(): Promise<{}[]>;
     function isLoaded(): boolean;
 }

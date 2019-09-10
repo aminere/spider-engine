@@ -24,6 +24,7 @@ export declare class Screen extends Component {
     readonly screenTransform: Matrix44;
     readonly resolution: Resolution | undefined;
     private _resolution;
+    private _integerPixels;
     private _cache;
     private _cacheIndex;
     private _offset;
@@ -47,4 +48,5 @@ export declare class Screen extends Component {
     private onTouchReleased;
     private onTouchChanged;
     private onEvent;
+    private onElementHovered;
 }

@@ -17,7 +17,7 @@ export declare class HudBoolean extends HudControl {
     constructor(name: string, value: boolean, onChanged?: (newValue: boolean) => void);
 }
 export declare class EngineHud {
-    static load(): void;
+    static load(): Promise<{}[]>;
     static isLoaded(): boolean;
     static create(): Entity | null;
     static setControls(controls: HudControl[]): void;

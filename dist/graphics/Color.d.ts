@@ -14,7 +14,6 @@ export declare class Color {
     b: number;
     a: number;
     private _array;
-    static lerp(src: Color, dest: Color, factor: number, target?: Color): Color;
     constructor(r?: number, g?: number, b?: number, a?: number);
     set(r: number, g: number, b: number, a?: number): this;
     setFromArray(a: number[]): this;
@@ -33,4 +32,6 @@ export declare class Color {
     multiply(scalar: number): this;
     add(other: Color): this;
     setHSL(h: number, s: number, l: number): this;
+    lerp(dest: Color, factor: number): this;
+    lerpColors(a: Color, b: Color, factor: number): this;
 }

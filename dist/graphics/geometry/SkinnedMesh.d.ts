@@ -1,7 +1,7 @@
 import { StaticMesh } from "./StaticMesh";
 import { Entity } from "../../core/Entity";
 import { GraphicUpdateResult } from "./Geometry";
-import { Matrix44 } from "../../math/Matrix44";
+import { Matrix44, SerializableMatrix44 } from "../../math/Matrix44";
 import { Transform } from "../../core/Transform";
 import { VertexBuffer } from "../VertexBuffer";
 import { Camera } from "../Camera";
@@ -11,7 +11,7 @@ export declare class SkinnedMesh extends StaticMesh {
     static skeletonPropertyKey: string;
     skeleton: Entity | null;
     bindMatrix: Matrix44;
-    readonly bindMatrixInverse: Matrix44;
+    readonly bindMatrixInverse: SerializableMatrix44;
     readonly boneTexture: MemoryTexture;
     readonly boneTextureSize: number;
     readonly boneMatrices: Float32Array;

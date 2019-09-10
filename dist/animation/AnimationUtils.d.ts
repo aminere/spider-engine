@@ -10,7 +10,7 @@ export declare class AnimationUtils {
     static evaluateAnimation(animation: Animation, rootTarget: Entity, handler: (track: AnimationTrackDefinition, target: Entity) => void, targets?: AnimationTargets): void;
     static applyAnimation(animation: Animation, rootTarget: Entity, evalTime: number, playTime: number, targets?: AnimationTargets): void;
     static playAnimation(owner: Entity, anim: AnimationInstance, options?: IPlayAnimationOptions): void;
-    static playAnimationInstance(owner: Entity, anim: AnimationInstance, options?: IPlayAnimationOptions): void;
+    static playAnimationInstance(anim: AnimationInstance, options?: IPlayAnimationOptions): void;
     static fetchTargetsIfNecessary(entity: Entity, anim: AnimationInstance): void;
     static resetAnimationTransition(anim: AnimationInstance): void;
 }

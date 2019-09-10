@@ -13,7 +13,7 @@ export declare class ObjectManager implements IObjectManager {
     loadObjectById(id: string): Promise<[UniqueObject, boolean]>;
     getObject(id: string): UniqueObject | null;
     saveObject(obj: UniqueObject): Promise<void>;
-    saveObjectAtPath(obj: UniqueObject, path: string, dontRecordWriteTime?: boolean): Promise<void>;
+    saveObjectAtPath(obj: UniqueObject, path: string, recordWriteTime?: boolean): Promise<void>;
     renameObject(oldPath: string, newPath: string): void;
     deleteObject(obj: UniqueObject): void;
     deleteObjectById(id: string): void;

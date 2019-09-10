@@ -39,3 +39,5 @@ export declare class Matrix44 {
     copy(other: Matrix44): this;
     toArray(array: Float32Array, offset: number): Float32Array;
 }
+export declare class SerializableMatrix44 extends Matrix44 {
+}

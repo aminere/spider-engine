@@ -20,7 +20,7 @@ export declare class Vector2 {
     substract(other: Vector2): this;
     substractVectors(a: Vector2, b: Vector2): this;
     normalize(): this;
-    multiplyScalar(scalar: number): this;
+    multiply(scalar: number): this;
     dot(other: Vector2): number;
     copy(other: Vector2): this;
     asArray(): number[];

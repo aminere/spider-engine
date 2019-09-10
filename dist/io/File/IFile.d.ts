@@ -11,4 +11,8 @@ export interface IFile {
  */
 export declare class IFileInternal {
     static instance: IFile;
+    static defaultAssets: {
+        [path: string]: string;
+    };
+    static getDefaultAsset(path: string): string;
 }

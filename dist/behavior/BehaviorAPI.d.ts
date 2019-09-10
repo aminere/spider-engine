@@ -15,6 +15,9 @@ import { Vector2 } from "../math/Vector2";
 import { Entity } from "../core/Entity";
 import { VoidSyncEvent } from "ts-events";
 import { CollisionFilter } from "../collision/CollisionFilter";
+import { VertexBuffer } from "../graphics/VertexBuffer";
+import { AABB } from "../math/AABB";
+import { IHttpRequestOptions } from "../network/HTTP";
 export declare class BehaviorAPI {
     static api: {
         Math: {
@@ -122,9 +125,15 @@ export declare class BehaviorAPI {
             right: () => Vector3;
             forward: () => Vector3;
             zero: () => Vector3;
+            one: () => Vector3;
             distance: (a: Vector3, b: Vector3) => number;
             distanceSq: (a: Vector3, b: Vector3) => number;
             fromPool: () => Vector3;
+        };
+        Vector2: {
+            zero: () => Vector2;
+            one: () => Vector2;
+            fromPool: () => Vector2;
         };
         Plane: {
             fromPool: () => Plane;
@@ -156,16 +165,16 @@ export declare class BehaviorAPI {
             all: (promises: Promise<any>[]) => Promise<any[]>;
         };
         HorizontalAlignment: {
-            left: () => number;
-            center: () => number;
-            right: () => number;
-            stretch: () => number;
+            Left: () => number;
+            Center: () => number;
+            Right: () => number;
+            Stretch: () => number;
         };
         VerticalAlignment: {
-            top: () => number;
-            center: () => number;
-            bottom: () => number;
-            stretch: () => number;
+            Top: () => number;
+            Center: () => number;
+            Bottom: () => number;
+            Stretch: () => number;
         };
         Array: {
             isArray: (a: any) => boolean;
@@ -180,6 +189,9 @@ export declare class BehaviorAPI {
         EngineHud: {
             setControls: (controls: HudControl[]) => void;
         };
+        AABB: {
+            fromVertexBuffer: (vb: VertexBuffer) => AABB;
+        };
         Config: {
             isWeb: () => boolean;
             isDesktop: () => boolean;
@@ -187,6 +199,12 @@ export declare class BehaviorAPI {
             isDevelopment: () => boolean;
             isEditor: () => boolean;
             isStandalone: () => boolean;
+        };
+        Http: {
+            request: (options: IHttpRequestOptions) => Promise<any>;
+        };
+        Date: {
+            now: () => number;
         };
     };
 }

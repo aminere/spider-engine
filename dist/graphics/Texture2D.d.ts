@@ -5,16 +5,8 @@ import { SerializedObject } from "../core/SerializableObject";
 import { ObjectProps } from "../core/Types";
 export declare enum TexturePublishFormat {
     JPEG = 0,
-    PNG = 1
-}
-/**
- * @hidden
- */
-export declare class TexturePublishFormatMetadata {
-    static literals: {
-        JPEG: number;
-        PNG: number;
-    };
+    PNG = 1,
+    SVG = 2
 }
 export declare class Texture2D extends Texture {
     readonly version: number;

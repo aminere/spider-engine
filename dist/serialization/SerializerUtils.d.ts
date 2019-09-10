@@ -6,6 +6,7 @@ import { Component } from "../core/Component";
  */
 export declare namespace SerializerUtilsInternal {
     let serializeIdsAsPaths: boolean;
+    let tryUsePropertySetter: boolean;
 }
 export declare class SerializerUtils {
     static serializeEntity(e: Entity, serializeNonPersistentObjects?: boolean): SerializedEntity;
@@ -16,11 +17,11 @@ export declare class SerializerUtils {
     static serializeNonPersistentObjects(enable?: boolean): void;
     static clearNonPersistentObjectCache(): void;
     static serializeProperty(data: any, _typeName?: string): any;
-    static deserializeProperty(target: SerializableObject | any[], index: string | number, typeName: string, data: any, tryUseSetter?: boolean): void;
+    static deserializeProperty(target: SerializableObject | any[], index: string | number, typeName: string, data: any): void;
     static getPropertyTypeName(property: any): string;
     static copyProperty(src: SerializableObject, dest: SerializableObject, propertyId: string): boolean;
     static getSerializablePropertyTypeName(obj: object, propertyId: string): string | null;
-    static setProperty(target: SerializableObject | any[], property: string | number, value: any, tryUseSetter?: boolean): void;
+    static setProperty(target: SerializableObject | any[], property: string | number, value: any): void;
     static isDynamicProperty(typeName: string, property: string): boolean;
     static isPropertySerializable(typeName: string, property: string): boolean;
     static getObjectVersion(obj: SerializableObject): number;

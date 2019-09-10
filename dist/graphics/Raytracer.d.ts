@@ -13,7 +13,6 @@ export declare class Raytracer extends Component {
     private _target;
     private _projector;
     private _initialized;
-    private _savePending;
     constructor(props?: ObjectProps<Raytracer>);
     update(): void;
     destroy(): void;

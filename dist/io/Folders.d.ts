@@ -13,5 +13,5 @@ export declare namespace FoldersInternal {
     const foldersPath = "Assets/folders.json";
     const externalsPath = "External Assets";
     function load(): Promise<[Folders, boolean]>;
-    function save(): Promise<void>;
+    function save(recordWriteTime?: boolean): Promise<void>;
 }

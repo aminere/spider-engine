@@ -22,7 +22,7 @@ export declare class BehaviorAPIFactory {
         Triangle: (a?: Vector3 | undefined, b?: Vector3 | undefined, c?: Vector3 | undefined) => Triangle;
         Ray: (origin?: Vector3 | undefined, direction?: Vector3 | undefined, length?: number | undefined) => Ray;
         Basis: () => Basis;
-        VertexBuffer: (props?: Partial<Pick<VertexBuffer, "copy" | "attributes" | "primitiveType" | "indices" | "begin" | "name" | "vertexCount" | "isDynamic" | "setAttribute" | "dirtifyAttribute" | "updateBufferDatas" | "bindBuffers" | "end" | "draw" | "load" | "unload" | "bindAttributes" | "unbindAttributes" | "hasAttribute">> | undefined) => VertexBuffer;
+        VertexBuffer: (props?: Partial<Pick<VertexBuffer, "name" | "copy" | "attributes" | "primitiveType" | "indices" | "begin" | "vertexCount" | "isDynamic" | "setAttribute" | "dirtifyAttribute" | "updateBufferDatas" | "bindBuffers" | "end" | "draw" | "load" | "unload" | "bindAttributes" | "unbindAttributes" | "hasAttribute">> | undefined) => VertexBuffer;
     };
     static createObject(typeName: string, ...args: any[]): any;
 }

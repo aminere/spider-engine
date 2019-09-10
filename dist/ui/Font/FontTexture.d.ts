@@ -1,5 +1,6 @@
 import { Texture } from "../../graphics/Texture";
 import { FontShadow } from "./FontShadow";
+import { TextureFiltering } from "../../graphics/GraphicTypes";
 export declare class FontTexture extends Texture {
     scaleFactor: number;
     maxWidth: number;
@@ -10,6 +11,7 @@ export declare class FontTexture extends Texture {
     italic: boolean;
     alignment: number;
     shadow: FontShadow | undefined;
+    filtering: TextureFiltering;
     private _canvas;
     private _isDirty;
     private _text;
@@ -21,16 +23,11 @@ export declare class FontTexture extends Texture {
     private _maxWidth;
     private _alignment;
     private _scaleFactor;
+    private _filtering;
     dirtify(): void;
     getWidth(): number;
     getHeight(): number;
-    /**
-     * @hidden
-     */
     begin(stage: number): boolean;
-    /**
-     * @hidden
-     */
     destroy(): void;
     private tryUpdateTextureInEditor;
     private updateTexture;

@@ -4,7 +4,6 @@ export declare class Asset extends UniqueObject {
     isPersistent: boolean;
     deleted: AsyncEvent<string>;
     isLoaded(): boolean;
-    save(): Promise<void>;
     destroy(): void;
 }
 export interface SerializedAsset {

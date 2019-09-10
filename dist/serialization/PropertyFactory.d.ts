@@ -3,7 +3,7 @@ import { Vector2 } from "../math/Vector2";
 import { Vector4 } from "../math/Vector4";
 import { Quaternion } from "../math/Quaternion";
 import { Color } from "../graphics/Color";
-import { Matrix44 } from "../math/Matrix44";
+import { Matrix44, SerializableMatrix44 } from "../math/Matrix44";
 import { Matrix33 } from "../math/Matrix33";
 import { AABB } from "../math/AABB";
 import { UISize, SerializedUISize, UISizeType } from "../ui/UISize";
@@ -20,36 +20,27 @@ import { ComponentReference, SerializedComponentReference } from "./ComponentRef
 import { Range } from "./Range";
 import { Size, SerializedSize, SizeType } from "../core/Size";
 import { AssetReferenceArray, SerializedAssetReferenceArray } from "./AssetReferenceArray";
-import { SerializedPropertyType } from "./SerializedTypes";
 import { NativeArray, INativeArray, NativeType } from "./NativeArray";
 import { SerializableObject } from "../core/SerializableObject";
 import { NativeU8Array } from "./NativeU8Array";
 import { Plane } from "../math/Plane";
 import { Component } from "../core/Component";
-/**
- * @hidden
- */
-export declare class NativeSerializer<T> {
-    type: {
-        new (...args: any[]): T;
-    };
+import { Constructor } from "../core/Types";
+export declare namespace PropertyFactoryInternal {
+    const noOp = "_noOp";
+}
+declare class NativeSerializer<T> {
+    type: Constructor<T>;
     readProperty: (json: T) => T;
     writeProperty(data: T): T;
-    constructor(ctor: {
-        new (...args: any[]): T;
-    });
+    constructor(ctor: Constructor<T>);
 }
-/**
- * @hidden
- */
-export interface IProperty {
-    type: any;
-    readProperty: (json: SerializedPropertyType) => void;
-    writeProperty: (p: any) => SerializedPropertyType;
+declare class NullSerializer<T> {
+    type: Constructor<T>;
+    readProperty(json: T): void;
+    writeProperty(data: T): string;
+    constructor(ctor: Constructor<T>);
 }
-/**
- * @hidden
- */
 export declare class PropertyFactory {
     static properties: {
         Vector3: NativeSerializer<Vector3>;
@@ -57,8 +48,9 @@ export declare class PropertyFactory {
         Vector4: NativeSerializer<Vector4>;
         Quaternion: NativeSerializer<Quaternion>;
         Color: NativeSerializer<Color>;
-        Matrix44: NativeSerializer<Matrix44>;
-        Matrix33: NativeSerializer<Matrix33>;
+        Matrix44: NullSerializer<Matrix44>;
+        SerializableMatrix44: NativeSerializer<SerializableMatrix44>;
+        Matrix33: NullSerializer<Matrix33>;
         Rect: NativeSerializer<Rect>;
         FileProperty: NativeSerializer<FileProperty>;
         ThumbnailProperty: NativeSerializer<ThumbnailProperty>;
@@ -165,3 +157,4 @@ export declare class PropertyFactory {
         };
     };
 }
+export {};

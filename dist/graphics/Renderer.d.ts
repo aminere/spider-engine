@@ -7,6 +7,7 @@ import { IRenderer } from "./IRenderer";
 export declare class Renderer implements IRenderer {
     readonly screenSize: Vector2;
     readonly defaultPerspectiveCamera: Camera | null;
+    readonly canvas: HTMLCanvasElement;
     renderTarget: RenderTarget | null;
     showWireFrame: boolean;
 }
