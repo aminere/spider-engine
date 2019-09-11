@@ -17,6 +17,7 @@ import { Shader } from "../graphics/Shader";
 import { SerializedObject } from "../core/SerializableObject";
 import { Component } from "../core/Component";
 import { IObjectManagerInternal } from "../core/IObjectManager";
+import { EngineUtils } from "../core/EngineUtils";
 
 /**
  * @hidden
@@ -256,6 +257,13 @@ export class Scene extends Asset {
                 prefabIdToInstanceId: prefabIdToInstanceId
             };
         }
+    }
+
+    copy() {
+        const copy = new Scene();
+        copy.templatePath = this.templatePath;
+        copy.root = this.root.copy();        
+        return copy;
     }
 
     private overrideEntity(instance: Entity, override: ObjectOverride) {
