@@ -347,6 +347,8 @@ export namespace EngineInternal {
             return;
         }
 
+        ScenesInternal.updatePreloading();
+
         Private.loadingInProgress = false;
         UpdateInternal.update();
 

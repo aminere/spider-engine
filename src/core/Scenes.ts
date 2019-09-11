@@ -23,8 +23,12 @@ namespace Private {
     export let scenes: Scene[] = [];
     export let transitionInProgress = false;
     export let sceneLoadInProgress: SceneLoadInfo | null = null;
-    export let preloadedScenesInProgress: string[] = [];
-    export let preloadedScenes: string[] = [];
+    export const preloadedScenesRequests: string[] = [];
+    export const preloadedScenesInProgress: {
+        scene: Scene,
+        resolve: () => void;
+    }[] = [];
+    export const preloadedScenes: Scene[] = [];
 
     export function getTransitionAnimComponent() {
         const fadeQuad = defaultAssets.transitionScene.root.findChild("FadeQuad") as Entity;
@@ -131,6 +135,19 @@ export namespace ScenesInternal {
         Private.scenes.forEach(scene => IObjectManagerInternal.instance.deleteObject(scene));
         Private.scenes = [];
     }
+
+    export function updatePreloading() {
+        for (let i = 0; i < Private.preloadedScenesInProgress.length;) {
+            const info = Private.preloadedScenesInProgress[i];
+            if (info.scene.isLoaded()) {
+                info.resolve();
+                Private.preloadedScenes.push(info.scene);
+                Private.preloadedScenesInProgress.splice(i, 1);
+            } else {
+                ++i;
+            }
+        }
+    }
 }
 
 export class Scenes {
@@ -149,21 +166,18 @@ export class Scenes {
             return Promise.reject();
         }
 
-        if (Private.preloadedScenes.some(p => p === path)) {
-            const index = Private.preloadedScenes.indexOf(path);
-            console.assert(index >= 0);
-            Private.preloadedScenes.splice(index, 1);
-
-            const scene = IObjectManagerInternal.instance.getObject(path);
-            console.assert(scene);
+        const preloadIndex = Private.preloadedScenes.findIndex(s => s.templatePath === path);
+        if (preloadIndex >= 0) {
+            Private.preloadedScenes.splice(preloadIndex, 1);
+            const scene = Private.preloadedScenes[preloadIndex];
             Private.sceneLoadInProgress = {
-                scene: scene as Scene,
+                scene: scene,
                 path: path,
                 additive: additive,
                 resolve: () => {}
             };
             Private.finalizeSceneLoad();
-            return Promise.resolve(scene as Scene);
+            return Promise.resolve(scene);
         }
 
         return new Promise<Scene>((resolve, reject) => {
@@ -173,8 +187,8 @@ export class Scenes {
                 resolve: resolve
             };
             ObjectManagerInternal.loadObjectIgnoreCache(path)
-                .then(tuple => {
-                    (Private.sceneLoadInProgress as SceneLoadInfo).scene = tuple[0] as Scene;
+                .then(([scene]) => {
+                    (Private.sceneLoadInProgress as SceneLoadInfo).scene = scene as Scene;
                     if (process.env.CONFIG === "editor") {
                         if (ScenesInternal.list().length === 0) {
                             // we are in editor mode and this is the first scene being opened
@@ -239,23 +253,23 @@ export class Scenes {
      * @param path - The scene path
      */
     static preLoad(path: string) {
-        if (Private.preloadedScenesInProgress.some(p => p === path)) {
-            console.warn(`Scene '${path}' is already being pre-loaded. Skipping request.`);
+        if (Private.preloadedScenesRequests.some(p => p === path)
+            || Private.preloadedScenesInProgress.some(p => p.scene.templatePath === path)
+            || Private.preloadedScenes.some(p => p.templatePath === path)) {
+            console.warn(`Scene '${path}' is already pre-load(ed/ing). Skipping request.`);
             return Promise.reject();
         }
-        if (Private.preloadedScenes.some(p => p === path)) {
-            console.warn(`Scene '${path}' is already pre-loaded. Skipping request.`);
-            return Promise.reject();
-        }
-        Private.preloadedScenesInProgress.push(path);
-        return new Promise((resolve, reject) => {            
+        Private.preloadedScenesRequests.push(path);
+        return new Promise((resolve, reject) => {
             ObjectManagerInternal.loadObjectIgnoreCache(path)
-                .then(() => {
-                    Private.preloadedScenes.push(path);
-                    const index = Private.preloadedScenesInProgress.indexOf(path);
+                .then(([scene]) => {
+                    Private.preloadedScenesInProgress.push({
+                        scene: scene as Scene,
+                        resolve
+                    });
+                    const index = Private.preloadedScenesRequests.indexOf(path);
                     console.assert(index >= 0);
-                    Private.preloadedScenesInProgress.splice(index, 1);
-                    resolve();
+                    Private.preloadedScenesRequests.splice(index, 1);
                 })
                 .catch(reject);
         });
