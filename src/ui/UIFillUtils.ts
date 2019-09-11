@@ -10,7 +10,7 @@ import { AssetReference } from "../serialization/AssetReference";
 import { Texture } from "../graphics/Texture";
 import { GeometryProvider } from "../graphics/geometry/GeometryProvider";
 import { defaultAssets } from "../assets/DefaultAssets";
-import { UISettings } from "./UISettings";
+import { uiSettings } from "./UISettings";
 import { Interfaces } from "../core/Interfaces";
 import { Vector2 } from "../math/Vector2";
 import { Vector3 } from "../math/Vector3";
@@ -30,7 +30,7 @@ namespace Private {
 
         let xOffset = -layout.pivot.x * w;
         let yOffset = -layout.pivot.y * h;
-        if (UISettings.integerPixels) {
+        if (uiSettings.integerPixels) {
             xOffset = Math.floor(xOffset);
             yOffset = Math.floor(yOffset);
         }

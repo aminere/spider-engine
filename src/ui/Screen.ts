@@ -30,7 +30,7 @@ import { Interfaces } from "../core/Interfaces";
 import { WebGL } from "../graphics/WebGL";
 import { Transform } from "../core/Transform";
 import { Image } from "./Image";
-import { UISettings } from "./UISettings";
+import { uiSettings } from "./UISettings";
 
 /**
  * @hidden
@@ -234,7 +234,7 @@ export class Screen extends Component {
         const modelView = Matrix44.fromPool();
         const { context } = WebGL;
         const { renderOptions } = Private;
-        UISettings.integerPixels = this._integerPixels;
+        uiSettings.integerPixels = this._integerPixels;
         renderOptions.material = uiMaterial;
         renderOptions.context = context;
         renderOptions.screenOffset.set(this._translationX, this._translationY);

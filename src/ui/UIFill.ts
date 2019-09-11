@@ -12,7 +12,7 @@ import { SpriteSheet } from "./SpriteSheet";
 import { Layout } from "./Layout";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { WebGL } from "../graphics/WebGL";
-import { UISettings } from "./UISettings";
+import { uiSettings } from "./UISettings";
 import { ComponentReference } from "../serialization/ComponentReference";
 import { Mask } from "./Mask";
 
@@ -298,7 +298,7 @@ export class SpriteSheetFill extends UIFill {
         if (texture) {
             let xOffset = -layout.pivot.x * layout.actualWidth;
             let yOffset = -layout.pivot.y * layout.actualHeight;
-            if (UISettings.integerPixels) {
+            if (uiSettings.integerPixels) {
                 xOffset = Math.floor(xOffset);
                 yOffset = Math.floor(yOffset);
             }

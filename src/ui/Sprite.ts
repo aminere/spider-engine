@@ -5,7 +5,7 @@ import { Vector2 } from "../math/Vector2";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { EngineUtils } from "../core/EngineUtils";
 import * as Attributes from "../core/Attributes";
-import { UISettings } from "./UISettings";
+import { uiSettings } from "./UISettings";
 
 export enum SpriteRenderMode {
     Stretch,
@@ -298,7 +298,7 @@ export class Sprite extends Asset {
         let right = x + w + offsetX;
         let top = y + offsetY;
         let bottom = y + h + offsetY;
-        if (UISettings.integerPixels) {
+        if (uiSettings.integerPixels) {
             left = Math.floor(left);
             right = Math.floor(right);
             top = Math.floor(top);

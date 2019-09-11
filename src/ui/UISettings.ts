@@ -1,4 +1,4 @@
 
-export namespace UISettings {
+export namespace uiSettings {
     export let integerPixels = true;
 }
