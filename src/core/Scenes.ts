@@ -139,10 +139,10 @@ export namespace ScenesInternal {
     export function updatePreloading() {
         for (let i = 0; i < Private.preloadedScenesInProgress.length;) {
             const info = Private.preloadedScenesInProgress[i];
-            if (info.scene.isLoaded()) {
-                info.resolve();
+            if (info.scene.isLoaded()) {                
                 Private.preloadedScenes.push(info.scene);
                 Private.preloadedScenesInProgress.splice(i, 1);
+                info.resolve();
             } else {
                 ++i;
             }
