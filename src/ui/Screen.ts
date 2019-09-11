@@ -299,6 +299,7 @@ export class Screen extends Component {
                         maxWidth = elem.actualWidth;
                     }
                     font.prepareForRendering(this.scale, maxWidth);
+                    uiMaterial.queueParameter("useMask", false);
                     uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, font.getTexture());
                     uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, tintColor.copy(text.color).multiplyColor(elem.finalTint));
                     if (uiMaterial.begin()) {

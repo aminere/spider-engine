@@ -109,6 +109,7 @@ export class UIFillUtils {
         } else if (_fill.isA(ColorFill)) {
             const fill = _fill as ColorFill;
             const texture = defaultAssets.whiteTexture;
+            uiMaterial.queueParameter("useMask", false);
             uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, texture);
             uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
             if (uiMaterial.begin()) {
@@ -153,6 +154,7 @@ export class UIFillUtils {
             const fill = _fill as SpriteFill;
             const spriteTexture = fill.sprite.asset ? fill.sprite.asset.texture.asset : null;
             if (spriteTexture) {
+                uiMaterial.queueParameter("useMask", false);
                 uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, spriteTexture);
                 uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
                 if (uiMaterial.begin()) {
@@ -173,6 +175,7 @@ export class UIFillUtils {
         } else if (_fill.isA(SpriteSheetFill)) {
             const fill = _fill as SpriteSheetFill;
             if (fill.texture) {
+                uiMaterial.queueParameter("useMask", false);
                 uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, fill.texture);
                 uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
                 if (uiMaterial.begin()) {
