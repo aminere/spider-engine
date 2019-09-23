@@ -12,7 +12,10 @@ module.exports = {
         test: /\.tsx?$/,
         enforce: 'pre',
         include: commonConfig.resolve("../src"),
-        loader: 'tslint-loader'
+        loader: 'tslint-loader',
+        options: {
+          typeCheck: false
+        }        
       },
       {
         test: /\.tsx?$/,
