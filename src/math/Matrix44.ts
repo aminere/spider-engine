@@ -69,7 +69,6 @@ export class Matrix44 {
         m[8] = 0.0;             m[9] = 0.0;  m[10] = a;  m[11] = -1; // flip for LH projection
         m[12] = 0.0;            m[13] = 0.0; m[14] = b;  m[15] = 0.0;
         return this;
-        return this;
     }
 
     setRotation(q: Quaternion) {
