@@ -87,6 +87,13 @@ export class Vector2 {
         return this;
     }
 
+    rotate(radians: number) {
+        const cos = Math.cos(radians);
+        const sin = Math.sin(radians);
+        this.set(this.x * cos - this.y * sin, this.x * sin + this.y * cos);
+        return this;
+    }
+
     asArray() {
         if (!this._array) {
             this._array = [this.x, this.y];
