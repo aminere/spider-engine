@@ -325,7 +325,7 @@ export class Material extends Asset {
                 });
             } else {
                 Object.defineProperty(this, paramName, {
-                    get: () => param,
+                    get: () => this._shaderParams[paramName],
                     set: value => {
                         this._shaderParams[paramName] = value;
                     },
