@@ -38,6 +38,10 @@ export class DrawableTexture extends Texture {
         this._pixelsDirty = true;
     }
 
+    get data() { 
+        return this._data.array;
+    }
+
     private _width = 1024;
     private _height = 768;
     private _rgba = false;
