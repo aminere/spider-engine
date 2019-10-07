@@ -15,6 +15,7 @@ import { Interfaces } from "../core/Interfaces";
 import { Vector2 } from "../math/Vector2";
 import { Vector3 } from "../math/Vector3";
 import { Mask } from "./Mask";
+import { Time } from "../core/Time";
 
 namespace Private {
 
@@ -102,6 +103,7 @@ export class UIFillUtils {
                 material.queueParameter("projectionMatrix", uiMaterial.getParameter("projectionMatrix"));
                 material.queueParameter("modelViewMatrix", modelView);
                 material.queueParameter("tint", tint);
+                material.queueParameter("time", Time.time);
                 if (material.begin()) {
                     GraphicUtils.drawVertexBuffer(context, vertexBuffer, material.shader);
                 }

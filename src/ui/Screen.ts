@@ -239,8 +239,9 @@ export class Screen extends Component {
         renderOptions.context = context;
         renderOptions.screenOffset.set(this._translationX, this._translationY);
         renderOptions.screenPosition.copy(this.entity.transform.worldPosition);
-        renderOptions.screenScale = this._scale;        
-
+        renderOptions.screenScale = this._scale;
+              
+        uiMaterial.queueParameter("time", Time.time);
         for (let i = 0; i < this._cacheIndex; ++i) {
             const elem = this._cache[i].element;
             const worldMatrix = elem.worldMatrix;
@@ -251,7 +252,7 @@ export class Screen extends Component {
             }
             modelView.multiplyMatrices(this._screenTransform, worldMatrix);            
             uiMaterial.queueParameter("modelViewMatrix", modelView);
-
+           
             renderOptions.modelView = modelView;
             renderOptions.tint.copy(elem.finalTint);
 
