@@ -100,9 +100,7 @@ export class Shader extends GraphicAsset {
 
         // Apply shader params
         for (const param of Object.keys(materialParams)) {
-            if (!this.applyParameter(param, materialParams[param])) {
-                return false;
-            }
+            this.applyParameter(param, materialParams[param]);
         }
 
         return true;
@@ -178,12 +176,9 @@ export class Shader extends GraphicAsset {
         const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
         const param = params[name];
         if (param !== undefined) {
-            if (!ShaderUtils.applyShaderParam(WebGL.context, param, value)) {
-                return false;
-            }
+            ShaderUtils.applyShaderParam(WebGL.context, param, value);
         }
-        return true;
-    }    
+    }
 
     applyReferenceParameter(name: string, referred: GraphicAsset, bucketId?: string) {
         const id = bucketId || 0;
@@ -193,11 +188,8 @@ export class Shader extends GraphicAsset {
         if (param !== undefined) {
             const { ref } = Private;
             ref.setAssetFast(referred);
-            if (!ShaderUtils.applyShaderParam(WebGL.context, param, ref)) {
-                return false;
-            }
+            ShaderUtils.applyShaderParam(WebGL.context, param, ref);
         }
-        return true;
     }
     
     // tslint:disable-next-line

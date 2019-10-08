@@ -55,7 +55,7 @@ interface ShaderParamFactory {
         // tslint:disable-next-line
         create: () => any;
         // tslint:disable-next-line
-        apply: (gl: WebGLRenderingContext, param: ShaderParam, value: any) => boolean;
+        apply: (gl: WebGLRenderingContext, param: ShaderParam, value: any) => void;
     };
 }
 
@@ -116,7 +116,7 @@ namespace Private {
             create: () => new Vector2(),
             apply: (gl, param, value) => {
                 if (!param.uniformLocation) {
-                    return false;
+                    return;
                 }
                 const singleValue = (value.constructor.name) === "Vector2";
                 if (singleValue) {
@@ -124,7 +124,6 @@ namespace Private {
                 } else {
                     gl.uniform2fv(param.uniformLocation, flattenVectors(value.data));
                 }
-                return true;
             }
         },
         "vec3": {
@@ -132,7 +131,7 @@ namespace Private {
             create: () => new Vector3(),
             apply: (gl, param, value) => {
                 if (!param.uniformLocation) {
-                    return false;
+                    return;
                 }
                 const singleValue = (value.constructor.name) === "Vector3";
                 if (singleValue) {
@@ -140,7 +139,6 @@ namespace Private {
                 } else {
                     gl.uniform3fv(param.uniformLocation, flattenVectors(value.data));
                 }
-                return true;
             }
         },
         "vec4": {
@@ -148,7 +146,7 @@ namespace Private {
             create: () => new Color(),
             apply: (gl, param, value) => {
                 if (!param.uniformLocation) {
-                    return false;
+                    return;
                 }
                 const singleValue = (value.constructor.name) === "Color";
                 if (singleValue) {
@@ -156,7 +154,6 @@ namespace Private {
                 } else {
                     gl.uniform4fv(param.uniformLocation, flattenVectors(value.data));
                 }
-                return true;
             }
         },
         "mat4": {
@@ -164,10 +161,9 @@ namespace Private {
             create: () => new Matrix44(),
             apply: (gl, param, value) => {
                 if (!param.uniformLocation) {
-                    return false;
+                    return;
                 }
                 gl.uniformMatrix4fv(param.uniformLocation, false, value.data);
-                return true;
             }
         },
         "mat3": {
@@ -175,10 +171,9 @@ namespace Private {
             create: () => new Matrix33(),
             apply: (gl, param, value) => {
                 if (!param.uniformLocation) {
-                    return false;
+                    return;
                 }
                 gl.uniformMatrix3fv(param.uniformLocation, false, value.data);
-                return true;
             }
         },
         "sampler2D": {
@@ -186,19 +181,16 @@ namespace Private {
             create: () => new AssetReference<Texture>(Texture),
             apply: (gl, param, value) => {
                 if (!param.uniformLocation || param.textureStage === undefined) {
-                    return false;
+                    return;
                 }
                 const textureRef = value as AssetReference<Texture>;
                 const texture = textureRef.asset;
                 if (texture && texture.begin(param.textureStage)) {
                     gl.uniform1i(param.uniformLocation, param.textureStage);
-                    return true;
                 } else {
                     if (defaultAssets.whiteTexture.begin(param.textureStage)) {
                         gl.uniform1i(param.uniformLocation, param.textureStage);
-                        return true;
                     }
-                    return false;
                 }
             }
         },
@@ -207,19 +199,16 @@ namespace Private {
             create: () => new AssetReference<Texture>(Texture),
             apply: (gl, param, value) => {
                 if (!param.uniformLocation || param.textureStage === undefined) {
-                    return false;
+                    return;
                 }
                 const textureRef = value as AssetReference<Texture>;
                 const texture = textureRef.asset;
                 if (texture && texture.begin(param.textureStage)) {
                     gl.uniform1i(param.uniformLocation, param.textureStage);
-                    return true;
                 } else {
                     if (defaultAssets.whiteTexture.begin(param.textureStage)) {
                         gl.uniform1i(param.uniformLocation, param.textureStage);
-                        return true;
                     }
-                    return false;
                 }
             }
         },
@@ -229,14 +218,11 @@ namespace Private {
             create: () => new AssetReference(StaticCubemap),
             apply: (gl, param, value) => {
                 if (!param.uniformLocation) {
-                    return false;
+                    return;
                 }
                 const cubemap = (value as AssetReference<StaticCubemap>).asset;
                 if (cubemap && cubemap.begin(0)) {
                     gl.uniform1i(param.uniformLocation, 0);
-                    return true;
-                } else {
-                    return false;
                 }
             }
         },
@@ -245,7 +231,7 @@ namespace Private {
             create: () => 0,
             apply: (gl, param, value) => {
                 if (!param.uniformLocation) {
-                    return false;
+                    return;
                 }
                 const singleValue = typeof (value) === "number";
                 if (singleValue) {
@@ -253,7 +239,6 @@ namespace Private {
                 } else {
                     gl.uniform1fv(param.uniformLocation, value.data);
                 }
-                return true;
             }
         },
         "int": {
@@ -261,7 +246,7 @@ namespace Private {
             create: () => 0,
             apply: (gl, param, value) => {
                 if (!param.uniformLocation) {
-                    return false;
+                    return;
                 }
                 const singleValue = typeof (value) === "number";
                 if (singleValue) {
@@ -269,7 +254,6 @@ namespace Private {
                 } else {
                     gl.uniform1iv(param.uniformLocation, value.data);
                 }
-                return true;
             }
         },
         "bool": {
@@ -277,7 +261,7 @@ namespace Private {
             create: () => false,
             apply: (gl, param, value) => {
                 if (!param.uniformLocation) {
-                    return false;
+                    return;
                 }
                 const singleValue = typeof (value) === "boolean";
                 if (singleValue) {
@@ -285,7 +269,6 @@ namespace Private {
                 } else {
                     gl.uniform1iv(param.uniformLocation, value.data);
                 }
-                return true;
             }
         },
     };
@@ -300,7 +283,7 @@ export class ShaderUtils {
 
     // tslint:disable-next-line
     static applyShaderParam(gl: WebGLRenderingContext, param: ShaderParam, value: any) {
-        return Private.shaderParamFactory[param.type].apply(gl, param, value);
+        Private.shaderParamFactory[param.type].apply(gl, param, value);
     }
 
     static buildMaterialParams(shaderParams: ShaderParams, previousParams: SerializableObject, liveCodeChange: boolean) {
