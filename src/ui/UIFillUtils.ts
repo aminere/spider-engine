@@ -37,11 +37,11 @@ namespace Private {
         }
 
         pos[0] = 0 + xOffset; pos[1] = 0 + yOffset; pos[2] = 0; // Top left
-        pos[3] = w + xOffset; pos[4] = 0 + yOffset; pos[5] = 0; // Top right
-        pos[6] = 0 + xOffset; pos[7] = h + yOffset; pos[8] = 0; // Bottom left
+        pos[3] = 0 + xOffset; pos[4] = h + yOffset; pos[5] = 0; // Bottom left
+        pos[6] = w + xOffset; pos[7] = 0 + yOffset; pos[8] = 0; // Top right        
         pos[9] = 0 + xOffset; pos[10] = h + yOffset; pos[11] = 0; // Bottom left
-        pos[12] = w + xOffset; pos[13] = 0 + yOffset; pos[14] = 0; // Top right
-        pos[15] = w + xOffset; pos[16] = h + yOffset; pos[17] = 0; // Bottom right
+        pos[12] = w + xOffset; pos[13] = h + yOffset; pos[14] = 0; // Bottom right
+        pos[15] = w + xOffset; pos[16] = 0 + yOffset; pos[17] = 0; // Top right        
         quad.dirtifyAttribute("position");
         return quad;
     }

@@ -22,7 +22,7 @@ namespace Private {
                 1, 1, // Top right     
                 0, 0, // Bottom left
                 1, 1, // Top right
-                0, 1, // Top Left            
+                0, 1, // Top Left
             ],
             normal:
                 [
@@ -57,19 +57,19 @@ namespace Private {
         attributes: {
             position: [
                 0, 0, 0.0, // Top left
-                1, 0, 0.0, // Top right
                 0, 1, 0.0, // Bottom left
+                1, 0, 0.0, // Top right                
                 0, 1, 0.0, // Bottom left
-                1, 0, 0.0, // Top right
                 1, 1, 0.0, // Bottom right    
+                1, 0, 0.0 // Top right
             ],
             uv: [
                 0, 1, // Top left
-                1, 1, // Top right
                 0, 0, // Bottom left
+                1, 1, // Top right                
                 0, 0, // Bottom left
-                1, 1, // Top right
-                1, 0 // Bottom right
+                1, 0, // Bottom right
+                1, 1 // Top right
             ]
         },
         primitiveType: "TRIANGLES"
