@@ -98,10 +98,6 @@ export class DrawableTexture extends Texture {
             Debug.logWarning(`DrawableTexture.putPixel: pixel is out of bounds (y = ${x}, height = ${this._height})`);
             return;
         }
-        if (!this._textureId) {
-            Debug.logWarning(`DrawableTexture.putPixel: texture not loaded yet`);
-            return;
-        }
         if (this._structureDirty) {
             this.updateStructure();
         }
