@@ -45,6 +45,7 @@ export class DrawableTexture extends Texture {
     private _width = 1024;
     private _height = 768;
     private _rgba = false;
+    @Attributes.enumLiterals(TextureFiltering)
     private _filtering = TextureFiltering.Linear;
     @Attributes.hidden()
     private _data = new NativeU8Array();
