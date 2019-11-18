@@ -6,15 +6,15 @@ import { Vector2 } from "../math/Vector2";
  */
 export namespace DebugInternal {
     // tslint:disable-next-line
-    export let externalLogger: (message: any) => void = () => {};
+    export let externalLogger: (...args: any[]) => void = () => {};
 }
 
 export class Debug {
     // tslint:disable-next-line
-    static log(message: any) {        
+    static log(...args: any[]) {        
         // tslint:disable-next-line
-        console.log(message);
-        DebugInternal.externalLogger(message);
+        console.log(args);
+        DebugInternal.externalLogger(args);
     }
 
     static logError(message: string) {
