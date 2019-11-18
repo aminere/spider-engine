@@ -129,7 +129,7 @@ import { TouchInteractions } from "../ui/TouchInteractions";
 import { FontFamily } from "../ui/Font/FontFamily";
 import { FontMetrics } from "../ui/Font/FontMetrics";
 import { FontShadow, DefaultFontShadow } from "../ui/Font/FontShadow";
-import { HudControl, HudNumber, HudBoolean } from "./hud/EngineHud";
+import { HudControl, HudNumber, HudBoolean, HudCommand } from "./hud/EngineHud";
 import { Proxy } from "./Proxy";
 import { CheckBox } from "../ui/CheckBox";
 import { AnimationInstance } from "../animation/AnimationInstance";
@@ -200,6 +200,7 @@ export class TypeRegistration {
         factory.registerObject(HudControl, SerializableObject);
         factory.registerObject(HudNumber, HudControl);
         factory.registerObject(HudBoolean, HudControl);
+        factory.registerObject(HudCommand, HudControl);
 
         // Rendering
         factory.registerObject(Visual, Component);

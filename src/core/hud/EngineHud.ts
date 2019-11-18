@@ -43,7 +43,7 @@ export class HudBoolean extends HudControl {
     }
 }
 
-class HudCommand extends HudControl {
+export class HudCommand extends HudControl {
     onTriggered: () => void;
     constructor(name: string, onTriggered: () => void) {
         super(name);
@@ -178,7 +178,7 @@ export class EngineHud {
                     onChanged: (newValue: number) => {
                         const _onChanged = (control as HudNumber).onChanged;
                         if (_onChanged) {
-                            _onChanged(newValue);
+                            return _onChanged(newValue);
                         }
                     }
                 });
