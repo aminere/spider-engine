@@ -57,7 +57,8 @@ export class BehaviorAPI {
             acos: (value: number) => Math.acos(value),
             atan: (value: number) => Math.atan(value),
             atan2: (y: number, x: number) => Math.atan2(y, x),
-            pow: (base: number, exponent: number) => Math.pow(base, exponent)        
+            pow: (base: number, exponent: number) => Math.pow(base, exponent),
+            exp: (value: number) => Math.exp(value)
         },
         MathEx: {
             toRadians: (angleDegrees: number) => MathEx.toRadians(angleDegrees),
@@ -69,7 +70,7 @@ export class BehaviorAPI {
         },
         console: {
             // tslint:disable-next-line
-            log: (value: any) => Debug.log(value),
+            log: (...args: any[]) => Debug.log(args),
             // tslint:disable-next-line
             assert: (value: any, message?: string) => console.assert(value, message),
             // tslint:disable-next-line
