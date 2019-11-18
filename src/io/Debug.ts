@@ -11,10 +11,11 @@ export namespace DebugInternal {
 
 export class Debug {
     // tslint:disable-next-line
-    static log(...args: any[]) {        
+    static log(...args: any[]) {
+        const a = args.length === 1 ? args[0] : args;    
         // tslint:disable-next-line
-        console.log(args);
-        DebugInternal.externalLogger(args);
+        console.log(a);
+        DebugInternal.externalLogger(a);
     }
 
     static logError(message: string) {
