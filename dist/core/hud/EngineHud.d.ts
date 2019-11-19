@@ -16,6 +16,10 @@ export declare class HudBoolean extends HudControl {
     onChanged?: (newValue: boolean) => void;
     constructor(name: string, value: boolean, onChanged?: (newValue: boolean) => void);
 }
+export declare class HudCommand extends HudControl {
+    onTriggered: () => void;
+    constructor(name: string, onTriggered: () => void);
+}
 export declare class EngineHud {
     static load(): Promise<{}[]>;
     static isLoaded(): boolean;

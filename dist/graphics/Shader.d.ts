@@ -35,8 +35,8 @@ export declare class Shader extends GraphicAsset {
     beginWithParams(materialParams: SerializableObject): boolean;
     begin(): boolean;
     beginWithVisual(visual: Visual): ShaderInstance | null;
-    applyParameter(name: string, value: any, bucketId?: string): boolean;
-    applyReferenceParameter(name: string, referred: GraphicAsset, bucketId?: string): boolean;
+    applyParameter(name: string, value: any, bucketId?: string): void;
+    applyReferenceParameter(name: string, referred: GraphicAsset, bucketId?: string): void;
     setProperty(property: string, value: any): void;
     graphicUnload(): void;
     invalidateProgram(): void;

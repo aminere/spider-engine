@@ -2,6 +2,7 @@ import { TypeDefinition } from "../serialization/Factory";
 import { Vector2 } from "../math/Vector2";
 import { Camera } from "../graphics/Camera";
 import { SerializableObject } from "./SerializableObject";
+import { Component } from "./Component";
 export interface EngineConfig {
     container?: HTMLCanvasElement;
     startupScene?: string;
@@ -37,7 +38,9 @@ export declare namespace EngineInternal {
     function unload(): void;
     function reload(): Promise<void>;
     function flushPools(): void;
-    function render(cameras: Camera[], preRender?: (camera: Camera) => void, postRender?: (camera: Camera) => void, uiPostRender?: () => void): void;
+    function render(cameras: Camera[], renderables: {
+        [typeName: string]: Component[];
+    }, preRender?: (camera: Camera) => void, postRender?: (camera: Camera) => void, uiPostRender?: () => void): void;
     function updateFrame(): void;
 }
 export declare class Engine {

@@ -38,6 +38,7 @@ export declare class BehaviorAPI {
             atan: (value: number) => number;
             atan2: (y: number, x: number) => number;
             pow: (base: number, exponent: number) => number;
+            exp: (value: number) => number;
         };
         MathEx: {
             toRadians: (angleDegrees: number) => number;
@@ -48,7 +49,7 @@ export declare class BehaviorAPI {
             lerp: (a: number, b: number, k: number) => number;
         };
         console: {
-            log: (value: any) => void;
+            log: (...args: any[]) => void;
             assert: (value: any, message?: string | undefined) => void;
             clear: () => void;
             logVector3: (value: Vector3) => void;

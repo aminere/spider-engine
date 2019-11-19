@@ -26,6 +26,9 @@ import { NativeU8Array } from "./NativeU8Array";
 import { Plane } from "../math/Plane";
 import { Component } from "../core/Component";
 import { Constructor } from "../core/Types";
+/**
+ * @hidden
+ */
 export declare namespace PropertyFactoryInternal {
     const noOp = "_noOp";
 }

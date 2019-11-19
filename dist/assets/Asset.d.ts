@@ -5,6 +5,7 @@ export declare class Asset extends UniqueObject {
     deleted: AsyncEvent<string>;
     isLoaded(): boolean;
     destroy(): void;
+    save(folderPath?: string): void;
 }
 export interface SerializedAsset {
     typeName: string;

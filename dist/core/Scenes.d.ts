@@ -6,6 +6,7 @@ export declare namespace ScenesInternal {
     function list(): Scene[];
     function updateTransition(): void;
     function destroy(): void;
+    function updatePreloading(): void;
 }
 export declare class Scenes {
     /**

@@ -44,5 +44,6 @@ export declare class Scene extends Asset {
     destroy(): void;
     setEntityFromPrefab(entity: Entity, prefabId: string): Promise<Prefab>;
     setEntityFromPrefabInstance(entity: Entity, prefab: Prefab): void;
+    copy(): Scene;
     private overrideEntity;
 }

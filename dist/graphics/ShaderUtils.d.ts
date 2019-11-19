@@ -22,6 +22,6 @@ export declare class ShaderUtils {
      * @hidden
      */
     static editorParamsToFocus: string;
-    static applyShaderParam(gl: WebGLRenderingContext, param: ShaderParam, value: any): boolean;
+    static applyShaderParam(gl: WebGLRenderingContext, param: ShaderParam, value: any): void;
     static buildMaterialParams(shaderParams: ShaderParams, previousParams: SerializableObject, liveCodeChange: boolean): SerializableObject;
 }

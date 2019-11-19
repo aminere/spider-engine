@@ -4,10 +4,10 @@ import { Vector2 } from "../math/Vector2";
  * @hidden
  */
 export declare namespace DebugInternal {
-    let externalLogger: (message: any) => void;
+    let externalLogger: (...args: any[]) => void;
 }
 export declare class Debug {
-    static log(message: any): void;
+    static log(...args: any[]): void;
     static logError(message: string): void;
     static logWarning(message: string): void;
     static logVector3(v: Vector3): void;

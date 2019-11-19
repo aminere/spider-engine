@@ -23,6 +23,7 @@ export declare class Vector2 {
     multiply(scalar: number): this;
     dot(other: Vector2): number;
     copy(other: Vector2): this;
+    rotate(radians: number): this;
     asArray(): number[];
     equals(other: Vector2): boolean;
 }
