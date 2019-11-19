@@ -276,8 +276,8 @@ export class ArrayPin<T extends DataPin> extends TDataPin<ArrayProperty<T>> {
                 // tslint:disable-next-line
                 set: (data: any[]) => {
                     this.value.data = data.map(d => {
-                        // tslint:disable-next-line                    
-                        let pin: any = new TDataPin<any>();
+                        // tslint:disable-next-line
+                        const pin = (this._dataType ? Interfaces.factory.createObject(this._dataType) as any: null) || new TDataPin<any>();
                         pin.value = d;
                         return pin as T;
                     });
