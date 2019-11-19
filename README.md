@@ -16,7 +16,6 @@ It is composed of an open source run-time and an editor front-end.
 * [Documentation](https://docs.spiderengine.io/) 
 * [API reference](https://docs.spiderengine.io/api)
 * [Editor Frontend](https://spiderengine.io/editor)
-* [Forum](https://forum.spiderengine.io)
 
 Quick Start
 -----------
