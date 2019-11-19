@@ -30,6 +30,7 @@ import { ScenesInternal } from "../core/Scenes";
 import { defaultAssets } from "../assets/DefaultAssets";
 import { IRenderer, IRendererInternal } from "./IRenderer";
 import { IObjectManagerInternal } from "../core/IObjectManager";
+import { Component } from "../core/Component";
 
 interface RenderPassDefinition {
     begin: (gl: WebGLRenderingContext) => void;
@@ -421,6 +422,7 @@ export class RendererInternal {
     static render(
         environment: Environment | undefined,
         cameras: Camera[],
+        renderables: { [typeName: string]: Component[] },
         preRender?: (camera: Camera) => void,
         postRender?: (camera: Camera) => void,
         uiPostRender?: () => void
@@ -441,13 +443,7 @@ export class RendererInternal {
         Private.defaultPerspectiveCamera = null;
         Private.shadowCasters.clear();
 
-        const components = Components.ofTypes([
-            Visual,
-            Light,
-            Screen
-        ]);
-
-        for (const visual of components.Visual as Visual[]) {
+        for (const visual of renderables.Visual as Visual[]) {
             if (!visual.vertexBuffer) {
                 continue;
             }
@@ -470,7 +466,7 @@ export class RendererInternal {
         }
 
         const gl = WebGL.context;
-        Private.lights = components.Light as Light[];
+        Private.lights = renderables.Light as Light[];
 
         // gl.depthMask(true);
         if (Private.cameraToRenderPassMap.size > 0) {
@@ -589,7 +585,7 @@ export class RendererInternal {
         IRendererInternal.instance.renderTarget = null;
         gl.disable(gl.DEPTH_TEST);
         defaultAssets.materials.ui.queueParameter("projectionMatrix", Private.uiProjectionMatrix);
-        for (const screen of components.Screen as Screen[]) {
+        for (const screen of renderables.Screen as Screen[]) {
             screen.updateTransforms();
             screen.render(defaultAssets.materials.ui);
         }

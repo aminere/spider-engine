@@ -40,6 +40,10 @@ import { IObjectManagerInternal } from "./IObjectManager";
 import { EngineError } from "./EngineError";
 import { BehaviorErrors } from "../behavior/BehaviorErrors";
 import { Http } from "../network/HTTP";
+import { Component } from "./Component";
+import { Visual } from "../graphics/Visual";
+import { Light } from "../graphics/lighting/Light";
+import { Screen } from "../ui/Screen";
 
 export interface EngineConfig {
     container?: HTMLCanvasElement;
@@ -296,6 +300,7 @@ export namespace EngineInternal {
 
     export function render(
         cameras: Camera[],
+        renderables: { [typeName: string]: Component[] },
         preRender?: (camera: Camera) => void,
         postRender?: (camera: Camera) => void,
         uiPostRender?: () => void
@@ -309,6 +314,7 @@ export namespace EngineInternal {
             RendererInternal.render(
                 scene.environment, 
                 cameras, 
+                renderables,
                 preRender, 
                 postRender, 
                 uiPostRender
@@ -354,7 +360,12 @@ export namespace EngineInternal {
 
         const cameras = Components.ofType(Camera);
         cameras.sort((a, b) => a.priority - b.priority);
-        render(cameras);
+        const renderables = Components.ofTypes([
+            Visual,
+            Light,
+            Screen
+        ]);
+        render(cameras, renderables);
 
         requestAnimationFrame(() => updateFrame());
     }
