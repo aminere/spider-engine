@@ -7,6 +7,7 @@ import * as Attributes from "../core/Attributes";
 import { BehaviorUtils } from "./BehaviorUtils";
 import { Asset } from "../assets/Asset";
 import { IObjectManagerInternal } from "../core/IObjectManager";
+import { ObjectProps } from "../core/Types";
 
 @Attributes.displayName("Object Definition")
 @Attributes.creatable(false)
@@ -24,11 +25,14 @@ export class ObjectDefinition extends Asset {
 
     private _declaration = new AssetReference(ObjectDeclaration);
 
-    constructor() {
+    constructor(props?: ObjectProps<ObjectDefinition>) {        
         super();
         this.onDeclarationPinChanged = this.onDeclarationPinChanged.bind(this);
         this.onDeclarationChanged = this.onDeclarationChanged.bind(this);
         this._declaration.assetChanged.attach(this.onDeclarationChanged);
+        if (props) {
+            this.setState(props);
+        }
     }
 
     isLoaded() {
@@ -86,6 +90,7 @@ export class ObjectDefinition extends Asset {
         let decl = info.newAsset as ObjectDeclaration;
         if (decl) {
             BehaviorUtils.buildPins(this, decl);
+            BehaviorUtils.updatePinAccessors(this);
             decl.pinChanged.attach(this.onDeclarationPinChanged);
         }
     }
