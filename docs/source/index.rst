@@ -15,4 +15,3 @@ Dear User, Welcome!
    animation
    editor
    API Reference <http://api>
-   Forum <https://forum.spiderengine.io>
