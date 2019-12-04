@@ -61,7 +61,7 @@ namespace Private {
     export const numRenderPasses = RenderPass.Transparent + 1;
     export const initialCameraPoolSize = 8;
     export const initialMaterialPoolSize = 128;
-    export const maxLights = 1;
+    export const maxDirectionalLights = 4;
     export const defaultShadowMapSize = new Vector2(2048, 2048);
     export let defaultPerspectiveCamera: Camera | null = null;
 
@@ -104,7 +104,7 @@ namespace Private {
                 gl.enable(gl.DEPTH_TEST);
             } else {
                 gl.disable(gl.DEPTH_TEST);
-            }        
+            }
             const viewMatrix = renderPassDefinition.makeViewMatrix(camera.getViewMatrix());
             renderStateBucket.shaderToVisualBucketsMap.forEach((visualBuckets, shader) => {
                 visualBuckets.forEach((visualBucket, visualBucketId) => {
@@ -118,26 +118,30 @@ namespace Private {
 
                     // lighting & shadowing
                     if (hasLights) {
-
-                        // TODO handle multiple lights
-                        const light = Private.lights[0];
-                        if (visualBucket.reference.receiveShadows) {
-                            const lightMatrix = Private.dummyMatrix.multiplyMatrices(
-                                light.getProjectionMatrix(), 
-                                light.viewMatrix
-                            );
-                            shader.applyParameter("lightMatrix", lightMatrix, visualBucketId);
-                            shader.applyReferenceParameter("shadowMap", Private.shadowMaps[0], visualBucketId);
-                        }                                                                        
-                        
-                        const lightDir = Vector3.fromPool().copy(light.entity.transform.worldForward);
-                        lightDir.transformDirection(viewMatrix);
-                        shader.applyParameter("directionalLight.direction", lightDir, visualBucketId);
-                        shader.applyParameter("directionalLight.color", light.color, visualBucketId);
-                        shader.applyParameter("directionalLight.shadow", light.castShadows, visualBucketId);
-                        shader.applyParameter("directionalLight.shadowBias", light.shadowBias, visualBucketId);
-                        shader.applyParameter("directionalLight.shadowRadius", light.shadowRadius, visualBucketId);
-                        shader.applyParameter("directionalLight.shadowMapSize", Private.defaultShadowMapSize, visualBucketId);
+                        const lightCount = Math.min(Private.maxDirectionalLights, Private.lights.length);
+                        shader.applyParameter("directionalLightCount", lightCount, visualBucketId);
+                        for (let i = 0; i < lightCount; ++i) {
+                            const light = Private.lights[i];
+                            if (visualBucket.reference.receiveShadows) {
+                                const lightMatrix = Private.dummyMatrix.multiplyMatrices(
+                                    light.getProjectionMatrix(), 
+                                    light.viewMatrix
+                                );
+                                shader.applyParameter(`directionalLightMatrices[${i}]`, lightMatrix, visualBucketId);
+                                shader.applyReferenceParameter(`directionalShadowMaps[${i}]`, Private.shadowMaps[i], visualBucketId);
+                            }
+                            
+                            const lightDir = Vector3.fromPool().copy(light.entity.transform.worldForward);
+                            lightDir.transformDirection(viewMatrix);
+                            shader.applyParameter(`directionalLights.direction[${i}]`, lightDir, visualBucketId);
+                            shader.applyParameter(`directionalLights.color[${i}]`, light.color, visualBucketId);
+                            shader.applyParameter(`directionalLights.shadow[${i}]`, light.castShadows, visualBucketId);
+                            shader.applyParameter(`directionalLights.shadowBias[${i}]`, light.shadowBias, visualBucketId);
+                            shader.applyParameter(`directionalLights.shadowRadius[${i}]`, light.shadowRadius, visualBucketId);
+                            shader.applyParameter(`directionalLights.shadowMapSize[${i}]`, Private.defaultShadowMapSize, visualBucketId);
+                        }
+                    } else {
+                        shader.applyParameter("directionalLightCount", 0, visualBucketId);
                     }
 
                     // fog
@@ -234,7 +238,7 @@ namespace Private {
     }
 
     export function renderShadowMaps(camera: Camera) {
-        Private.shadowMaps.length = Private.maxLights;
+        Private.shadowMaps.length = Private.maxDirectionalLights;
 
         const context = WebGL.context;
         // render to shadow maps
@@ -291,7 +295,7 @@ namespace Private {
                             const skinnedMesh = visual.geometry as SkinnedMesh;
                             if (!skinnedMesh.boneTexture) {
                                 continue;
-                            }                            
+                            }
                             currentShader.applyParameter("bindMatrix", skinnedMesh.bindMatrix);
                             currentShader.applyParameter("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
                             if (WebGL.extensions.OES_texture_float) {
@@ -355,9 +359,8 @@ namespace Private {
     }
 
     export function makeLightViewMatrix(camera: Camera, light: Light) {
-        // TODO use real camera frustum!! and update the projection matric bounds too
         const vm = Matrix44.fromPool();
-        vm.copy(light.entity.transform.worldMatrix); // .setPosition(camera.entity.transform.position);
+        vm.copy(light.entity.transform.worldMatrix);
         vm.invert();
         return vm;
     }    
