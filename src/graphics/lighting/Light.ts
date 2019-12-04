@@ -55,7 +55,7 @@ export class Light extends Component {
     castShadows = true;
 
     @Attributes.hidden()
-    shadowBias = .000001;
+    shadowBias = .00005;
 
     shadowRadius = 4;
 
