@@ -381,18 +381,18 @@ export class Shader extends GraphicAsset {
 
     private parseUniforms(code: string, shaderParams: ShaderParams, currentTextureStage: number) {
 
-        const regex = /uniform ((vec|float|uint|int|bool|mat|sampler|samplerCube)[234D]*) ([_a-zA-Z0-9]+)(\[[_a-zA-Z0-9]+\])*;/;
+        const regex = /uniform ((vec|float|uint|int|bool|mat|sampler|samplerCube)[234D]*) ([_a-zA-Z0-9]+)(\[([0-9]+)\])*;/;
         const matches = Private.removeComments(code).match(new RegExp(regex, "g"));
         if (matches) {
             for (const match of matches) {
-                const [m, type, n, name, isArray] = match.match(regex) as RegExpMatchArray;
-                // save shader param                
+                const [m, type, n, name, a, arraySize] = match.match(regex) as RegExpMatchArray;
+                // save shader param
                 if (type && name) {
                     shaderParams[name] = {
                         type: type as ShaderParamType,
                         uniformLocation: null,
                         textureStage: type.match(/sampler+[234D]*/) ? (currentTextureStage++) : undefined,
-                        isArray: Boolean(isArray)
+                        arraySize: arraySize ? parseInt(arraySize, 10) : undefined
                     };
                 } else {
                     Debug.logWarning(`Invalid shader uniform syntax: '${match[0]}', ignoring this uniform.`);

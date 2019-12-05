@@ -42,7 +42,7 @@ export type ShaderParamInstanceType =
 export interface ShaderParam {
     type: ShaderParamType;
     uniformLocation: WebGLUniformLocation | null;
-    isArray: boolean;
+    arraySize?: number;
     textureStage?: number;
 }
 
@@ -119,11 +119,10 @@ namespace Private {
                 if (!param.uniformLocation) {
                     return;
                 }
-                const singleValue = (value.constructor.name) === "Vector2";
-                if (singleValue) {
-                    gl.uniform2f(param.uniformLocation, value.x, value.y);
-                } else {
+                if (param.arraySize) {
                     gl.uniform2fv(param.uniformLocation, flattenVectors(value.data));
+                } else {
+                    gl.uniform2f(param.uniformLocation, value.x, value.y);
                 }
             }
         },
@@ -134,11 +133,10 @@ namespace Private {
                 if (!param.uniformLocation) {
                     return;
                 }
-                const singleValue = (value.constructor.name) === "Vector3";
-                if (singleValue) {
-                    gl.uniform3f(param.uniformLocation, value.x, value.y, value.z);
-                } else {
+                if (param.arraySize) {
                     gl.uniform3fv(param.uniformLocation, flattenVectors(value.data));
+                } else {
+                    gl.uniform3f(param.uniformLocation, value.x, value.y, value.z);
                 }
             }
         },
@@ -149,11 +147,10 @@ namespace Private {
                 if (!param.uniformLocation) {
                     return;
                 }
-                const singleValue = (value.constructor.name) === "Color";
-                if (singleValue) {
-                    gl.uniform4f(param.uniformLocation, value.r, value.g, value.b, value.a);
-                } else {
+                if (param.arraySize) {
                     gl.uniform4fv(param.uniformLocation, flattenVectors(value.data));
+                } else {
+                    gl.uniform4f(param.uniformLocation, value.r, value.g, value.b, value.a);
                 }
             }
         },
@@ -234,11 +231,10 @@ namespace Private {
                 if (!param.uniformLocation) {
                     return;
                 }
-                const singleValue = typeof (value) === "number";
-                if (singleValue) {
-                    gl.uniform1f(param.uniformLocation, value);
-                } else {
+                if (param.arraySize) {
                     gl.uniform1fv(param.uniformLocation, value.data);
+                } else {
+                    gl.uniform1f(param.uniformLocation, value);
                 }
             }
         },
@@ -249,11 +245,10 @@ namespace Private {
                 if (!param.uniformLocation) {
                     return;
                 }
-                const singleValue = typeof (value) === "number";
-                if (singleValue) {
-                    gl.uniform1i(param.uniformLocation, value);
-                } else {
+                if (param.arraySize) {
                     gl.uniform1iv(param.uniformLocation, value.data);
+                } else {
+                    gl.uniform1i(param.uniformLocation, value);
                 }
             }
         },
@@ -264,11 +259,10 @@ namespace Private {
                 if (!param.uniformLocation) {
                     return;
                 }
-                const singleValue = typeof (value) === "boolean";
-                if (singleValue) {
-                    gl.uniform1i(param.uniformLocation, value);
-                } else {
+                if (param.arraySize) {
                     gl.uniform1iv(param.uniformLocation, value.data);
+                } else {
+                    gl.uniform1i(param.uniformLocation, value);
                 }
             }
         },
