@@ -42,6 +42,7 @@ export type ShaderParamInstanceType =
 export interface ShaderParam {
     type: ShaderParamType;
     uniformLocation: WebGLUniformLocation | null;
+    isArray: boolean;
     textureStage?: number;
 }
 

@@ -19,6 +19,10 @@ namespace Private {
         vec4: 4
     };
     export const ref = new AssetReference(GraphicAsset);
+
+    export function removeComments(code: string) {
+        return code.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, "");
+    }
 }
 
 export interface ShaderAttribute {
@@ -343,14 +347,13 @@ export class Shader extends GraphicAsset {
     }
 
     private extractAttributes(code: string) {
+        
+        const regex = /attribute ((vec|float|uint|int|bool|mat|sampler|samplerCube)+[1234D]*) ([_a-zA-Z0-9]+);/;
+        const matches = Private.removeComments(code).match(new RegExp(regex, "g"));
         const attributes: ShaderAttributes = {};
-        const matches = this.removeComments(code).match(/attribute (vec|float|uint|int|bool|mat|sampler|samplerCube)+[1234D]* [_a-zA-Z0-9]+/g);
         if (matches) {
             for (const match of matches) {
-                // save shader param
-                const tokens = match.split(" ");
-                const type = tokens[1];
-                const name = tokens[2];
+                const [m, type, n, name] = match.match(regex) as RegExpMatchArray;
                 if (type && name) {
                     const componentCount = Private.attributeTypeToComponentCount[type];
                     if (componentCount !== undefined) {
@@ -362,7 +365,7 @@ export class Shader extends GraphicAsset {
                         Debug.logWarning(`Unsupported type: '${type}' for shader attribute '${name}', ignoring this attribute.`);
                     }                    
                 } else {
-                    Debug.logWarning(`Invalid shader attribute syntax: '${match}', ignoring this attribute.`);
+                    Debug.logWarning(`Invalid shader attribute syntax: '${match[0]}', ignoring this attribute.`);
                 }
             }
         }
@@ -377,28 +380,25 @@ export class Shader extends GraphicAsset {
     }
 
     private parseUniforms(code: string, shaderParams: ShaderParams, currentTextureStage: number) {
-        const matches = this.removeComments(code).match(/uniform (vec|float|uint|int|bool|mat|sampler|samplerCube)+[234D]* [_a-zA-Z0-9]+/g);
+
+        const regex = /uniform ((vec|float|uint|int|bool|mat|sampler|samplerCube)[234D]*) ([_a-zA-Z0-9]+)(\[[_a-zA-Z0-9]+\])*;/;
+        const matches = Private.removeComments(code).match(new RegExp(regex, "g"));
         if (matches) {
             for (const match of matches) {
-                // save shader param
-                const tokens = match.split(" ");
-                const type = tokens[1];
-                const name = tokens[2];
+                const [m, type, n, name, isArray] = match.match(regex) as RegExpMatchArray;
+                // save shader param                
                 if (type && name) {
                     shaderParams[name] = {
                         type: type as ShaderParamType,
                         uniformLocation: null,
-                        textureStage: type.match(/sampler+[234D]*/) ? (currentTextureStage++) : undefined
+                        textureStage: type.match(/sampler+[234D]*/) ? (currentTextureStage++) : undefined,
+                        isArray: Boolean(isArray)
                     };
                 } else {
-                    Debug.logWarning(`Invalid shader uniform syntax: '${match}', ignoring this uniform.`);
+                    Debug.logWarning(`Invalid shader uniform syntax: '${match[0]}', ignoring this uniform.`);
                 }
             }
         }
         return currentTextureStage;
-    }
-
-    private removeComments(code: string) {
-        return code.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, "");
     }
 }

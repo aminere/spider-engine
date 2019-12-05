@@ -30,12 +30,12 @@ export class PhongShader extends Shader {
         const params = instance.params as ShaderParams;
         const program = instance.program as WebGLProgram;
         const lightParams: ShaderParams = {
-            "directionalLight.direction": { type: "vec3", uniformLocation: null },
-            "directionalLight.color": { type: "vec4", uniformLocation: null },
-            "directionalLight.shadow": { type: "bool", uniformLocation: null },
-            "directionalLight.shadowBias": { type: "float", uniformLocation: null },
-            "directionalLight.shadowRadius": { type: "float", uniformLocation: null },
-            "directionalLight.shadowMapSize": { type: "vec2", uniformLocation: null }
+            "directionalLight.direction": { type: "vec3", uniformLocation: null, isArray: false },
+            "directionalLight.color": { type: "vec4", uniformLocation: null, isArray: false },
+            "directionalLight.shadow": { type: "bool", uniformLocation: null, isArray: false },
+            "directionalLight.shadowBias": { type: "float", uniformLocation: null, isArray: false },
+            "directionalLight.shadowRadius": { type: "float", uniformLocation: null, isArray: false },
+            "directionalLight.shadowMapSize": { type: "vec2", uniformLocation: null, isArray: false }
         };        
         for (const param of Object.keys(lightParams)) {
             const location = gl.getUniformLocation(program, param);
