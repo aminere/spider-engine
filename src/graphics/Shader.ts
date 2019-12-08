@@ -11,6 +11,7 @@ import { ShaderUtils, ShaderParams, ShaderParamType } from "./ShaderUtils";
 import { WebGL } from "./WebGL";
 import { ObjectProps } from "../core/Types";
 import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
+import { EngineSettings } from "../core/EngineSettings";
 
 namespace Private {
     export const attributeTypeToComponentCount = {
@@ -25,6 +26,10 @@ namespace Private {
     export function removeComments(code: string) {
         return code.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, "");
     }
+
+    export const engineManagedDefinitions = {
+        MAX_DIRECTIONAL_LIGHTS: () => EngineSettings.instance.maxDirectionalLights
+    };
 }
 
 export interface ShaderAttribute {
@@ -72,6 +77,13 @@ export class Shader extends GraphicAsset {
         this.invalidateProgram();
     }
 
+    @Attributes.hidden()
+    protected _vertexCode!: string;
+    @Attributes.hidden()
+    protected _fragmentCode!: string;
+    @Attributes.unserializable()
+    protected _shaderError = false;
+
     @Attributes.unserializable()
     private _instances: ShaderInstances = {
         0: {
@@ -83,12 +95,6 @@ export class Shader extends GraphicAsset {
         }
     };
 
-    @Attributes.hidden()
-    private _vertexCode!: string;
-    @Attributes.hidden()
-    private _fragmentCode!: string;
-    @Attributes.unserializable()
-    private _shaderError = false;
     @Attributes.unserializable()
     private _executedOnce = false;
     
@@ -327,22 +333,7 @@ export class Shader extends GraphicAsset {
         return true;
     }
 
-    private createShader(type: number, code: string, logTypeName: string) {
-        const gl = WebGL.context;
-        const shader = gl.createShader(type) as WebGLShader;
-        gl.shaderSource(shader, code);
-        gl.compileShader(shader);
-
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            Debug.log(`Shader error in ${this.name}.${logTypeName}:`);
-            Debug.log(gl.getShaderInfoLog(shader) as string);
-            return null;
-        }
-
-        return shader;
-    }
-
-    private setupInstance(instance: ShaderInstance, gl: WebGLRenderingContext, visual: Visual) {
+    protected setupInstance(instance: ShaderInstance, gl: WebGLRenderingContext, visual: Visual) {
         const vertexCode = ShaderCodeInjector.doVertexShader(
             this._vertexCode, 
             visual.isSkinned,
@@ -367,6 +358,21 @@ export class Shader extends GraphicAsset {
             return false;
         }
         return this.loadInstance(gl, instance, vertexShader, fragmentShader, vertexCode, fragmentCode);
+    }
+
+    protected createShader(type: number, code: string, logTypeName: string) {
+        const gl = WebGL.context;
+        const shader = gl.createShader(type) as WebGLShader;
+        gl.shaderSource(shader, code);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            Debug.log(`Shader error in ${this.name}.${logTypeName}:`);
+            Debug.log(gl.getShaderInfoLog(shader) as string);
+            return null;
+        }
+
+        return shader;
     }
 
     private extractAttributes(code: string) {
@@ -404,35 +410,81 @@ export class Shader extends GraphicAsset {
 
     private parseUniforms(code: string, shaderParams: ShaderParams, currentTextureStage: number) {
 
-        const regex = /uniform ((vec|float|uint|int|bool|mat|sampler|samplerCube)[234D]*) ([_a-zA-Z0-9]+)(\[([0-9]+)\])*;/;
-        const matches = Private.removeComments(code).match(new RegExp(regex, "g"));
+        const regex = /uniform ((vec|float|uint|int|bool|mat|sampler|samplerCube)[234D]*) ([_a-zA-Z0-9]+)(\[([_a-zA-Z0-9]+)\])*;/;
+        const _code = Private.removeComments(code);
+        const matches = _code.match(new RegExp(regex, "g"));
         if (matches) {
+
+            const parseArraySize = (arraySize?: string) => {
+                if (arraySize === undefined) {
+                    return undefined;
+                }
+
+                const i = parseInt(arraySize, 10);
+                if (`${i}` === arraySize) {
+                    return i;
+                }
+
+                if (arraySize in Private.engineManagedDefinitions) {
+                    return Private.engineManagedDefinitions[arraySize]();
+                }
+                
+                // Size is a string literal, check it it's defined somewhere
+                const match = code.match(/#define [_a-zA-Z]+ ([0-9]+)/);
+                if (!match) {
+                    return undefined;
+                }
+
+                const [m, size] = match;
+                if (size === undefined) {
+                    return undefined;
+                }
+
+                return parseInt(size, 10);
+            };
+
+            const registerDefaultParam = (name: string, type: string, arraySize?: string) => {
+                shaderParams[name] = {
+                    type: type as ShaderParamType,
+                    uniformLocation: null,
+                    textureStage: type.match(/sampler+[234D]*/) ? (currentTextureStage++) : undefined,
+                    arraySize: parseArraySize(arraySize)
+                };
+            };
+
             for (const match of matches) {
                 const [m, type, n, name, a, arraySize] = match.match(regex) as RegExpMatchArray;
                 // save shader param
                 if (type && name) {
-                    if (type === "sampler2D" && Boolean(arraySize)) {
-                        const _arraySize = parseInt(arraySize, 10);
-                        shaderParams[name] = {
-                            type: "sampler2DArray",
-                            uniformLocation: null,
-                            textureStage: (() => {
-                                const stages: number[] = [];
-                                for (let i = 0; i < _arraySize; ++i) {
-                                    stages.push(currentTextureStage++);
-                                }
-                                return stages;
-                            })(),
-                            arraySize: _arraySize
-                        };
+                    if (Boolean(arraySize)) {
+                        const _arraySize = parseArraySize(arraySize) as number;
+                        if (type === "sampler2D") {
+                            shaderParams[name] = {
+                                type: "sampler2DArray",
+                                uniformLocation: null,
+                                textureStage: (() => {
+                                    const stages: number[] = [];
+                                    for (let i = 0; i < _arraySize; ++i) {
+                                        stages.push(currentTextureStage++);
+                                    }
+                                    return stages;
+                                })(),
+                                arraySize: _arraySize
+                            };
+                        } else if (type === "mat4") {
+                            for (let i = 0; i < _arraySize; ++i) {
+                                const paramName = `${name}[${i}]`;
+                                shaderParams[paramName] = {
+                                    type: type as ShaderParamType,
+                                    uniformLocation: null
+                                };
+                            }
+                        } else {
+                            registerDefaultParam(name, type, arraySize);
+                        }
                     } else {
-                        shaderParams[name] = {
-                            type: type as ShaderParamType,
-                            uniformLocation: null,
-                            textureStage: type.match(/sampler+[234D]*/) ? (currentTextureStage++) : undefined,
-                            arraySize: arraySize ? parseInt(arraySize, 10) : undefined
-                        };
-                    }                    
+                        registerDefaultParam(name, type, arraySize);
+                    }                                    
                 } else {
                     Debug.logWarning(`Invalid shader uniform syntax: '${match[0]}', ignoring this uniform.`);
                 }

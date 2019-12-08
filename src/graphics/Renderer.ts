@@ -31,6 +31,7 @@ import { defaultAssets } from "../assets/DefaultAssets";
 import { IRenderer, IRendererInternal } from "./IRenderer";
 import { IObjectManagerInternal } from "../core/IObjectManager";
 import { Component } from "../core/Component";
+import { EngineSettings } from "../core/EngineSettings";
 
 interface RenderPassDefinition {
     begin: (gl: WebGLRenderingContext) => void;
@@ -61,7 +62,6 @@ namespace Private {
     export const numRenderPasses = RenderPass.Transparent + 1;
     export const initialCameraPoolSize = 8;
     export const initialMaterialPoolSize = 128;
-    export const maxDirectionalLights = 4;
     export const defaultShadowMapSize = new Vector2(2048, 2048);
     export let defaultPerspectiveCamera: Camera | null = null;
 
@@ -118,7 +118,7 @@ namespace Private {
 
                     // lighting & shadowing
                     if (hasLights) {
-                        const lightCount = Math.min(Private.maxDirectionalLights, Private.lights.length);
+                        const lightCount = Math.min(EngineSettings.instance.maxDirectionalLights, Private.lights.length);
                         shader.applyParam("directionalLightCount", lightCount, visualBucketId);
                         for (let i = 0; i < lightCount; ++i) {
                             const light = Private.lights[i];
@@ -128,7 +128,11 @@ namespace Private {
                                     light.viewMatrix
                                 );
                                 shader.applyParam(`directionalLightMatrices[${i}]`, lightMatrix, visualBucketId);
-                                shader.applyReferenceArrayParam(`directionalShadowMaps`, Private.shadowMaps, visualBucketId);
+                                shader.applyReferenceArrayParam(
+                                    `directionalShadowMaps`,
+                                    Private.shadowMaps.filter(Boolean), 
+                                    visualBucketId
+                                );
                             }
                             
                             const lightDir = Vector3.fromPool().copy(light.entity.transform.worldForward);
@@ -238,7 +242,7 @@ namespace Private {
     }
 
     export function renderShadowMaps(camera: Camera) {
-        Private.shadowMaps.length = Private.maxDirectionalLights;
+        Private.shadowMaps.length = EngineSettings.instance.maxDirectionalLights;
 
         const context = WebGL.context;
         // render to shadow maps

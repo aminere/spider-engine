@@ -4,6 +4,7 @@ import { ExponentialFog } from "./Fog";
 import { ScenesInternal } from "../core/Scenes";
 import { Interfaces } from "../core/Interfaces";
 import { WebGL } from "./WebGL";
+import { EngineSettings } from "../core/EngineSettings";
 
 /**
  * @hidden
@@ -105,7 +106,8 @@ export class ShaderCodeInjector {
         fragmentCode: string, 
         useFog?: boolean,
         useShadowMap?: boolean,
-        useVertexColor?: boolean
+        useVertexColor?: boolean,
+        useDirectionalLights?: boolean
     ) {
         let directives = "";
         let definitions = "";
@@ -143,6 +145,13 @@ export class ShaderCodeInjector {
         }
     #endif`;
 
+            needInjection = true;
+        }
+
+        if (useDirectionalLights) {
+            directives = `${directives}
+    #define MAX_DIRECTIONAL_LIGHTS ${EngineSettings.instance.maxDirectionalLights}     
+            `;
             needInjection = true;
         }
 

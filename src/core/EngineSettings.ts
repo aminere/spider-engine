@@ -21,6 +21,7 @@ export class EngineSettings extends UniqueObject {
     canvasAlpha = true;
     startupScene?: string = undefined; // must be assigned for deserializer to write into it.
     useCustomDefaultAssets?: boolean = undefined;
+    maxDirectionalLights = 4;
 
     static load() {
         return new Promise((resolve, reject) => {

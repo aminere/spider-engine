@@ -93,14 +93,10 @@ namespace Private {
         "deltaTime": true,
         "frame": true,
 
-        "lightMatrix": true,
-        "shadowMap": true,
-        "directionalLight.direction": true,
-        "directionalLight.color": true,
-        "directionalLight.shadow": true,
-        "directionalLight.shadowBias": true,
-        "directionalLight.shadowRadius": true,
-        "directionalLight.shadowMapSize": true
+        // Lighting
+        "directionalLightMatrices": true,
+        "directionalShadowMaps": true,
+        "directionalLightCount": true
     };
 
     const textureStages: number[] = [];
@@ -192,15 +188,11 @@ namespace Private {
                 const textureStage = param.textureStage as number[];
                 const textureRefs = value as AssetReferenceArray<Texture>;
                 textureStages.length = 0;
-                for (let i = 0; i < textureStage.length; ++i) {
+                for (let i = 0; i < textureRefs.data.length; ++i) {
                     const stage = textureStage[i];
                     const texture = textureRefs.data[i].asset;
                     if (texture && texture.begin(stage)) {
-                        textureStages.push[stage];
-                    } else {
-                        if (defaultAssets.whiteTexture.begin(stage)) {
-                            textureStages.push[stage];
-                        }
+                        textureStages.push(stage);
                     }
                 }
                 gl.uniform1iv(param.uniformLocation, textureStages);                
