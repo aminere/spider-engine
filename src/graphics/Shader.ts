@@ -10,6 +10,7 @@ import { AssetReference } from "../serialization/AssetReference";
 import { ShaderUtils, ShaderParams, ShaderParamType } from "./ShaderUtils";
 import { WebGL } from "./WebGL";
 import { ObjectProps } from "../core/Types";
+import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
 
 namespace Private {
     export const attributeTypeToComponentCount = {
@@ -19,6 +20,7 @@ namespace Private {
         vec4: 4
     };
     export const ref = new AssetReference(GraphicAsset);
+    export const refArray = new AssetReferenceArray(GraphicAsset);
 
     export function removeComments(code: string) {
         return code.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, "");
@@ -104,7 +106,7 @@ export class Shader extends GraphicAsset {
 
         // Apply shader params
         for (const param of Object.keys(materialParams)) {
-            this.applyParameter(param, materialParams[param]);
+            this.applyParam(param, materialParams[param]);
         }
 
         return true;
@@ -174,7 +176,7 @@ export class Shader extends GraphicAsset {
     }
 
     // tslint:disable-next-line
-    applyParameter(name: string, value: any, bucketId?: string) {
+    applyParam(name: string, value: any, bucketId?: string) {
         const id = bucketId || 0;
         const instance = this._instances[id];
         const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
@@ -184,7 +186,7 @@ export class Shader extends GraphicAsset {
         }
     }
 
-    applyReferenceParameter(name: string, referred: GraphicAsset, bucketId?: string) {
+    applyReferenceParam(name: string, referred: GraphicAsset, bucketId?: string) {
         const id = bucketId || 0;
         const instance = this._instances[id];
         const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
@@ -193,6 +195,27 @@ export class Shader extends GraphicAsset {
             const { ref } = Private;
             ref.setAssetFast(referred);
             ShaderUtils.applyShaderParam(WebGL.context, param, ref);
+        }
+    }
+
+    applyReferenceArrayParam(name: string, referreds: GraphicAsset[], bucketId?: string) {
+        const id = bucketId || 0;
+        const instance = this._instances[id];
+        const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
+        const param = params[name];
+        if (param !== undefined) {
+            const { refArray } = Private;
+            let currentRef = 0;
+            for (let i = 0; i < referreds.length && i < refArray.data.length; ++i) {
+                refArray.data[i].setAssetFast(referreds[i]);
+                ++currentRef;
+            }
+            for (let i = currentRef; i < referreds.length; ++i) {
+                refArray.grow(referreds[i]);
+                ++currentRef;
+            }
+            refArray.data.length = currentRef;
+            ShaderUtils.applyShaderParam(WebGL.context, param, refArray);
         }
     }
     
@@ -388,12 +411,28 @@ export class Shader extends GraphicAsset {
                 const [m, type, n, name, a, arraySize] = match.match(regex) as RegExpMatchArray;
                 // save shader param
                 if (type && name) {
-                    shaderParams[name] = {
-                        type: type as ShaderParamType,
-                        uniformLocation: null,
-                        textureStage: type.match(/sampler+[234D]*/) ? (currentTextureStage++) : undefined,
-                        arraySize: arraySize ? parseInt(arraySize, 10) : undefined
-                    };
+                    if (type === "sampler2D" && Boolean(arraySize)) {
+                        const _arraySize = parseInt(arraySize, 10);
+                        shaderParams[name] = {
+                            type: "sampler2DArray",
+                            uniformLocation: null,
+                            textureStage: (() => {
+                                const stages: number[] = [];
+                                for (let i = 0; i < _arraySize; ++i) {
+                                    stages.push(currentTextureStage++);
+                                }
+                                return stages;
+                            })(),
+                            arraySize: _arraySize
+                        };
+                    } else {
+                        shaderParams[name] = {
+                            type: type as ShaderParamType,
+                            uniformLocation: null,
+                            textureStage: type.match(/sampler+[234D]*/) ? (currentTextureStage++) : undefined,
+                            arraySize: arraySize ? parseInt(arraySize, 10) : undefined
+                        };
+                    }                    
                 } else {
                     Debug.logWarning(`Invalid shader uniform syntax: '${match[0]}', ignoring this uniform.`);
                 }

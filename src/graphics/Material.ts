@@ -229,7 +229,7 @@ export class Material extends Asset {
             return;
         }
         this._shaderParams[name] = value;
-        shader.applyParameter(name, value);
+        shader.applyParam(name, value);
     }
 
     applyReferenceParameter(name: string, referred: GraphicAsset) {
@@ -239,7 +239,7 @@ export class Material extends Asset {
         }
         const ref = this._shaderParams[name] as AssetReference<GraphicAsset>;
         ref.setAssetFast(referred);
-        shader.applyParameter(name, ref);
+        shader.applyParam(name, ref);
     }
 
     upgrade(json: SerializedObject, previousVersion: number) {

@@ -113,13 +113,13 @@ namespace Private {
                         return;
                     }
 
-                    shader.applyParameter("projectionMatrix", camera.getProjectionMatrix(), visualBucketId);
-                    shader.applyParameter("viewMatrix", viewMatrix, visualBucketId);
+                    shader.applyParam("projectionMatrix", camera.getProjectionMatrix(), visualBucketId);
+                    shader.applyParam("viewMatrix", viewMatrix, visualBucketId);
 
                     // lighting & shadowing
                     if (hasLights) {
                         const lightCount = Math.min(Private.maxDirectionalLights, Private.lights.length);
-                        shader.applyParameter("directionalLightCount", lightCount, visualBucketId);
+                        shader.applyParam("directionalLightCount", lightCount, visualBucketId);
                         for (let i = 0; i < lightCount; ++i) {
                             const light = Private.lights[i];
                             if (visualBucket.reference.receiveShadows) {
@@ -127,32 +127,32 @@ namespace Private {
                                     light.getProjectionMatrix(), 
                                     light.viewMatrix
                                 );
-                                shader.applyParameter(`directionalLightMatrices[${i}]`, lightMatrix, visualBucketId);
-                                shader.applyReferenceParameter(`directionalShadowMaps[${i}]`, Private.shadowMaps[i], visualBucketId);
+                                shader.applyParam(`directionalLightMatrices[${i}]`, lightMatrix, visualBucketId);
+                                shader.applyReferenceArrayParam(`directionalShadowMaps`, Private.shadowMaps, visualBucketId);
                             }
                             
                             const lightDir = Vector3.fromPool().copy(light.entity.transform.worldForward);
                             lightDir.transformDirection(viewMatrix);
-                            shader.applyParameter(`directionalLights.direction[${i}]`, lightDir, visualBucketId);
-                            shader.applyParameter(`directionalLights.color[${i}]`, light.color, visualBucketId);
-                            shader.applyParameter(`directionalLights.shadow[${i}]`, light.castShadows, visualBucketId);
-                            shader.applyParameter(`directionalLights.shadowBias[${i}]`, light.shadowBias, visualBucketId);
-                            shader.applyParameter(`directionalLights.shadowRadius[${i}]`, light.shadowRadius, visualBucketId);
-                            shader.applyParameter(`directionalLights.shadowMapSize[${i}]`, Private.defaultShadowMapSize, visualBucketId);
+                            shader.applyParam(`directionalLights[${i}].direction`, lightDir, visualBucketId);
+                            shader.applyParam(`directionalLights[${i}].color`, light.color, visualBucketId);
+                            shader.applyParam(`directionalLights[${i}].shadow`, light.castShadows, visualBucketId);
+                            shader.applyParam(`directionalLights[${i}].shadowBias`, light.shadowBias, visualBucketId);
+                            shader.applyParam(`directionalLights[${i}].shadowRadius`, light.shadowRadius, visualBucketId);
+                            shader.applyParam(`directionalLights[${i}].shadowMapSize`, Private.defaultShadowMapSize, visualBucketId);
                         }
                     } else {
-                        shader.applyParameter("directionalLightCount", 0, visualBucketId);
+                        shader.applyParam("directionalLightCount", 0, visualBucketId);
                     }
 
                     // fog
                     if (visualBucket.reference.receiveFog && fog) {
-                        shader.applyParameter("fogColor", fog.color, visualBucketId);
+                        shader.applyParam("fogColor", fog.color, visualBucketId);
                         if (fog.isA(ExponentialFog)) {
-                            shader.applyParameter("fogDensity", (fog as ExponentialFog).density, visualBucketId);
+                            shader.applyParam("fogDensity", (fog as ExponentialFog).density, visualBucketId);
                         } else {
                             const linearFog = fog as LinearFog;
-                            shader.applyParameter("fogNear", linearFog.near, visualBucketId);
-                            shader.applyParameter("fogFar", linearFog.far, visualBucketId);
+                            shader.applyParam("fogNear", linearFog.near, visualBucketId);
+                            shader.applyParam("fogFar", linearFog.far, visualBucketId);
                         }
                     }
 
@@ -171,17 +171,17 @@ namespace Private {
                                 ? viewMatrix
                                 : Private.dummyMatrix.multiplyMatrices(viewMatrix, worldMatrix);
                             Private.normalMatrix.getNormalMatrix(modelViewMatrix);
-                            shader.applyParameter("worldMatrix", worldMatrix, visualBucketId);
-                            shader.applyParameter("modelViewMatrix", modelViewMatrix, visualBucketId);
-                            shader.applyParameter("normalMatrix", Private.normalMatrix, visualBucketId);
-                            shader.applyParameter("screenSize", screenSize, visualBucketId);
-                            shader.applyParameter("time", Time.time, visualBucketId);
-                            shader.applyParameter("deltaTime", Time.deltaTime, visualBucketId);
-                            shader.applyParameter("frame", Time.currentFrame, visualBucketId);
+                            shader.applyParam("worldMatrix", worldMatrix, visualBucketId);
+                            shader.applyParam("modelViewMatrix", modelViewMatrix, visualBucketId);
+                            shader.applyParam("normalMatrix", Private.normalMatrix, visualBucketId);
+                            shader.applyParam("screenSize", screenSize, visualBucketId);
+                            shader.applyParam("time", Time.time, visualBucketId);
+                            shader.applyParam("deltaTime", Time.deltaTime, visualBucketId);
+                            shader.applyParam("frame", Time.currentFrame, visualBucketId);
                             const material = (visual.animatedMaterial || visual.material) as Material;
                             const materialParams = material.shaderParams;
                             for (const param of Object.keys(materialParams)) {
-                                shader.applyParameter(param, materialParams[param], visualBucketId);
+                                shader.applyParam(param, materialParams[param], visualBucketId);
                             }
                             vertexBuffer.draw(gl);
                         }
@@ -282,9 +282,9 @@ namespace Private {
                         //     var nVertexMatrices = Math.floor((nVertexUniforms - 20) / 4);
                         // }
                         currentShader.begin();
-                        currentShader.applyParameter("projectionMatrix", Private.lights[i].getProjectionMatrix());
+                        currentShader.applyParam("projectionMatrix", Private.lights[i].getProjectionMatrix());
                         if (hasSkinning) {
-                            currentShader.applyParameter("viewMatrix", Private.lights[i].viewMatrix);
+                            currentShader.applyParam("viewMatrix", Private.lights[i].viewMatrix);
                         }
                         previousRenderDepthShader = currentShader;
                     }
@@ -296,21 +296,21 @@ namespace Private {
                             if (!skinnedMesh.boneTexture) {
                                 continue;
                             }
-                            currentShader.applyParameter("bindMatrix", skinnedMesh.bindMatrix);
-                            currentShader.applyParameter("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
+                            currentShader.applyParam("bindMatrix", skinnedMesh.bindMatrix);
+                            currentShader.applyParam("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
                             if (WebGL.extensions.OES_texture_float) {
                                 Private.skinnedRenderDepthBonesTexture.asset = skinnedMesh.boneTexture;
-                                currentShader.applyParameter("boneTexture", Private.skinnedRenderDepthBonesTexture);
-                                currentShader.applyParameter("boneTextureSize", skinnedMesh.boneTextureSize);
+                                currentShader.applyParam("boneTexture", Private.skinnedRenderDepthBonesTexture);
+                                currentShader.applyParam("boneTextureSize", skinnedMesh.boneTextureSize);
                             } else {
-                                currentShader.applyParameter("boneMatrices", skinnedMesh.boneMatrices);
+                                currentShader.applyParam("boneMatrices", skinnedMesh.boneMatrices);
                             }
                         } else {
                             const modelViewMatrix = Private.dummyMatrix.multiplyMatrices(
                                 Private.lights[i].viewMatrix, 
                                 visual.worldTransform
                             );
-                            currentShader.applyParameter("modelViewMatrix", modelViewMatrix);
+                            currentShader.applyParam("modelViewMatrix", modelViewMatrix);
                         }
                         vertexBuffer.draw(context);
                     }
@@ -562,9 +562,9 @@ export class RendererInternal {
                     const composeShader = defaultAssets.shaders.compose;
                     if (composeShader.begin()) {
                         IRendererInternal.instance.renderTarget = camera.renderTarget;
-                        composeShader.applyReferenceParameter("scene", camera.sceneRenderTarget);
-                        composeShader.applyReferenceParameter("postFX", inputRT);
-                        composeShader.applyParameter("postFxIntensity", bloom.intensity);                            
+                        composeShader.applyReferenceParam("scene", camera.sceneRenderTarget);
+                        composeShader.applyReferenceParam("postFX", inputRT);
+                        composeShader.applyParam("postFxIntensity", bloom.intensity);                            
                         GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, composeShader);
                     }
                 }
