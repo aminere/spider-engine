@@ -396,6 +396,9 @@ namespace Private {
         const rightProj = Vector3.fromPool(), upProj = Vector3.fromPool(), forwardProj = Vector3.fromPool();
         for (let i = 0; i < FrustumCorner.Count; ++i) {
             const corner = camera.frustum.corners[i];
+            // if (i < 4) {
+            //     fCenter.copy(camera.entity.transform.worldForward).multiply(-far).add(transform.worldPosition);
+            // }
             localCornerPos.copy(corner).transform(light.viewMatrix);
             rightProj.copy(localCornerPos).projectOnVector(light.light.entity.transform.worldRight);
             upProj.copy(localCornerPos).projectOnVector(light.light.entity.transform.worldUp);
