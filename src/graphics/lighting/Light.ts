@@ -63,10 +63,7 @@ export class Light extends Component {
         TextureSizePow2, 
         name => name.substring(1) // Trim the _ from the display name
     )
-    shadowMapSize = TextureSizePow2._2048;    
-
-    @Attributes.unserializable()
-    viewMatrix = new Matrix44();
+    shadowMapSize = TextureSizePow2._2048;
     
     get frustum(): Frustum | null { return this._projector.instance ? this._projector.instance.frustum : null; }
 
