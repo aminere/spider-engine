@@ -422,7 +422,18 @@ namespace Private {
                 maxZ = forwardProj.z;
             }
         }
-        return Matrix44.fromPool().makeOrthoProjection(left, right, top, bottom, 0, -minZ);
+
+        // TODO debugging, revert this!
+        const horizontalExtent = Math.max(Math.abs(left), Math.abs(right));
+        const verticalExtent = Math.max(Math.abs(top), Math.abs(bottom));
+        return Matrix44.fromPool().makeOrthoProjection(
+            -horizontalExtent, 
+            horizontalExtent, 
+            verticalExtent, 
+            -verticalExtent, 
+            0,
+            -minZ
+        );
     }
 }
 
