@@ -24,7 +24,6 @@ import { AssetReference } from "../serialization/AssetReference";
 import { Texture } from "./Texture";
 import { GeometryProvider } from "./geometry/GeometryProvider";
 import { WebGL } from "./WebGL";
-import { Components } from "../core/Components";
 import { Time } from "../core/Time";
 import { ScenesInternal } from "../core/Scenes";
 import { defaultAssets } from "../assets/DefaultAssets";
@@ -34,35 +33,36 @@ import { Component } from "../core/Component";
 import { EngineSettings } from "../core/EngineSettings";
 import { Projector } from "./Projector";
 import { FrustumCorner } from "./Frustum";
+import { DirectionalLight } from "./lighting/DirectionalLight";
 
-interface RenderPassDefinition {
+interface IRenderPassDefinition {
     begin: (gl: WebGLRenderingContext) => void;
     makeViewMatrix: (viewMatrixIn: Matrix44) => Matrix44;
     makeWorldMatrix: (worldMatrixIn: Matrix44) => Matrix44;
     renderStateBucketMap: RenderStateBucketsMap;
 }
 
-interface VisualBucket {
+interface IVisualBucket {
     reference: Visual;
     vertexBufferToVisualsMap: VertexBufferToVisualsMap;
 }
 
-interface RenderStateBucket {
+interface IRenderStateBucket {
     reference: Material;
     shaderToVisualBucketsMap: ShaderToVisualBucketsMap;
 }
 
-type RenderPassToDefinitionMap = Map<number, RenderPassDefinition>;
-type VertexBufferToVisualsMap = Map<VertexBuffer, Visual[]>;
-type VisualBucketsMap = Map<string, VisualBucket>;
-type ShaderToVisualBucketsMap = Map<Shader, VisualBucketsMap>;
-type RenderStateBucketsMap = Map<string, RenderStateBucket>;
-
-interface LightInfo {
+interface IRenderableLight {
     light: Light;
     viewMatrix: Matrix44;
     projectionMatrix: Matrix44;
 }
+
+type RenderPassToDefinitionMap = Map<number, IRenderPassDefinition>;
+type VertexBufferToVisualsMap = Map<VertexBuffer, Visual[]>;
+type VisualBucketsMap = Map<string, IVisualBucket>;
+type ShaderToVisualBucketsMap = Map<Shader, VisualBucketsMap>;
+type RenderStateBucketsMap = Map<string, IRenderStateBucket>;
 
 namespace Private {
     export let canvas: HTMLCanvasElement;
@@ -79,26 +79,26 @@ namespace Private {
     export const uiProjectionMatrix = new Matrix44();
     export const cameraToRenderPassMap = new Map<Camera, RenderPassToDefinitionMap>();
 
-    export const renderPassToDefinitionMapPool = new MapPool<number, RenderPassDefinition>(Private.initialCameraPoolSize);
-    export const renderStateBucketMapPool = new MapPool<string, RenderStateBucket>(Private.numRenderPasses * 3); // average 3 cameras
+    export const renderPassToDefinitionMapPool = new MapPool<number, IRenderPassDefinition>(Private.initialCameraPoolSize);
+    export const renderStateBucketMapPool = new MapPool<string, IRenderStateBucket>(Private.numRenderPasses * 3); // average 3 cameras
     export const shaderToVisualBucketsMapPool = new MapPool<Shader, VisualBucketsMap>(16);
-    export const visualBucketsMapPool = new MapPool<string, VisualBucket>(16);
+    export const visualBucketsMapPool = new MapPool<string, IVisualBucket>(16);
     export const vertexBufferToVisualsMapPool = new MapPool<VertexBuffer, Visual[]>(16);
 
     export let currentRenderTarget: RenderTarget | null = null;
     export let showWireFrame = false;
 
     // shadow mapping
-    export let lights: LightInfo[] = [];
+    export let directionalLights: IRenderableLight[];    
+    export const directionalShadowMaps: RenderTarget[] = [];    
     export const shadowCasters = new Map<VertexBuffer, Visual[]>();
-    export const shadowMaps: RenderTarget[] = [];    
     export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);   
 
-    export function doRenderPass(renderPassDefinition: RenderPassDefinition, gl: WebGLRenderingContext, camera: Camera) {
+    export function doRenderPass(renderPassDefinition: IRenderPassDefinition, gl: WebGLRenderingContext, camera: Camera) {
         if (renderPassDefinition.renderStateBucketMap.size === 0) {
             return;
         }
-        const hasLights = Private.lights.length > 0;
+        const hasDirectionalLights = Private.directionalLights.length > 0;
         const fog = ScenesInternal.list()[0].fog;
         renderPassDefinition.begin(gl);
         // this ensure materials with additive blending mode are rendered last
@@ -106,7 +106,7 @@ namespace Private {
         // (for example separate into different buckets based on priority - controls the order but doesn't need uploadState multiple times.)
         const sortedBuckedIds = Array.from(renderPassDefinition.renderStateBucketMap.keys()).sort();
         for (const bucketId of sortedBuckedIds) {
-            const renderStateBucket = renderPassDefinition.renderStateBucketMap.get(bucketId) as RenderStateBucket;
+            const renderStateBucket = renderPassDefinition.renderStateBucketMap.get(bucketId) as IRenderStateBucket;
             renderStateBucket.reference.uploadState();
             if (renderStateBucket.reference.depthTest) {
                 gl.enable(gl.DEPTH_TEST);
@@ -125,11 +125,11 @@ namespace Private {
                     shader.applyParam("viewMatrix", viewMatrix, visualBucketId);
 
                     // lighting & shadowing
-                    if (hasLights) {
-                        const lightCount = Math.min(EngineSettings.instance.maxDirectionalLights, Private.lights.length);
-                        shader.applyParam("directionalLightCount", lightCount, visualBucketId);
-                        for (let i = 0; i < lightCount; ++i) {
-                            const { light, projectionMatrix, viewMatrix: lightViewMatrix } = Private.lights[i];
+                    if (hasDirectionalLights) {
+                        const numDirectionalLights = Math.min(EngineSettings.instance.maxDirectionalLights, directionalLights.length);
+                        shader.applyParam("directionalLightCount", numDirectionalLights, visualBucketId);
+                        for (let i = 0; i < numDirectionalLights; ++i) {
+                            const { light, projectionMatrix, viewMatrix: lightViewMatrix } = Private.directionalLights[i];
                             if (visualBucket.reference.receiveShadows) {
                                 const lightMatrix = Private.dummyMatrix.multiplyMatrices(
                                     projectionMatrix,
@@ -137,14 +137,14 @@ namespace Private {
                                 );
                                 shader.applyParam(`directionalLightMatrices[${i}]`, lightMatrix, visualBucketId);
                                 shader.applyReferenceArrayParam(
-                                    `directionalShadowMaps`,
-                                    Private.shadowMaps.filter(Boolean), 
+                                    "directionalShadowMaps",
+                                    Private.directionalShadowMaps.filter(Boolean),
                                     visualBucketId
                                 );
                             }
-                            
-                            const lightDir = Vector3.fromPool().copy(light.entity.transform.worldForward);
-                            lightDir.transformDirection(viewMatrix);
+                            const lightDir = Vector3.fromPool()
+                                .copy(light.entity.transform.worldForward)
+                                .transformDirection(viewMatrix);                            
                             shader.applyParam(`directionalLights[${i}].direction`, lightDir, visualBucketId);
                             shader.applyParam(`directionalLights[${i}].color`, light.color, visualBucketId);
                             shader.applyParam(`directionalLights[${i}].shadow`, light.castShadows, visualBucketId);
@@ -155,7 +155,7 @@ namespace Private {
                     } else {
                         shader.applyParam("directionalLightCount", 0, visualBucketId);
                     }
-
+                    
                     // fog
                     if (visualBucket.reference.receiveFog && fog) {
                         shader.applyParam("fogColor", fog.color, visualBucketId);
@@ -215,7 +215,7 @@ namespace Private {
         }
 
         const renderPassToDefinitionMap = Private.cameraToRenderPassMap.get(camera) as RenderPassToDefinitionMap;
-        const renderStateBuckedIdToShadersMap = (renderPassToDefinitionMap.get(material.renderPass) as RenderPassDefinition).renderStateBucketMap;
+        const renderStateBuckedIdToShadersMap = (renderPassToDefinitionMap.get(material.renderPass) as IRenderPassDefinition).renderStateBucketMap;
         const materialBucketId = material.buckedId;
         let renderStateBucket = renderStateBuckedIdToShadersMap.get(materialBucketId);
         if (!renderStateBucket) {
@@ -250,7 +250,7 @@ namespace Private {
     }
 
     export function renderShadowMaps(camera: Camera) {
-        Private.shadowMaps.length = EngineSettings.instance.maxDirectionalLights;
+        Private.directionalShadowMaps.length = EngineSettings.instance.maxDirectionalLights;
 
         const context = WebGL.context;
         // render to shadow maps
@@ -260,21 +260,22 @@ namespace Private {
         // render back faces to avoid self-shadowing artifacts
         context.enable(context.CULL_FACE);
         context.cullFace(context.FRONT);
-        const numShadowMaps = Math.min(Private.lights.length, Private.shadowMaps.length);
 
+        // Directional shadow maps
+        const numDirectionalShadowMaps = Math.min(Private.directionalLights.length, Private.directionalShadowMaps.length);
         let previousRenderDepthShader: Shader | null = null;
-        for (let i = 0; i < numShadowMaps; ++i) {
-            let shadowMap = Private.shadowMaps[i];
+        for (let i = 0; i < numDirectionalShadowMaps; ++i) {
+            let shadowMap = Private.directionalShadowMaps[i];
             if (!shadowMap) {
                 const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x);
                 shadowMap = new RenderTarget(size, size, true, false, TextureFiltering.Nearest);
-                Private.shadowMaps[i] = shadowMap;
+                Private.directionalShadowMaps[i] = shadowMap;
             }
 
             try {
                 IRendererInternal.instance.renderTarget = shadowMap;
-                Private.lights[i].viewMatrix.copy(makeLightViewMatrix(camera, Private.lights[i].light));
-                Private.lights[i].projectionMatrix.copy(makeLightProjectionMatrix(camera, Private.lights[i]));
+                Private.directionalLights[i].viewMatrix.copy(makeLightViewMatrix(camera, Private.directionalLights[i].light));
+                Private.directionalLights[i].projectionMatrix.copy(makeLightProjectionMatrix(camera, Private.directionalLights[i]));
 
                 // TODO this is horribly inefficient, must unify the shading pipeline and use a shader with multiple 
                 // instances like the standard shader!!
@@ -295,9 +296,9 @@ namespace Private {
                         //     var nVertexMatrices = Math.floor((nVertexUniforms - 20) / 4);
                         // }
                         currentShader.begin();
-                        currentShader.applyParam("projectionMatrix", Private.lights[i].projectionMatrix);
+                        currentShader.applyParam("projectionMatrix", Private.directionalLights[i].projectionMatrix);
                         if (hasSkinning) {
-                            currentShader.applyParam("viewMatrix", Private.lights[i].viewMatrix);
+                            currentShader.applyParam("viewMatrix", Private.directionalLights[i].viewMatrix);
                         }
                         previousRenderDepthShader = currentShader;
                     }
@@ -320,7 +321,7 @@ namespace Private {
                             }
                         } else {
                             const modelViewMatrix = Private.dummyMatrix.multiplyMatrices(
-                                Private.lights[i].viewMatrix, 
+                                Private.directionalLights[i].viewMatrix, 
                                 visual.worldTransform
                             );
                             currentShader.applyParam("modelViewMatrix", modelViewMatrix);
@@ -386,7 +387,7 @@ namespace Private {
             .invert();
     }
 
-    export function makeLightProjectionMatrix(camera: Camera, light: LightInfo) {
+    export function makeLightProjectionMatrix(camera: Camera, light: IRenderableLight) {
         if (!camera.frustum) {
             return Matrix44.identity;
         }
@@ -540,11 +541,14 @@ export class RendererInternal {
         }
 
         const gl = WebGL.context;
-        Private.lights = (renderables.Light as Light[]).map(light => ({
-            light,
-            viewMatrix: Matrix44.fromPool(),
-            projectionMatrix: Matrix44.fromPool()
-        }));
+        const lights = (renderables.Light as Light[]);
+        Private.directionalLights = lights
+            .filter(light => light.type.isA(DirectionalLight))
+            .map(light => ({
+                light,
+                viewMatrix: Matrix44.fromPool(),
+                projectionMatrix: Matrix44.fromPool()
+            }));
 
         // gl.depthMask(true);
         if (Private.cameraToRenderPassMap.size > 0) {
@@ -623,8 +627,8 @@ export class RendererInternal {
                 if (preRender) {
                     preRender(camera);
                 }
-                Private.doRenderPass(renderPassSelector.get(RenderPass.Opaque) as RenderPassDefinition, gl, camera);
-                Private.doRenderPass(renderPassSelector.get(RenderPass.Transparent) as RenderPassDefinition, gl, camera);
+                Private.doRenderPass(renderPassSelector.get(RenderPass.Opaque) as IRenderPassDefinition, gl, camera);
+                Private.doRenderPass(renderPassSelector.get(RenderPass.Transparent) as IRenderPassDefinition, gl, camera);
                 if (postRender) {
                     postRender(camera);
                 }
