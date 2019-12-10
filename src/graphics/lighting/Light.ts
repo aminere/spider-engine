@@ -14,9 +14,8 @@ export class Light extends Component {
 
     get version() { return 2; }
     
-    set type(type: LightType) {
-        this._type.instance = type;
-    }
+    set type(type: LightType) { this._type.instance = type; }
+    get type() { return this._type.instance as LightType; }
 
     intensity = 1;
     color = new Color(1, 1, 1, 1);

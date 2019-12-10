@@ -31,9 +31,10 @@ import { IRenderer, IRendererInternal } from "./IRenderer";
 import { IObjectManagerInternal } from "../core/IObjectManager";
 import { Component } from "../core/Component";
 import { EngineSettings } from "../core/EngineSettings";
-import { Projector } from "./Projector";
-import { FrustumCorner } from "./Frustum";
+import { FrustumCorner, Frustum } from "./Frustum";
 import { DirectionalLight } from "./lighting/DirectionalLight";
+import { Transform } from "../core/Transform";
+import { Entity } from "../core/Entity";
 
 interface IRenderPassDefinition {
     begin: (gl: WebGLRenderingContext) => void;
@@ -52,7 +53,7 @@ interface IRenderStateBucket {
     shaderToVisualBucketsMap: ShaderToVisualBucketsMap;
 }
 
-interface IRenderableLight {
+interface IDirectionalLight {
     light: Light;
     viewMatrix: Matrix44;
     projectionMatrix: Matrix44;
@@ -89,7 +90,7 @@ namespace Private {
     export let showWireFrame = false;
 
     // shadow mapping
-    export let directionalLights: IRenderableLight[];    
+    export let directionalLights: IDirectionalLight[];    
     export const directionalShadowMaps: RenderTarget[] = [];    
     export const shadowCasters = new Map<VertexBuffer, Visual[]>();
     export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);   
@@ -274,8 +275,7 @@ namespace Private {
 
             try {
                 IRendererInternal.instance.renderTarget = shadowMap;
-                Private.directionalLights[i].viewMatrix.copy(makeLightViewMatrix(camera, Private.directionalLights[i].light));
-                Private.directionalLights[i].projectionMatrix.copy(makeLightProjectionMatrix(camera, Private.directionalLights[i]));
+                Private.setupDirectionalLightMatrices(camera, Private.directionalLights[i]);
 
                 // TODO this is horribly inefficient, must unify the shading pipeline and use a shader with multiple 
                 // instances like the standard shader!!
@@ -372,69 +372,65 @@ namespace Private {
         return vm;
     }
 
-    export function makeLightViewMatrix(camera: Camera, light: Light) {
-        if (!camera.projector) {
-            return Matrix44.identity;
-        }
-        return Matrix44.fromPool()
-            .compose(
-                Vector3.fromPool().copy(camera.entity.transform.worldForward)
-                    .multiply(-(camera.projector as Projector).zNear)
-                    .add(camera.entity.transform.worldPosition),
-                light.entity.transform.worldRotation,
-                Vector3.one
-            )
-            .invert();
-    }
+    export let dummyTransform: Transform;
+    export function setupDirectionalLightMatrices(camera: Camera, light: IDirectionalLight) {
+        const lightTransform = light.light.entity.transform;
+        const cameraTransform = camera.entity.transform;
+        dummyTransform.position.copy(Vector3.zero);
+        dummyTransform.rotation = lightTransform.rotation;
 
-    export function makeLightProjectionMatrix(camera: Camera, light: IRenderableLight) {
-        if (!camera.frustum) {
-            return Matrix44.identity;
-        }
+        // Calculate bounds in order to frustum-fit the light projection matrix
+        const localLightMatrix = Matrix44.fromPool().copy(dummyTransform.worldMatrix).invert();
         let left = Number.MAX_VALUE, bottom = Number.MAX_VALUE, minZ = Number.MAX_VALUE;
         let right = -Number.MAX_VALUE, top = -Number.MAX_VALUE, maxZ = -Number.MAX_VALUE;
         const localCornerPos = Vector3.fromPool();
-        const rightProj = Vector3.fromPool(), upProj = Vector3.fromPool(), forwardProj = Vector3.fromPool();
         for (let i = 0; i < FrustumCorner.Count; ++i) {
-            const corner = camera.frustum.corners[i];
-            // if (i < 4) {
-            //     fCenter.copy(camera.entity.transform.worldForward).multiply(-far).add(transform.worldPosition);
-            // }
-            localCornerPos.copy(corner).transform(light.viewMatrix);
-            rightProj.copy(localCornerPos).projectOnVector(light.light.entity.transform.worldRight);
-            upProj.copy(localCornerPos).projectOnVector(light.light.entity.transform.worldUp);
-            forwardProj.copy(localCornerPos).projectOnVector(light.light.entity.transform.worldForward);
-            if (rightProj.x < left) {
-                left = rightProj.x;
+            const corner = (camera.frustum as Frustum).corners[i];
+            localCornerPos.copy(corner)
+                .substract(cameraTransform.worldPosition)
+                .transform(localLightMatrix);
+            if (localCornerPos.x < left) {
+                left = localCornerPos.x;
             }
-            if (rightProj.x > right) {
-                right = rightProj.x;
+            if (localCornerPos.x > right) {
+                right = localCornerPos.x;
             }
-            if (upProj.y < bottom) {
-                bottom = upProj.y;
+            if (localCornerPos.y < bottom) {
+                bottom = localCornerPos.y;
             }
-            if (upProj.y > top) {
-                top = upProj.y;
-            }    
-            if (forwardProj.z < minZ) {
-                minZ = forwardProj.z;
+            if (localCornerPos.y > top) {
+                top = localCornerPos.y;
             }
-            if (forwardProj.z > maxZ) {
-                maxZ = forwardProj.z;
+            if (localCornerPos.z < minZ) {
+                minZ = localCornerPos.z;
+            }
+            if (localCornerPos.z > maxZ) {
+                maxZ = localCornerPos.z;
             }
         }
 
-        // TODO debugging, revert this!
-        const horizontalExtent = Math.max(Math.abs(left), Math.abs(right));
-        const verticalExtent = Math.max(Math.abs(top), Math.abs(bottom));
-        return Matrix44.fromPool().makeOrthoProjection(
-            -horizontalExtent, 
-            horizontalExtent, 
-            verticalExtent, 
-            -verticalExtent, 
-            0,
-            -minZ
+        // Make ortho projection matrix        
+        const halfHorizontalExtent = (right - left) / 2;
+        const halfVerticalExtent = (top - bottom) / 2;
+        const halfForwardExtent = (maxZ - minZ) / 2;
+        light.projectionMatrix.makeOrthoProjection(
+            -halfHorizontalExtent,
+            halfHorizontalExtent,
+            halfVerticalExtent,
+            -halfVerticalExtent,
+            -halfForwardExtent,
+            halfForwardExtent
         );
+
+        // Make view matrix
+        const rightOffset = left + halfHorizontalExtent;
+        const upOffset = bottom + halfVerticalExtent;
+        const forwardOffset = minZ + halfForwardExtent;
+        dummyTransform.position.copy(cameraTransform.worldPosition)
+            .add(Vector3.fromPool().copy(lightTransform.worldForward).multiply(forwardOffset))
+            .add(Vector3.fromPool().copy(lightTransform.worldRight).multiply(rightOffset))
+            .add(Vector3.fromPool().copy(lightTransform.worldUp).multiply(upOffset));        
+        light.viewMatrix.copy(dummyTransform.worldMatrix).invert();
     }
 }
 
@@ -492,6 +488,9 @@ export class RendererInternal {
         IRendererInternal.instance = new Renderer();
         RendererInternal.processCanvasDimensions(canvas);
         Private.canvas = canvas;
+
+        Private.dummyTransform = new Transform();
+        Private.dummyTransform.setEntity(new Entity());
     }
 
     static render(
