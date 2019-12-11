@@ -28,7 +28,8 @@ namespace Private {
     }
 
     export const engineManagedDefinitions = {
-        MAX_DIRECTIONAL_LIGHTS: () => EngineSettings.instance.maxDirectionalLights
+        MAX_DIRECTIONAL_LIGHTS: () => EngineSettings.instance.maxDirectionalLights,
+        MAX_SHADOW_CASCADES: () => EngineSettings.instance.maxShadowCascades
     };
 }
 
@@ -83,6 +84,8 @@ export class Shader extends GraphicAsset {
     protected _fragmentCode!: string;
     @Attributes.unserializable()
     protected _shaderError = false;
+    @Attributes.unserializable()
+    protected _usedTextureStages = 0;
 
     @Attributes.unserializable()
     private _instances: ShaderInstances = {
@@ -403,8 +406,8 @@ export class Shader extends GraphicAsset {
 
     private extractUniforms(vertexCode: string, fragmentCode: string) {
         const shaderParams: ShaderParams = {};
-        const currentTextureStage = this.parseUniforms(vertexCode, shaderParams, 0);
-        this.parseUniforms(fragmentCode, shaderParams, currentTextureStage);
+        this._usedTextureStages = this.parseUniforms(vertexCode, shaderParams, 0);
+        this._usedTextureStages = this.parseUniforms(fragmentCode, shaderParams, this._usedTextureStages);
         return shaderParams;
     }
 
@@ -462,13 +465,7 @@ export class Shader extends GraphicAsset {
                             shaderParams[name] = {
                                 type: "sampler2DArray",
                                 uniformLocation: null,
-                                textureStage: (() => {
-                                    const stages: number[] = [];
-                                    for (let i = 0; i < _arraySize; ++i) {
-                                        stages.push(currentTextureStage++);
-                                    }
-                                    return stages;
-                                })(),
+                                textureStage: Array.from(new Array(_arraySize)).map(s => currentTextureStage++),
                                 arraySize: _arraySize
                             };
                         } else if (type === "mat4") {

@@ -90,10 +90,10 @@ namespace Private {
     export let showWireFrame = false;
 
     // shadow mapping
-    export let directionalLights: IDirectionalLight[];    
-    export const directionalShadowMaps: RenderTarget[] = [];    
+    export let directionalLights: IDirectionalLight[];
+    export const directionalShadowMaps: RenderTarget[][] = [];
     export const shadowCasters = new Map<VertexBuffer, Visual[]>();
-    export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);   
+    export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);
 
     export function doRenderPass(renderPassDefinition: IRenderPassDefinition, gl: WebGLRenderingContext, camera: Camera) {
         if (renderPassDefinition.renderStateBucketMap.size === 0) {
@@ -138,14 +138,19 @@ namespace Private {
                                 );
                                 shader.applyParam(`directionalLightMatrices[${i}]`, lightMatrix, visualBucketId);
                                 shader.applyReferenceArrayParam(
-                                    "directionalShadowMaps",
-                                    Private.directionalShadowMaps.filter(Boolean),
+                                    `directionalShadowMaps0`,
+                                    Private.directionalShadowMaps[i],
                                     visualBucketId
                                 );
+                                // shader.applyReferenceArrayParam(
+                                //     `directionalShadowMaps[${i}].cascades`,
+                                //     Private.directionalShadowMaps[i],
+                                //     visualBucketId
+                                // );
                             }
                             const lightDir = Vector3.fromPool()
                                 .copy(light.entity.transform.worldForward)
-                                .transformDirection(viewMatrix);                            
+                                .transformDirection(viewMatrix);
                             shader.applyParam(`directionalLights[${i}].direction`, lightDir, visualBucketId);
                             shader.applyParam(`directionalLights[${i}].color`, light.color, visualBucketId);
                             shader.applyParam(`directionalLights[${i}].shadow`, light.castShadows, visualBucketId);
@@ -156,7 +161,6 @@ namespace Private {
                     } else {
                         shader.applyParam("directionalLightCount", 0, visualBucketId);
                     }
-                    
                     // fog
                     if (visualBucket.reference.receiveFog && fog) {
                         shader.applyParam("fogColor", fog.color, visualBucketId);
@@ -266,73 +270,69 @@ namespace Private {
         const numDirectionalShadowMaps = Math.min(Private.directionalLights.length, Private.directionalShadowMaps.length);
         let previousRenderDepthShader: Shader | null = null;
         for (let i = 0; i < numDirectionalShadowMaps; ++i) {
-            let shadowMap = Private.directionalShadowMaps[i];
-            if (!shadowMap) {
-                const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x);
-                shadowMap = new RenderTarget(size, size, true, false, TextureFiltering.Nearest);
-                Private.directionalShadowMaps[i] = shadowMap;
+            let cascades = Private.directionalShadowMaps[i];
+            if (!cascades) {
+                cascades = Array.from(new Array(EngineSettings.instance.maxShadowCascades)).map((c, cascadeIndex) => {
+                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x / (Math.pow(2, cascadeIndex)));
+                    return new RenderTarget(size, size, true, false, TextureFiltering.Nearest);
+                });
+                Private.directionalShadowMaps[i] = cascades;
             }
 
             try {
-                IRendererInternal.instance.renderTarget = shadowMap;
-                Private.setupDirectionalLightMatrices(camera, Private.directionalLights[i]);
-                
-                // TODO this is horribly inefficient, must unify the shading pipeline and use a shader with multiple 
-                // instances like the standard shader!!
-                Private.shadowCasters.forEach((visuals, vertexBuffer) => {
-                    // TODO This assumes that all the visual instances of a particular vertex buffer
-                    // Are renderer with the same shader type (skinned vs non-skinned), this is a fair assumption
-                    // But deserves a check in the future
-                    const hasSkinning = visuals[0].isSkinned;
-                    const currentShader = hasSkinning ? defaultAssets.shaders.skinnedRenderDepth : defaultAssets.shaders.renderDepth;
-                    if (currentShader !== previousRenderDepthShader) {
-                        // if (hasSkinning) {
-                        //     // ( for example when prebuilding shader to be used with multiple objects )
-                        //     //
-                        //     //  - leave some extra space for other uniforms
-                        //     //  - limit here is ANGLE's 254 max uniform vectors
-                        //     //    (up to 54 should be safe)
-                        //     var nVertexUniforms = gl.caps.maxVertexUniforms;
-                        //     var nVertexMatrices = Math.floor((nVertexUniforms - 20) / 4);
-                        // }
-                        currentShader.begin();
-                        previousRenderDepthShader = currentShader;
-                    }
+                for (const cascade of cascades) {
+                    IRendererInternal.instance.renderTarget = cascade;
+                    Private.setupDirectionalLightMatrices(camera, Private.directionalLights[i]);
 
-                    currentShader.applyParam("projectionMatrix", Private.directionalLights[i].projectionMatrix);
-                    if (hasSkinning) {
-                        currentShader.applyParam("viewMatrix", Private.directionalLights[i].viewMatrix);
-                    }
-                    vertexBuffer.begin(context, currentShader);
-                    for (const visual of visuals) {
-                        if (hasSkinning) {
-                            const skinnedMesh = visual.geometry as SkinnedMesh;
-                            if (!skinnedMesh.boneTexture) {
-                                continue;
-                            }
-                            currentShader.applyParam("bindMatrix", skinnedMesh.bindMatrix);
-                            currentShader.applyParam("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
-                            if (WebGL.extensions.OES_texture_float) {
-                                Private.skinnedRenderDepthBonesTexture.asset = skinnedMesh.boneTexture;
-                                currentShader.applyParam("boneTexture", Private.skinnedRenderDepthBonesTexture);
-                                currentShader.applyParam("boneTextureSize", skinnedMesh.boneTextureSize);
-                            } else {
-                                currentShader.applyParam("boneMatrices", skinnedMesh.boneMatrices);
-                            }
-                        } else {
-                            const modelViewMatrix = Private.dummyMatrix.multiplyMatrices(
-                                Private.directionalLights[i].viewMatrix, 
-                                visual.worldTransform
-                            );
-                            currentShader.applyParam("modelViewMatrix", modelViewMatrix);
+                    // TODO this is horribly inefficient, must unify the shading pipeline and use a shader with multiple 
+                    // instances like the standard shader!!
+                    Private.shadowCasters.forEach((visuals, vertexBuffer) => {
+                        // TODO This assumes that all the visual instances of a particular vertex buffer
+                        // Are renderer with the same shader type (skinned vs non-skinned), this is a fair assumption
+                        // But deserves a check in the future
+                        const hasSkinning = visuals[0].isSkinned;
+                        const currentShader = hasSkinning ? defaultAssets.shaders.skinnedRenderDepth : defaultAssets.shaders.renderDepth;
+                        if (currentShader !== previousRenderDepthShader) {
+                            currentShader.begin();
+                            previousRenderDepthShader = currentShader;
                         }
-                        vertexBuffer.draw(context);
-                    }
-                    vertexBuffer.end(context, currentShader);
-                });
-            } catch (e) {  
+
+                        // TODO set projection & view corresponding to the current cascade
+                        currentShader.applyParam("projectionMatrix", Private.directionalLights[i].projectionMatrix);
+                        if (hasSkinning) {
+                            currentShader.applyParam("viewMatrix", Private.directionalLights[i].viewMatrix);
+                        }
+                        vertexBuffer.begin(context, currentShader);
+                        for (const visual of visuals) {
+                            if (hasSkinning) {
+                                const skinnedMesh = visual.geometry as SkinnedMesh;
+                                if (!skinnedMesh.boneTexture) {
+                                    continue;
+                                }
+                                currentShader.applyParam("bindMatrix", skinnedMesh.bindMatrix);
+                                currentShader.applyParam("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
+                                if (WebGL.extensions.OES_texture_float) {
+                                    Private.skinnedRenderDepthBonesTexture.asset = skinnedMesh.boneTexture;
+                                    currentShader.applyParam("boneTexture", Private.skinnedRenderDepthBonesTexture);
+                                    currentShader.applyParam("boneTextureSize", skinnedMesh.boneTextureSize);
+                                } else {
+                                    currentShader.applyParam("boneMatrices", skinnedMesh.boneMatrices);
+                                }
+                            } else {
+                                const modelViewMatrix = Private.dummyMatrix.multiplyMatrices(
+                                    Private.directionalLights[i].viewMatrix,
+                                    visual.worldTransform
+                                );
+                                currentShader.applyParam("modelViewMatrix", modelViewMatrix);
+                            }
+                            vertexBuffer.draw(context);
+                        }
+                        vertexBuffer.end(context, currentShader);
+                    });
+                }
+            } catch (e) {
                 // shadow map not loaded yet              
-            }           
+            }
         }
     }
 
@@ -359,7 +359,7 @@ namespace Private {
             makeViewMatrix: (viewMatrix: Matrix44) => viewMatrix,
             makeWorldMatrix: (worldMatrix: Matrix44) => worldMatrix,
             renderStateBucketMap: Private.renderStateBucketMapPool.get()
-        });        
+        });
 
         Private.cameraToRenderPassMap.set(camera, renderPassToDefinitionMap);
     }
@@ -429,17 +429,17 @@ namespace Private {
         dummyTransform.position.copy(cameraTransform.worldPosition)
             .add(Vector3.fromPool().copy(lightTransform.worldForward).multiply(forwardOffset))
             .add(Vector3.fromPool().copy(lightTransform.worldRight).multiply(rightOffset))
-            .add(Vector3.fromPool().copy(lightTransform.worldUp).multiply(upOffset));        
+            .add(Vector3.fromPool().copy(lightTransform.worldUp).multiply(upOffset));
         light.viewMatrix.copy(dummyTransform.worldMatrix).invert();
     }
 }
 
-export class Renderer implements IRenderer {   
+export class Renderer implements IRenderer {
     get screenSize() { return Private.screenSize; }
-    get defaultPerspectiveCamera() { return Private.defaultPerspectiveCamera; }    
+    get defaultPerspectiveCamera() { return Private.defaultPerspectiveCamera; }
     get canvas() { return Private.canvas; }
     get renderTarget() { return Private.currentRenderTarget; }
-    set renderTarget(rt: RenderTarget | null) { 
+    set renderTarget(rt: RenderTarget | null) {
         const gl = WebGL.context;
         if (rt) {
             let result = rt.bind(gl);
@@ -447,7 +447,7 @@ export class Renderer implements IRenderer {
                 Private.currentRenderTarget = rt;
             } else {
                 throw "RenderTarget not ready for rendering";
-            }            
+            }
         } else {
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
             gl.viewport(0, 0, this.screenSize.x, this.screenSize.y);
@@ -464,7 +464,7 @@ export class Renderer implements IRenderer {
             Private.showWireFrame = show;
         }
     }
-    get showWireFrame() { return Private.showWireFrame; }    
+    get showWireFrame() { return Private.showWireFrame; }
 }
 
 /**
@@ -598,8 +598,8 @@ export class RendererInternal {
                             sky.queueParameter("mieDirectionalG", skySim.mieDirectionalG);
                             if (sky.begin()) {
                                 GraphicUtils.drawVertexBuffer(
-                                    gl, 
-                                    defaultAssets.primitives.sphere.vertexBuffer, 
+                                    gl,
+                                    defaultAssets.primitives.sphere.vertexBuffer,
                                     sky.shader as Shader
                                 );
                             }
@@ -633,7 +633,7 @@ export class RendererInternal {
                 }
 
                 // TODO handle all post effects here not just bloom!
-                if (bloom) {                    
+                if (bloom) {
                     const fullScreenQuad = GeometryProvider.centeredQuad;
                     const inputRT = bloom.render(gl, camera.sceneRenderTarget, fullScreenQuad) as RenderTarget;
                     // add post effects to scene RT
@@ -642,7 +642,7 @@ export class RendererInternal {
                         IRendererInternal.instance.renderTarget = camera.renderTarget;
                         composeShader.applyReferenceParam("scene", camera.sceneRenderTarget);
                         composeShader.applyReferenceParam("postFX", inputRT);
-                        composeShader.applyParam("postFxIntensity", bloom.intensity);                            
+                        composeShader.applyParam("postFxIntensity", bloom.intensity);
                         GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, composeShader);
                     }
                 }
@@ -673,7 +673,7 @@ export class RendererInternal {
 
         if (uiPostRender) {
             uiPostRender();
-        } 
+        }
     }
 
     static clearDefaultPerspectiveCamera() {
@@ -682,5 +682,5 @@ export class RendererInternal {
 
     static get uiProjectionMatrix() {
         return Private.uiProjectionMatrix;
-    }    
+    }
 }

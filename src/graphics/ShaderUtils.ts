@@ -95,7 +95,7 @@ namespace Private {
 
         // Lighting
         "directionalLightMatrices": true,
-        "directionalShadowMaps": true,
+        "directionalShadowMaps0": true,
         "directionalLightCount": true
     };
 

@@ -30,7 +30,7 @@ export class PerspectiveProjector extends Projector {
 
     private _fov = 60;
     private _zNear = .1;
-    private _zFar = 1000;
+    private _zFar = 800;
 
     @Attributes.unserializable()
     private _projectionMatrix = new Matrix44();

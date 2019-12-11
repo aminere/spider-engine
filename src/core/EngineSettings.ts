@@ -21,7 +21,10 @@ export class EngineSettings extends UniqueObject {
     canvasAlpha = true;
     startupScene?: string = undefined; // must be assigned for deserializer to write into it.
     useCustomDefaultAssets?: boolean = undefined;
+    // Graphic settings
     maxDirectionalLights = 4;
+    maxShadowCascades = 3;
+    maxShadowDistance = 100;
 
     static load() {
         return new Promise((resolve, reject) => {
