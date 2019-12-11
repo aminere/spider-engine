@@ -276,7 +276,7 @@ namespace Private {
             try {
                 IRendererInternal.instance.renderTarget = shadowMap;
                 Private.setupDirectionalLightMatrices(camera, Private.directionalLights[i]);
-
+                
                 // TODO this is horribly inefficient, must unify the shading pipeline and use a shader with multiple 
                 // instances like the standard shader!!
                 Private.shadowCasters.forEach((visuals, vertexBuffer) => {
@@ -296,13 +296,13 @@ namespace Private {
                         //     var nVertexMatrices = Math.floor((nVertexUniforms - 20) / 4);
                         // }
                         currentShader.begin();
-                        currentShader.applyParam("projectionMatrix", Private.directionalLights[i].projectionMatrix);
-                        if (hasSkinning) {
-                            currentShader.applyParam("viewMatrix", Private.directionalLights[i].viewMatrix);
-                        }
                         previousRenderDepthShader = currentShader;
                     }
 
+                    currentShader.applyParam("projectionMatrix", Private.directionalLights[i].projectionMatrix);
+                    if (hasSkinning) {
+                        currentShader.applyParam("viewMatrix", Private.directionalLights[i].viewMatrix);
+                    }
                     vertexBuffer.begin(context, currentShader);
                     for (const visual of visuals) {
                         if (hasSkinning) {
@@ -376,7 +376,7 @@ namespace Private {
     export function setupDirectionalLightMatrices(camera: Camera, light: IDirectionalLight) {
         const lightTransform = light.light.entity.transform;
         const cameraTransform = camera.entity.transform;
-        dummyTransform.position.copy(Vector3.zero);
+        dummyTransform.position = Vector3.zero;
         dummyTransform.rotation = lightTransform.rotation;
 
         // Calculate bounds in order to frustum-fit the light projection matrix
