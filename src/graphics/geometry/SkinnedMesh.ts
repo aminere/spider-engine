@@ -31,7 +31,7 @@ export class SkinnedMesh extends StaticMesh {
     get boneTexture() { return this._boneTexture; }
     get boneTextureSize() { return this._boneTextureSize; }
     get boneMatrices() { return this._boneMatrices; }
-    set bindMatrix(bindMatrix: Matrix44) {
+    set bindMatrix(bindMatrix: SerializableMatrix44) {
         this._bindMatrix.copy(bindMatrix);
         this._bindMatrixInverse.getInverse(bindMatrix);
     }
