@@ -1,6 +1,6 @@
 
 import * as Attributes from "../../core/Attributes";
-import { Matrix44 } from "../../math/Matrix44";
+import { SerializableMatrix44 } from "../../math/Matrix44";
 import { ArrayProperty } from "../../serialization/ArrayProperty";
 import { ModelMesh } from "./ModelMesh";
 import { ModelBone } from "./ModelBone";
@@ -8,13 +8,13 @@ import { ModelBone } from "./ModelBone";
 export class ModelSkinnedMesh extends ModelMesh {
 
     get bindMatrix() { return this._bindMatrix; }    
-    set bindMatrix(bindMatrix: Matrix44) {
+    set bindMatrix(bindMatrix: SerializableMatrix44) {
         this._bindMatrix.copy(bindMatrix);
     }
 
     get boneFbxIds() { return this._bonesFbxIds.data.map(d => d.valueOf()); }
     
-    private _bindMatrix = new Matrix44();
+    private _bindMatrix = new SerializableMatrix44();
 
     @Attributes.hidden()
     private _bonesFbxIds = new ArrayProperty(Number);
