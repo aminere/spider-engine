@@ -52,8 +52,7 @@ export class OrthographicProjector extends Projector {
         // frustum splits
         let currentNear = this._zNear;
         const { maxShadowCascades, maxShadowDistance } = EngineSettings.instance;
-        const actualShadowDistance = Math.min(maxShadowDistance, (this._zFar - this.zNear));
-        const splitSize = actualShadowDistance / maxShadowCascades;
+        const splitSize = maxShadowDistance / maxShadowCascades;
         for (let i = 0; i < maxShadowCascades; ++i) {
             this._frustum.splits[i].update(w, h, w, h, currentNear, currentNear + splitSize, transform);
             currentNear += splitSize;

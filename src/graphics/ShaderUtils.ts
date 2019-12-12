@@ -96,7 +96,8 @@ namespace Private {
         // Lighting
         "directionalLightMatrices": true,
         "directionalShadowMaps": true,
-        "directionalLightCount": true
+        "directionalLightCount": true,
+        "shadowCascadeEdges": true
     };
 
     const textureStages: number[] = [];

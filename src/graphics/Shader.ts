@@ -12,6 +12,7 @@ import { WebGL } from "./WebGL";
 import { ObjectProps } from "../core/Types";
 import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
 import { EngineSettings } from "../core/EngineSettings";
+import { ArrayProperty } from "../serialization/ArrayProperty";
 
 namespace Private {
     export const attributeTypeToComponentCount = {
@@ -22,6 +23,7 @@ namespace Private {
     };
     export const ref = new AssetReference(GraphicAsset);
     export const refArray = new AssetReferenceArray(GraphicAsset);
+    export const numberArray = new ArrayProperty(Number);    
 
     export function removeComments(code: string) {
         return code.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, "");
@@ -187,46 +189,56 @@ export class Shader extends GraphicAsset {
 
     // tslint:disable-next-line
     applyParam(name: string, value: any, bucketId?: string) {
-        const id = bucketId || 0;
-        const instance = this._instances[id];
+        const instance = this._instances[bucketId || 0];
         const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
         const param = params[name];
-        if (param !== undefined) {
-            ShaderUtils.applyShaderParam(WebGL.context, param, value);
+        if (param === undefined) {
+            return;
         }
+        ShaderUtils.applyShaderParam(WebGL.context, param, value);
     }
 
     applyReferenceParam(name: string, referred: GraphicAsset, bucketId?: string) {
-        const id = bucketId || 0;
-        const instance = this._instances[id];
+        const instance = this._instances[bucketId || 0];
         const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
         const param = params[name];
-        if (param !== undefined) {
-            const { ref } = Private;
-            ref.setAssetFast(referred);
-            ShaderUtils.applyShaderParam(WebGL.context, param, ref);
+        if (param === undefined) {
+            return;
         }
+        Private.ref.setAssetFast(referred);
+        ShaderUtils.applyShaderParam(WebGL.context, param, Private.ref);
     }
 
     applyReferenceArrayParam(name: string, referreds: GraphicAsset[], bucketId?: string) {
-        const id = bucketId || 0;
-        const instance = this._instances[id];
+        const instance = this._instances[bucketId || 0];
         const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
         const param = params[name];
-        if (param !== undefined) {
-            const { refArray } = Private;
-            let currentRef = 0;
-            for (let i = 0; i < referreds.length && i < refArray.data.length; ++i) {
-                refArray.data[i].setAssetFast(referreds[i]);
-                ++currentRef;
-            }
-            for (let i = currentRef; i < referreds.length; ++i) {
-                refArray.grow(referreds[i]);
-                ++currentRef;
-            }
-            refArray.data.length = currentRef;
-            ShaderUtils.applyShaderParam(WebGL.context, param, refArray);
+        if (param === undefined) {
+            return;
         }
+        const { refArray } = Private;
+        let currentRef = 0;
+        for (let i = 0; i < referreds.length && i < refArray.data.length; ++i) {
+            refArray.data[i].setAssetFast(referreds[i]);
+            ++currentRef;
+        }
+        for (let i = currentRef; i < referreds.length; ++i) {
+            refArray.grow(referreds[i]);
+            ++currentRef;
+        }
+        refArray.data.length = currentRef;
+        ShaderUtils.applyShaderParam(WebGL.context, param, refArray);
+    }
+
+    applyNumberArrayParam(name: string, numbers: number[], bucketId?: string) {
+        const instance = this._instances[bucketId || 0];
+        const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
+        const param = params[name];
+        if (param === undefined) {
+            return;
+        }
+        Private.numberArray.data = numbers;
+        ShaderUtils.applyShaderParam(WebGL.context, param, Private.numberArray);
     }
     
     // tslint:disable-next-line
@@ -380,7 +392,6 @@ export class Shader extends GraphicAsset {
     }
 
     private extractAttributes(code: string) {
-        
         const regex = /attribute ((vec|float|uint|int|bool|mat|sampler|samplerCube)+[1234D]*) ([_a-zA-Z0-9]+);/;
         const matches = Private.removeComments(code).match(new RegExp(regex, "g"));
         const attributes: ShaderAttributes = {};
@@ -413,7 +424,6 @@ export class Shader extends GraphicAsset {
     }
 
     private parseUniforms(code: string, shaderParams: ShaderParams, currentTextureStage: number) {
-
         const regex = /uniform ((vec|float|uint|int|bool|mat|sampler|samplerCube)[234D]*) ([_a-zA-Z0-9]+)(\[([_a-zA-Z0-9]+)\])*;/;
         const _code = Private.removeComments(code);
         const matches = _code.match(new RegExp(regex, "g"));

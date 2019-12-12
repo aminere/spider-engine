@@ -60,8 +60,7 @@ export class PerspectiveProjector extends Projector {
         // frustum splits
         let currentNear = this._zNear;
         const { maxShadowCascades, maxShadowDistance } = EngineSettings.instance;
-        const actualShadowDistance = Math.min(maxShadowDistance, (this._zFar - this.zNear));
-        const splitSize = actualShadowDistance / maxShadowCascades;
+        const splitSize = maxShadowDistance / maxShadowCascades;
         for (let i = 0; i < maxShadowCascades; ++i) {
             _update(this._frustum.splits[i], currentNear, currentNear + splitSize);
             currentNear += splitSize;

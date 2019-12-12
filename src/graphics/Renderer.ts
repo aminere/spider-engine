@@ -31,7 +31,7 @@ import { IRenderer, IRendererInternal } from "./IRenderer";
 import { IObjectManagerInternal } from "../core/IObjectManager";
 import { Component } from "../core/Component";
 import { EngineSettings } from "../core/EngineSettings";
-import { FrustumCorner, Frustum } from "./Frustum";
+import { FrustumCorner } from "./Frustum";
 import { DirectionalLight } from "./lighting/DirectionalLight";
 import { Transform } from "../core/Transform";
 import { Entity } from "../core/Entity";
@@ -93,6 +93,7 @@ namespace Private {
     // shadow mapping
     export let directionalLights: IDirectionalLight[];
     export const directionalShadowMaps: RenderTarget[] = [];
+    export let shadowCascadeEdges: number[];
     export const shadowCasters = new Map<VertexBuffer, Visual[]>();
     export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);
 
@@ -129,11 +130,15 @@ namespace Private {
 
                     // lighting & shadowing
                     if (hasDirectionalLights) {
+                        const hasShadows = visualBucket.reference.receiveShadows;
                         const numDirectionalLights = Math.min(maxDirectionalLights, directionalLights.length);
                         shader.applyParam("directionalLightCount", numDirectionalLights, visualBucketId);
+                        if (hasShadows) {
+                            shader.applyNumberArrayParam("shadowCascadeEdges", Private.shadowCascadeEdges, visualBucketId);
+                        }
                         for (let i = 0; i < numDirectionalLights; ++i) {
                             const { light, projectionMatrices, viewMatrices } = Private.directionalLights[i];
-                            if (visualBucket.reference.receiveShadows) {
+                            if (hasShadows) {
                                 for (let j = 0; j < maxShadowCascades; ++j) {
                                     const lightMatrix = Private.dummyMatrix.multiplyMatrices(
                                         projectionMatrices[j],
@@ -490,6 +495,12 @@ export class RendererInternal {
 
         Private.dummyTransform = new Transform();
         Private.dummyTransform.setEntity(new Entity());
+    }
+
+    static initShadowCascadeEdges() {
+        const { maxShadowCascades, maxShadowDistance } = EngineSettings.instance;        
+        const splitSize = maxShadowDistance / maxShadowCascades;
+        Private.shadowCascadeEdges = Array.from(new Array(maxShadowCascades - 1)).map((a, i) => splitSize * (i + 1));
     }
 
     static render(
