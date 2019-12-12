@@ -43,12 +43,13 @@ export class PerspectiveProjector extends Projector {
         let fovRadians = MathEx.toRadians(this._fov);
         this._projectionMatrix.makePerspectiveProjection(fovRadians, ratio, this._zNear, this._zFar);
 
+        // full frustum
         let fovBy2 = fovRadians / 2;
         let Hnear = Math.tan(fovBy2) * this.zNear;
         let Wnear = Hnear * ratio;
         let Hfar = Math.tan(fovBy2) * this.zFar;
         let Wfar = Hfar * ratio;
-        this._frustum.update(
+        this._frustum.full.update(
             Wnear,
             Hnear,
             Wfar,
@@ -56,7 +57,10 @@ export class PerspectiveProjector extends Projector {
             this.zNear,
             this.zFar,
             transform
-        );        
+        );
+
+        // frustum splits
+         
     }        
     
     upgrade(json: SerializedObject, previousVersion: number) {

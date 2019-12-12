@@ -42,9 +42,13 @@ export class OrthographicProjector extends Projector {
         let dy = this._size;
         this._projectionMatrix.makeOrthoProjection(-dx, dx, dy, -dy, this._zNear, this._zFar);
 
+        // full frustum
         let w = this._size * ratio;
         let h = this._size;
-        this._frustum.update(w, h, w, h, this._zNear, this._zFar, transform);
+        this._frustum.full.update(w, h, w, h, this._zNear, this._zFar, transform);
+
+        // frustum splits
+        // TODO
     }
     
     upgrade(json: SerializedObject, previousVersion: number) {

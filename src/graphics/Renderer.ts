@@ -35,6 +35,7 @@ import { FrustumCorner, Frustum } from "./Frustum";
 import { DirectionalLight } from "./lighting/DirectionalLight";
 import { Transform } from "../core/Transform";
 import { Entity } from "../core/Entity";
+import { IFrustum } from "./IFrustum";
 
 interface IRenderPassDefinition {
     begin: (gl: WebGLRenderingContext) => void;
@@ -253,6 +254,69 @@ namespace Private {
         }
     }
 
+    export let dummyTransform: Transform;
+    function setupDirectionalLightMatrices(camera: Camera, light: IDirectionalLight, cascadeIndex: number) {
+        const lightTransform = light.light.entity.transform;
+        const cameraTransform = camera.entity.transform;
+        dummyTransform.position = Vector3.zero;
+        dummyTransform.rotation = lightTransform.rotation;
+
+        // Calculate bounds in order to frustum-fit the light projection matrix
+        const localLightMatrix = Matrix44.fromPool().copy(dummyTransform.worldMatrix).invert();
+        let left = Number.MAX_VALUE, bottom = Number.MAX_VALUE, minZ = Number.MAX_VALUE;
+        let right = -Number.MAX_VALUE, top = -Number.MAX_VALUE, maxZ = -Number.MAX_VALUE;
+
+        const frustum = (camera.frustum as IFrustum).splits[cascadeIndex];
+        const localCornerPos = Vector3.fromPool();
+        for (let i = 0; i < FrustumCorner.Count; ++i) {
+            const corner = frustum.corners[i];
+            localCornerPos.copy(corner)
+                .substract(cameraTransform.worldPosition)
+                .transform(localLightMatrix);
+            if (localCornerPos.x < left) {
+                left = localCornerPos.x;
+            }
+            if (localCornerPos.x > right) {
+                right = localCornerPos.x;
+            }
+            if (localCornerPos.y < bottom) {
+                bottom = localCornerPos.y;
+            }
+            if (localCornerPos.y > top) {
+                top = localCornerPos.y;
+            }
+            if (localCornerPos.z < minZ) {
+                minZ = localCornerPos.z;
+            }
+            if (localCornerPos.z > maxZ) {
+                maxZ = localCornerPos.z;
+            }
+        }
+
+        // Make ortho projection matrix        
+        const halfHorizontalExtent = (right - left) / 2;
+        const halfVerticalExtent = (top - bottom) / 2;
+        const halfForwardExtent = (maxZ - minZ) / 2;
+        light.projectionMatrices[cascadeIndex].makeOrthoProjection(
+            -halfHorizontalExtent,
+            halfHorizontalExtent,
+            halfVerticalExtent,
+            -halfVerticalExtent,
+            -halfForwardExtent,
+            halfForwardExtent
+        );
+
+        // Make view matrix
+        const rightOffset = left + halfHorizontalExtent;
+        const upOffset = bottom + halfVerticalExtent;
+        const forwardOffset = minZ + halfForwardExtent;
+        dummyTransform.position.copy(cameraTransform.worldPosition)
+            .add(Vector3.fromPool().copy(lightTransform.worldForward).multiply(forwardOffset))
+            .add(Vector3.fromPool().copy(lightTransform.worldRight).multiply(rightOffset))
+            .add(Vector3.fromPool().copy(lightTransform.worldUp).multiply(upOffset));
+        light.viewMatrices[cascadeIndex].copy(dummyTransform.worldMatrix).invert();
+    }
+
     export function renderShadowMaps(camera: Camera) {
         const { maxDirectionalLights, maxShadowCascades } = EngineSettings.instance;
         const maxDirectionalShadowMaps = maxDirectionalLights * maxShadowCascades;
@@ -284,7 +348,7 @@ namespace Private {
                 for (let j = 0; j < maxShadowCascades; ++j) {
                     const cascade = Private.directionalShadowMaps[i * maxDirectionalLights + j];
                     IRendererInternal.instance.renderTarget = cascade;
-                    Private.setupDirectionalLightMatrices(camera, Private.directionalLights[i], j);
+                    setupDirectionalLightMatrices(camera, Private.directionalLights[i], j);
 
                     // TODO this is horribly inefficient, must unify the shading pipeline and use a shader with multiple 
                     // instances like the standard shader!!
@@ -371,67 +435,6 @@ namespace Private {
         vm.copy(camera.entity.transform.worldMatrix).setPosition(Vector3.zero);
         vm.transpose();
         return vm;
-    }
-
-    export let dummyTransform: Transform;
-    export function setupDirectionalLightMatrices(camera: Camera, light: IDirectionalLight, cascadeIndex: number) {
-        const lightTransform = light.light.entity.transform;
-        const cameraTransform = camera.entity.transform;
-        dummyTransform.position = Vector3.zero;
-        dummyTransform.rotation = lightTransform.rotation;
-
-        // Calculate bounds in order to frustum-fit the light projection matrix
-        const localLightMatrix = Matrix44.fromPool().copy(dummyTransform.worldMatrix).invert();
-        let left = Number.MAX_VALUE, bottom = Number.MAX_VALUE, minZ = Number.MAX_VALUE;
-        let right = -Number.MAX_VALUE, top = -Number.MAX_VALUE, maxZ = -Number.MAX_VALUE;
-        const localCornerPos = Vector3.fromPool();
-        for (let i = 0; i < FrustumCorner.Count; ++i) {
-            const corner = (camera.frustum as Frustum).corners[i];
-            localCornerPos.copy(corner)
-                .substract(cameraTransform.worldPosition)
-                .transform(localLightMatrix);
-            if (localCornerPos.x < left) {
-                left = localCornerPos.x;
-            }
-            if (localCornerPos.x > right) {
-                right = localCornerPos.x;
-            }
-            if (localCornerPos.y < bottom) {
-                bottom = localCornerPos.y;
-            }
-            if (localCornerPos.y > top) {
-                top = localCornerPos.y;
-            }
-            if (localCornerPos.z < minZ) {
-                minZ = localCornerPos.z;
-            }
-            if (localCornerPos.z > maxZ) {
-                maxZ = localCornerPos.z;
-            }
-        }
-
-        // Make ortho projection matrix        
-        const halfHorizontalExtent = (right - left) / 2;
-        const halfVerticalExtent = (top - bottom) / 2;
-        const halfForwardExtent = (maxZ - minZ) / 2;
-        light.projectionMatrices[cascadeIndex].makeOrthoProjection(
-            -halfHorizontalExtent,
-            halfHorizontalExtent,
-            halfVerticalExtent,
-            -halfVerticalExtent,
-            -halfForwardExtent,
-            halfForwardExtent
-        );
-
-        // Make view matrix
-        const rightOffset = left + halfHorizontalExtent;
-        const upOffset = bottom + halfVerticalExtent;
-        const forwardOffset = minZ + halfForwardExtent;
-        dummyTransform.position.copy(cameraTransform.worldPosition)
-            .add(Vector3.fromPool().copy(lightTransform.worldForward).multiply(forwardOffset))
-            .add(Vector3.fromPool().copy(lightTransform.worldRight).multiply(rightOffset))
-            .add(Vector3.fromPool().copy(lightTransform.worldUp).multiply(upOffset));
-        light.viewMatrices[cascadeIndex].copy(dummyTransform.worldMatrix).invert();
     }
 }
 
