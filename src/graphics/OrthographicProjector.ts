@@ -4,6 +4,7 @@ import { Projector } from "./Projector";
 import { Transform } from "../core/Transform";
 import { SerializedObject } from "../core/SerializableObject";
 import { Matrix44 } from "../math/Matrix44";
+import { EngineSettings } from "../core/EngineSettings";
 
 export class OrthographicProjector extends Projector {    
     
@@ -38,17 +39,25 @@ export class OrthographicProjector extends Projector {
     }
 
     updateFrustum(transform: Transform, ratio: number) {
-        let dx = this._size * ratio;
-        let dy = this._size;
+        const dx = this._size * ratio;
+        const dy = this._size;
         this._projectionMatrix.makeOrthoProjection(-dx, dx, dy, -dy, this._zNear, this._zFar);
 
+        const w = this._size * ratio;
+        const h = this._size;        
+        
         // full frustum
-        let w = this._size * ratio;
-        let h = this._size;
         this._frustum.full.update(w, h, w, h, this._zNear, this._zFar, transform);
 
         // frustum splits
-        // TODO
+        let currentNear = this._zNear;
+        const { maxShadowCascades, maxShadowDistance } = EngineSettings.instance;
+        const actualShadowDistance = Math.min(maxShadowDistance, (this._zFar - this.zNear));
+        const splitSize = actualShadowDistance / maxShadowCascades;
+        for (let i = 0; i < maxShadowCascades; ++i) {
+            this._frustum.splits[i].update(w, h, w, h, currentNear, currentNear + splitSize, transform);
+            currentNear += splitSize;
+        }
     }
     
     upgrade(json: SerializedObject, previousVersion: number) {

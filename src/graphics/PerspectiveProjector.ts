@@ -6,6 +6,8 @@ import { Transform } from "../core/Transform";
 import { MathEx } from "../math/MathEx";
 import { SerializedObject } from "../core/SerializableObject";
 import { Matrix44 } from "../math/Matrix44";
+import { Frustum } from "./Frustum";
+import { EngineSettings } from "../core/EngineSettings";
 
 export class PerspectiveProjector extends Projector {
     
@@ -40,27 +42,30 @@ export class PerspectiveProjector extends Projector {
     }
     
     updateFrustum(transform: Transform, ratio: number) {
-        let fovRadians = MathEx.toRadians(this._fov);
+        const fovRadians = MathEx.toRadians(this._fov);
         this._projectionMatrix.makePerspectiveProjection(fovRadians, ratio, this._zNear, this._zFar);
 
-        // full frustum
-        let fovBy2 = fovRadians / 2;
-        let Hnear = Math.tan(fovBy2) * this.zNear;
-        let Wnear = Hnear * ratio;
-        let Hfar = Math.tan(fovBy2) * this.zFar;
-        let Wfar = Hfar * ratio;
-        this._frustum.full.update(
-            Wnear,
-            Hnear,
-            Wfar,
-            Hfar,
-            this.zNear,
-            this.zFar,
-            transform
-        );
+        const fovBy2 = fovRadians / 2;
+        const _update = (frustum: Frustum, near: number, far: number) => {
+            const hNear = Math.tan(fovBy2) * near;
+            const wNear = hNear * ratio;
+            const hFar = Math.tan(fovBy2) * far;
+            const wFar = hFar * ratio;
+            frustum.update(wNear, hNear, wFar, hFar, near, far, transform);
+        };
 
+        // full frustum
+        _update(this._frustum.full, this.zNear, this.zFar);
+        
         // frustum splits
-         
+        let currentNear = this._zNear;
+        const { maxShadowCascades, maxShadowDistance } = EngineSettings.instance;
+        const actualShadowDistance = Math.min(maxShadowDistance, (this._zFar - this.zNear));
+        const splitSize = actualShadowDistance / maxShadowCascades;
+        for (let i = 0; i < maxShadowCascades; ++i) {
+            _update(this._frustum.splits[i], currentNear, currentNear + splitSize);
+            currentNear += splitSize;
+        }
     }        
     
     upgrade(json: SerializedObject, previousVersion: number) {
