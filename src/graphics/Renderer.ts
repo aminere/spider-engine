@@ -55,8 +55,8 @@ interface IRenderStateBucket {
 
 interface IDirectionalLight {
     light: Light;
-    viewMatrix: Matrix44;
-    projectionMatrix: Matrix44;
+    viewMatrices: Matrix44[];
+    projectionMatrices: Matrix44[];
 }
 
 type RenderPassToDefinitionMap = Map<number, IRenderPassDefinition>;
@@ -91,7 +91,7 @@ namespace Private {
 
     // shadow mapping
     export let directionalLights: IDirectionalLight[];
-    export const directionalShadowMaps: RenderTarget[][] = [];
+    export const directionalShadowMaps: RenderTarget[] = [];
     export const shadowCasters = new Map<VertexBuffer, Visual[]>();
     export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);
 
@@ -106,6 +106,7 @@ namespace Private {
         // TODO implement a more rebust method of controlling material render order
         // (for example separate into different buckets based on priority - controls the order but doesn't need uploadState multiple times.)
         const sortedBuckedIds = Array.from(renderPassDefinition.renderStateBucketMap.keys()).sort();
+        const { maxDirectionalLights, maxShadowCascades } = EngineSettings.instance;
         for (const bucketId of sortedBuckedIds) {
             const renderStateBucket = renderPassDefinition.renderStateBucketMap.get(bucketId) as IRenderStateBucket;
             renderStateBucket.reference.uploadState();
@@ -127,30 +128,28 @@ namespace Private {
 
                     // lighting & shadowing
                     if (hasDirectionalLights) {
-                        const numDirectionalLights = Math.min(EngineSettings.instance.maxDirectionalLights, directionalLights.length);
+                        const numDirectionalLights = Math.min(maxDirectionalLights, directionalLights.length);
                         shader.applyParam("directionalLightCount", numDirectionalLights, visualBucketId);
                         for (let i = 0; i < numDirectionalLights; ++i) {
-                            const { light, projectionMatrix, viewMatrix: lightViewMatrix } = Private.directionalLights[i];
+                            const { light, projectionMatrices, viewMatrices } = Private.directionalLights[i];
                             if (visualBucket.reference.receiveShadows) {
-                                const lightMatrix = Private.dummyMatrix.multiplyMatrices(
-                                    projectionMatrix,
-                                    lightViewMatrix
-                                );
-                                shader.applyParam(`directionalLightMatrices[${i}]`, lightMatrix, visualBucketId);
+                                for (let j = 0; j < maxShadowCascades; ++j) {
+                                    const lightMatrix = Private.dummyMatrix.multiplyMatrices(
+                                        projectionMatrices[j],
+                                        viewMatrices[j]
+                                    );
+                                    shader.applyParam(`directionalLightMatrices[${i * maxDirectionalLights + j}]`, lightMatrix, visualBucketId);
+                                }
                                 shader.applyReferenceArrayParam(
-                                    `directionalShadowMaps0`,
-                                    Private.directionalShadowMaps[i],
+                                    `directionalShadowMaps`,
+                                    Private.directionalShadowMaps,
                                     visualBucketId
                                 );
-                                // shader.applyReferenceArrayParam(
-                                //     `directionalShadowMaps[${i}].cascades`,
-                                //     Private.directionalShadowMaps[i],
-                                //     visualBucketId
-                                // );
                             }
                             const lightDir = Vector3.fromPool()
                                 .copy(light.entity.transform.worldForward)
-                                .transformDirection(viewMatrix);
+                                // direction remains the same across cascades
+                                .transformDirection(viewMatrices[0]);
                             shader.applyParam(`directionalLights[${i}].direction`, lightDir, visualBucketId);
                             shader.applyParam(`directionalLights[${i}].color`, light.color, visualBucketId);
                             shader.applyParam(`directionalLights[${i}].shadow`, light.castShadows, visualBucketId);
@@ -255,7 +254,9 @@ namespace Private {
     }
 
     export function renderShadowMaps(camera: Camera) {
-        Private.directionalShadowMaps.length = EngineSettings.instance.maxDirectionalLights;
+        const { maxDirectionalLights, maxShadowCascades } = EngineSettings.instance;
+        const maxDirectionalShadowMaps = maxDirectionalLights * maxShadowCascades;
+        Private.directionalShadowMaps.length = maxDirectionalShadowMaps;
 
         const context = WebGL.context;
         // render to shadow maps
@@ -270,19 +271,20 @@ namespace Private {
         const numDirectionalShadowMaps = Math.min(Private.directionalLights.length, Private.directionalShadowMaps.length);
         let previousRenderDepthShader: Shader | null = null;
         for (let i = 0; i < numDirectionalShadowMaps; ++i) {
-            let cascades = Private.directionalShadowMaps[i];
-            if (!cascades) {
-                cascades = Array.from(new Array(EngineSettings.instance.maxShadowCascades)).map((c, cascadeIndex) => {
-                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x / (Math.pow(2, cascadeIndex)));
-                    return new RenderTarget(size, size, true, false, TextureFiltering.Nearest);
-                });
-                Private.directionalShadowMaps[i] = cascades;
+            let firstCascade = Private.directionalShadowMaps[i * maxDirectionalLights];
+            if (!firstCascade) {
+                for (let j = 0; j < maxShadowCascades; ++j) {
+                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x / (Math.pow(2, j)));
+                    Private.directionalShadowMaps[i * maxDirectionalLights + j] 
+                        = new RenderTarget(size, size, true, false, TextureFiltering.Nearest);
+                }
             }
 
             try {
-                for (const cascade of cascades) {
+                for (let j = 0; j < maxShadowCascades; ++j) {
+                    const cascade = Private.directionalShadowMaps[i * maxDirectionalLights + j];
                     IRendererInternal.instance.renderTarget = cascade;
-                    Private.setupDirectionalLightMatrices(camera, Private.directionalLights[i]);
+                    Private.setupDirectionalLightMatrices(camera, Private.directionalLights[i], j);
 
                     // TODO this is horribly inefficient, must unify the shading pipeline and use a shader with multiple 
                     // instances like the standard shader!!
@@ -296,11 +298,10 @@ namespace Private {
                             currentShader.begin();
                             previousRenderDepthShader = currentShader;
                         }
-
-                        // TODO set projection & view corresponding to the current cascade
-                        currentShader.applyParam("projectionMatrix", Private.directionalLights[i].projectionMatrix);
+                        
+                        currentShader.applyParam("projectionMatrix", Private.directionalLights[i].projectionMatrices[j]);
                         if (hasSkinning) {
-                            currentShader.applyParam("viewMatrix", Private.directionalLights[i].viewMatrix);
+                            currentShader.applyParam("viewMatrix", Private.directionalLights[i].viewMatrices[j]);
                         }
                         vertexBuffer.begin(context, currentShader);
                         for (const visual of visuals) {
@@ -320,7 +321,7 @@ namespace Private {
                                 }
                             } else {
                                 const modelViewMatrix = Private.dummyMatrix.multiplyMatrices(
-                                    Private.directionalLights[i].viewMatrix,
+                                    Private.directionalLights[i].viewMatrices[j],
                                     visual.worldTransform
                                 );
                                 currentShader.applyParam("modelViewMatrix", modelViewMatrix);
@@ -373,7 +374,7 @@ namespace Private {
     }
 
     export let dummyTransform: Transform;
-    export function setupDirectionalLightMatrices(camera: Camera, light: IDirectionalLight) {
+    export function setupDirectionalLightMatrices(camera: Camera, light: IDirectionalLight, cascadeIndex: number) {
         const lightTransform = light.light.entity.transform;
         const cameraTransform = camera.entity.transform;
         dummyTransform.position = Vector3.zero;
@@ -413,7 +414,7 @@ namespace Private {
         const halfHorizontalExtent = (right - left) / 2;
         const halfVerticalExtent = (top - bottom) / 2;
         const halfForwardExtent = (maxZ - minZ) / 2;
-        light.projectionMatrix.makeOrthoProjection(
+        light.projectionMatrices[cascadeIndex].makeOrthoProjection(
             -halfHorizontalExtent,
             halfHorizontalExtent,
             halfVerticalExtent,
@@ -430,7 +431,7 @@ namespace Private {
             .add(Vector3.fromPool().copy(lightTransform.worldForward).multiply(forwardOffset))
             .add(Vector3.fromPool().copy(lightTransform.worldRight).multiply(rightOffset))
             .add(Vector3.fromPool().copy(lightTransform.worldUp).multiply(upOffset));
-        light.viewMatrix.copy(dummyTransform.worldMatrix).invert();
+        light.viewMatrices[cascadeIndex].copy(dummyTransform.worldMatrix).invert();
     }
 }
 
@@ -545,8 +546,8 @@ export class RendererInternal {
             .filter(light => light.type.isA(DirectionalLight))
             .map(light => ({
                 light,
-                viewMatrix: Matrix44.fromPool(),
-                projectionMatrix: Matrix44.fromPool()
+                viewMatrices: Array.from(new Array(EngineSettings.instance.maxShadowCascades)).map(a => Matrix44.fromPool()),
+                projectionMatrices: Array.from(new Array(EngineSettings.instance.maxShadowCascades)).map(a => Matrix44.fromPool())
             }));
 
         // gl.depthMask(true);

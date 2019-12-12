@@ -40,19 +40,7 @@ export class PhongShader extends Shader {
                 [`directionalLights[${i}].shadow`]: { type: "bool", uniformLocation: null },
                 [`directionalLights[${i}].shadowBias`]: { type: "float", uniformLocation: null },
                 [`directionalLights[${i}].shadowRadius`]: { type: "float", uniformLocation: null },
-                [`directionalLights[${i}].shadowMapSize`]: { type: "vec2", uniformLocation: null },
-                // [`directionalShadowMaps[${i}].cascades`]: {
-                //     type: "sampler2DArray", 
-                //     uniformLocation: null,
-                //     textureStage: Array.from(new Array(EngineSettings.instance.maxShadowCascades)).map(s => this._usedTextureStages++),
-                //     arraySize: EngineSettings.instance.maxShadowCascades
-                // }
-                // [`directionalShadowMaps[${i}].cascades`]: {
-                //     type: "sampler2D", 
-                //     uniformLocation: null,
-                //     textureStage: this._usedTextureStages++
-                //     // arraySize: EngineSettings.instance.maxShadowCascades
-                // }
+                [`directionalLights[${i}].shadowMapSize`]: { type: "vec2", uniformLocation: null }
             } as { [name: string]: ShaderParam };
         });
 

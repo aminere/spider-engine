@@ -171,7 +171,7 @@ float edgeFactor() {
         if (useShadowMap === true) {
             directives = `${directives}
 #define USE_SHADOW_MAP
-#define MAX_SHADOW_CASCADES ${EngineSettings.instance.maxShadowCascades}`;
+#define MAX_DIRECTIONAL_SHADOWMAPS ${EngineSettings.instance.maxDirectionalLights * EngineSettings.instance.maxShadowCascades}`;
             needInjection = true;
         }
         
