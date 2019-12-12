@@ -175,6 +175,7 @@ import { Css } from "../ui/Css";
 import { Mask } from "../ui/Mask";
 import { LightType } from "../graphics/lighting/LightType";
 import { DirectionalLight } from "../graphics/lighting/DirectionalLight";
+import { Shadow, PCFSoftShadow, PCFShadow, HardShadow } from "../graphics/lighting/Shadow";
 
 /**
  * @hidden
@@ -263,6 +264,10 @@ export class TypeRegistration {
         factory.registerObject(VisualFilter, SerializableObject);
         factory.registerObject(InclusionVisualFilter, VisualFilter);
         factory.registerObject(ExclusionVisualFilter, VisualFilter);
+        factory.registerObject(Shadow, SerializableObject);        
+        factory.registerObject(PCFShadow, Shadow);
+        factory.registerObject(PCFSoftShadow, PCFShadow);
+        factory.registerObject(HardShadow, Shadow);
 
         // Particles
         factory.registerObject(Particles, Component);

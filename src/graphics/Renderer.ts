@@ -36,6 +36,7 @@ import { DirectionalLight } from "./lighting/DirectionalLight";
 import { Transform } from "../core/Transform";
 import { Entity } from "../core/Entity";
 import { IFrustum } from "./IFrustum";
+import { Shadow, PCFShadow } from "./lighting/Shadow";
 
 interface IRenderPassDefinition {
     begin: (gl: WebGLRenderingContext) => void;
@@ -153,10 +154,23 @@ namespace Private {
                                 .transformDirection(viewMatrix);
                             shader.applyParam(`directionalLights[${i}].direction`, lightDir, visualBucketId);
                             shader.applyParam(`directionalLights[${i}].color`, light.color, visualBucketId);
-                            shader.applyParam(`directionalLights[${i}].shadow`, light.castShadows, visualBucketId);
-                            shader.applyParam(`directionalLights[${i}].shadowBias`, light.shadowBias, visualBucketId);
-                            shader.applyParam(`directionalLights[${i}].shadowRadius`, light.shadowRadius, visualBucketId);
-                            shader.applyParam(`directionalLights[${i}].shadowMapSize`, Private.defaultShadowMapSize, visualBucketId);
+                            if (light.castShadows) {
+                                const shadow = light.shadow as Shadow;
+                                shader.applyParam(`directionalLights[${i}].shadow`, true, visualBucketId);
+                                shader.applyParam(`directionalLights[${i}].shadowType`, shadow.getTypeIndex(), visualBucketId);
+                                if (shadow.isA(PCFShadow)) {
+                                    shader.applyParam(
+                                        `directionalLights[${i}].shadowRadius`, 
+                                        (shadow as PCFShadow).radius, 
+                                        visualBucketId
+                                    );
+                                }
+                            } else {
+                                shader.applyParam(`directionalLights[${i}].shadow`, false, visualBucketId);
+                            }
+                            
+                            shader.applyParam(`directionalLights[${i}].shadowBias`, light.shadowBias, visualBucketId);                            
+                            shader.applyParam(`directionalLights[${i}].intensity`, light.intensity, visualBucketId);
                         }
                     } else {
                         shader.applyParam("directionalLightCount", 0, visualBucketId);
