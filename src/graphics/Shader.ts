@@ -28,8 +28,9 @@ namespace Private {
     }
 
     export const engineManagedDefinitions = {
-        MAX_DIRECTIONAL_LIGHTS: () => EngineSettings.instance.maxDirectionalLights,
-        MAX_DIRECTIONAL_SHADOWMAPS: () => EngineSettings.instance.maxDirectionalLights * EngineSettings.instance.maxShadowCascades
+        MAX_DIRECTIONAL_LIGHTS: () => EngineSettings.instance.maxDirectionalLights,        
+        MAX_DIRECTIONAL_SHADOWMAPS: () => EngineSettings.instance.maxDirectionalLights * EngineSettings.instance.maxShadowCascades,
+        MAX_SHADOW_CASCADES: () => EngineSettings.instance.maxShadowCascades
     };
 }
 
