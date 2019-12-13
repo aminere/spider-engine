@@ -3,9 +3,8 @@ import { Debug } from "../io/Debug";
 import { ExecutionStatus } from "./ExecutionStatus";
 import { Vector3 } from "../math/Vector3";
 import { Matrix44 } from "../math/Matrix44";
-import { Quaternion, RotationOrder } from "../math/Quaternion";
+import { Quaternion } from "../math/Quaternion";
 import { Color } from "../graphics/Color";
-import { CollisionGroup } from "../collision/CollisionGroup";
 import { Ray, RaySphereCollisionResult } from "../math/Ray";
 import { Basis } from "../math/Basis";
 import { Plane } from "../math/Plane";
@@ -33,6 +32,7 @@ import { CollisionFilter } from "../collision/CollisionFilter";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { AABB } from "../math/AABB";
 import { IHttpRequestOptions, Http } from "../network/HTTP";
+import { RotationOrder } from "../math/Types";
 
 namespace Private {
     export const transientState = {};
