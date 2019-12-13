@@ -61,4 +61,22 @@ export class AABB {
         && p.y >= this.min.y && p.y <= this.max.y
         && p.z >= this.min.z && p.z <= this.max.z;
     }
+
+    add(other: AABB) {
+        return this.addAABBs(this, other);
+    }
+
+    addAABBs(a: AABB, b: AABB) {
+        this.min.set(
+            Math.min(a.min.x, b.min.x),
+            Math.min(a.min.y, b.min.y),
+            Math.min(a.min.z, b.min.z)
+        );
+        this.max.set(
+            Math.max(a.max.x, b.max.x),
+            Math.max(a.max.y, b.max.y),
+            Math.max(a.max.z, b.max.z)
+        );
+        return this;
+    }
 }

@@ -13,7 +13,7 @@ import { PerspectiveProjector } from "./PerspectiveProjector";
 import { Vector3 } from "../math/Vector3";
 import { Light } from "./lighting/Light";
 import { RenderTarget } from "./RenderTarget";
-import { GraphicUpdateResult } from "./geometry/Geometry";
+import { GraphicUpdateResult, Geometry } from "./geometry/Geometry";
 import { Size, SizeType } from "../core/Size";
 import { Environment, ColorEnvironment, SkySimulation, SkyBoxEnvironment } from "./Environment";
 import { SkinnedMesh } from "./geometry/SkinnedMesh";
@@ -37,6 +37,7 @@ import { Transform } from "../core/Transform";
 import { Entity } from "../core/Entity";
 import { IFrustum } from "./IFrustum";
 import { Shadow, PCFShadow } from "./lighting/Shadow";
+import { AABB } from "../math/AABB";
 
 interface IRenderPassDefinition {
     begin: (gl: WebGLRenderingContext) => void;
@@ -97,6 +98,8 @@ namespace Private {
     export let shadowCascadeEdges: number[];
     export const shadowCasters = new Map<VertexBuffer, Visual[]>();
     export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);
+    const visibleShadowCastersBounds = new AABB();
+    const dummyAABB = new AABB();
 
     export function doRenderPass(renderPassDefinition: IRenderPassDefinition, gl: WebGLRenderingContext, camera: Camera) {
         if (renderPassDefinition.renderStateBucketMap.size === 0) {
@@ -269,7 +272,11 @@ namespace Private {
     }
 
     export let dummyTransform: Transform;
-    function setupDirectionalLightMatrices(camera: Camera, light: IDirectionalLight, cascadeIndex: number) {
+    function setupDirectionalLightMatrices(
+        camera: Camera, 
+        light: IDirectionalLight, 
+        cascadeIndex: number
+    ) {
         const lightTransform = light.light.entity.transform;
         const cameraTransform = camera.entity.transform;
         dummyTransform.position = Vector3.zero;
@@ -282,8 +289,10 @@ namespace Private {
 
         const frustum = (camera.frustum as IFrustum).splits[cascadeIndex];
         const localCornerPos = Vector3.fromPool();
-        for (let i = 0; i < FrustumCorner.Count; ++i) {
-            const corner = frustum.corners[i];
+        const corners = frustum.corners.concat(visibleShadowCastersBounds.min, visibleShadowCastersBounds.max);
+
+        for (let i = 0; i < corners.length; ++i) {
+            const corner = corners[i];
             localCornerPos.copy(corner)
                 .substract(cameraTransform.worldPosition)
                 .transform(localLightMatrix);
@@ -344,6 +353,21 @@ namespace Private {
         // render back faces to avoid self-shadowing artifacts
         context.enable(context.CULL_FACE);
         context.cullFace(context.FRONT);
+
+        // update visible shadow caster bounds
+        visibleShadowCastersBounds.min.set(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
+        visibleShadowCastersBounds.max.set(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE);
+        const worldMin = Vector3.fromPool(), worldMax = Vector3.fromPool();
+        Private.shadowCasters.forEach((visuals, vertexBuffer) => {
+            for (const visual of visuals) {
+                const visualAABB = (visual.geometry as Geometry).getBoundingBox() as AABB;
+                dummyAABB.set(
+                    worldMin.copy(visualAABB.min).transform(visual.worldTransform),
+                    worldMax.copy(visualAABB.max).transform(visual.worldTransform)
+                );
+                visibleShadowCastersBounds.add(dummyAABB);
+            }
+        });
 
         // Directional shadow maps
         const numDirectionalLights = Math.min(Private.directionalLights.length, maxDirectionalLights);
