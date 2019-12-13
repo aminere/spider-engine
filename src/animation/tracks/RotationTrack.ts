@@ -1,7 +1,8 @@
 import { CompositeTrack, AnimationSubTrackDefinition } from "./CompositeTrack";
-import { Quaternion, RotationOrder } from "../../math/Quaternion";
+import { Quaternion } from "../../math/Quaternion";
 import { NumberTrack } from "./NumberTrack";
 import { Reference } from "../../serialization/Reference";
+import { RotationOrder } from "../../math/Types";
 
 export class RotationTrack extends CompositeTrack {
 

@@ -1,6 +1,7 @@
 import { Vector3 } from "./Vector3";
 import { Matrix44 } from "./Matrix44";
 import { ObjectPool } from "../core/ObjectPool";
+import { RotationOrder } from "./Types";
 
 /**
  * @hidden
@@ -8,8 +9,6 @@ import { ObjectPool } from "../core/ObjectPool";
 namespace Private {
     export let dummy = new Matrix44();
 }
-
-export type RotationOrder = "YXZ" | "ZYX" | "ZYX" | "XYZ" | "ZXY" | "YZX" | "XZY";
 
 export class Quaternion {
 
