@@ -271,6 +271,41 @@ namespace Private {
         }
     }
 
+    function findBounds(
+        cameraTransform: Transform,
+        localLightMatrix: Matrix44,
+        corners: Vector3[], 
+        min: Vector3,
+        max: Vector3
+    ) {
+        const lightPos = Vector3.fromPool();
+        min.set(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
+        max.set(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE);
+        for (let i = 0; i < corners.length; ++i) {
+            lightPos.copy(corners[i])
+                .substract(cameraTransform.worldPosition)
+                .transform(localLightMatrix);
+            if (lightPos.x < min.x) {
+                min.x = lightPos.x;
+            }
+            if (lightPos.x > max.x) {
+                max.x = lightPos.x;
+            }
+            if (lightPos.y < min.y) {
+                min.y = lightPos.y;
+            }
+            if (lightPos.y > max.y) {
+                max.y = lightPos.y;
+            }
+            if (lightPos.z < min.z) {
+                min.z = lightPos.z;
+            }
+            if (lightPos.z > max.z) {
+                max.z = lightPos.z;
+            }
+        }
+    }
+
     export let dummyTransform: Transform;
     function setupDirectionalLightMatrices(
         camera: Camera, 
@@ -278,51 +313,21 @@ namespace Private {
         cascadeIndex: number
     ) {
         const lightTransform = light.light.entity.transform;
-        const cameraTransform = camera.entity.transform;
         dummyTransform.position = Vector3.zero;
         dummyTransform.rotation = lightTransform.rotation;
-
-        // Calculate bounds in order to frustum-fit the light projection matrix
         const localLightMatrix = Matrix44.fromPool().copy(dummyTransform.worldMatrix).invert();
+        const cameraTransform = camera.entity.transform;
+
+        // Tight fit around current frustum split
         const frustum = (camera.frustum as IFrustum).splits[cascadeIndex];
-        const lightPos = Vector3.fromPool();
-
-        const findBounds = (corners: Vector3[], min: Vector3, max: Vector3) => {
-            min.set(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
-            max.set(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE);
-            for (let i = 0; i < corners.length; ++i) {
-                lightPos.copy(corners[i])
-                    .substract(cameraTransform.worldPosition)
-                    .transform(localLightMatrix);
-                if (lightPos.x < min.x) {
-                    min.x = lightPos.x;
-                }
-                if (lightPos.x > max.x) {
-                    max.x = lightPos.x;
-                }
-                if (lightPos.y < min.y) {
-                    min.y = lightPos.y;
-                }
-                if (lightPos.y > max.y) {
-                    max.y = lightPos.y;
-                }
-                if (lightPos.z < min.z) {
-                    min.z = lightPos.z;
-                }
-                if (lightPos.z > max.z) {
-                    max.z = lightPos.z;
-                }
-            }
-        };
-
         const frustumMin = Vector3.fromPool();
         const frustumMax = Vector3.fromPool();
-        findBounds(frustum.corners, frustumMin, frustumMax);
+        findBounds(cameraTransform, localLightMatrix, frustum.corners, frustumMin, frustumMax);
 
         // Tight fit around shadow casters
         const castersMin = Vector3.fromPool();
         const castersMax = Vector3.fromPool();
-        findBounds(visibleShadowCastersBounds.corners, castersMin, castersMax);
+        findBounds(cameraTransform, localLightMatrix, visibleShadowCastersBounds.corners, castersMin, castersMax);
         frustumMin.x = Math.max(castersMin.x, frustumMin.x);
         frustumMin.y = Math.max(castersMin.y, frustumMin.y);
         frustumMin.z = Math.max(castersMin.z, frustumMin.z);
