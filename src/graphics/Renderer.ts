@@ -75,7 +75,7 @@ namespace Private {
     export const numRenderPasses = RenderPass.Transparent + 1;
     export const initialCameraPoolSize = 8;
     export const initialMaterialPoolSize = 128;
-    export const defaultShadowMapSize = new Vector2(2048, 2048);
+    export const defaultShadowMapSize = new Vector2(4096, 4096);
     export let defaultPerspectiveCamera: Camera | null = null;
 
     export const screenSize = new Vector2();
@@ -352,19 +352,6 @@ namespace Private {
             .add(Vector3.fromPool().copy(lightTransform.worldRight).multiply(rightOffset))
             .add(Vector3.fromPool().copy(lightTransform.worldUp).multiply(upOffset));
         light.viewMatrices[cascadeIndex].copy(dummyTransform.worldMatrix).invert();
-
-        // TEMP debugging
-        Object.assign(light.light, {
-            [`frustum${cascadeIndex}`]: new Frustum().update(
-                halfHorizontalExtent,
-                halfVerticalExtent,
-                halfHorizontalExtent,
-                halfVerticalExtent,
-                -halfForwardExtent,
-                halfForwardExtent,
-                dummyTransform
-            )
-        });
     }
 
     export function renderShadowMaps(camera: Camera) {
@@ -404,9 +391,6 @@ namespace Private {
             }
         });
 
-        // TEMP DEBUGGING
-        Object.assign(camera, { visibleShadowCastersBounds });
-
         // Directional shadow maps
         const numDirectionalLights = Math.min(Private.directionalLights.length, maxDirectionalLights);
         let previousRenderDepthShader: Shader | null = null;
@@ -414,7 +398,7 @@ namespace Private {
             let firstCascade = Private.directionalShadowMaps[i * maxShadowCascades];
             if (!firstCascade) {
                 for (let j = 0; j < maxShadowCascades; ++j) {
-                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x /*/ (Math.pow(2, j))*/);
+                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x / (Math.pow(2, j)));
                     Private.directionalShadowMaps[i * maxShadowCascades + j] 
                         = new RenderTarget(size, size, true, false, TextureFiltering.Nearest);
                 }
@@ -638,9 +622,6 @@ export class RendererInternal {
         // gl.depthMask(true);
         if (Private.cameraToRenderPassMap.size > 0) {
             Private.cameraToRenderPassMap.forEach((renderPassSelector, camera) => {
-
-                // TEMP Debugging
-                // camera = (Entities.find("GameCamera") as Entity).getComponent(Camera) as Camera;
 
                 // prepare shadow maps
                 Private.renderShadowMaps(camera);
