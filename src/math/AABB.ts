@@ -1,5 +1,5 @@
 
-import { Vector3 } from "./Vector3";
+import { Vector3, Vector3Internal } from "./Vector3";
 import { PrimitiveType } from "../graphics/GraphicTypes";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 
@@ -9,21 +9,22 @@ export class AABB {
     max: Vector3;
 
     get corners() {
-        if (!this._corners) {
-            this._corners = [];
-            this._corners.push(new Vector3(this.min.x, this.min.y, this.min.z));
-            this._corners.push(new Vector3(this.max.x, this.min.y, this.min.z));
-            this._corners.push(new Vector3(this.min.x, this.min.y, this.max.z));
-            this._corners.push(new Vector3(this.max.x, this.min.y, this.max.z));
-            this._corners.push(new Vector3(this.min.x, this.max.y, this.min.z));
-            this._corners.push(new Vector3(this.max.x, this.max.y, this.min.z));
-            this._corners.push(new Vector3(this.min.x, this.max.y, this.max.z));
-            this._corners.push(new Vector3(this.max.x, this.max.y, this.max.z));
+        if (this._cornersDirty) {
+            this._corners[0].set(this.min.x, this.min.y, this.min.z);
+            this._corners[1].set(this.max.x, this.min.y, this.min.z);
+            this._corners[2].set(this.min.x, this.min.y, this.max.z);
+            this._corners[3].set(this.max.x, this.min.y, this.max.z);
+            this._corners[4].set(this.min.x, this.max.y, this.min.z);
+            this._corners[5].set(this.max.x, this.max.y, this.min.z);
+            this._corners[6].set(this.min.x, this.max.y, this.max.z);
+            this._corners[7].set(this.max.x, this.max.y, this.max.z);
+            this._cornersDirty = false;
         }
         return this._corners;
     }
 
-    private _corners!: Vector3[];
+    private _corners = Array.from(new Array(8)).map(() => new Vector3());
+    private _cornersDirty = true;
 
     static fromVertexBuffer(vb: VertexBuffer) {
         const { attributes, primitiveType, indices } = vb;
@@ -65,6 +66,24 @@ export class AABB {
     constructor(min?: Vector3, max?: Vector3) {
         this.min = min || new Vector3();
         this.max = max || new Vector3();
+
+        const attachToBound = (bound: Vector3) => {
+            Object.defineProperty(bound, "x", {
+                set: value => { bound[Vector3Internal.xKey] = value; this._cornersDirty = true; },
+                get: () => bound[Vector3Internal.xKey]
+            });
+            Object.defineProperty(bound, "y", {
+                set: value => { bound[Vector3Internal.yKey] = value; this._cornersDirty = true; },
+                get: () => bound[Vector3Internal.yKey]
+            });
+            Object.defineProperty(bound, "z", {
+                set: value => { bound[Vector3Internal.zKey] = value; this._cornersDirty = true; },
+                get: () => bound[Vector3Internal.zKey]
+            });
+        };
+
+        attachToBound(this.min);
+        attachToBound(this.max);
     }
 
     set(min: Vector3, max: Vector3) {

@@ -1,7 +1,7 @@
 
 import * as Attributes from "./Attributes";
 import { VoidSyncEvent } from "ts-events";
-import { Vector3 } from "../math/Vector3";
+import { Vector3, Vector3Internal } from "../math/Vector3";
 import { Quaternion } from "../math/Quaternion";
 import { Matrix44 } from "../math/Matrix44";
 import { SerializedObject } from "./SerializableObject";
@@ -20,10 +20,6 @@ export namespace TransformInternal {
     export const positionKey = "_position";
     export const rotationKey = "_rotation";
     export const scaleKey = "_scale";
-    export const xKey = "_x";
-    export const yKey = "_y";
-    export const zKey = "_z";
-    export const wKey = "_w";
 }
 
 @Attributes.mandatory()
@@ -256,50 +252,50 @@ export class Transform extends Component {
 
     private attachToPosition() {
         Object.defineProperty(this._position, "x", {
-            set: value => { this._position[TransformInternal.xKey] = value; this.dirtifyWorldMatrix(); },
-            get: () => this._position[TransformInternal.xKey]
+            set: value => { this._position[Vector3Internal.xKey] = value; this.dirtifyWorldMatrix(); },
+            get: () => this._position[Vector3Internal.xKey]
         });
         Object.defineProperty(this._position, "y", {
-            set: value => { this._position[TransformInternal.yKey] = value; this.dirtifyWorldMatrix(); },
-            get: () => this._position[TransformInternal.yKey]
+            set: value => { this._position[Vector3Internal.yKey] = value; this.dirtifyWorldMatrix(); },
+            get: () => this._position[Vector3Internal.yKey]
         });
         Object.defineProperty(this._position, "z", {
-            set: value => { this._position[TransformInternal.zKey] = value; this.dirtifyWorldMatrix(); },
-            get: () => this._position[TransformInternal.zKey]
+            set: value => { this._position[Vector3Internal.zKey] = value; this.dirtifyWorldMatrix(); },
+            get: () => this._position[Vector3Internal.zKey]
         });
     }
 
     private attachToScale() {
         Object.defineProperty(this._scale, "x", {
-            set: value => { this._scale[TransformInternal.xKey] = value; this.dirtifyWorldMatrix(); },
-            get: () => this._scale[TransformInternal.xKey]
+            set: value => { this._scale[Vector3Internal.xKey] = value; this.dirtifyWorldMatrix(); },
+            get: () => this._scale[Vector3Internal.xKey]
         });
         Object.defineProperty(this._scale, "y", {
-            set: value => { this._scale[TransformInternal.yKey] = value; this.dirtifyWorldMatrix(); },
-            get: () => this._scale[TransformInternal.yKey]
+            set: value => { this._scale[Vector3Internal.yKey] = value; this.dirtifyWorldMatrix(); },
+            get: () => this._scale[Vector3Internal.yKey]
         });
         Object.defineProperty(this._scale, "z", {
-            set: value => { this._scale[TransformInternal.zKey] = value; this.dirtifyWorldMatrix(); },
-            get: () => this._scale[TransformInternal.zKey]
+            set: value => { this._scale[Vector3Internal.zKey] = value; this.dirtifyWorldMatrix(); },
+            get: () => this._scale[Vector3Internal.zKey]
         });
     }
 
     private attachToRotation() {
         Object.defineProperty(this._rotation, "x", {
-            set: value => { this._rotation[TransformInternal.xKey] = value; this.dirtifyWorldMatrix(); },
-            get: () => this._rotation[TransformInternal.xKey]
+            set: value => { this._rotation[Vector3Internal.xKey] = value; this.dirtifyWorldMatrix(); },
+            get: () => this._rotation[Vector3Internal.xKey]
         });
         Object.defineProperty(this._rotation, "y", {
-            set: value => { this._rotation[TransformInternal.yKey] = value; this.dirtifyWorldMatrix(); },
-            get: () => this._rotation[TransformInternal.yKey]
+            set: value => { this._rotation[Vector3Internal.yKey] = value; this.dirtifyWorldMatrix(); },
+            get: () => this._rotation[Vector3Internal.yKey]
         });
         Object.defineProperty(this._rotation, "z", {
-            set: value => { this._rotation[TransformInternal.zKey] = value; this.dirtifyWorldMatrix(); },
-            get: () => this._rotation[TransformInternal.zKey]
+            set: value => { this._rotation[Vector3Internal.zKey] = value; this.dirtifyWorldMatrix(); },
+            get: () => this._rotation[Vector3Internal.zKey]
         });
         Object.defineProperty(this._rotation, "w", {
-            set: value => { this._rotation[TransformInternal.wKey] = value; this.dirtifyWorldMatrix(); },
-            get: () => this._rotation[TransformInternal.wKey]
+            set: value => { this._rotation[Vector3Internal.wKey] = value; this.dirtifyWorldMatrix(); },
+            get: () => this._rotation[Vector3Internal.wKey]
         });
     }
 }

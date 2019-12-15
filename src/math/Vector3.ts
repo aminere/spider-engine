@@ -2,6 +2,13 @@ import { Matrix44 } from "./Matrix44";
 import { Quaternion } from "./Quaternion";
 import { ObjectPool } from "../core/ObjectPool";
 
+export namespace Vector3Internal {
+    export const xKey = "_x";
+    export const yKey = "_y";
+    export const zKey = "_z";
+    export const wKey = "_w";
+}
+
 export class Vector3 {
     static zero = new Vector3();
     static one = new Vector3(1.0, 1.0, 1.0);

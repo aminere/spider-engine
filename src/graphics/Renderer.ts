@@ -75,7 +75,7 @@ namespace Private {
     export const numRenderPasses = RenderPass.Transparent + 1;
     export const initialCameraPoolSize = 8;
     export const initialMaterialPoolSize = 128;
-    export const defaultShadowMapSize = new Vector2(4096, 4096);
+    export const defaultShadowMapSize = new Vector2(2048, 2048);
     export let defaultPerspectiveCamera: Camera | null = null;
 
     export const screenSize = new Vector2();
@@ -284,42 +284,56 @@ namespace Private {
 
         // Calculate bounds in order to frustum-fit the light projection matrix
         const localLightMatrix = Matrix44.fromPool().copy(dummyTransform.worldMatrix).invert();
-        let left = Number.MAX_VALUE, bottom = Number.MAX_VALUE, minZ = Number.MAX_VALUE;
-        let right = -Number.MAX_VALUE, top = -Number.MAX_VALUE, maxZ = -Number.MAX_VALUE;
-
         const frustum = (camera.frustum as IFrustum).splits[cascadeIndex];
-        const localCornerPos = Vector3.fromPool();
-        const corners = frustum.corners.concat(visibleShadowCastersBounds.min, visibleShadowCastersBounds.max);
+        const lightPos = Vector3.fromPool();
 
-        for (let i = 0; i < corners.length; ++i) {
-            const corner = corners[i];
-            localCornerPos.copy(corner)
-                .substract(cameraTransform.worldPosition)
-                .transform(localLightMatrix);
-            if (localCornerPos.x < left) {
-                left = localCornerPos.x;
+        const findBounds = (corners: Vector3[], min: Vector3, max: Vector3) => {
+            min.set(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
+            max.set(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE);
+            for (let i = 0; i < corners.length; ++i) {
+                lightPos.copy(corners[i])
+                    .substract(cameraTransform.worldPosition)
+                    .transform(localLightMatrix);
+                if (lightPos.x < min.x) {
+                    min.x = lightPos.x;
+                }
+                if (lightPos.x > max.x) {
+                    max.x = lightPos.x;
+                }
+                if (lightPos.y < min.y) {
+                    min.y = lightPos.y;
+                }
+                if (lightPos.y > max.y) {
+                    max.y = lightPos.y;
+                }
+                if (lightPos.z < min.z) {
+                    min.z = lightPos.z;
+                }
+                if (lightPos.z > max.z) {
+                    max.z = lightPos.z;
+                }
             }
-            if (localCornerPos.x > right) {
-                right = localCornerPos.x;
-            }
-            if (localCornerPos.y < bottom) {
-                bottom = localCornerPos.y;
-            }
-            if (localCornerPos.y > top) {
-                top = localCornerPos.y;
-            }
-            if (localCornerPos.z < minZ) {
-                minZ = localCornerPos.z;
-            }
-            if (localCornerPos.z > maxZ) {
-                maxZ = localCornerPos.z;
-            }
-        }
+        };
+
+        const frustumMin = Vector3.fromPool();
+        const frustumMax = Vector3.fromPool();
+        findBounds(frustum.corners, frustumMin, frustumMax);
+
+        // Tight fit around shadow casters
+        const castersMin = Vector3.fromPool();
+        const castersMax = Vector3.fromPool();
+        findBounds(visibleShadowCastersBounds.corners, castersMin, castersMax);
+        frustumMin.x = Math.max(castersMin.x, frustumMin.x);
+        frustumMin.y = Math.max(castersMin.y, frustumMin.y);
+        frustumMin.z = Math.max(castersMin.z, frustumMin.z);
+        frustumMax.x = Math.min(castersMax.x, frustumMax.x);
+        frustumMax.y = Math.min(castersMax.y, frustumMax.y);
+        frustumMax.z = Math.min(castersMax.z, frustumMax.z);       
 
         // Make ortho projection matrix        
-        const halfHorizontalExtent = (right - left) / 2;
-        const halfVerticalExtent = (top - bottom) / 2;
-        const halfForwardExtent = (maxZ - minZ) / 2;
+        const halfHorizontalExtent = (frustumMax.x - frustumMin.x) / 2;
+        const halfVerticalExtent = (frustumMax.y - frustumMin.y) / 2;
+        const halfForwardExtent = (frustumMax.z - frustumMin.z) / 2;
         light.projectionMatrices[cascadeIndex].makeOrthoProjection(
             -halfHorizontalExtent,
             halfHorizontalExtent,
@@ -330,9 +344,9 @@ namespace Private {
         );
 
         // Make view matrix
-        const rightOffset = left + halfHorizontalExtent;
-        const upOffset = bottom + halfVerticalExtent;
-        const forwardOffset = minZ + halfForwardExtent;
+        const rightOffset = frustumMin.x + halfHorizontalExtent;
+        const upOffset = frustumMin.y + halfVerticalExtent;
+        const forwardOffset = frustumMin.z + halfForwardExtent;
         dummyTransform.position.copy(cameraTransform.worldPosition)
             .add(Vector3.fromPool().copy(lightTransform.worldForward).multiply(forwardOffset))
             .add(Vector3.fromPool().copy(lightTransform.worldRight).multiply(rightOffset))
@@ -341,7 +355,7 @@ namespace Private {
 
         // TEMP debugging
         Object.assign(light.light, {
-            frustum: new Frustum().update(
+            [`frustum${cascadeIndex}`]: new Frustum().update(
                 halfHorizontalExtent,
                 halfVerticalExtent,
                 halfHorizontalExtent,
@@ -354,9 +368,6 @@ namespace Private {
     }
 
     export function renderShadowMaps(camera: Camera) {
-        // TEMP Debugging
-        camera = (Entities.find("GameCamera") as Entity).getComponent(Camera) as Camera;
-
         const { maxDirectionalLights, maxShadowCascades } = EngineSettings.instance;
         const maxDirectionalShadowMaps = maxDirectionalLights * maxShadowCascades;
         Private.directionalShadowMaps.length = maxDirectionalShadowMaps;
@@ -393,6 +404,9 @@ namespace Private {
             }
         });
 
+        // TEMP DEBUGGING
+        Object.assign(camera, { visibleShadowCastersBounds });
+
         // Directional shadow maps
         const numDirectionalLights = Math.min(Private.directionalLights.length, maxDirectionalLights);
         let previousRenderDepthShader: Shader | null = null;
@@ -400,7 +414,7 @@ namespace Private {
             let firstCascade = Private.directionalShadowMaps[i * maxShadowCascades];
             if (!firstCascade) {
                 for (let j = 0; j < maxShadowCascades; ++j) {
-                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x / (Math.pow(2, j)));
+                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x /*/ (Math.pow(2, j))*/);
                     Private.directionalShadowMaps[i * maxShadowCascades + j] 
                         = new RenderTarget(size, size, true, false, TextureFiltering.Nearest);
                 }
@@ -624,6 +638,9 @@ export class RendererInternal {
         // gl.depthMask(true);
         if (Private.cameraToRenderPassMap.size > 0) {
             Private.cameraToRenderPassMap.forEach((renderPassSelector, camera) => {
+
+                // TEMP Debugging
+                // camera = (Entities.find("GameCamera") as Entity).getComponent(Camera) as Camera;
 
                 // prepare shadow maps
                 Private.renderShadowMaps(camera);
