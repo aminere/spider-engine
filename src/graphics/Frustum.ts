@@ -140,5 +140,7 @@ export class Frustum {
             this._corners[FrustumCorner.FarTopRight], 
             this._corners[FrustumCorner.FarTopLeft]
         );
+
+        return this;
     }
 }

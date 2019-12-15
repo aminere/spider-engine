@@ -8,6 +8,23 @@ export class AABB {
     min: Vector3;
     max: Vector3;
 
+    get corners() {
+        if (!this._corners) {
+            this._corners = [];
+            this._corners.push(new Vector3(this.min.x, this.min.y, this.min.z));
+            this._corners.push(new Vector3(this.max.x, this.min.y, this.min.z));
+            this._corners.push(new Vector3(this.min.x, this.min.y, this.max.z));
+            this._corners.push(new Vector3(this.max.x, this.min.y, this.max.z));
+            this._corners.push(new Vector3(this.min.x, this.max.y, this.min.z));
+            this._corners.push(new Vector3(this.max.x, this.max.y, this.min.z));
+            this._corners.push(new Vector3(this.min.x, this.max.y, this.max.z));
+            this._corners.push(new Vector3(this.max.x, this.max.y, this.max.z));
+        }
+        return this._corners;
+    }
+
+    private _corners!: Vector3[];
+
     static fromVertexBuffer(vb: VertexBuffer) {
         const { attributes, primitiveType, indices } = vb;
         return AABB.fromVertexArray(attributes.position as number[], primitiveType, indices);

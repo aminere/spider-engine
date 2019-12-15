@@ -31,13 +31,14 @@ import { IRenderer, IRendererInternal } from "./IRenderer";
 import { IObjectManagerInternal } from "../core/IObjectManager";
 import { Component } from "../core/Component";
 import { EngineSettings } from "../core/EngineSettings";
-import { FrustumCorner } from "./Frustum";
+import { FrustumCorner, Frustum } from "./Frustum";
 import { DirectionalLight } from "./lighting/DirectionalLight";
 import { Transform } from "../core/Transform";
 import { Entity } from "../core/Entity";
 import { IFrustum } from "./IFrustum";
 import { Shadow, PCFShadow } from "./lighting/Shadow";
 import { AABB } from "../math/AABB";
+import { Entities } from "../core/Entities";
 
 interface IRenderPassDefinition {
     begin: (gl: WebGLRenderingContext) => void;
@@ -74,7 +75,7 @@ namespace Private {
     export const numRenderPasses = RenderPass.Transparent + 1;
     export const initialCameraPoolSize = 8;
     export const initialMaterialPoolSize = 128;
-    export const defaultShadowMapSize = new Vector2(2048, 2048);
+    export const defaultShadowMapSize = new Vector2(4096, 4096);
     export let defaultPerspectiveCamera: Camera | null = null;
 
     export const screenSize = new Vector2();
@@ -99,7 +100,6 @@ namespace Private {
     export const shadowCasters = new Map<VertexBuffer, Visual[]>();
     export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);
     const visibleShadowCastersBounds = new AABB();
-    const dummyAABB = new AABB();
 
     export function doRenderPass(renderPassDefinition: IRenderPassDefinition, gl: WebGLRenderingContext, camera: Camera) {
         if (renderPassDefinition.renderStateBucketMap.size === 0) {
@@ -338,9 +338,25 @@ namespace Private {
             .add(Vector3.fromPool().copy(lightTransform.worldRight).multiply(rightOffset))
             .add(Vector3.fromPool().copy(lightTransform.worldUp).multiply(upOffset));
         light.viewMatrices[cascadeIndex].copy(dummyTransform.worldMatrix).invert();
+
+        // TEMP debugging
+        Object.assign(light.light, {
+            frustum: new Frustum().update(
+                halfHorizontalExtent,
+                halfVerticalExtent,
+                halfHorizontalExtent,
+                halfVerticalExtent,
+                -halfForwardExtent,
+                halfForwardExtent,
+                dummyTransform
+            )
+        });
     }
 
     export function renderShadowMaps(camera: Camera) {
+        // TEMP Debugging
+        camera = (Entities.find("GameCamera") as Entity).getComponent(Camera) as Camera;
+
         const { maxDirectionalLights, maxShadowCascades } = EngineSettings.instance;
         const maxDirectionalShadowMaps = maxDirectionalLights * maxShadowCascades;
         Private.directionalShadowMaps.length = maxDirectionalShadowMaps;
@@ -357,15 +373,23 @@ namespace Private {
         // update visible shadow caster bounds
         visibleShadowCastersBounds.min.set(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
         visibleShadowCastersBounds.max.set(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE);
-        const worldMin = Vector3.fromPool(), worldMax = Vector3.fromPool();
+        const worldPos = Vector3.fromPool();
         Private.shadowCasters.forEach((visuals, vertexBuffer) => {
             for (const visual of visuals) {
                 const visualAABB = (visual.geometry as Geometry).getBoundingBox() as AABB;
-                dummyAABB.set(
-                    worldMin.copy(visualAABB.min).transform(visual.worldTransform),
-                    worldMax.copy(visualAABB.max).transform(visual.worldTransform)
-                );
-                visibleShadowCastersBounds.add(dummyAABB);
+                for (const corner of visualAABB.corners) {
+                    worldPos.copy(corner).transform(visual.worldTransform);
+                    visibleShadowCastersBounds.min.set(
+                        Math.min(visibleShadowCastersBounds.min.x, worldPos.x), 
+                        Math.min(visibleShadowCastersBounds.min.y, worldPos.y), 
+                        Math.min(visibleShadowCastersBounds.min.z, worldPos.z)
+                    );
+                    visibleShadowCastersBounds.max.set(
+                        Math.max(visibleShadowCastersBounds.max.x, worldPos.x), 
+                        Math.max(visibleShadowCastersBounds.max.y, worldPos.y), 
+                        Math.max(visibleShadowCastersBounds.max.z, worldPos.z)
+                    );
+                }
             }
         });
 
