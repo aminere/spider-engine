@@ -177,10 +177,17 @@ export class GeometryRenderer {
         GraphicUtils.drawVertexBuffer(WebGL.context, Private.line, Private.debugMaterial.shader as Shader);
     }
 
-    static drawCone(radius: number, height: number, distFromOrigin: number, forward: Vector3, up: Vector3, color: Color, worldMatrix: Matrix44) {
+    static drawCone(
+        radius: number, 
+        height: number, 
+        distFromOrigin: number, 
+        forward: Vector3, 
+        up: Vector3, 
+        color: Color, 
+        worldPosition: Vector3
+    ) {
         Private.debugMaterial.applyParameter("ambient", color);
-        const absolutePosition = Vector3.fromPool().setFromMatrix(worldMatrix);
-        const position = Vector3.fromPool().copy(forward).multiply(distFromOrigin).add(absolutePosition);
+        const position = Vector3.fromPool().copy(forward).multiply(distFromOrigin).add(worldPosition);
         const rotation = Quaternion.fromPool().lookAt(forward, up);
         const scale = Vector3.fromPool().set(radius, height, radius);
         const { dummy1, dummy2 } = Private;
