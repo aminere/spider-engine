@@ -152,7 +152,7 @@ export namespace DefaultAssetsInternal {
         return Promise.all(
             Private.definitions.map(a => {
                 return IObjectManagerInternal.instance.loadObject(a.path)
-                    .then(tuple => a.set(tuple[0] as Asset));
+                    .then(([asset]) => a.set(asset as Asset));
             })
         )
         .then(() => EngineHud.load());

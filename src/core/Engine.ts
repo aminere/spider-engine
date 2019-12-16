@@ -358,13 +358,14 @@ export namespace EngineInternal {
         Private.loadingInProgress = false;
         UpdateInternal.update();
 
-        const cameras = Components.ofType(Camera);
-        cameras.sort((a, b) => a.priority - b.priority);
         const renderables = Components.ofTypes([
             Visual,
             Light,
-            Screen
+            Screen,
+            Camera
         ]);
+        const cameras = renderables.Camera as Camera[];
+        cameras.sort((a, b) => a.priority - b.priority);
         render(cameras, renderables);
 
         requestAnimationFrame(() => updateFrame());
