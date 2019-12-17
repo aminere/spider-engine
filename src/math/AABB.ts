@@ -2,6 +2,7 @@
 import { Vector3, Vector3Internal } from "./Vector3";
 import { PrimitiveType } from "../graphics/GraphicTypes";
 import { VertexBuffer } from "../graphics/VertexBuffer";
+import { Matrix44 } from "./Matrix44";
 
 export class AABB {
     
@@ -113,6 +114,34 @@ export class AABB {
             Math.max(a.max.y, b.max.y),
             Math.max(a.max.z, b.max.z)
         );
+        return this;
+    }
+
+    copy(other: AABB) {
+        this.min.copy(other.min);
+        this.max.copy(other.max);
+        return this;
+    }
+
+    transform(matrix: Matrix44) {
+        const min = Vector3.fromPool().set(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
+        const max = Vector3.fromPool().set(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE);
+        const transformed = Vector3.fromPool();
+        for (const corner of this.corners) {
+            transformed.copy(corner).transform(matrix);
+            min.set(
+                Math.min(min.x, transformed.x), 
+                Math.min(min.y, transformed.y), 
+                Math.min(min.z, transformed.z)
+            );
+            max.set(
+                Math.max(max.x, transformed.x), 
+                Math.max(max.y, transformed.y), 
+                Math.max(max.z, transformed.z)
+            );
+        }
+        this.min.copy(min);
+        this.max.copy(max);
         return this;
     }
 }
