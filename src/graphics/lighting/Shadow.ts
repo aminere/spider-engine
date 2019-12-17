@@ -7,7 +7,7 @@ export class Shadow extends SerializableObject {
 
 @Attributes.displayName("Smooth")
 export class PCFShadow extends Shadow {
-    radius = 4;
+    radius = 2;
     getTypeIndex() { return 1; }
 }
 
