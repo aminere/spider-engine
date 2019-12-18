@@ -181,7 +181,7 @@ namespace Private {
                         shader.applyParam("directionalLightCount", 0, visualBucketId);
                     }
                     // fog
-                    if (visualBucket.reference.receiveFog && fog) {
+                    if (fog && visualBucket.reference.receiveFog) {
                         shader.applyParam("fogColor", fog.color, visualBucketId);
                         if (fog.isA(ExponentialFog)) {
                             shader.applyParam("fogDensity", (fog as ExponentialFog).density, visualBucketId);

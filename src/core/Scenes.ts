@@ -11,11 +11,13 @@ import { RendererInternal } from "../graphics/Renderer";
 import { SerializerUtils } from "../serialization/SerializerUtils";
 import { IObjectManagerInternal } from "./IObjectManager";
 import { defaultAssets } from "../assets/DefaultAssets";
+import { Shader } from "../graphics/Shader";
 
 interface SceneLoadInfo {
     path: string;
     additive: boolean;
     scene?: Scene;
+    previousFogType?: string;
     resolve: (scene: Scene) => void;
 }
 
@@ -41,7 +43,7 @@ namespace Private {
             console.assert(false);
             return;
         }        
-        const { additive, scene, resolve } = Private.sceneLoadInProgress;
+        const { additive, scene, previousFogType, resolve } = Private.sceneLoadInProgress;
         if (!scene) {
             console.assert(false);
             return;
@@ -65,6 +67,15 @@ namespace Private {
         }
         
         scenes.push(scene);
+
+        const fogType = scene.fog ? scene.fog.constructor.name : undefined;
+        if (fogType !== previousFogType) {
+            IObjectManagerInternal.instance.forEach(o => {
+                if (o.isA(Shader)) {
+                    (o as Shader).invalidateProgram();
+                }
+            });
+        }
 
         if (isFirstScene) {
             if (process.env.CONFIG === "standalone") {
@@ -166,6 +177,13 @@ export class Scenes {
             return Promise.reject();
         }
 
+        const getPreviousFogType = () => {
+            const previousScene = Private.scenes.length ? Private.scenes[0] : null;
+            const previousFogInstance = previousScene ? previousScene.fog : null;
+            const previousFogType = previousFogInstance ? previousFogInstance.constructor.name : undefined;
+            return previousFogType;
+        };
+
         const preloadIndex = Private.preloadedScenes.findIndex(s => s.templatePath === path);
         if (preloadIndex >= 0) {
             Private.preloadedScenes.splice(preloadIndex, 1);
@@ -174,6 +192,7 @@ export class Scenes {
                 scene: scene,
                 path: path,
                 additive: additive,
+                previousFogType: getPreviousFogType(),
                 resolve: () => {}
             };
             Private.finalizeSceneLoad();
@@ -184,6 +203,7 @@ export class Scenes {
             Private.sceneLoadInProgress = {
                 path: path,
                 additive: additive,
+                previousFogType: getPreviousFogType(),
                 resolve: resolve
             };
             ObjectManagerInternal.loadObjectIgnoreCache(path)
