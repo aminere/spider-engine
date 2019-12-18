@@ -28,7 +28,7 @@ export class DynamicGeometry extends Geometry {
     
     getBoundingBox() {
         if (!this._boundingBox && this._vb) {
-            this._boundingBox = AABB.fromVertexBuffer( this._vb);
+            this._boundingBox = AABB.fromVertexBuffer(this._vb);
         }
         return this._boundingBox;
     }

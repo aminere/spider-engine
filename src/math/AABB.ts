@@ -3,9 +3,12 @@ import { Vector3, Vector3Internal } from "./Vector3";
 import { PrimitiveType } from "../graphics/GraphicTypes";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { Matrix44 } from "./Matrix44";
+import { ObjectPool } from "../core/ObjectPool";
 
 export class AABB {
     
+    static pool = new ObjectPool(AABB, 32);
+
     min: Vector3;
     max: Vector3;
 
@@ -62,6 +65,10 @@ export class AABB {
             }
         }
         return bb;
+    }
+
+    static fromPool() {
+        return AABB.pool.get();
     }
 
     constructor(min?: Vector3, max?: Vector3) {

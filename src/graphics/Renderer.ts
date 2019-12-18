@@ -606,35 +606,35 @@ export class RendererInternal {
                 }
 
                 const visualAABB = (visual.geometry as Geometry).getBoundingBox();
+
                 if (visualAABB) {
+                    if (visual.castShadows) {
+                        const vertexBuffer = visual.vertexBuffer;
+                        let shadowCasters = Private.cameraToShadowCastersMap.get(camera);
+                        if (!shadowCasters) {
+                            shadowCasters = {
+                                bounds: AABB.fromPool(),
+                                visuals: Private.shadowCastersMapPool.get()
+                            };
+                            Private.cameraToShadowCastersMap.set(camera, shadowCasters);
+                        }
+                        const visuals = shadowCasters.visuals.get(vertexBuffer);
+                        if (!visuals) {
+                            shadowCasters.visuals.set(vertexBuffer, [visual]);
+                        } else {
+                            visuals.push(visual);
+                        }
+                    }
+
                     Private.dummyAABB.copy(visualAABB).transform(visual.worldTransform);
                     if (camera.frustum.full.testAABB(Private.dummyAABB) === FrustumTest.Out) {
                         continue;
                     }
                 } else {
-                    // TODO cull geometries that don't have an AABB?
-                }                
-
-                Private.addToRenderMap(camera, visual);
-
-                if (visualAABB // Exclude geometries with no AABB from casting shadows - TODO handle this better.
-                && visual.castShadows) {
-                    const vertexBuffer = visual.vertexBuffer;
-                    let shadowCasters = Private.cameraToShadowCastersMap.get(camera);
-                    if (!shadowCasters) {
-                        shadowCasters = {
-                            bounds: new AABB(),
-                            visuals: Private.shadowCastersMapPool.get()
-                        };
-                        Private.cameraToShadowCastersMap.set(camera, shadowCasters);                        
-                    }
-                    const visuals = shadowCasters.visuals.get(vertexBuffer);
-                    if (!visuals) {
-                        shadowCasters.visuals.set(vertexBuffer, [visual]);
-                    } else {
-                        visuals.push(visual);
-                    }
+                    // TODO cull & shadow cast geometries that don't have an AABB?
                 }
+                
+                Private.addToRenderMap(camera, visual);
             }
         }
 
