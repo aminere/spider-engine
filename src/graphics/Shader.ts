@@ -11,8 +11,8 @@ import { ShaderUtils, ShaderParams, ShaderParamType } from "./ShaderUtils";
 import { WebGL } from "./WebGL";
 import { ObjectProps } from "../core/Types";
 import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
-import { EngineSettings } from "../core/EngineSettings";
 import { ArrayProperty } from "../serialization/ArrayProperty";
+import { GraphicSettings } from "./GraphicSettings";
 
 namespace Private {
     export const attributeTypeToComponentCount = {
@@ -30,9 +30,9 @@ namespace Private {
     }
 
     export const engineManagedDefinitions = {
-        MAX_DIRECTIONAL_LIGHTS: () => EngineSettings.instance.maxDirectionalLights,        
-        MAX_DIRECTIONAL_SHADOWMAPS: () => EngineSettings.instance.maxDirectionalLights * EngineSettings.instance.maxShadowCascades,
-        MAX_SHADOW_CASCADES: () => EngineSettings.instance.maxShadowCascades
+        MAX_DIRECTIONAL_LIGHTS: () => GraphicSettings.maxDirectionalLights,        
+        MAX_DIRECTIONAL_SHADOWMAPS: () => GraphicSettings.maxDirectionalLights * GraphicSettings.maxShadowCascades,
+        MAX_SHADOW_CASCADES: () => GraphicSettings.maxShadowCascades
     };
 }
 

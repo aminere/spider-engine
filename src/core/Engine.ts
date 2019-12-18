@@ -410,7 +410,6 @@ export class Engine {
                         }
                     })
                     .then(() => EngineSettings.load())
-                    .then(() => RendererInternal.initShadowCascadeEdges())
                     .then(() => {
                         if (process.env.CONFIG === "standalone" && process.env.PLATFORM === "web") {
                             const useInMemoryFileSystem = Boolean(Private.engineConfig.startupUrl);

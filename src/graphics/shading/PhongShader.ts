@@ -4,7 +4,7 @@ import { Shader, ShaderInstance } from "../Shader";
 import { ShaderParams, ShaderParam } from "../ShaderUtils";
 import { ShaderCodeInjector } from "../ShaderCodeInjector";
 import { Visual } from "../Visual";
-import { EngineSettings } from "../../core/EngineSettings";
+import { GraphicSettings } from "../GraphicSettings";
 
 /**
  * @hidden
@@ -33,7 +33,7 @@ export class PhongShader extends Shader {
         const params = instance.params as ShaderParams;
         const program = instance.program as WebGLProgram;
         
-        const lightParams = Array.from(new Array(EngineSettings.instance.maxDirectionalLights)).map((a, i) => {
+        const lightParams = Array.from(new Array(GraphicSettings.maxDirectionalLights)).map((a, i) => {
             return {
                 [`directionalLights[${i}].direction`]: { type: "vec3", uniformLocation: null },
                 [`directionalLights[${i}].color`]: { type: "vec4", uniformLocation: null },

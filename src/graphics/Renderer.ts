@@ -30,15 +30,13 @@ import { defaultAssets } from "../assets/DefaultAssets";
 import { IRenderer, IRendererInternal } from "./IRenderer";
 import { IObjectManagerInternal } from "../core/IObjectManager";
 import { Component } from "../core/Component";
-import { EngineSettings } from "../core/EngineSettings";
 import { FrustumTest } from "./Frustum";
 import { DirectionalLight } from "./lighting/DirectionalLight";
 import { Transform } from "../core/Transform";
 import { Entity } from "../core/Entity";
-import { IFrustum } from "./IFrustum";
 import { Shadow, PCFShadow } from "./lighting/Shadow";
 import { AABB } from "../math/AABB";
-import { Entities } from "../core/Entities";
+import { GraphicSettings } from "./GraphicSettings";
 
 interface IRenderPassDefinition {
     begin: (gl: WebGLRenderingContext) => void;
@@ -102,7 +100,6 @@ namespace Private {
     // shadow mapping
     export let directionalLights: IDirectionalLight[];
     export const directionalShadowMaps: RenderTarget[] = [];
-    export let shadowCascadeEdges: number[];
     export const cameraToShadowCastersMap = new Map<Camera, IShadowCasters>();
     export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);
 
@@ -117,7 +114,7 @@ namespace Private {
         // TODO implement a more rebust method of controlling material render order
         // (for example separate into different buckets based on priority - controls the order but doesn't need uploadState multiple times.)
         const sortedBuckedIds = Array.from(renderPassDefinition.renderStateBucketMap.keys()).sort();
-        const { maxDirectionalLights, maxShadowCascades } = EngineSettings.instance;
+        const { maxDirectionalLights, maxShadowCascades, shadowCascadeEdges } = GraphicSettings;
         for (const bucketId of sortedBuckedIds) {
             const renderStateBucket = renderPassDefinition.renderStateBucketMap.get(bucketId) as IRenderStateBucket;
             renderStateBucket.reference.uploadState();
@@ -143,7 +140,7 @@ namespace Private {
                         const numDirectionalLights = Math.min(maxDirectionalLights, directionalLights.length);
                         shader.applyParam("directionalLightCount", numDirectionalLights, visualBucketId);
                         if (hasShadows) {
-                            shader.applyNumberArrayParam("shadowCascadeEdges", Private.shadowCascadeEdges, visualBucketId);
+                            shader.applyNumberArrayParam("shadowCascadeEdges", shadowCascadeEdges, visualBucketId);
                         }
                         for (let i = 0; i < numDirectionalLights; ++i) {
                             const { light, projectionMatrices, viewMatrices } = Private.directionalLights[i];
@@ -369,7 +366,7 @@ namespace Private {
 
     export let dummyAABB = new AABB();
     export function renderShadowMaps(camera: Camera) {
-        const { maxDirectionalLights, maxShadowCascades } = EngineSettings.instance;
+        const { maxDirectionalLights, maxShadowCascades } = GraphicSettings;
         const maxDirectionalShadowMaps = maxDirectionalLights * maxShadowCascades;
         Private.directionalShadowMaps.length = maxDirectionalShadowMaps;
 
@@ -411,7 +408,7 @@ namespace Private {
             let firstCascade = Private.directionalShadowMaps[i * maxShadowCascades];
             if (!firstCascade) {
                 for (let j = 0; j < maxShadowCascades; ++j) {
-                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x / (Math.pow(2, j)));
+                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x / (Math.pow(2, i)));
                     Private.directionalShadowMaps[i * maxShadowCascades + j] 
                         = new RenderTarget(size, size, true, false, TextureFiltering.Nearest);
                 }
@@ -573,12 +570,6 @@ export class RendererInternal {
         Private.dummyTransform.setEntity(new Entity());
     }
 
-    static initShadowCascadeEdges() {
-        const { maxShadowCascades, maxShadowDistance } = EngineSettings.instance;        
-        const splitSize = maxShadowDistance / maxShadowCascades;
-        Private.shadowCascadeEdges = Array.from(new Array(maxShadowCascades - 1)).map((a, i) => splitSize * (i + 1));
-    }
-
     static render(
         environment: Environment | undefined,
         cameras: Camera[],
@@ -648,8 +639,8 @@ export class RendererInternal {
             .filter(light => light.type.isA(DirectionalLight))
             .map(light => ({
                 light,
-                viewMatrices: Array.from(new Array(EngineSettings.instance.maxShadowCascades)).map(a => Matrix44.fromPool()),
-                projectionMatrices: Array.from(new Array(EngineSettings.instance.maxShadowCascades)).map(a => Matrix44.fromPool())
+                viewMatrices: Array.from(new Array(GraphicSettings.maxShadowCascades)).map(a => Matrix44.fromPool()),
+                projectionMatrices: Array.from(new Array(GraphicSettings.maxShadowCascades)).map(a => Matrix44.fromPool())
             }));
 
         // gl.depthMask(true);

@@ -7,7 +7,7 @@ import { MathEx } from "../math/MathEx";
 import { SerializedObject } from "../core/SerializableObject";
 import { Matrix44 } from "../math/Matrix44";
 import { Frustum } from "./Frustum";
-import { EngineSettings } from "../core/EngineSettings";
+import { GraphicSettings } from "./GraphicSettings";
 
 export class PerspectiveProjector extends Projector {
     
@@ -58,13 +58,10 @@ export class PerspectiveProjector extends Projector {
         _update(this._frustum.full, this.zNear, this.zFar);
         
         // frustum splits
-        let currentNear = this._zNear;
-        const { maxShadowCascades, maxShadowDistance } = EngineSettings.instance;
-        const splitSize = maxShadowDistance / maxShadowCascades;
-        for (let i = 0; i < maxShadowCascades; ++i) {
-            _update(this._frustum.splits[i], currentNear, currentNear + splitSize);
-            currentNear += splitSize;
-        }
+        const { shadowCascadeEdges } = GraphicSettings;
+        _update(this._frustum.splits[0], this._zNear,                         this._zNear + shadowCascadeEdges[0]);
+        _update(this._frustum.splits[1], this._zNear + shadowCascadeEdges[0], this._zNear + shadowCascadeEdges[1]);
+        _update(this._frustum.splits[2], this._zNear + shadowCascadeEdges[1], this._zNear + shadowCascadeEdges[2]);
     }        
     
     upgrade(json: SerializedObject, previousVersion: number) {

@@ -4,7 +4,7 @@ import { ExponentialFog } from "./Fog";
 import { ScenesInternal } from "../core/Scenes";
 import { Interfaces } from "../core/Interfaces";
 import { WebGL } from "./WebGL";
-import { EngineSettings } from "../core/EngineSettings";
+import { GraphicSettings } from "./GraphicSettings";
 
 /**
  * @hidden
@@ -150,7 +150,7 @@ float edgeFactor() {
 
         if (useDirectionalLights) {
             directives = `${directives}
-#define MAX_DIRECTIONAL_LIGHTS ${EngineSettings.instance.maxDirectionalLights}     
+#define MAX_DIRECTIONAL_LIGHTS ${GraphicSettings.maxDirectionalLights}     
             `;
             needInjection = true;
         }
@@ -171,8 +171,8 @@ float edgeFactor() {
         if (useShadowMap === true) {
             directives = `${directives}
 #define USE_SHADOW_MAP
-#define MAX_DIRECTIONAL_SHADOWMAPS ${EngineSettings.instance.maxDirectionalLights * EngineSettings.instance.maxShadowCascades}
-#define MAX_SHADOW_CASCADES ${EngineSettings.instance.maxShadowCascades}`;
+#define MAX_DIRECTIONAL_SHADOWMAPS ${GraphicSettings.maxDirectionalLights * GraphicSettings.maxShadowCascades}
+#define MAX_SHADOW_CASCADES ${GraphicSettings.maxShadowCascades}`;
             needInjection = true;
         }
         
