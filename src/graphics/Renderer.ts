@@ -605,15 +605,20 @@ export class RendererInternal {
                     continue;
                 }
 
-                const visualAABB = (visual.geometry as Geometry).getBoundingBox() as AABB;
-                Private.dummyAABB.copy(visualAABB).transform(visual.worldTransform);
-                if (camera.frustum.full.testAABB(Private.dummyAABB) === FrustumTest.Out) {
-                    continue;
-                }
+                const visualAABB = (visual.geometry as Geometry).getBoundingBox();
+                if (visualAABB) {
+                    Private.dummyAABB.copy(visualAABB).transform(visual.worldTransform);
+                    if (camera.frustum.full.testAABB(Private.dummyAABB) === FrustumTest.Out) {
+                        continue;
+                    }
+                } else {
+                    // TODO cull geometries that don't have an AABB?
+                }                
 
                 Private.addToRenderMap(camera, visual);
 
-                if (visual.castShadows) {
+                if (visualAABB // Exclude geometries with no AABB from casting shadows - TODO handle this better.
+                && visual.castShadows) {
                     const vertexBuffer = visual.vertexBuffer;
                     let shadowCasters = Private.cameraToShadowCastersMap.get(camera);
                     if (!shadowCasters) {

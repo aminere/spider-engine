@@ -5,6 +5,6 @@ export namespace GraphicSettings {
     export const maxShadowDistance = 100;
 
     export const shadowCascadeEdges = (() => {
-        return [maxShadowDistance * .1, maxShadowDistance * .4, maxShadowDistance];
+        return [maxShadowDistance * .1, maxShadowDistance * .25, maxShadowDistance];
     })();
 }
