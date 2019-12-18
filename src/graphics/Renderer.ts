@@ -371,7 +371,7 @@ namespace Private {
             frustumMax.x = Math.min(castersMax.x, frustumMax.x);
             frustumMin.y = Math.max(castersMin.y, frustumMin.y);
             frustumMax.y = Math.min(castersMax.y, frustumMax.y);
-            frustumMin.z = Math.max(castersMin.z, frustumMin.z);
+            frustumMin.z = Math.min(castersMin.z, frustumMin.z);
             // Expand towards light direction to catch casters that are behind the camera
             frustumMax.z = Math.max(castersMax.z, frustumMax.z);
 
