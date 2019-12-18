@@ -139,9 +139,9 @@ namespace Private {
                         shader.applyParameter("directionalLight.shadowRadius", light.shadowRadius, visualBucketId);
                         shader.applyParameter("directionalLight.shadowMapSize", Private.defaultShadowMapSize, visualBucketId);
                     }
-
+                    
                     // fog
-                    if (visualBucket.reference.receiveFog && fog) {
+                    if (fog && visualBucket.reference.receiveFog) {
                         shader.applyParameter("fogColor", fog.color, visualBucketId);
                         if (fog.isA(ExponentialFog)) {
                             shader.applyParameter("fogDensity", (fog as ExponentialFog).density, visualBucketId);
