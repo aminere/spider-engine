@@ -366,11 +366,12 @@ namespace Private {
         }
 
         if (visibleShadowCasters.size > 0) {
+            const padding = 1; // leave padding around to guarantee smooth shadows
             // Tight fit around shadow casters
-            frustumMin.x = Math.max(castersMin.x, frustumMin.x);
-            frustumMax.x = Math.min(castersMax.x, frustumMax.x);
-            frustumMin.y = Math.max(castersMin.y, frustumMin.y);
-            frustumMax.y = Math.min(castersMax.y, frustumMax.y);
+            frustumMin.x = Math.max(castersMin.x - padding, frustumMin.x);
+            frustumMax.x = Math.min(castersMax.x + padding, frustumMax.x);
+            frustumMin.y = Math.max(castersMin.y - padding, frustumMin.y);
+            frustumMax.y = Math.min(castersMax.y + padding, frustumMax.y);
             frustumMin.z = Math.min(castersMin.z, frustumMin.z);
             // Expand towards light direction to catch casters that are behind the camera
             frustumMax.z = Math.max(castersMax.z, frustumMax.z);
@@ -410,9 +411,6 @@ namespace Private {
         Private.directionalShadowMaps.length = maxDirectionalShadowMaps;
 
         const shadowCasters = Private.cameraToShadowCastersMap.get(camera);
-        if (!shadowCasters) {
-            return;
-        }
 
         const context = WebGL.context;
         // render to shadow maps
@@ -430,7 +428,7 @@ namespace Private {
             let firstCascade = Private.directionalShadowMaps[i * maxShadowCascades];
             if (!firstCascade) {
                 for (let j = 0; j < maxShadowCascades; ++j) {
-                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x / (Math.pow(2, i)));
+                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x / (Math.pow(2, j)));
                     Private.directionalShadowMaps[i * maxShadowCascades + j]
                         = new RenderTarget(size, size, true, false, TextureFiltering.Nearest);
                 }
@@ -439,6 +437,11 @@ namespace Private {
             for (let j = 0; j < maxShadowCascades; ++j) {
                 const cascade = Private.directionalShadowMaps[i * maxShadowCascades + j];
                 IRendererInternal.instance.renderTarget = cascade;
+
+                if (!shadowCasters) {
+                    continue;
+                }
+
                 const visibleShadowCasters = setupDirectionalLightMatrices(camera, Private.directionalLights[i], j, shadowCasters);
 
                 if (!visibleShadowCasters) {
