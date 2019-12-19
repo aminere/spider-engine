@@ -96,6 +96,7 @@ namespace Private {
 
     export let currentRenderTarget: RenderTarget | null = null;
     export let showWireFrame = false;
+    export let showShadowCascades = false;
 
     // shadow mapping
     export let directionalLights: IDirectionalLight[];
@@ -531,6 +532,14 @@ namespace Private {
         vm.transpose();
         return vm;
     }
+
+    export function invalidateShaders() {
+        IObjectManagerInternal.instance.forEach(o => {
+            if (o.isA(Shader)) {
+                (o as Shader).invalidateProgram();
+            }
+        });
+    }
 }
 
 export class Renderer implements IRenderer {
@@ -554,16 +563,22 @@ export class Renderer implements IRenderer {
         }
     }
     set showWireFrame(show: boolean) {
-        if (show !== Private.showWireFrame) {
-            IObjectManagerInternal.instance.forEach(o => {
-                if (o.isA(Shader)) {
-                    (o as Shader).invalidateProgram();
-                }
-            });
-            Private.showWireFrame = show;
+        if (show === Private.showWireFrame) {
+            return;
         }
+        Private.invalidateShaders();
+        Private.showWireFrame = show;
     }
     get showWireFrame() { return Private.showWireFrame; }
+
+    set showShadowCascades(show: boolean) {
+        if (show === Private.showShadowCascades) {
+            return;
+        }
+        Private.invalidateShaders();
+        Private.showShadowCascades = show;
+    }
+    get showShadowCascades() { return Private.showShadowCascades; }
 }
 
 /**

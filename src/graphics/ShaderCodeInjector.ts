@@ -169,6 +169,12 @@ float edgeFactor() {
         }      
 
         if (useShadowMap === true) {
+            if (Interfaces.renderer.showShadowCascades) {
+                directives = `${directives}
+#define SHOW_SHADOW_CASCADES`;
+                needInjection = true;
+            }
+
             directives = `${directives}
 #define USE_SHADOW_MAP
 #define MAX_DIRECTIONAL_SHADOWMAPS ${GraphicSettings.maxDirectionalLights * GraphicSettings.maxShadowCascades}
