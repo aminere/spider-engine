@@ -58,10 +58,13 @@ export class PerspectiveProjector extends Projector {
         _update(this._frustum.full, this.zNear, this.zFar);
         
         // frustum splits
-        const { shadowCascadeEdges } = GraphicSettings;
-        _update(this._frustum.splits[0], this._zNear,                         this._zNear + shadowCascadeEdges[0]);
-        _update(this._frustum.splits[1], this._zNear + shadowCascadeEdges[0], this._zNear + shadowCascadeEdges[1]);
-        _update(this._frustum.splits[2], this._zNear + shadowCascadeEdges[1], this._zNear + shadowCascadeEdges[2]);
+        GraphicSettings.shadowCascadeEdges.forEach((edge, index) => {
+            _update(
+                this._frustum.splits[index], 
+                this._zNear + (index > 0 ? GraphicSettings.shadowCascadeEdges[index - 1] : 0), 
+                this._zNear + edge
+            );
+        });
     }        
     
     upgrade(json: SerializedObject, previousVersion: number) {

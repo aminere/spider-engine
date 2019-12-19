@@ -49,12 +49,18 @@ export class OrthographicProjector extends Projector {
         // full frustum
         this._frustum.full.update(w, h, w, h, this._zNear, this._zFar, transform);
 
-        // frustum splits
-        const { shadowCascadeEdges } = GraphicSettings;
-        this._frustum.splits[0].update(w, h, w, h, this._zNear, this._zNear + shadowCascadeEdges[0], transform);
-        this._frustum.splits[1].update(w, h, w, h, this._zNear + shadowCascadeEdges[0], this._zNear + shadowCascadeEdges[1], transform);
-        this._frustum.splits[2].update(w, h, w, h, this._zNear + shadowCascadeEdges[1], this._zNear + shadowCascadeEdges[2], transform);
-        
+        // frustum splits        
+        GraphicSettings.shadowCascadeEdges.forEach((edge, index) => {
+            this._frustum.splits[index].update(
+                w, 
+                h, 
+                w, 
+                h, 
+                this._zNear + (index > 0 ? GraphicSettings.shadowCascadeEdges[index - 1] : 0), 
+                this._zNear + edge, 
+                transform
+            );
+        });
     }
     
     upgrade(json: SerializedObject, previousVersion: number) {
