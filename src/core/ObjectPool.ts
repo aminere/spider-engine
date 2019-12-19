@@ -1,6 +1,6 @@
 import { Debug } from "../io/Debug";
 
-export class ObjectPool<T> {
+export class ObjectPool<T extends object> {
 
     get size() { return this._size; }
 

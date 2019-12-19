@@ -168,11 +168,15 @@ export class Texture2D extends Texture {
     }
 
     private setupTexture() {
-        console.assert(this.isLoaded());
         if (!this.isLoaded()) {
-            Debug.logWarning(`Trying to render with a texture that is not loaded yet '${this.templatePath}'`);
+            if (process.env.CONFIG !== "editor") {
+                // The editor loads graphic objects upon scene load without waiting for all thumbnails to finish
+                // Todo ensure all thumbnails are loaded before loading graphic objects.
+                Debug.logWarning(`Trying to render with a texture that is not loaded yet '${this.templatePath}'`);
+            }
             return false;
         }
+        
         let gl = WebGL.context;
         if (!this._textureId) {
             this._textureId = gl.createTexture();

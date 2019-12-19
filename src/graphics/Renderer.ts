@@ -13,7 +13,7 @@ import { PerspectiveProjector } from "./PerspectiveProjector";
 import { Vector3 } from "../math/Vector3";
 import { Light } from "./lighting/Light";
 import { RenderTarget } from "./RenderTarget";
-import { GraphicUpdateResult } from "./geometry/Geometry";
+import { GraphicUpdateResult, Geometry } from "./geometry/Geometry";
 import { Size, SizeType } from "../core/Size";
 import { Environment, ColorEnvironment, SkySimulation, SkyBoxEnvironment } from "./Environment";
 import { SkinnedMesh } from "./geometry/SkinnedMesh";
@@ -24,36 +24,53 @@ import { AssetReference } from "../serialization/AssetReference";
 import { Texture } from "./Texture";
 import { GeometryProvider } from "./geometry/GeometryProvider";
 import { WebGL } from "./WebGL";
-import { Components } from "../core/Components";
 import { Time } from "../core/Time";
 import { ScenesInternal } from "../core/Scenes";
 import { defaultAssets } from "../assets/DefaultAssets";
 import { IRenderer, IRendererInternal } from "./IRenderer";
 import { IObjectManagerInternal } from "../core/IObjectManager";
 import { Component } from "../core/Component";
+import { FrustumTest } from "./Frustum";
+import { DirectionalLight } from "./lighting/DirectionalLight";
+import { Transform } from "../core/Transform";
+import { Entity } from "../core/Entity";
+import { Shadow, PCFShadow } from "./lighting/Shadow";
+import { AABB } from "../math/AABB";
+import { GraphicSettings } from "./GraphicSettings";
 
-interface RenderPassDefinition {
+interface IRenderPassDefinition {
     begin: (gl: WebGLRenderingContext) => void;
     makeViewMatrix: (viewMatrixIn: Matrix44) => Matrix44;
     makeWorldMatrix: (worldMatrixIn: Matrix44) => Matrix44;
     renderStateBucketMap: RenderStateBucketsMap;
 }
 
-interface VisualBucket {
+interface IVisualBucket {
     reference: Visual;
     vertexBufferToVisualsMap: VertexBufferToVisualsMap;
 }
 
-interface RenderStateBucket {
+interface IRenderStateBucket {
     reference: Material;
     shaderToVisualBucketsMap: ShaderToVisualBucketsMap;
 }
 
-type RenderPassToDefinitionMap = Map<number, RenderPassDefinition>;
+interface IDirectionalLight {
+    light: Light;
+    viewMatrices: Matrix44[];
+    projectionMatrices: Matrix44[];
+}
+
+type RenderPassToDefinitionMap = Map<number, IRenderPassDefinition>;
 type VertexBufferToVisualsMap = Map<VertexBuffer, Visual[]>;
-type VisualBucketsMap = Map<string, VisualBucket>;
+type VisualBucketsMap = Map<string, IVisualBucket>;
 type ShaderToVisualBucketsMap = Map<Shader, VisualBucketsMap>;
-type RenderStateBucketsMap = Map<string, RenderStateBucket>;
+type RenderStateBucketsMap = Map<string, IRenderStateBucket>;
+
+interface IShadowCasters {
+    visuals: VertexBufferToVisualsMap;
+    bounds: AABB;
+}
 
 namespace Private {
     export let canvas: HTMLCanvasElement;
@@ -61,8 +78,7 @@ namespace Private {
     export const numRenderPasses = RenderPass.Transparent + 1;
     export const initialCameraPoolSize = 8;
     export const initialMaterialPoolSize = 128;
-    export const maxLights = 1;
-    export const defaultShadowMapSize = new Vector2(2048, 2048);
+    export const defaultShadowMapSize = new Vector2(4096, 4096);
     export let defaultPerspectiveCamera: Camera | null = null;
 
     export const screenSize = new Vector2();
@@ -71,40 +87,43 @@ namespace Private {
     export const uiProjectionMatrix = new Matrix44();
     export const cameraToRenderPassMap = new Map<Camera, RenderPassToDefinitionMap>();
 
-    export const renderPassToDefinitionMapPool = new MapPool<number, RenderPassDefinition>(Private.initialCameraPoolSize);
-    export const renderStateBucketMapPool = new MapPool<string, RenderStateBucket>(Private.numRenderPasses * 3); // average 3 cameras
+    export const renderPassToDefinitionMapPool = new MapPool<number, IRenderPassDefinition>(Private.initialCameraPoolSize);
+    export const renderStateBucketMapPool = new MapPool<string, IRenderStateBucket>(Private.numRenderPasses * 3); // average 3 cameras
     export const shaderToVisualBucketsMapPool = new MapPool<Shader, VisualBucketsMap>(16);
-    export const visualBucketsMapPool = new MapPool<string, VisualBucket>(16);
+    export const visualBucketsMapPool = new MapPool<string, IVisualBucket>(16);
     export const vertexBufferToVisualsMapPool = new MapPool<VertexBuffer, Visual[]>(16);
+    export const shadowCastersMapPool = new MapPool<VertexBuffer, Visual[]>(16);
 
     export let currentRenderTarget: RenderTarget | null = null;
     export let showWireFrame = false;
+    export let showShadowCascades = false;
 
     // shadow mapping
-    export let lights: Light[] = [];
-    export const shadowCasters = new Map<VertexBuffer, Visual[]>();
-    export const shadowMaps: RenderTarget[] = [];    
-    export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);   
+    export let directionalLights: IDirectionalLight[];
+    export const directionalShadowMaps: RenderTarget[] = [];
+    export const cameraToShadowCastersMap = new Map<Camera, Visual[]>();
+    export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);
 
-    export function doRenderPass(renderPassDefinition: RenderPassDefinition, gl: WebGLRenderingContext, camera: Camera) {
+    export function doRenderPass(renderPassDefinition: IRenderPassDefinition, gl: WebGLRenderingContext, camera: Camera) {
         if (renderPassDefinition.renderStateBucketMap.size === 0) {
             return;
         }
-        const hasLights = Private.lights.length > 0;
+        const hasDirectionalLights = Private.directionalLights.length > 0;
         const fog = ScenesInternal.list()[0].fog;
         renderPassDefinition.begin(gl);
         // this ensure materials with additive blending mode are rendered last
         // TODO implement a more rebust method of controlling material render order
         // (for example separate into different buckets based on priority - controls the order but doesn't need uploadState multiple times.)
         const sortedBuckedIds = Array.from(renderPassDefinition.renderStateBucketMap.keys()).sort();
+        const { maxDirectionalLights, maxShadowCascades, shadowCascadeEdges } = GraphicSettings;
         for (const bucketId of sortedBuckedIds) {
-            const renderStateBucket = renderPassDefinition.renderStateBucketMap.get(bucketId) as RenderStateBucket;
+            const renderStateBucket = renderPassDefinition.renderStateBucketMap.get(bucketId) as IRenderStateBucket;
             renderStateBucket.reference.uploadState();
             if (renderStateBucket.reference.depthTest) {
                 gl.enable(gl.DEPTH_TEST);
             } else {
                 gl.disable(gl.DEPTH_TEST);
-            }        
+            }
             const viewMatrix = renderPassDefinition.makeViewMatrix(camera.getViewMatrix());
             renderStateBucket.shaderToVisualBucketsMap.forEach((visualBuckets, shader) => {
                 visualBuckets.forEach((visualBucket, visualBucketId) => {
@@ -113,42 +132,64 @@ namespace Private {
                         return;
                     }
 
-                    shader.applyParameter("projectionMatrix", camera.getProjectionMatrix(), visualBucketId);
-                    shader.applyParameter("viewMatrix", viewMatrix, visualBucketId);
+                    shader.applyParam("projectionMatrix", camera.getProjectionMatrix(), visualBucketId);
+                    shader.applyParam("viewMatrix", viewMatrix, visualBucketId);
 
                     // lighting & shadowing
-                    if (hasLights) {
+                    if (hasDirectionalLights) {
+                        const hasShadows = visualBucket.reference.receiveShadows;
+                        const numDirectionalLights = Math.min(maxDirectionalLights, directionalLights.length);
+                        shader.applyParam("directionalLightCount", numDirectionalLights, visualBucketId);
+                        if (hasShadows) {
+                            shader.applyNumberArrayParam("shadowCascadeEdges", shadowCascadeEdges, visualBucketId);
+                        }
+                        for (let i = 0; i < numDirectionalLights; ++i) {
+                            const { light, projectionMatrices, viewMatrices } = Private.directionalLights[i];
+                            if (hasShadows) {
+                                for (let j = 0; j < maxShadowCascades; ++j) {
+                                    const lightMatrix = Private.dummyMatrix.multiplyMatrices(
+                                        projectionMatrices[j],
+                                        viewMatrices[j]
+                                    );
+                                    shader.applyParam(`directionalLightMatrices[${i * maxShadowCascades + j}]`, lightMatrix, visualBucketId);
+                                }
+                                shader.applyReferenceArrayParam("directionalShadowMaps", Private.directionalShadowMaps, visualBucketId);
+                            }
+                            const lightDir = Vector3.fromPool()
+                                .copy(light.entity.transform.worldForward)
+                                .transformDirection(viewMatrix);
+                            shader.applyParam(`directionalLights[${i}].direction`, lightDir, visualBucketId);
+                            shader.applyParam(`directionalLights[${i}].color`, light.color, visualBucketId);
+                            if (light.castShadows) {
+                                const shadow = light.shadow as Shadow;
+                                shader.applyParam(`directionalLights[${i}].shadow`, true, visualBucketId);
+                                shader.applyParam(`directionalLights[${i}].shadowType`, shadow.getTypeIndex(), visualBucketId);
+                                if (shadow.isA(PCFShadow)) {
+                                    shader.applyParam(
+                                        `directionalLights[${i}].shadowRadius`,
+                                        (shadow as PCFShadow).radius,
+                                        visualBucketId
+                                    );
+                                }
+                            } else {
+                                shader.applyParam(`directionalLights[${i}].shadow`, false, visualBucketId);
+                            }
 
-                        // TODO handle multiple lights
-                        const light = Private.lights[0];
-                        if (visualBucket.reference.receiveShadows) {
-                            const lightMatrix = Private.dummyMatrix.multiplyMatrices(
-                                light.getProjectionMatrix(), 
-                                light.viewMatrix
-                            );
-                            shader.applyParameter("lightMatrix", lightMatrix, visualBucketId);
-                            shader.applyReferenceParameter("shadowMap", Private.shadowMaps[0], visualBucketId);
-                        }                                                                        
-                        
-                        const lightDir = Vector3.fromPool().copy(light.entity.transform.worldForward);
-                        lightDir.transformDirection(viewMatrix);
-                        shader.applyParameter("directionalLight.direction", lightDir, visualBucketId);
-                        shader.applyParameter("directionalLight.color", light.color, visualBucketId);
-                        shader.applyParameter("directionalLight.shadow", light.castShadows, visualBucketId);
-                        shader.applyParameter("directionalLight.shadowBias", light.shadowBias, visualBucketId);
-                        shader.applyParameter("directionalLight.shadowRadius", light.shadowRadius, visualBucketId);
-                        shader.applyParameter("directionalLight.shadowMapSize", Private.defaultShadowMapSize, visualBucketId);
+                            shader.applyParam(`directionalLights[${i}].shadowBias`, light.shadowBias, visualBucketId);
+                            shader.applyParam(`directionalLights[${i}].intensity`, light.intensity, visualBucketId);
+                        }
+                    } else {
+                        shader.applyParam("directionalLightCount", 0, visualBucketId);
                     }
-                    
                     // fog
                     if (fog && visualBucket.reference.receiveFog) {
-                        shader.applyParameter("fogColor", fog.color, visualBucketId);
+                        shader.applyParam("fogColor", fog.color, visualBucketId);
                         if (fog.isA(ExponentialFog)) {
-                            shader.applyParameter("fogDensity", (fog as ExponentialFog).density, visualBucketId);
+                            shader.applyParam("fogDensity", (fog as ExponentialFog).density, visualBucketId);
                         } else {
                             const linearFog = fog as LinearFog;
-                            shader.applyParameter("fogNear", linearFog.near, visualBucketId);
-                            shader.applyParameter("fogFar", linearFog.far, visualBucketId);
+                            shader.applyParam("fogNear", linearFog.near, visualBucketId);
+                            shader.applyParam("fogFar", linearFog.far, visualBucketId);
                         }
                     }
 
@@ -167,17 +208,17 @@ namespace Private {
                                 ? viewMatrix
                                 : Private.dummyMatrix.multiplyMatrices(viewMatrix, worldMatrix);
                             Private.normalMatrix.getNormalMatrix(modelViewMatrix);
-                            shader.applyParameter("worldMatrix", worldMatrix, visualBucketId);
-                            shader.applyParameter("modelViewMatrix", modelViewMatrix, visualBucketId);
-                            shader.applyParameter("normalMatrix", Private.normalMatrix, visualBucketId);
-                            shader.applyParameter("screenSize", screenSize, visualBucketId);
-                            shader.applyParameter("time", Time.time, visualBucketId);
-                            shader.applyParameter("deltaTime", Time.deltaTime, visualBucketId);
-                            shader.applyParameter("frame", Time.currentFrame, visualBucketId);
+                            shader.applyParam("worldMatrix", worldMatrix, visualBucketId);
+                            shader.applyParam("modelViewMatrix", modelViewMatrix, visualBucketId);
+                            shader.applyParam("normalMatrix", Private.normalMatrix, visualBucketId);
+                            shader.applyParam("screenSize", screenSize, visualBucketId);
+                            shader.applyParam("time", Time.time, visualBucketId);
+                            shader.applyParam("deltaTime", Time.deltaTime, visualBucketId);
+                            shader.applyParam("frame", Time.currentFrame, visualBucketId);
                             const material = (visual.animatedMaterial || visual.material) as Material;
                             const materialParams = material.shaderParams;
                             for (const param of Object.keys(materialParams)) {
-                                shader.applyParameter(param, materialParams[param], visualBucketId);
+                                shader.applyParam(param, materialParams[param], visualBucketId);
                             }
                             vertexBuffer.draw(gl);
                         }
@@ -199,7 +240,7 @@ namespace Private {
         }
 
         const renderPassToDefinitionMap = Private.cameraToRenderPassMap.get(camera) as RenderPassToDefinitionMap;
-        const renderStateBuckedIdToShadersMap = (renderPassToDefinitionMap.get(material.renderPass) as RenderPassDefinition).renderStateBucketMap;
+        const renderStateBuckedIdToShadersMap = (renderPassToDefinitionMap.get(material.renderPass) as IRenderPassDefinition).renderStateBucketMap;
         const materialBucketId = material.buckedId;
         let renderStateBucket = renderStateBuckedIdToShadersMap.get(materialBucketId);
         if (!renderStateBucket) {
@@ -233,8 +274,144 @@ namespace Private {
         }
     }
 
+    function findBounds(
+        cameraTransform: Transform,
+        localLightMatrix: Matrix44,
+        corners: Vector3[],
+        min: Vector3,
+        max: Vector3
+    ) {
+        const lightPos = Vector3.fromPool();
+        min.set(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
+        max.set(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE);
+        for (let i = 0; i < corners.length; ++i) {
+            lightPos.copy(corners[i])
+                .substract(cameraTransform.worldPosition)
+                .transform(localLightMatrix);
+            if (lightPos.x < min.x) {
+                min.x = lightPos.x;
+            }
+            if (lightPos.x > max.x) {
+                max.x = lightPos.x;
+            }
+            if (lightPos.y < min.y) {
+                min.y = lightPos.y;
+            }
+            if (lightPos.y > max.y) {
+                max.y = lightPos.y;
+            }
+            if (lightPos.z < min.z) {
+                min.z = lightPos.z;
+            }
+            if (lightPos.z > max.z) {
+                max.z = lightPos.z;
+            }
+        }
+    }
+
+    export let dummyTransform: Transform;
+    function setupDirectionalLightMatrices(
+        camera: Camera,
+        light: IDirectionalLight,
+        cascadeIndex: number,
+        shadowCasters: Visual[]
+    ) {
+        const lightTransform = light.light.entity.transform;
+        dummyTransform.position = Vector3.zero;
+        dummyTransform.rotation = lightTransform.rotation;
+        const localLightMatrix = Matrix44.fromPool().copy(dummyTransform.worldMatrix).invert();
+        const cameraTransform = camera.entity.transform;
+
+        // Tight fit around current frustum split
+        const frustum = camera.frustum.splits[cascadeIndex];
+        const frustumMin = Vector3.fromPool();
+        const frustumMax = Vector3.fromPool();
+        findBounds(cameraTransform, localLightMatrix, frustum.corners, frustumMin, frustumMax);
+
+        const visibleShadowCasters = shadowCastersMapPool.get();
+        const casterMin = Vector3.fromPool();
+        const casterMax = Vector3.fromPool();
+        const castersMin = Vector3.fromPool().set(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
+        const castersMax = Vector3.fromPool().set(-Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE);
+        for (const shadowCaster of shadowCasters) {
+            const visualAABB = (shadowCaster.geometry as Geometry).getBoundingBox() as AABB;
+            Private.dummyAABB.copy(visualAABB).transform(shadowCaster.worldTransform);
+            findBounds(cameraTransform, localLightMatrix, Private.dummyAABB.corners, casterMin, casterMax);
+
+            // Light frustum test
+            if (casterMax.x < frustumMin.x || casterMin.x > frustumMax.x
+            || casterMax.y < frustumMin.y || casterMin.y > frustumMax.y
+            || casterMax.z < frustumMin.z) {
+                continue;
+            }
+
+            // Keep track of global shadow caster bounds
+            castersMin.set(
+                Math.min(castersMin.x, casterMin.x), 
+                Math.min(castersMin.y, casterMin.y), 
+                Math.min(castersMin.z, casterMin.z)
+            );
+            castersMax.set(
+                Math.max(castersMax.x, casterMax.x),
+                Math.max(castersMax.y, casterMax.y),
+                Math.max(castersMax.z, casterMax.z)
+            );
+
+            const vertexBuffer = shadowCaster.vertexBuffer as VertexBuffer;
+            const visuals = visibleShadowCasters.get(vertexBuffer);
+            if (!visuals) {
+                visibleShadowCasters.set(vertexBuffer, [shadowCaster]);
+            } else {
+                visuals.push(shadowCaster);
+            }
+        }
+
+        if (visibleShadowCasters.size > 0) {
+            const padding = 1; // leave padding around to guarantee smooth shadows
+            // Tight fit around shadow casters
+            frustumMin.x = Math.max(castersMin.x - padding, frustumMin.x);
+            frustumMax.x = Math.min(castersMax.x + padding, frustumMax.x);
+            frustumMin.y = Math.max(castersMin.y - padding, frustumMin.y);
+            frustumMax.y = Math.min(castersMax.y + padding, frustumMax.y);
+            frustumMin.z = Math.min(castersMin.z, frustumMin.z);
+            // Expand towards light direction to catch casters that are behind the camera
+            frustumMax.z = Math.max(castersMax.z, frustumMax.z);
+
+            // Make ortho projection matrix        
+            const halfHorizontalExtent = (frustumMax.x - frustumMin.x) / 2;
+            const halfVerticalExtent = (frustumMax.y - frustumMin.y) / 2;
+            const halfForwardExtent = (frustumMax.z - frustumMin.z) / 2;
+            light.projectionMatrices[cascadeIndex].makeOrthoProjection(
+                -halfHorizontalExtent,
+                halfHorizontalExtent,
+                halfVerticalExtent,
+                -halfVerticalExtent,
+                -halfForwardExtent,
+                halfForwardExtent
+            );
+
+            // Make view matrix
+            const rightOffset = frustumMin.x + halfHorizontalExtent;
+            const upOffset = frustumMin.y + halfVerticalExtent;
+            const forwardOffset = frustumMin.z + halfForwardExtent;
+            dummyTransform.position.copy(cameraTransform.worldPosition)
+                .add(Vector3.fromPool().copy(lightTransform.worldForward).multiply(forwardOffset))
+                .add(Vector3.fromPool().copy(lightTransform.worldRight).multiply(rightOffset))
+                .add(Vector3.fromPool().copy(lightTransform.worldUp).multiply(upOffset));
+            light.viewMatrices[cascadeIndex].copy(dummyTransform.worldMatrix).invert();
+            return visibleShadowCasters;
+        } 
+
+        return null;
+    }
+
+    export let dummyAABB = new AABB();
     export function renderShadowMaps(camera: Camera) {
-        Private.shadowMaps.length = Private.maxLights;
+        const { maxDirectionalLights, maxShadowCascades } = GraphicSettings;
+        const maxDirectionalShadowMaps = maxDirectionalLights * maxShadowCascades;
+        Private.directionalShadowMaps.length = maxDirectionalShadowMaps;
+
+        const shadowCasters = Private.cameraToShadowCastersMap.get(camera);
 
         const context = WebGL.context;
         // render to shadow maps
@@ -244,77 +421,79 @@ namespace Private {
         // render back faces to avoid self-shadowing artifacts
         context.enable(context.CULL_FACE);
         context.cullFace(context.FRONT);
-        const numShadowMaps = Math.min(Private.lights.length, Private.shadowMaps.length);
 
+        // Directional shadow maps
+        const numDirectionalLights = Math.min(Private.directionalLights.length, maxDirectionalLights);
         let previousRenderDepthShader: Shader | null = null;
-        for (let i = 0; i < numShadowMaps; ++i) {
-            let shadowMap = Private.shadowMaps[i];
-            if (!shadowMap) {
-                const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x);
-                shadowMap = new RenderTarget(size, size, true, false, TextureFiltering.Nearest);
-                Private.shadowMaps[i] = shadowMap;
+        for (let i = 0; i < numDirectionalLights; ++i) {
+            let firstCascade = Private.directionalShadowMaps[i * maxShadowCascades];
+            if (!firstCascade) {
+                for (let j = 0; j < maxShadowCascades; ++j) {
+                    const size = new Size(SizeType.Absolute, Private.defaultShadowMapSize.x / (Math.pow(2, j)));
+                    Private.directionalShadowMaps[i * maxShadowCascades + j]
+                        = new RenderTarget(size, size, true, false, TextureFiltering.Nearest);
+                }
             }
 
-            try {
-                IRendererInternal.instance.renderTarget = shadowMap;
-                Private.lights[i].viewMatrix.copy(makeLightViewMatrix(camera, Private.lights[i]));
+            for (let j = 0; j < maxShadowCascades; ++j) {
+                const cascade = Private.directionalShadowMaps[i * maxShadowCascades + j];
+                IRendererInternal.instance.renderTarget = cascade;
+
+                if (!shadowCasters) {
+                    continue;
+                }
+
+                const visibleShadowCasters = setupDirectionalLightMatrices(camera, Private.directionalLights[i], j, shadowCasters);
+
+                if (!visibleShadowCasters) {
+                    continue;
+                }
 
                 // TODO this is horribly inefficient, must unify the shading pipeline and use a shader with multiple 
                 // instances like the standard shader!!
-                Private.shadowCasters.forEach((visuals, vertexBuffer) => {
+                visibleShadowCasters.forEach((visuals, vertexBuffer) => {
                     // TODO This assumes that all the visual instances of a particular vertex buffer
                     // Are renderer with the same shader type (skinned vs non-skinned), this is a fair assumption
                     // But deserves a check in the future
                     const hasSkinning = visuals[0].isSkinned;
                     const currentShader = hasSkinning ? defaultAssets.shaders.skinnedRenderDepth : defaultAssets.shaders.renderDepth;
                     if (currentShader !== previousRenderDepthShader) {
-                        // if (hasSkinning) {
-                        //     // ( for example when prebuilding shader to be used with multiple objects )
-                        //     //
-                        //     //  - leave some extra space for other uniforms
-                        //     //  - limit here is ANGLE's 254 max uniform vectors
-                        //     //    (up to 54 should be safe)
-                        //     var nVertexUniforms = gl.caps.maxVertexUniforms;
-                        //     var nVertexMatrices = Math.floor((nVertexUniforms - 20) / 4);
-                        // }
                         currentShader.begin();
-                        currentShader.applyParameter("projectionMatrix", Private.lights[i].getProjectionMatrix());
-                        if (hasSkinning) {
-                            currentShader.applyParameter("viewMatrix", Private.lights[i].viewMatrix);
-                        }
                         previousRenderDepthShader = currentShader;
                     }
 
+                    currentShader.applyParam("projectionMatrix", Private.directionalLights[i].projectionMatrices[j]);
+                    if (hasSkinning) {
+                        currentShader.applyParam("viewMatrix", Private.directionalLights[i].viewMatrices[j]);
+                    }
                     vertexBuffer.begin(context, currentShader);
                     for (const visual of visuals) {
                         if (hasSkinning) {
                             const skinnedMesh = visual.geometry as SkinnedMesh;
                             if (!skinnedMesh.boneTexture) {
                                 continue;
-                            }                            
-                            currentShader.applyParameter("bindMatrix", skinnedMesh.bindMatrix);
-                            currentShader.applyParameter("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
+                            }
+                            currentShader.applyParam("bindMatrix", skinnedMesh.bindMatrix);
+                            currentShader.applyParam("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
                             if (WebGL.extensions.OES_texture_float) {
                                 Private.skinnedRenderDepthBonesTexture.asset = skinnedMesh.boneTexture;
-                                currentShader.applyParameter("boneTexture", Private.skinnedRenderDepthBonesTexture);
-                                currentShader.applyParameter("boneTextureSize", skinnedMesh.boneTextureSize);
+                                currentShader.applyParam("boneTexture", Private.skinnedRenderDepthBonesTexture);
+                                currentShader.applyParam("boneTextureSize", skinnedMesh.boneTextureSize);
                             } else {
-                                currentShader.applyParameter("boneMatrices", skinnedMesh.boneMatrices);
+                                currentShader.applyParam("boneMatrices", skinnedMesh.boneMatrices);
                             }
                         } else {
                             const modelViewMatrix = Private.dummyMatrix.multiplyMatrices(
-                                Private.lights[i].viewMatrix, 
+                                Private.directionalLights[i].viewMatrices[j],
                                 visual.worldTransform
                             );
-                            currentShader.applyParameter("modelViewMatrix", modelViewMatrix);
+                            currentShader.applyParam("modelViewMatrix", modelViewMatrix);
                         }
                         vertexBuffer.draw(context);
                     }
                     vertexBuffer.end(context, currentShader);
                 });
-            } catch (e) {  
-                // shadow map not loaded yet              
-            }           
+            }
         }
     }
 
@@ -341,7 +520,7 @@ namespace Private {
             makeViewMatrix: (viewMatrix: Matrix44) => viewMatrix,
             makeWorldMatrix: (worldMatrix: Matrix44) => worldMatrix,
             renderStateBucketMap: Private.renderStateBucketMapPool.get()
-        });        
+        });
 
         Private.cameraToRenderPassMap.set(camera, renderPassToDefinitionMap);
     }
@@ -354,21 +533,21 @@ namespace Private {
         return vm;
     }
 
-    export function makeLightViewMatrix(camera: Camera, light: Light) {
-        // TODO use real camera frustum!! and update the projection matric bounds too
-        const vm = Matrix44.fromPool();
-        vm.copy(light.entity.transform.worldMatrix); // .setPosition(camera.entity.transform.position);
-        vm.invert();
-        return vm;
-    }    
+    export function invalidateShaders() {
+        IObjectManagerInternal.instance.forEach(o => {
+            if (o.isA(Shader)) {
+                (o as Shader).invalidateProgram();
+            }
+        });
+    }
 }
 
-export class Renderer implements IRenderer {   
+export class Renderer implements IRenderer {
     get screenSize() { return Private.screenSize; }
-    get defaultPerspectiveCamera() { return Private.defaultPerspectiveCamera; }    
+    get defaultPerspectiveCamera() { return Private.defaultPerspectiveCamera; }
     get canvas() { return Private.canvas; }
     get renderTarget() { return Private.currentRenderTarget; }
-    set renderTarget(rt: RenderTarget | null) { 
+    set renderTarget(rt: RenderTarget | null) {
         const gl = WebGL.context;
         if (rt) {
             let result = rt.bind(gl);
@@ -376,7 +555,7 @@ export class Renderer implements IRenderer {
                 Private.currentRenderTarget = rt;
             } else {
                 throw "RenderTarget not ready for rendering";
-            }            
+            }
         } else {
             gl.bindFramebuffer(gl.FRAMEBUFFER, null);
             gl.viewport(0, 0, this.screenSize.x, this.screenSize.y);
@@ -384,16 +563,22 @@ export class Renderer implements IRenderer {
         }
     }
     set showWireFrame(show: boolean) {
-        if (show !== Private.showWireFrame) {
-            IObjectManagerInternal.instance.forEach(o => {
-                if (o.isA(Shader)) {
-                    (o as Shader).invalidateProgram();
-                }
-            });
-            Private.showWireFrame = show;
+        if (show === Private.showWireFrame) {
+            return;
         }
+        Private.invalidateShaders();
+        Private.showWireFrame = show;
     }
-    get showWireFrame() { return Private.showWireFrame; }    
+    get showWireFrame() { return Private.showWireFrame; }
+
+    set showShadowCascades(show: boolean) {
+        if (show === Private.showShadowCascades) {
+            return;
+        }
+        Private.invalidateShaders();
+        Private.showShadowCascades = show;
+    }
+    get showShadowCascades() { return Private.showShadowCascades; }
 }
 
 /**
@@ -417,6 +602,9 @@ export class RendererInternal {
         IRendererInternal.instance = new Renderer();
         RendererInternal.processCanvasDimensions(canvas);
         Private.canvas = canvas;
+
+        Private.dummyTransform = new Transform();
+        Private.dummyTransform.setEntity(new Entity());
     }
 
     static render(
@@ -432,6 +620,7 @@ export class RendererInternal {
         Private.shaderToVisualBucketsMapPool.flush();
         Private.visualBucketsMapPool.flush();
         Private.vertexBufferToVisualsMapPool.flush();
+        Private.shadowCastersMapPool.flush();
 
         // setup render pass definitions
         Private.cameraToRenderPassMap.clear();
@@ -441,32 +630,53 @@ export class RendererInternal {
 
         // collect rendrables
         Private.defaultPerspectiveCamera = null;
-        Private.shadowCasters.clear();
+        Private.cameraToShadowCastersMap.clear();
 
         for (const visual of renderables.Visual as Visual[]) {
             if (!visual.vertexBuffer) {
                 continue;
             }
             for (const camera of cameras) {
-                if (camera.canRenderGroup(visual.group)) {
-                    Private.addToRenderMap(camera, visual);
-                }
-            }
 
-            // collect shadow casters
-            if (visual.castShadows) {
-                const vertexBuffer = visual.vertexBuffer;
-                const shadowCastersMap = Private.shadowCasters.get(vertexBuffer);
-                if (!shadowCastersMap) {
-                    Private.shadowCasters.set(vertexBuffer, [visual]);
-                } else {
-                    shadowCastersMap.push(visual);
+                if (!camera.canRenderGroup(visual.group)) {
+                    continue;
                 }
+
+                const visualAABB = (visual.geometry as Geometry).getBoundingBox();
+
+                if (visualAABB) {
+                    if (visual.castShadows) {
+                        const visuals = Private.cameraToShadowCastersMap.get(camera);
+                        if (!visuals) {
+                            Private.cameraToShadowCastersMap.set(camera, [visual]);
+                        } else {
+                            visuals.push(visual);
+                        }
+                    }
+
+                    // Frustum culling
+                    Private.dummyAABB.copy(visualAABB).transform(visual.worldTransform);
+                    if (camera.frustum.full.testAABB(Private.dummyAABB) === FrustumTest.Out) {
+                        continue;
+                    }
+
+                } else {
+                    // TODO cull & shadow cast geometries that don't have an AABB?
+                }
+
+                Private.addToRenderMap(camera, visual);
             }
         }
 
         const gl = WebGL.context;
-        Private.lights = renderables.Light as Light[];
+        const lights = (renderables.Light as Light[]);
+        Private.directionalLights = lights
+            .filter(light => light.type.isA(DirectionalLight))
+            .map(light => ({
+                light,
+                viewMatrices: Array.from(new Array(GraphicSettings.maxShadowCascades)).map(a => Matrix44.fromPool()),
+                projectionMatrices: Array.from(new Array(GraphicSettings.maxShadowCascades)).map(a => Matrix44.fromPool())
+            }));
 
         // gl.depthMask(true);
         if (Private.cameraToRenderPassMap.size > 0) {
@@ -517,8 +727,8 @@ export class RendererInternal {
                             sky.queueParameter("mieDirectionalG", skySim.mieDirectionalG);
                             if (sky.begin()) {
                                 GraphicUtils.drawVertexBuffer(
-                                    gl, 
-                                    defaultAssets.primitives.sphere.vertexBuffer, 
+                                    gl,
+                                    defaultAssets.primitives.sphere.vertexBuffer,
                                     sky.shader as Shader
                                 );
                             }
@@ -545,23 +755,23 @@ export class RendererInternal {
                 if (preRender) {
                     preRender(camera);
                 }
-                Private.doRenderPass(renderPassSelector.get(RenderPass.Opaque) as RenderPassDefinition, gl, camera);
-                Private.doRenderPass(renderPassSelector.get(RenderPass.Transparent) as RenderPassDefinition, gl, camera);
+                Private.doRenderPass(renderPassSelector.get(RenderPass.Opaque) as IRenderPassDefinition, gl, camera);
+                Private.doRenderPass(renderPassSelector.get(RenderPass.Transparent) as IRenderPassDefinition, gl, camera);
                 if (postRender) {
                     postRender(camera);
                 }
 
                 // TODO handle all post effects here not just bloom!
-                if (bloom) {                    
+                if (bloom) {
                     const fullScreenQuad = GeometryProvider.centeredQuad;
                     const inputRT = bloom.render(gl, camera.sceneRenderTarget, fullScreenQuad) as RenderTarget;
                     // add post effects to scene RT
                     const composeShader = defaultAssets.shaders.compose;
                     if (composeShader.begin()) {
                         IRendererInternal.instance.renderTarget = camera.renderTarget;
-                        composeShader.applyReferenceParameter("scene", camera.sceneRenderTarget);
-                        composeShader.applyReferenceParameter("postFX", inputRT);
-                        composeShader.applyParameter("postFxIntensity", bloom.intensity);                            
+                        composeShader.applyReferenceParam("scene", camera.sceneRenderTarget);
+                        composeShader.applyReferenceParam("postFX", inputRT);
+                        composeShader.applyParam("postFxIntensity", bloom.intensity);
                         GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, composeShader);
                     }
                 }
@@ -592,7 +802,7 @@ export class RendererInternal {
 
         if (uiPostRender) {
             uiPostRender();
-        } 
+        }
     }
 
     static clearDefaultPerspectiveCamera() {
@@ -601,5 +811,5 @@ export class RendererInternal {
 
     static get uiProjectionMatrix() {
         return Private.uiProjectionMatrix;
-    }    
+    }
 }

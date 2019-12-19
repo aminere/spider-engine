@@ -74,7 +74,7 @@ import { Volume } from "../graphics/volumes/Volume";
 import { SphereVolume } from "../graphics/volumes/SphereVolume";
 import { BoxVolume } from "../graphics/volumes/BoxVolume";
 import { Billboard } from "../graphics/geometry/Billboard";
-import { Light, LightType, DirectionalLight } from "../graphics/lighting/Light";
+import { Light } from "../graphics/lighting/Light";
 import { QuadGeometry } from "../graphics/geometry/QuadGeometry";
 import { RenderTarget } from "../graphics/RenderTarget";
 import { Texture2D } from "../graphics/Texture2D";
@@ -173,6 +173,9 @@ import { InclusionVisualFilter, ExclusionVisualFilter } from "../graphics/Visual
 import * as html from "../ui/Html";
 import { Css } from "../ui/Css";
 import { Mask } from "../ui/Mask";
+import { LightType } from "../graphics/lighting/LightType";
+import { DirectionalLight } from "../graphics/lighting/DirectionalLight";
+import { Shadow, PCFSoftShadow, PCFShadow, HardShadow } from "../graphics/lighting/Shadow";
 
 /**
  * @hidden
@@ -242,7 +245,6 @@ export class TypeRegistration {
         factory.registerObject(Light, Component);
         factory.registerObject(LightType, SerializableObject);
         factory.registerObject(DirectionalLight, LightType);
-        // factory.registerObject(PointLight, LightType);
         factory.registerObject(ParticleValueOverLife, SerializableObject);   
         factory.registerObject(ParticleNumberOverLife, ParticleValueOverLife);   
         factory.registerObject(ParticleColorOverLife, ParticleValueOverLife);
@@ -262,6 +264,10 @@ export class TypeRegistration {
         factory.registerObject(VisualFilter, SerializableObject);
         factory.registerObject(InclusionVisualFilter, VisualFilter);
         factory.registerObject(ExclusionVisualFilter, VisualFilter);
+        factory.registerObject(Shadow, SerializableObject);        
+        factory.registerObject(PCFShadow, Shadow);
+        factory.registerObject(PCFSoftShadow, PCFShadow);
+        factory.registerObject(HardShadow, Shadow);
 
         // Particles
         factory.registerObject(Particles, Component);

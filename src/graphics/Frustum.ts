@@ -1,6 +1,7 @@
 import { Plane, PlaneClassification } from "../math/Plane";
 import { Vector3 } from "../math/Vector3";
 import { Transform } from "../core/Transform";
+import { AABB } from "../math/AABB";
 
 enum FrustumPlane {
     Near,
@@ -22,6 +23,12 @@ export enum FrustumCorner {
     NearBottomLeft,
     NearBottomRight,
     Count
+}
+
+export enum FrustumTest {
+    In,
+    Out,
+    Intersect
 }
 
 namespace Private {
@@ -140,5 +147,35 @@ export class Frustum {
             this._corners[FrustumCorner.FarTopRight], 
             this._corners[FrustumCorner.FarTopLeft]
         );
+
+        return this;
+    }
+
+    testAABB(aabb: AABB): FrustumTest {
+        let planesIn = 0;
+        const corners = aabb.corners;
+        for (let i = 0; i < FrustumPlane.Count; ++i) {
+            let pointsIn = FrustumCorner.Count;
+            let planeIn = 1;
+
+            for (let j = 0; j < FrustumCorner.Count; ++j) {
+                if (this._planes[i].classifyPoint(corners[j]) === PlaneClassification.Back) {
+                    planeIn = 0;
+                    --pointsIn;
+                }
+            }
+
+            if (pointsIn === 0) {
+                return FrustumTest.Out;
+            }
+
+            planesIn += planeIn;
+        }
+
+        if (planesIn === FrustumPlane.Count) {
+            return FrustumTest.In;
+        }
+
+        return FrustumTest.Intersect;
     }
 }

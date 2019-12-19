@@ -119,15 +119,15 @@ export class SkinnedMesh extends StaticMesh {
         if (hasFloatTextures) {
             this.updateMatrices();
             this._boneTexture.dirtify();
-            shader.applyReferenceParameter("boneTexture", this._boneTexture, buckedId);
-            shader.applyParameter("boneTextureSize", this._boneTextureSize, buckedId);
+            shader.applyReferenceParam("boneTexture", this._boneTexture, buckedId);
+            shader.applyParam("boneTextureSize", this._boneTextureSize, buckedId);
         } else {
             this.updateMatrices();
-            shader.applyParameter("boneMatrices", this._boneMatrices);
+            shader.applyParam("boneMatrices", this._boneMatrices);
         }
 
-        shader.applyParameter("bindMatrix", this._bindMatrix, buckedId);
-        shader.applyParameter("bindMatrixInverse", this._bindMatrixInverse, buckedId);
+        shader.applyParam("bindMatrix", this._bindMatrix, buckedId);
+        shader.applyParam("bindMatrixInverse", this._bindMatrixInverse, buckedId);
         return GraphicUpdateResult.Unchanged;
     }
 

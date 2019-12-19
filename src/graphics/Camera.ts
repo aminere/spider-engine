@@ -23,6 +23,7 @@ import { Interfaces } from "../core/Interfaces";
 import { Transform } from "../core/Transform";
 import { ObjectProps } from "../core/Types";
 import { VisualFilter } from "./VisualFilter";
+import { IFrustum } from "./IFrustum";
 
 export enum CameraClear {
     Environment,
@@ -38,20 +39,18 @@ export class Camera extends Component {
     
     get version() { return 3; }
 
-    set projector(projector: Projector | undefined) { 
+    set projector(projector: Projector) {
         let oldProjector = this._projector.instance;
         if (oldProjector) {
             oldProjector.changed.detach(this.onProjectorChanged);
         }
         this._projector.instance = projector;
-        if (projector) {
-            projector.changed.attach(this.onProjectorChanged);
-            if (this.entity) {
-                this.updateFrustum();
-            }
-        }        
+        projector.changed.attach(this.onProjectorChanged);
+        if (this.entity) {
+            this.updateFrustum();
+        }
     }
-    get projector() { return this._projector.instance; }
+    get projector() { return this._projector.instance as Projector; }
     get clearValue() { return this._clearValue; }
     get postEffects() { return this._postEffects.instance; }
     get renderTarget() { return this._renderTarget.asset; }
@@ -72,15 +71,12 @@ export class Camera extends Component {
         return this._sceneRenderTarget;
     }
 
-    get frustum(): Frustum | null { 
-        let projector = this.projector;
-        if (projector) {
-            if (this._invalidFrustum) {
-                this.updateFrustum();
-            }
-            return projector.frustum;
+    get frustum(): IFrustum { 
+        const projector = this.projector;
+        if (this._invalidFrustum) {
+            this.updateFrustum();
         }
-        return null;
+        return projector.frustum;
     }
 
     set renderTarget(renderTarget: RenderTarget | null) {
@@ -91,6 +87,7 @@ export class Camera extends Component {
         this._filter.instance = filter;
     }
 
+    @Attributes.nullable(false)
     private _projector = new Reference(Projector);
 
     @Attributes.enumLiterals(CameraClear)
@@ -257,7 +254,7 @@ export class Camera extends Component {
     // tslint:disable-next-line
     setProperty(property: string, value: any) {
         if (property === Private.projectorProperty) {
-            this.projector = (value as Reference<Projector>).instance;
+            this.projector = (value as Reference<Projector>).instance as Projector;
         } else {
             super.setProperty(property, value);
         }

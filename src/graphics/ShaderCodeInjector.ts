@@ -4,6 +4,7 @@ import { ExponentialFog } from "./Fog";
 import { ScenesInternal } from "../core/Scenes";
 import { Interfaces } from "../core/Interfaces";
 import { WebGL } from "./WebGL";
+import { GraphicSettings } from "./GraphicSettings";
 
 /**
  * @hidden
@@ -48,16 +49,16 @@ export class ShaderCodeInjector {
 
         if (Interfaces.renderer.showWireFrame) {
             definitions = `${definitions}
-    attribute vec3 barycentricCoord;
-    varying vec3 vBarycentric;`;
+attribute vec3 barycentricCoord;
+varying vec3 vBarycentric;`;
             statements = `${statements}
-    vBarycentric = barycentricCoord;`;
+vBarycentric = barycentricCoord;`;
             needInjection = true;
         }
         
         if (useSkinning === true) {
             directives = `${directives}
-    #define USE_SKINNING`;
+#define USE_SKINNING`;
             needInjection = true;
         }
 
@@ -65,10 +66,10 @@ export class ShaderCodeInjector {
             let fog = ScenesInternal.list()[0].fog;
             if (fog) {
                 directives = `${directives}
-    #define USE_FOG`;
+#define USE_FOG`;
                 if (fog.isA(ExponentialFog)) {
                     directives = `${directives}
-    #define USE_EXPONENTIAL_FOG`;                    
+#define USE_EXPONENTIAL_FOG`;                    
                 }
                 needInjection = true;
             }
@@ -76,13 +77,13 @@ export class ShaderCodeInjector {
 
         if (useShadowMap === true) {
             directives = `${directives}
-    #define USE_SHADOW_MAP`;
+#define USE_SHADOW_MAP`;
             needInjection = true;
         }
 
         if (useVertexColor === true) {
             directives = `${directives}
-    #define USE_VERTEX_COLOR`;
+#define USE_VERTEX_COLOR`;
             needInjection = true;
         }
 
@@ -105,7 +106,8 @@ export class ShaderCodeInjector {
         fragmentCode: string, 
         useFog?: boolean,
         useShadowMap?: boolean,
-        useVertexColor?: boolean
+        useVertexColor?: boolean,
+        useDirectionalLights?: boolean
     ) {
         let directives = "";
         let definitions = "";
@@ -117,32 +119,39 @@ export class ShaderCodeInjector {
             if (WebGL.extensions.OES_standard_derivatives) {
                 if (WebGL.version === 1) {
                     directives = `${directives}
-    #extension GL_OES_standard_derivatives: enable`;
+#extension GL_OES_standard_derivatives: enable`;
                 }
                 directives = `${directives}
-    #define Supports_GL_OES_standard_derivatives                
+#define Supports_GL_OES_standard_derivatives                
                 `;
             }
 
             definitions = `${definitions}
-    varying vec3 vBarycentric;
-    #ifdef Supports_GL_OES_standard_derivatives
-    float edgeFactor() {
-        vec3 d = fwidth(vBarycentric);
-        vec3 a3 = smoothstep(vec3(0.0), d * 1.2, vBarycentric);
-        return min(min(a3.x, a3.y), a3.z);
-    }
-    #endif`;
+varying vec3 vBarycentric;
+#ifdef Supports_GL_OES_standard_derivatives
+float edgeFactor() {
+    vec3 d = fwidth(vBarycentric);
+    vec3 a3 = smoothstep(vec3(0.0), d * 1.2, vBarycentric);
+    return min(min(a3.x, a3.y), a3.z);
+}
+#endif`;
 
             postProcess = `${postProcess}
-    #ifdef Supports_GL_OES_standard_derivatives
-        gl_FragColor = mix(vec4(.8, .8, .8, 1.0), gl_FragColor, edgeFactor());    
-    #else
-        if(any(lessThan(vBarycentric, vec3(0.01)))) {
-            gl_FragColor = vec4(vec3(.7), 1.0);
-        }
-    #endif`;
+#ifdef Supports_GL_OES_standard_derivatives
+    gl_FragColor = mix(vec4(.8, .8, .8, 1.0), gl_FragColor, edgeFactor());    
+#else
+    if(any(lessThan(vBarycentric, vec3(0.01)))) {
+        gl_FragColor = vec4(vec3(.7), 1.0);
+    }
+#endif`;
 
+            needInjection = true;
+        }
+
+        if (useDirectionalLights) {
+            directives = `${directives}
+#define MAX_DIRECTIONAL_LIGHTS ${GraphicSettings.maxDirectionalLights}     
+            `;
             needInjection = true;
         }
 
@@ -150,37 +159,45 @@ export class ShaderCodeInjector {
             let fog = ScenesInternal.list()[0].fog;
             if (fog) {
                 directives = `${directives}
-    #define USE_FOG`;
+#define USE_FOG`;
                 if (fog.isA(ExponentialFog)) {
                     directives = `${directives}
-    #define USE_EXPONENTIAL_FOG`;                    
+#define USE_EXPONENTIAL_FOG`;                    
                 }
                 needInjection = true;
             }
         }      
 
         if (useShadowMap === true) {
+            if (Interfaces.renderer.showShadowCascades) {
+                directives = `${directives}
+#define SHOW_SHADOW_CASCADES`;
+                needInjection = true;
+            }
+
             directives = `${directives}
-    #define USE_SHADOW_MAP`;
+#define USE_SHADOW_MAP
+#define MAX_DIRECTIONAL_SHADOWMAPS ${GraphicSettings.maxDirectionalLights * GraphicSettings.maxShadowCascades}
+#define MAX_SHADOW_CASCADES ${GraphicSettings.maxShadowCascades}`;
             needInjection = true;
         }
         
         if (useVertexColor === true) {
             directives = `${directives}
-    #define USE_VERTEX_COLOR`;
+#define USE_VERTEX_COLOR`;
             needInjection = true;
         }
 
         if (needInjection) {
             let sections = Private.getSections(fragmentCode);
             if (sections) {
-                return `${directives}
-                    ${sections.qualifiers}                    
-                    ${definitions}
-                    ${sections.coreMeat}
-                    ${postProcess}
-                }
-                `;
+                return `${sections.qualifiers}
+${directives}
+${definitions}
+${sections.coreMeat}
+${postProcess}
+}
+`;
             }
         }
 

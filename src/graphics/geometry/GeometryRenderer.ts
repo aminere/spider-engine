@@ -16,6 +16,7 @@ import { GraphicUtils } from "../GraphicUtils";
 import { Material } from "../Material";
 import { IObjectManagerInternal } from "../../core/IObjectManager";
 import { defaultAssets } from "../../assets/DefaultAssets";
+import { Texture } from "../Texture";
 
 namespace Private {
     export const crossSize = 1;
@@ -50,7 +51,15 @@ namespace Private {
                 -1, -1, 0.0,
                 1, 1, 0.0,
                 1, -1, 0.0
-            ]            
+            ],
+            uv: [
+                0, 1,
+                1, 1,
+                0, 0,
+                0, 0,
+                1, 1,
+                1, 0
+            ]
         },
         primitiveType: "TRIANGLES"
     });   
@@ -120,7 +129,8 @@ export class GeometryRenderer {
     static defaultAssets = [
         {
             path: "Assets/DefaultAssets/Editor/DebugMaterial.Material",
-            set: (asset: Asset) => Private.debugMaterial = asset as Material
+            set: (asset: Asset) => Private.debugMaterial = asset as Material,
+            get: () => Private.debugMaterial
         }
     ];
 
@@ -130,8 +140,8 @@ export class GeometryRenderer {
                 GeometryRenderer.defaultAssets,
                 (a, success, error) => {
                     IObjectManagerInternal.instance.loadObject(a.path)
-                        .then(tuple => {
-                            a.set(tuple[0] as Asset);
+                        .then(([asset]) => {
+                            a.set(asset as Asset);
                             success();
                         })
                         .catch(error);
@@ -150,9 +160,10 @@ export class GeometryRenderer {
         Private.billboard.unload(gl);
         Private.quad.unload(gl);
         Private.rect.unload(gl);
-        if (Private.debugMaterial) {
-            Private.debugMaterial.destroy();
-        }
+
+        GeometryRenderer.defaultAssets
+            .filter(a => Boolean(a.get()))
+            .forEach(a => a.get().destroy());
     }
 
     static applyProjectionMatrix(projection: Matrix44) {
@@ -177,10 +188,17 @@ export class GeometryRenderer {
         GraphicUtils.drawVertexBuffer(WebGL.context, Private.line, Private.debugMaterial.shader as Shader);
     }
 
-    static drawCone(radius: number, height: number, distFromOrigin: number, forward: Vector3, up: Vector3, color: Color, worldMatrix: Matrix44) {
+    static drawCone(
+        radius: number, 
+        height: number, 
+        distFromOrigin: number, 
+        forward: Vector3, 
+        up: Vector3, 
+        color: Color, 
+        worldPosition: Vector3
+    ) {
         Private.debugMaterial.applyParameter("ambient", color);
-        const absolutePosition = Vector3.fromPool().setFromMatrix(worldMatrix);
-        const position = Vector3.fromPool().copy(forward).multiply(distFromOrigin).add(absolutePosition);
+        const position = Vector3.fromPool().copy(forward).multiply(distFromOrigin).add(worldPosition);
         const rotation = Quaternion.fromPool().lookAt(forward, up);
         const scale = Vector3.fromPool().set(radius, height, radius);
         const { dummy1, dummy2 } = Private;
@@ -205,14 +223,20 @@ export class GeometryRenderer {
         GraphicUtils.drawVertexBuffer(WebGL.context, Private.cross, Private.debugMaterial.shader as Shader);
     }
 
-    static drawBillboard(p: Vector3, size: number, forward: Vector3, color: Color, camera: Camera) {
+    static drawBillboard(p: Vector3, size: number, forward: Vector3, color: Color, camera: Camera, texture?: Texture) {
         Private.debugMaterial.applyParameter("ambient", color);
+        if (texture) {
+            Private.debugMaterial.applyReferenceParameter("diffuse", texture);
+        }
         Private.modelViewMatrix.makeLookAt(forward, camera.entity.transform.worldUp).transpose();
         Private.modelViewMatrix.scale(Vector3.fromPool().copy(Vector3.one).multiply(size));
         Private.modelViewMatrix.setPosition(p);
         Private.modelViewMatrix.multiplyMatrices(camera.getViewMatrix(), Private.modelViewMatrix);
         Private.debugMaterial.applyParameter("modelViewMatrix", Private.modelViewMatrix);
         GraphicUtils.drawVertexBuffer(WebGL.context, Private.billboard, Private.debugMaterial.shader as Shader);
+        if (texture) {
+            Private.debugMaterial.applyReferenceParameter("diffuse", defaultAssets.whiteTexture);
+        }
     }
 
     static drawQuad(
@@ -238,14 +262,14 @@ export class GeometryRenderer {
         Private.debugMaterial.applyParameter("ambient", color);
         Private.debugMaterial.applyParameter("modelViewMatrix", Private.modelViewMatrix.multiplyMatrices(Private.viewMatrix, worldMatrix));
 
-        let vTop1 = Vector3.fromPool().set(aabb.min.x, aabb.max.y, aabb.min.z);
-        let vTop2 = Vector3.fromPool().set(aabb.max.x, aabb.max.y, aabb.min.z);
-        let vTop3 = Vector3.fromPool().set(aabb.min.x, aabb.max.y, aabb.max.z);
-        let vTop4 = Vector3.fromPool().set(aabb.max.x, aabb.max.y, aabb.max.z);
-        let vBottom1 = Vector3.fromPool().set(aabb.min.x, aabb.min.y, aabb.min.z);
-        let vBottom2 = Vector3.fromPool().set(aabb.max.x, aabb.min.y, aabb.min.z);
-        let vBottom3 = Vector3.fromPool().set(aabb.min.x, aabb.min.y, aabb.max.z);
-        let vBottom4 = Vector3.fromPool().set(aabb.max.x, aabb.min.y, aabb.max.z);
+        const vTop1 = Vector3.fromPool().set(aabb.min.x, aabb.max.y, aabb.min.z);
+        const vTop2 = Vector3.fromPool().set(aabb.max.x, aabb.max.y, aabb.min.z);
+        const vTop3 = Vector3.fromPool().set(aabb.min.x, aabb.max.y, aabb.max.z);
+        const vTop4 = Vector3.fromPool().set(aabb.max.x, aabb.max.y, aabb.max.z);
+        const vBottom1 = Vector3.fromPool().set(aabb.min.x, aabb.min.y, aabb.min.z);
+        const vBottom2 = Vector3.fromPool().set(aabb.max.x, aabb.min.y, aabb.min.z);
+        const vBottom3 = Vector3.fromPool().set(aabb.min.x, aabb.min.y, aabb.max.z);
+        const vBottom4 = Vector3.fromPool().set(aabb.max.x, aabb.min.y, aabb.max.z);
 
         Private.drawQuad(vTop1, vTop2, vTop3, vTop4);
         Private.drawQuad(vBottom1, vBottom2, vBottom3, vBottom4);
@@ -259,11 +283,11 @@ export class GeometryRenderer {
         Private.debugMaterial.applyParameter("ambient", color);
 
         // TODO support oriented bbs in CollisionUtils
-        let position = Vector3.fromPool();
-        let rotation = Quaternion.fromPool();
-        let scale = Vector3.fromPool();
+        const position = Vector3.fromPool();
+        const rotation = Quaternion.fromPool();
+        const scale = Vector3.fromPool();
         worldMatrix.decompose(position, rotation, scale);     
-        let rotatedCenter = Vector3.fromPool().copy(box.center).rotate(rotation);   
+        const rotatedCenter = Vector3.fromPool().copy(box.center).rotate(rotation);   
         position.add(rotatedCenter);
         scale.x *= box.extent.x;
         scale.y *= box.extent.y;
@@ -284,11 +308,11 @@ export class GeometryRenderer {
 
     static drawSphere(center: Vector3, radius: Vector3, color: Color, worldMatrix: Matrix44) {
         Private.debugMaterial.applyParameter("ambient", color);
-        let position = Vector3.fromPool();
-        let rotation = Quaternion.fromPool();
-        let scale = Vector3.fromPool();
+        const position = Vector3.fromPool();
+        const rotation = Quaternion.fromPool();
+        const scale = Vector3.fromPool();
         worldMatrix.decompose(position, rotation, scale);
-        let rotatedCenter = Vector3.fromPool().copy(center).rotate(rotation);
+        const rotatedCenter = Vector3.fromPool().copy(center).rotate(rotation);
         position.add(rotatedCenter);
         scale.multiplyVector(radius);
         Private.modelViewMatrix.compose(position, rotation, scale);
@@ -299,22 +323,22 @@ export class GeometryRenderer {
     }
 
     static drawPlane(normal: Vector3, distToOrigin: number, color: Color, worldMatrix: Matrix44) {        
-        let { basis } = Private;
+        const { basis } = Private;
         basis.setFromNormal(normal);
         const size = 15;
         basis.right.multiply(size);
         basis.forward.multiply(size);
-        let position = Vector3.fromPool();
-        let rotation = Quaternion.fromPool();
-        let worldNoScale = Matrix44.fromPool()
+        const position = Vector3.fromPool();
+        const rotation = Quaternion.fromPool();
+        const worldNoScale = Matrix44.fromPool()
             .copy(worldMatrix)
             .decompose(position, rotation, Vector3.dummy)        
             .compose(position, rotation, Vector3.one);
-        let centerPoint = Vector3.fromPool().copy(normal).multiply(distToOrigin);
-        let topLeft = Vector3.fromPool().copy(centerPoint).add(basis.forward).substract(basis.right);
-        let topRight = Vector3.fromPool().copy(centerPoint).add(basis.forward).add(basis.right);
-        let botLeft = Vector3.fromPool().copy(centerPoint).substract(basis.forward).substract(basis.right);
-        let botRight = Vector3.fromPool().copy(centerPoint).substract(basis.forward).add(basis.right);
+        const centerPoint = Vector3.fromPool().copy(normal).multiply(distToOrigin);
+        const topLeft = Vector3.fromPool().copy(centerPoint).add(basis.forward).substract(basis.right);
+        const topRight = Vector3.fromPool().copy(centerPoint).add(basis.forward).add(basis.right);
+        const botLeft = Vector3.fromPool().copy(centerPoint).substract(basis.forward).substract(basis.right);
+        const botRight = Vector3.fromPool().copy(centerPoint).substract(basis.forward).add(basis.right);
         this.drawQuad(topLeft, topRight, botLeft, botRight, color, worldNoScale);
     }
 

@@ -62,8 +62,8 @@ export class FastBloom extends Bloom {
             return null;
         }
         renderer.renderTarget = this._buffer1;
-        fullScreen.applyReferenceParameter("texture", inputRT);
-        fullScreen.applyParameter("threshold", this.threshold);
+        fullScreen.applyReferenceParam("texture", inputRT);
+        fullScreen.applyParam("threshold", this.threshold);
         GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, fullScreen);
        
         const { blur } = defaultAssets.shaders;
@@ -74,15 +74,15 @@ export class FastBloom extends Bloom {
         // horizontal pass
         let pixelSize = Vector2.fromPool().set(1 / this._buffer1.getWidth(), 1 / this._buffer1.getHeight());
         renderer.renderTarget = this._buffer2;
-        blur.applyParameter("horizontal", true);
-        blur.applyReferenceParameter("texture", this._buffer1);
-        blur.applyParameter("pixelSize", pixelSize);                            
+        blur.applyParam("horizontal", true);
+        blur.applyReferenceParam("texture", this._buffer1);
+        blur.applyParam("pixelSize", pixelSize);                            
         GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, blur);
 
         // vertical pass
         renderer.renderTarget = this._buffer1;
-        blur.applyParameter("horizontal", false);
-        blur.applyReferenceParameter("texture", this._buffer2);
+        blur.applyParam("horizontal", false);
+        blur.applyReferenceParam("texture", this._buffer2);
         GraphicUtils.drawVertexBuffer(gl, fullScreenQuad, blur);
         return this._buffer1;
     }

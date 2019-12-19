@@ -6,6 +6,8 @@ import { Transform } from "../core/Transform";
 import { MathEx } from "../math/MathEx";
 import { SerializedObject } from "../core/SerializableObject";
 import { Matrix44 } from "../math/Matrix44";
+import { Frustum } from "./Frustum";
+import { GraphicSettings } from "./GraphicSettings";
 
 export class PerspectiveProjector extends Projector {
     
@@ -30,7 +32,7 @@ export class PerspectiveProjector extends Projector {
 
     private _fov = 60;
     private _zNear = .1;
-    private _zFar = 1000;
+    private _zFar = 800;
 
     @Attributes.unserializable()
     private _projectionMatrix = new Matrix44();
@@ -40,23 +42,26 @@ export class PerspectiveProjector extends Projector {
     }
     
     updateFrustum(transform: Transform, ratio: number) {
-        let fovRadians = MathEx.toRadians(this._fov);
+        const fovRadians = MathEx.toRadians(this._fov);
         this._projectionMatrix.makePerspectiveProjection(fovRadians, ratio, this._zNear, this._zFar);
 
-        let fovBy2 = fovRadians / 2;
-        let Hnear = Math.tan(fovBy2) * this.zNear;
-        let Wnear = Hnear * ratio;
-        let Hfar = Math.tan(fovBy2) * this.zFar;
-        let Wfar = Hfar * ratio;
-        this._frustum.update(
-            Wnear,
-            Hnear,
-            Wfar,
-            Hfar,
-            this.zNear,
-            this.zFar,
-            transform
-        );        
+        const fovBy2 = fovRadians / 2;
+        const _update = (frustum: Frustum, near: number, far: number) => {
+            const hNear = Math.tan(fovBy2) * near;
+            const wNear = hNear * ratio;
+            const hFar = Math.tan(fovBy2) * far;
+            const wFar = hFar * ratio;
+            frustum.update(wNear, hNear, wFar, hFar, near, far, transform);
+        };
+
+        // full frustum
+        _update(this._frustum.full, this.zNear, this.zFar);
+        
+        // frustum splits
+        const { shadowCascadeEdges } = GraphicSettings;
+        _update(this._frustum.splits[0], this._zNear,                         this._zNear + shadowCascadeEdges[0]);
+        _update(this._frustum.splits[1], this._zNear + shadowCascadeEdges[0], this._zNear + shadowCascadeEdges[1]);
+        _update(this._frustum.splits[2], this._zNear + shadowCascadeEdges[1], this._zNear + shadowCascadeEdges[2]);
     }        
     
     upgrade(json: SerializedObject, previousVersion: number) {
