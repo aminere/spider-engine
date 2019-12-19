@@ -37,6 +37,17 @@ export class AnimationInstance extends SerializableObject {
     
     set playCount(value: number) { this._playCount = value; }    
 
+    get autoPlayStatus() {
+        if (this._autoPlayStatus === undefined) {
+            this._autoPlayStatus = this.autoPlay;
+        }
+        return this._autoPlayStatus;
+    }
+
+    set autoPlayStatus(autoPlay: boolean) {
+        this._autoPlayStatus = autoPlay;
+    }
+
     /**
      * @hidden
      */
@@ -53,6 +64,9 @@ export class AnimationInstance extends SerializableObject {
     private _stopRequested = false;
     @Attributes.unserializable()
     private _playCount = 0;
+    @Attributes.unserializable()
+    private _autoPlayStatus?: boolean;
+
     private _animation = new AssetReference(Animation);
 
     requestStop() {
