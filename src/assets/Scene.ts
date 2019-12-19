@@ -75,6 +75,10 @@ export class Scene extends Asset {
         return this._fog.instance;
     }
 
+    set environment(environment: Environment | undefined) {
+        this._environment.instance = environment;
+    }
+
     get environment() {
         return this._environment.instance;
     }
@@ -260,9 +264,18 @@ export class Scene extends Asset {
     }
 
     copy() {
+        // Bypass the custum scene serialization which is async
+        // and more appropriate for scene loading than for a simple copy
+        // This performs an immediate copy
         const copy = new Scene();
         copy.templatePath = this.templatePath;
-        copy.root = this.root.copy();        
+        copy.root = this.root.copy();
+        copy.fog = this.fog ? this.fog.copy() as Fog : undefined;
+        copy.environment = this.environment ? this.environment.copy() as Environment : undefined;
+        // Disable prefab instance copying for now
+        // TODO To make it work, simple recuperate and ID map from root.copy()
+        // and use it to replace the ids in the prefabInstances object
+        // copy.prefabInstances = this.prefabInstances ? JSON.parse(JSON.stringify(this.prefabInstances)) : undefined;
         return copy;
     }
 
