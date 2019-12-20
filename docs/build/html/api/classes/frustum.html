@@ -94,6 +94,7 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="frustum.html#ispointinside" class="tsd-kind-icon">is<wbr>Point<wbr>Inside</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="frustum.html#testaabb" class="tsd-kind-icon">testAABB</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="frustum.html#update" class="tsd-kind-icon">update</a></li>
 							</ul>
 						</section>
@@ -112,7 +113,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Frustum.ts#L41">graphics/Frustum.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Frustum.ts#L48">graphics/Frustum.ts:48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="frustum.html" class="tsd-signature-type">Frustum</a></h4>
@@ -132,7 +133,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Frustum.ts#L38">graphics/Frustum.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Frustum.ts#L45">graphics/Frustum.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="vector3.html" class="tsd-signature-type">Vector3</a><span class="tsd-signature-symbol">[]</span></h4>
@@ -152,7 +153,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Frustum.ts#L56">graphics/Frustum.ts:56</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Frustum.ts#L63">graphics/Frustum.ts:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -166,16 +167,39 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="update" class="tsd-anchor"></a>
-					<h3>update</h3>
+					<a name="testaabb" class="tsd-anchor"></a>
+					<h3>testAABB</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>nearW<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, nearH<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, farW<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, farH<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, near<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, far<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, transform<span class="tsd-signature-symbol">: </span><a href="transform.html" class="tsd-signature-type">Transform</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">testAABB<span class="tsd-signature-symbol">(</span>aabb<span class="tsd-signature-symbol">: </span><a href="aabb.html" class="tsd-signature-type">AABB</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../enums/frustumtest.html" class="tsd-signature-type">FrustumTest</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Frustum.ts#L66">graphics/Frustum.ts:66</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Frustum.ts#L154">graphics/Frustum.ts:154</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>aabb: <a href="aabb.html" class="tsd-signature-type">AABB</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../enums/frustumtest.html" class="tsd-signature-type">FrustumTest</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="update" class="tsd-anchor"></a>
+					<h3>update</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>nearW<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, nearH<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, farW<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, farH<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, near<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, far<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, transform<span class="tsd-signature-symbol">: </span><a href="transform.html" class="tsd-signature-type">Transform</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Frustum.ts#L73">graphics/Frustum.ts:73</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -202,7 +226,7 @@
 									<h5>transform: <a href="transform.html" class="tsd-signature-type">Transform</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -231,6 +255,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="frustum.html#ispointinside" class="tsd-kind-icon">is<wbr>Point<wbr>Inside</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="frustum.html#testaabb" class="tsd-kind-icon">testAABB</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="frustum.html#update" class="tsd-kind-icon">update</a>

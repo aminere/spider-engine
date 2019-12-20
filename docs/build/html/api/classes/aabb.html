@@ -89,13 +89,25 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="aabb.html#max" class="tsd-kind-icon">max</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="aabb.html#min" class="tsd-kind-icon">min</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="aabb.html#pool" class="tsd-kind-icon">pool</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Accessors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="aabb.html#corners" class="tsd-kind-icon">corners</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="aabb.html#add" class="tsd-kind-icon">add</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="aabb.html#addaabbs" class="tsd-kind-icon">addAABBs</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="aabb.html#contains" class="tsd-kind-icon">contains</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="aabb.html#copy" class="tsd-kind-icon">copy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="aabb.html#set" class="tsd-kind-icon">set</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="aabb.html#transform" class="tsd-kind-icon">transform</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="aabb.html#frompool" class="tsd-kind-icon">from<wbr>Pool</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="aabb.html#fromvertexarray" class="tsd-kind-icon">from<wbr>Vertex<wbr>Array</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="aabb.html#fromvertexbuffer" class="tsd-kind-icon">from<wbr>Vertex<wbr>Buffer</a></li>
 							</ul>
@@ -115,7 +127,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/math/AABB.ts#L46">math/AABB.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L72">math/AABB.ts:72</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -140,7 +152,7 @@
 					<div class="tsd-signature tsd-kind-icon">max<span class="tsd-signature-symbol">:</span> <a href="vector3.html" class="tsd-signature-type">Vector3</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/math/AABB.ts#L9">math/AABB.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L13">math/AABB.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -150,13 +162,92 @@
 					<div class="tsd-signature tsd-kind-icon">min<span class="tsd-signature-symbol">:</span> <a href="vector3.html" class="tsd-signature-type">Vector3</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/math/AABB.ts#L8">math/AABB.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L12">math/AABB.ts:12</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="pool" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> pool</h3>
+					<div class="tsd-signature tsd-kind-icon">pool<span class="tsd-signature-symbol">:</span> <a href="objectpool.html" class="tsd-signature-type">ObjectPool</a><span class="tsd-signature-symbol">&lt;</span><a href="aabb.html" class="tsd-signature-type">AABB</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new ObjectPool(AABB, 32)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L10">math/AABB.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="corners" class="tsd-anchor"></a>
+					<h3>corners</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> corners<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="vector3.html" class="tsd-signature-type">Vector3</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L15">math/AABB.ts:15</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="vector3.html" class="tsd-signature-type">Vector3</a><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="add" class="tsd-anchor"></a>
+					<h3>add</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="aabb.html" class="tsd-signature-type">AABB</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L109">math/AABB.ts:109</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>other: <a href="aabb.html" class="tsd-signature-type">AABB</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addaabbs" class="tsd-anchor"></a>
+					<h3>addAABBs</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">addAABBs<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><a href="aabb.html" class="tsd-signature-type">AABB</a>, b<span class="tsd-signature-symbol">: </span><a href="aabb.html" class="tsd-signature-type">AABB</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L113">math/AABB.ts:113</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>a: <a href="aabb.html" class="tsd-signature-type">AABB</a></h5>
+								</li>
+								<li>
+									<h5>b: <a href="aabb.html" class="tsd-signature-type">AABB</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="contains" class="tsd-anchor"></a>
 					<h3>contains</h3>
@@ -167,7 +258,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/math/AABB.ts#L59">math/AABB.ts:59</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L103">math/AABB.ts:103</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -181,6 +272,29 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="copy" class="tsd-anchor"></a>
+					<h3>copy</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">copy<span class="tsd-signature-symbol">(</span>other<span class="tsd-signature-symbol">: </span><a href="aabb.html" class="tsd-signature-type">AABB</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L127">math/AABB.ts:127</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>other: <a href="aabb.html" class="tsd-signature-type">AABB</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="set" class="tsd-anchor"></a>
 					<h3>set</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -190,7 +304,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/math/AABB.ts#L53">math/AABB.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L97">math/AABB.ts:97</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -206,6 +320,46 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="transform" class="tsd-anchor"></a>
+					<h3>transform</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">transform<span class="tsd-signature-symbol">(</span>matrix<span class="tsd-signature-symbol">: </span><a href="matrix44.html" class="tsd-signature-type">Matrix44</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L133">math/AABB.ts:133</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>matrix: <a href="matrix44.html" class="tsd-signature-type">Matrix44</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="frompool" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> from<wbr>Pool</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">from<wbr>Pool<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="aabb.html" class="tsd-signature-type">AABB</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L70">math/AABB.ts:70</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="aabb.html" class="tsd-signature-type">AABB</a></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
 					<a name="fromvertexarray" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> from<wbr>Vertex<wbr>Array</h3>
@@ -216,7 +370,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/math/AABB.ts#L16">math/AABB.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L38">math/AABB.ts:38</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -245,7 +399,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/math/AABB.ts#L11">math/AABB.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/math/AABB.ts#L33">math/AABB.ts:33</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -284,11 +438,32 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="aabb.html#min" class="tsd-kind-icon">min</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="aabb.html#pool" class="tsd-kind-icon">pool</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="aabb.html#corners" class="tsd-kind-icon">corners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="aabb.html#add" class="tsd-kind-icon">add</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="aabb.html#addaabbs" class="tsd-kind-icon">addAABBs</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="aabb.html#contains" class="tsd-kind-icon">contains</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="aabb.html#copy" class="tsd-kind-icon">copy</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="aabb.html#set" class="tsd-kind-icon">set</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="aabb.html#transform" class="tsd-kind-icon">transform</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="aabb.html#frompool" class="tsd-kind-icon">from<wbr>Pool</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="aabb.html#fromvertexarray" class="tsd-kind-icon">from<wbr>Vertex<wbr>Array</a>

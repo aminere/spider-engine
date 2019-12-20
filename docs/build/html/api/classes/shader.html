@@ -100,9 +100,13 @@
 								<li class="tsd-kind-event tsd-parent-kind-class"><a href="shader.html#codechanged" class="tsd-kind-icon">code<wbr>Changed</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="shader.html#_fragmentcode" class="tsd-kind-icon">_fragment<wbr>Code</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="shader.html#_shadererror" class="tsd-kind-icon">_shader<wbr>Error</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="shader.html#_usedtexturestages" class="tsd-kind-icon">_used<wbr>Texture<wbr>Stages</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="shader.html#_vertexcode" class="tsd-kind-icon">_vertex<wbr>Code</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="shader.html#deleted" class="tsd-kind-icon">deleted</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="shader.html#id" class="tsd-kind-icon">id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="shader.html#ispersistent" class="tsd-kind-icon">is<wbr>Persistent</a></li>
@@ -121,12 +125,15 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="shader.html#applyparameter" class="tsd-kind-icon">apply<wbr>Parameter</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="shader.html#applyreferenceparameter" class="tsd-kind-icon">apply<wbr>Reference<wbr>Parameter</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="shader.html#applynumberarrayparam" class="tsd-kind-icon">apply<wbr>Number<wbr>Array<wbr>Param</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="shader.html#applyparam" class="tsd-kind-icon">apply<wbr>Param</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="shader.html#applyreferencearrayparam" class="tsd-kind-icon">apply<wbr>Reference<wbr>Array<wbr>Param</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="shader.html#applyreferenceparam" class="tsd-kind-icon">apply<wbr>Reference<wbr>Param</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="shader.html#begin" class="tsd-kind-icon">begin</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="shader.html#beginwithparams" class="tsd-kind-icon">begin<wbr>With<wbr>Params</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="shader.html#beginwithvisual" class="tsd-kind-icon">begin<wbr>With<wbr>Visual</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="shader.html#copy" class="tsd-kind-icon">copy</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="shader.html#createshader" class="tsd-kind-icon">create<wbr>Shader</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="shader.html#deserialize" class="tsd-kind-icon">deserialize</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="shader.html#destroy" class="tsd-kind-icon">destroy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="shader.html#getattributes" class="tsd-kind-icon">get<wbr>Attributes</a></li>
@@ -141,6 +148,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="shader.html#serialize" class="tsd-kind-icon">serialize</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="shader.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="shader.html#setstate" class="tsd-kind-icon">set<wbr>State</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="shader.html#setupinstance" class="tsd-kind-icon">setup<wbr>Instance</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="shader.html#upgrade" class="tsd-kind-icon">upgrade</a></li>
 							</ul>
 						</section>
@@ -160,7 +168,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="uniqueobject.html">UniqueObject</a>.<a href="uniqueobject.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L87">graphics/Shader.ts:87</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L105">graphics/Shader.ts:105</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -182,15 +190,55 @@
 					<div class="tsd-signature tsd-kind-icon">code<wbr>Changed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AsyncEvent</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new AsyncEvent&lt;string&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L56">graphics/Shader.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L71">graphics/Shader.ts:71</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_fragmentcode" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _fragment<wbr>Code</h3>
+					<div class="tsd-signature tsd-kind-icon">_fragment<wbr>Code<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L87">graphics/Shader.ts:87</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_shadererror" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _shader<wbr>Error</h3>
+					<div class="tsd-signature tsd-kind-icon">_shader<wbr>Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L89">graphics/Shader.ts:89</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_usedtexturestages" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _used<wbr>Texture<wbr>Stages</h3>
+					<div class="tsd-signature tsd-kind-icon">_used<wbr>Texture<wbr>Stages<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L91">graphics/Shader.ts:91</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_vertexcode" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _vertex<wbr>Code</h3>
+					<div class="tsd-signature tsd-kind-icon">_vertex<wbr>Code<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L85">graphics/Shader.ts:85</a></li>
+						</ul>
+					</aside>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="deleted" class="tsd-anchor"></a>
 					<h3>deleted</h3>
@@ -198,7 +246,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#deleted">deleted</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/assets/Asset.ts#L22">assets/Asset.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/assets/Asset.ts#L22">assets/Asset.ts:22</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -209,7 +257,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="uniqueobject.html">UniqueObject</a>.<a href="uniqueobject.html#id">id</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/core/UniqueObject.ts#L10">core/UniqueObject.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/core/UniqueObject.ts#L10">core/UniqueObject.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -220,7 +268,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#ispersistent">isPersistent</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/assets/Asset.ts#L19">assets/Asset.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/assets/Asset.ts#L19">assets/Asset.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -231,7 +279,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="uniqueobject.html">UniqueObject</a>.<a href="uniqueobject.html#name">name</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/core/UniqueObject.ts#L13">core/UniqueObject.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/core/UniqueObject.ts#L13">core/UniqueObject.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -242,7 +290,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="uniqueobject.html">UniqueObject</a>.<a href="uniqueobject.html#templatepath">templatePath</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/core/UniqueObject.ts#L16">core/UniqueObject.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/core/UniqueObject.ts#L16">core/UniqueObject.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -260,7 +308,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L59">graphics/Shader.ts:59</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L74">graphics/Shader.ts:74</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -268,7 +316,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L64">graphics/Shader.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L79">graphics/Shader.ts:79</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -291,7 +339,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L50">graphics/Shader.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L65">graphics/Shader.ts:65</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -309,7 +357,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L58">graphics/Shader.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L73">graphics/Shader.ts:73</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -317,7 +365,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L60">graphics/Shader.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L75">graphics/Shader.ts:75</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -334,16 +382,45 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="applyparameter" class="tsd-anchor"></a>
-					<h3>apply<wbr>Parameter</h3>
+					<a name="applynumberarrayparam" class="tsd-anchor"></a>
+					<h3>apply<wbr>Number<wbr>Array<wbr>Param</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">apply<wbr>Parameter<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, bucketId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">apply<wbr>Number<wbr>Array<wbr>Param<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, numbers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span>, bucketId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L173">graphics/Shader.ts:173</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L233">graphics/Shader.ts:233</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>numbers: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> bucketId: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="applyparam" class="tsd-anchor"></a>
+					<h3>apply<wbr>Param</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">apply<wbr>Param<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, bucketId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L191">graphics/Shader.ts:191</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -363,16 +440,45 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="applyreferenceparameter" class="tsd-anchor"></a>
-					<h3>apply<wbr>Reference<wbr>Parameter</h3>
+					<a name="applyreferencearrayparam" class="tsd-anchor"></a>
+					<h3>apply<wbr>Reference<wbr>Array<wbr>Param</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">apply<wbr>Reference<wbr>Parameter<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, referred<span class="tsd-signature-symbol">: </span><a href="graphicasset.html" class="tsd-signature-type">GraphicAsset</a>, bucketId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">apply<wbr>Reference<wbr>Array<wbr>Param<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, referreds<span class="tsd-signature-symbol">: </span><a href="graphicasset.html" class="tsd-signature-type">GraphicAsset</a><span class="tsd-signature-symbol">[]</span>, bucketId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L183">graphics/Shader.ts:183</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L212">graphics/Shader.ts:212</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>referreds: <a href="graphicasset.html" class="tsd-signature-type">GraphicAsset</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> bucketId: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="applyreferenceparam" class="tsd-anchor"></a>
+					<h3>apply<wbr>Reference<wbr>Param</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">apply<wbr>Reference<wbr>Param<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, referred<span class="tsd-signature-symbol">: </span><a href="graphicasset.html" class="tsd-signature-type">GraphicAsset</a>, bucketId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L201">graphics/Shader.ts:201</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -401,7 +507,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L109">graphics/Shader.ts:109</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L127">graphics/Shader.ts:127</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -418,7 +524,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L96">graphics/Shader.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L114">graphics/Shader.ts:114</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -441,7 +547,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L141">graphics/Shader.ts:141</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L159">graphics/Shader.ts:159</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -469,10 +575,42 @@
 								<p>Inherited from <a href="uniqueobject.html">UniqueObject</a>.<a href="uniqueobject.html#copy">copy</a></p>
 								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#copy">copy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/core/UniqueObject.ts#L24">core/UniqueObject.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/core/UniqueObject.ts#L24">core/UniqueObject.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="uniqueobject.html" class="tsd-signature-type">UniqueObject</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a name="createshader" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> create<wbr>Shader</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Shader<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, code<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, logTypeName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">WebGLShader</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L379">graphics/Shader.ts:379</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>type: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>code: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>logTypeName: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<span class="tsd-signature-type">WebGLShader</span>
+							</h4>
 						</li>
 					</ul>
 				</section>
@@ -487,7 +625,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#deserialize">deserialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/core/SerializableObject.ts#L45">core/SerializableObject.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/core/SerializableObject.ts#L45">core/SerializableObject.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -512,7 +650,7 @@
 								<p>Inherited from <a href="graphicasset.html">GraphicAsset</a>.<a href="graphicasset.html#destroy">destroy</a></p>
 								<p>Overrides <a href="asset.html">Asset</a>.<a href="asset.html#destroy">destroy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/GraphicAsset.ts#L7">graphics/GraphicAsset.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/GraphicAsset.ts#L7">graphics/GraphicAsset.ts:7</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -529,7 +667,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L236">graphics/Shader.ts:236</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L285">graphics/Shader.ts:285</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -552,7 +690,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L240">graphics/Shader.ts:240</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L289">graphics/Shader.ts:289</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -576,7 +714,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="graphicasset.html">GraphicAsset</a>.<a href="graphicasset.html#graphicload">graphicLoad</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/GraphicAsset.ts#L12">graphics/GraphicAsset.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/GraphicAsset.ts#L12">graphics/GraphicAsset.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -594,7 +732,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="graphicasset.html">GraphicAsset</a>.<a href="graphicasset.html#graphicunload">graphicUnload</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L209">graphics/Shader.ts:209</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L258">graphics/Shader.ts:258</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -611,7 +749,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L227">graphics/Shader.ts:227</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L276">graphics/Shader.ts:276</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -629,7 +767,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#isa">isA</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -652,7 +790,7 @@
 												<li class="tsd-description">
 													<aside class="tsd-sources">
 														<ul>
-															<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
+															<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/core/SerializableObject.ts#L23">core/SerializableObject.ts:23</a></li>
 														</ul>
 													</aside>
 													<h4 class="tsd-parameters-title">Parameters</h4>
@@ -682,7 +820,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#isloaded">isLoaded</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/assets/Asset.ts#L24">assets/Asset.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/assets/Asset.ts#L24">assets/Asset.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -699,7 +837,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L260">graphics/Shader.ts:260</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L309">graphics/Shader.ts:309</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -738,7 +876,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="asset.html">Asset</a>.<a href="asset.html#save">save</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/assets/Asset.ts#L33">assets/Asset.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/assets/Asset.ts#L33">assets/Asset.ts:33</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -762,7 +900,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#serialize">serialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/core/SerializableObject.ts#L41">core/SerializableObject.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/core/SerializableObject.ts#L41">core/SerializableObject.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../index.html#serializedobjecttype" class="tsd-signature-type">SerializedObjectType</a></h4>
@@ -780,7 +918,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setproperty">setProperty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L196">graphics/Shader.ts:196</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L245">graphics/Shader.ts:245</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -807,7 +945,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setstate">setState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/core/SerializableObject.ts#L54">core/SerializableObject.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/core/SerializableObject.ts#L54">core/SerializableObject.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -826,6 +964,35 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a name="setupinstance" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> setup<wbr>Instance</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">setup<wbr>Instance<span class="tsd-signature-symbol">(</span>instance<span class="tsd-signature-symbol">: </span><a href="../interfaces/shaderinstance.html" class="tsd-signature-type">ShaderInstance</a>, gl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">WebGLRenderingContext</span>, visual<span class="tsd-signature-symbol">: </span><a href="visual.html" class="tsd-signature-type">Visual</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L352">graphics/Shader.ts:352</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>instance: <a href="../interfaces/shaderinstance.html" class="tsd-signature-type">ShaderInstance</a></h5>
+								</li>
+								<li>
+									<h5>gl: <span class="tsd-signature-type">WebGLRenderingContext</span></h5>
+								</li>
+								<li>
+									<h5>visual: <a href="visual.html" class="tsd-signature-type">Visual</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 					<a name="upgrade" class="tsd-anchor"></a>
 					<h3>upgrade</h3>
@@ -837,7 +1004,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#upgrade">upgrade</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/d82da66/src/graphics/Shader.ts#L244">graphics/Shader.ts:244</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/fc323e7/src/graphics/Shader.ts#L293">graphics/Shader.ts:293</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -876,6 +1043,18 @@
 							<li class=" tsd-kind-event tsd-parent-kind-class">
 								<a href="shader.html#codechanged" class="tsd-kind-icon">code<wbr>Changed</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="shader.html#_fragmentcode" class="tsd-kind-icon">_fragment<wbr>Code</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="shader.html#_shadererror" class="tsd-kind-icon">_shader<wbr>Error</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="shader.html#_usedtexturestages" class="tsd-kind-icon">_used<wbr>Texture<wbr>Stages</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="shader.html#_vertexcode" class="tsd-kind-icon">_vertex<wbr>Code</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="shader.html#deleted" class="tsd-kind-icon">deleted</a>
 							</li>
@@ -901,10 +1080,16 @@
 								<a href="shader.html#vertexcode" class="tsd-kind-icon">vertex<wbr>Code</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="shader.html#applyparameter" class="tsd-kind-icon">apply<wbr>Parameter</a>
+								<a href="shader.html#applynumberarrayparam" class="tsd-kind-icon">apply<wbr>Number<wbr>Array<wbr>Param</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="shader.html#applyreferenceparameter" class="tsd-kind-icon">apply<wbr>Reference<wbr>Parameter</a>
+								<a href="shader.html#applyparam" class="tsd-kind-icon">apply<wbr>Param</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="shader.html#applyreferencearrayparam" class="tsd-kind-icon">apply<wbr>Reference<wbr>Array<wbr>Param</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="shader.html#applyreferenceparam" class="tsd-kind-icon">apply<wbr>Reference<wbr>Param</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="shader.html#begin" class="tsd-kind-icon">begin</a>
@@ -917,6 +1102,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="shader.html#copy" class="tsd-kind-icon">copy</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="shader.html#createshader" class="tsd-kind-icon">create<wbr>Shader</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="shader.html#deserialize" class="tsd-kind-icon">deserialize</a>
@@ -959,6 +1147,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 								<a href="shader.html#setstate" class="tsd-kind-icon">set<wbr>State</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="shader.html#setupinstance" class="tsd-kind-icon">setup<wbr>Instance</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="shader.html#upgrade" class="tsd-kind-icon">upgrade</a>
