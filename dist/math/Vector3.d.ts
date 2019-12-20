@@ -1,6 +1,12 @@
 import { Matrix44 } from "./Matrix44";
 import { Quaternion } from "./Quaternion";
 import { ObjectPool } from "../core/ObjectPool";
+export declare namespace Vector3Internal {
+    const xKey = "_x";
+    const yKey = "_y";
+    const zKey = "_z";
+    const wKey = "_w";
+}
 export declare class Vector3 {
     static zero: Vector3;
     static one: Vector3;

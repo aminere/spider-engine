@@ -1,5 +1,6 @@
 import { CompositeTrack } from "./CompositeTrack";
-import { Quaternion, RotationOrder } from "../../math/Quaternion";
+import { Quaternion } from "../../math/Quaternion";
+import { RotationOrder } from "../../math/Types";
 export declare class RotationTrack extends CompositeTrack {
     eulerOrder: RotationOrder;
     constructor();

@@ -6,10 +6,12 @@ import { Asset } from "../../assets/Asset";
 import { Color } from "../Color";
 import { Camera } from "../Camera";
 import { Material } from "../Material";
+import { Texture } from "../Texture";
 export declare class GeometryRenderer {
     static defaultAssets: {
         path: string;
         set: (asset: Asset) => Material;
+        get: () => Material;
     }[];
     static init(): Promise<void>;
     static unload(): void;
@@ -17,9 +19,9 @@ export declare class GeometryRenderer {
     static setViewMatrix(view: Matrix44): void;
     static begin(): boolean;
     static drawLine(start: Vector3, end: Vector3, color: Color, worldMatrix: Matrix44): void;
-    static drawCone(radius: number, height: number, distFromOrigin: number, forward: Vector3, up: Vector3, color: Color, worldMatrix: Matrix44): void;
+    static drawCone(radius: number, height: number, distFromOrigin: number, forward: Vector3, up: Vector3, color: Color, worldPosition: Vector3): void;
     static drawCross(p: Vector3, color: Color): void;
-    static drawBillboard(p: Vector3, size: number, forward: Vector3, color: Color, camera: Camera): void;
+    static drawBillboard(p: Vector3, size: number, forward: Vector3, color: Color, camera: Camera, texture?: Texture): void;
     static drawQuad(topLeft: Vector3, topRight: Vector3, botLeft: Vector3, botRight: Vector3, color: Color, worldMatrix: Matrix44): void;
     static drawCircle(color: Color, worldMatrix: Matrix44): void;
     static drawAABB(aabb: AABB, color: Color, worldMatrix: Matrix44): void;

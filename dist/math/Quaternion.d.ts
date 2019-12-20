@@ -1,7 +1,7 @@
 import { Vector3 } from "./Vector3";
 import { Matrix44 } from "./Matrix44";
 import { ObjectPool } from "../core/ObjectPool";
-export declare type RotationOrder = "YXZ" | "ZYX" | "ZYX" | "XYZ" | "ZXY" | "YZX" | "XZY";
+import { RotationOrder } from "./Types";
 export declare class Quaternion {
     static identity: Quaternion;
     static dummy: Quaternion;

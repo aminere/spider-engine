@@ -11,6 +11,7 @@ export declare class Renderer implements IRenderer {
     readonly canvas: HTMLCanvasElement;
     renderTarget: RenderTarget | null;
     showWireFrame: boolean;
+    showShadowCascades: boolean;
 }
 /**
  * @hidden

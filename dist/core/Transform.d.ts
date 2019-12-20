@@ -12,10 +12,6 @@ export declare namespace TransformInternal {
     const positionKey = "_position";
     const rotationKey = "_rotation";
     const scaleKey = "_scale";
-    const xKey = "_x";
-    const yKey = "_y";
-    const zKey = "_z";
-    const wKey = "_w";
 }
 export declare class Transform extends Component {
     readonly version: number;

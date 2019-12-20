@@ -15,6 +15,7 @@ export declare class AnimationInstance extends SerializableObject {
     playTime: number;
     readonly stopRequested: boolean;
     playCount: number;
+    autoPlayStatus: boolean;
     /**
      * @hidden
      */
@@ -24,6 +25,7 @@ export declare class AnimationInstance extends SerializableObject {
     private _playTime;
     private _stopRequested;
     private _playCount;
+    private _autoPlayStatus?;
     private _animation;
     requestStop(): void;
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;

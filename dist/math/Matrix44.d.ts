@@ -1,6 +1,7 @@
 import { Vector3 } from "./Vector3";
 import { Quaternion } from "./Quaternion";
 import { ObjectPool } from "../core/ObjectPool";
+import { RotationOrder } from "./Types";
 export declare class Matrix44 {
     static identity: Matrix44;
     static dummy: Matrix44;
@@ -12,6 +13,7 @@ export declare class Matrix44 {
     makeOrthoProjection(left: number, right: number, top: number, bottom: number, near: number, far: number): this;
     makePerspectiveProjection(fovRadians: number, aspectRatio: number, zNear: number, zFar: number): this;
     setRotation(q: Quaternion): this;
+    setFromEulerAngles(x: number, y: number, z: number, order?: RotationOrder): this;
     getRotation(outRotation: Quaternion): Quaternion;
     rotate(q: Quaternion): this;
     makeLookAt(forward: Vector3, up: Vector3): this;
@@ -21,7 +23,7 @@ export declare class Matrix44 {
     scale(v: Vector3): this;
     scaleFromCoords(x: number, y: number, z: number): this;
     setPosition(v: Vector3): this;
-    getPosition(out: Vector3): void;
+    getPosition(out: Vector3): Vector3;
     setPositionFromCoords(x: number, y: number, z: number): this;
     translate(v: Vector3): this;
     translateFromCoords(x: number, y: number, z: number): this;

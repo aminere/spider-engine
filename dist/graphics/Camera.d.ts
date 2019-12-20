@@ -7,23 +7,23 @@ import { VisualGroup } from "./VisualGroup";
 import { PostEffects } from "./postfx/PostEffects";
 import { SerializedObject } from "../core/SerializableObject";
 import { Ray } from "../math/Ray";
-import { Frustum } from "./Frustum";
 import { Component } from "../core/Component";
 import { ObjectProps } from "../core/Types";
 import { VisualFilter } from "./VisualFilter";
+import { IFrustum } from "./IFrustum";
 export declare enum CameraClear {
     Environment = 0,
     None = 1
 }
 export declare class Camera extends Component {
     readonly version: number;
-    projector: Projector | undefined;
+    projector: Projector;
     readonly clearValue: CameraClear;
     readonly postEffects: PostEffects | undefined;
     renderTarget: RenderTarget | null;
     readonly priority: number;
     readonly sceneRenderTarget: RenderTarget;
-    readonly frustum: Frustum | null;
+    readonly frustum: IFrustum;
     filter: VisualFilter;
     private _projector;
     private _clearValue;

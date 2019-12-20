@@ -7,6 +7,7 @@ export interface IRenderer {
     readonly canvas: HTMLCanvasElement;
     renderTarget: RenderTarget | null;
     showWireFrame: boolean;
+    showShadowCascades: boolean;
 }
 /**
  * @hidden

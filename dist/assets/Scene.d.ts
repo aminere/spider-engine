@@ -33,7 +33,7 @@ export declare class Scene extends Asset {
      */
     prefabInstances?: PrefabInstances;
     fog: Fog | undefined;
-    readonly environment: Environment | undefined;
+    environment: Environment | undefined;
     private _environment;
     private _fog;
     private _isLoadedCache;
