@@ -36,7 +36,7 @@ import { Transform } from "../core/Transform";
 import { Entity } from "../core/Entity";
 import { Shadow, PCFShadow } from "./lighting/Shadow";
 import { AABB } from "../math/AABB";
-import { GraphicSettings } from "./GraphicSettings";
+import { graphicSettings } from "./GraphicSettings";
 
 interface IRenderPassDefinition {
     begin: (gl: WebGLRenderingContext) => void;
@@ -115,7 +115,7 @@ namespace Private {
         // TODO implement a more rebust method of controlling material render order
         // (for example separate into different buckets based on priority - controls the order but doesn't need uploadState multiple times.)
         const sortedBuckedIds = Array.from(renderPassDefinition.renderStateBucketMap.keys()).sort();
-        const { maxDirectionalLights, maxShadowCascades, shadowCascadeEdges } = GraphicSettings;
+        const { maxDirectionalLights, maxShadowCascades, shadowCascadeEdges } = graphicSettings;
         for (const bucketId of sortedBuckedIds) {
             const renderStateBucket = renderPassDefinition.renderStateBucketMap.get(bucketId) as IRenderStateBucket;
             renderStateBucket.reference.uploadState();
@@ -407,7 +407,7 @@ namespace Private {
 
     export let dummyAABB = new AABB();
     export function renderShadowMaps(camera: Camera) {
-        const { maxDirectionalLights, maxShadowCascades } = GraphicSettings;
+        const { maxDirectionalLights, maxShadowCascades } = graphicSettings;
         const maxDirectionalShadowMaps = maxDirectionalLights * maxShadowCascades;
         Private.directionalShadowMaps.length = maxDirectionalShadowMaps;
 
@@ -674,8 +674,8 @@ export class RendererInternal {
             .filter(light => light.type.isA(DirectionalLight))
             .map(light => ({
                 light,
-                viewMatrices: Array.from(new Array(GraphicSettings.maxShadowCascades)).map(a => Matrix44.fromPool()),
-                projectionMatrices: Array.from(new Array(GraphicSettings.maxShadowCascades)).map(a => Matrix44.fromPool())
+                viewMatrices: Array.from(new Array(graphicSettings.maxShadowCascades)).map(a => Matrix44.fromPool()),
+                projectionMatrices: Array.from(new Array(graphicSettings.maxShadowCascades)).map(a => Matrix44.fromPool())
             }));
 
         // gl.depthMask(true);

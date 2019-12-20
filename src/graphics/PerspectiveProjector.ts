@@ -7,7 +7,7 @@ import { MathEx } from "../math/MathEx";
 import { SerializedObject } from "../core/SerializableObject";
 import { Matrix44 } from "../math/Matrix44";
 import { Frustum } from "./Frustum";
-import { GraphicSettings } from "./GraphicSettings";
+import { graphicSettings } from "./GraphicSettings";
 
 export class PerspectiveProjector extends Projector {
     
@@ -58,10 +58,10 @@ export class PerspectiveProjector extends Projector {
         _update(this._frustum.full, this.zNear, this.zFar);
         
         // frustum splits
-        GraphicSettings.shadowCascadeEdges.forEach((edge, index) => {
+        graphicSettings.shadowCascadeEdges.forEach((edge, index) => {
             _update(
                 this._frustum.splits[index], 
-                this._zNear + (index > 0 ? GraphicSettings.shadowCascadeEdges[index - 1] : 0), 
+                this._zNear + (index > 0 ? graphicSettings.shadowCascadeEdges[index - 1] : 0), 
                 this._zNear + edge
             );
         });

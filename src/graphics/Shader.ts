@@ -12,7 +12,7 @@ import { WebGL } from "./WebGL";
 import { ObjectProps } from "../core/Types";
 import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
 import { ArrayProperty } from "../serialization/ArrayProperty";
-import { GraphicSettings } from "./GraphicSettings";
+import { graphicSettings } from "./GraphicSettings";
 
 namespace Private {
     export const attributeTypeToComponentCount = {
@@ -30,9 +30,9 @@ namespace Private {
     }
 
     export const engineManagedDefinitions = {
-        MAX_DIRECTIONAL_LIGHTS: () => GraphicSettings.maxDirectionalLights,        
-        MAX_DIRECTIONAL_SHADOWMAPS: () => GraphicSettings.maxDirectionalLights * GraphicSettings.maxShadowCascades,
-        MAX_SHADOW_CASCADES: () => GraphicSettings.maxShadowCascades
+        MAX_DIRECTIONAL_LIGHTS: () => graphicSettings.maxDirectionalLights,        
+        MAX_DIRECTIONAL_SHADOWMAPS: () => graphicSettings.maxDirectionalLights * graphicSettings.maxShadowCascades,
+        MAX_SHADOW_CASCADES: () => graphicSettings.maxShadowCascades
     };
 }
 

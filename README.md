@@ -45,7 +45,7 @@ spider.Engine.create({
 }).then(() => {
 
     // Create a simple shader
-    // It is also possible to use a default shader from spider.DefaultAssets
+    // It is also possible to use a default shader from spider.defaultAssets
     const shader = new spider.Shader({
         vertexCode: `                
 attribute vec3 position;

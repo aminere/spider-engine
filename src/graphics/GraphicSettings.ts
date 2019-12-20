@@ -1,5 +1,5 @@
 
-export namespace GraphicSettings {
+export namespace graphicSettings {
     export const maxDirectionalLights = 4;
     export const maxShadowCascades = 3;
     export const maxShadowDistance = 100;

@@ -6,7 +6,7 @@ import * as Attributes from "../core/Attributes";
 import { Frustum } from "./Frustum";
 import { VoidSyncEvent } from "ts-events";
 import { IFrustum } from "./IFrustum";
-import { GraphicSettings } from "./GraphicSettings";
+import { graphicSettings } from "./GraphicSettings";
 
 export class Projector extends SerializableObject {
     
@@ -23,7 +23,7 @@ export class Projector extends SerializableObject {
     @Attributes.unserializable()
     protected _frustum: IFrustum = {
         full: new Frustum(),
-        splits: Array.from(new Array(GraphicSettings.maxShadowCascades)).map(f => new Frustum())
+        splits: Array.from(new Array(graphicSettings.maxShadowCascades)).map(f => new Frustum())
     };
 
     getProjectionMatrix() { 

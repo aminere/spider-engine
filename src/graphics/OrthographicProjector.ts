@@ -4,7 +4,7 @@ import { Projector } from "./Projector";
 import { Transform } from "../core/Transform";
 import { SerializedObject } from "../core/SerializableObject";
 import { Matrix44 } from "../math/Matrix44";
-import { GraphicSettings } from "./GraphicSettings";
+import { graphicSettings } from "./GraphicSettings";
 
 export class OrthographicProjector extends Projector {    
     
@@ -50,13 +50,13 @@ export class OrthographicProjector extends Projector {
         this._frustum.full.update(w, h, w, h, this._zNear, this._zFar, transform);
 
         // frustum splits        
-        GraphicSettings.shadowCascadeEdges.forEach((edge, index) => {
+        graphicSettings.shadowCascadeEdges.forEach((edge, index) => {
             this._frustum.splits[index].update(
                 w, 
                 h, 
                 w, 
                 h, 
-                this._zNear + (index > 0 ? GraphicSettings.shadowCascadeEdges[index - 1] : 0), 
+                this._zNear + (index > 0 ? graphicSettings.shadowCascadeEdges[index - 1] : 0), 
                 this._zNear + edge, 
                 transform
             );
