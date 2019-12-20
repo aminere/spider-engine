@@ -1,12 +1,10 @@
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
   
   <!-- Licensed under the Apache 2.0 License -->
   <link rel="stylesheet" type="text/css" href="../_static/fonts/open-sans/stylesheet.css" />
@@ -140,8 +138,8 @@
 <p>Rotates in degrees around the Pivot. Examples with a <strong>45 degrees</strong> rotation:</p>
 <img alt="../_images/rotation.png" src="../_images/rotation.png" />
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although Rotation is a 3 dimensional Vector, the <strong>Z component</strong> is what you typically need to rotate 2D elements</p>
+<p class="admonition-title">Note</p>
+<p>Although Rotation is a 3 dimensional Vector, the <strong>Z component</strong> is what you typically need to rotate 2D elements</p>
 </div>
 </div>
 <div class="section" id="scaling">
@@ -156,26 +154,26 @@
 <h3>Horizontal Alignment<a class="headerlink" href="#horizontal-alignment" title="Permalink to this headline">¶</a></h3>
 <p>Horizontally aligns an element relative to its parent, using the Pivot’s X component as an anchor.</p>
 <ul>
-<li><p class="first"><strong>Left Alignment</strong></p>
+<li><p><strong>Left Alignment</strong></p>
 <blockquote>
 <div><img alt="../_images/horizontal_align_left.png" src="../_images/horizontal_align_left.png" />
 </div></blockquote>
 </li>
-<li><p class="first"><strong>Center Alignment</strong></p>
+<li><p><strong>Center Alignment</strong></p>
 <blockquote>
 <div><img alt="../_images/horizontal_align_center.png" src="../_images/horizontal_align_center.png" />
 </div></blockquote>
 </li>
-<li><p class="first"><strong>Right Alignment</strong></p>
+<li><p><strong>Right Alignment</strong></p>
 <blockquote>
-<div><div class="figure">
+<div><div class="figure align-default">
 <img alt="../_images/horizontal_align_right.png" src="../_images/horizontal_align_right.png" />
 </div>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>Stretch Mode</strong>: The element stretches horizontally to fit the parent. The Pivot’s X component is ignored in this case.</p>
+<li><p><strong>Stretch Mode</strong>: The element stretches horizontally to fit the parent. The Pivot’s X component is ignored in this case.</p>
 <blockquote>
-<div><div class="figure">
+<div><div class="figure align-default">
 <img alt="../_images/horizontal_align_stretch.png" src="../_images/horizontal_align_stretch.png" />
 </div>
 </div></blockquote>
@@ -186,26 +184,26 @@
 <h3>Vertical Alignment<a class="headerlink" href="#vertical-alignment" title="Permalink to this headline">¶</a></h3>
 <p>Vertically  aligns an elements relative to its parent, using the Pivot’s Y component as an anchor.</p>
 <ul>
-<li><p class="first"><strong>Top Alignment</strong></p>
+<li><p><strong>Top Alignment</strong></p>
 <blockquote>
 <div><img alt="../_images/vertical_align_top.png" src="../_images/vertical_align_top.png" />
 </div></blockquote>
 </li>
-<li><p class="first"><strong>Center Alignment</strong></p>
+<li><p><strong>Center Alignment</strong></p>
 <blockquote>
 <div><img alt="../_images/vertical_align_center.png" src="../_images/vertical_align_center.png" />
 </div></blockquote>
 </li>
-<li><p class="first"><strong>Bottom Alignment</strong></p>
+<li><p><strong>Bottom Alignment</strong></p>
 <blockquote>
-<div><div class="figure">
+<div><div class="figure align-default">
 <img alt="../_images/vertical_align_bottom.png" src="../_images/vertical_align_bottom.png" />
 </div>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>Stretch Mode</strong>: The element stretches vertically to fit the parent. The Pivot’s Y component is ignored in this case.</p>
+<li><p><strong>Stretch Mode</strong>: The element stretches vertically to fit the parent. The Pivot’s Y component is ignored in this case.</p>
 <blockquote>
-<div><div class="figure">
+<div><div class="figure align-default">
 <img alt="../_images/vertical_align_stretch.png" src="../_images/vertical_align_stretch.png" />
 </div>
 </div></blockquote>
@@ -215,17 +213,17 @@
 <div class="section" id="width">
 <h3>Width<a class="headerlink" href="#width" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><strong>Auto</strong>: The width is determined based on the content of the element. This is typically the width of the main texture used by the element.</li>
-<li><strong>Relative</strong>: The width is a percentage, relative to the parent Element.</li>
-<li><strong>Absolute</strong>: The width is in pixels, in virtual Screen space.</li>
+<li><p><strong>Auto</strong>: The width is determined based on the content of the element. This is typically the width of the main texture used by the element.</p></li>
+<li><p><strong>Relative</strong>: The width is a percentage, relative to the parent Element.</p></li>
+<li><p><strong>Absolute</strong>: The width is in pixels, in virtual Screen space.</p></li>
 </ul>
 </div>
 <div class="section" id="height">
 <h3>Height<a class="headerlink" href="#height" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><strong>Auto</strong>: The height is determined based on the content of the element. This is typically the height of the main texture used by the element.</li>
-<li><strong>Relative</strong>: The height is a percentage, relative to the parent Element.</li>
-<li><strong>Absolute</strong>: The height is in pixels, in virtual Screen space.</li>
+<li><p><strong>Auto</strong>: The height is determined based on the content of the element. This is typically the height of the main texture used by the element.</p></li>
+<li><p><strong>Relative</strong>: The height is a percentage, relative to the parent Element.</p></li>
+<li><p><strong>Absolute</strong>: The height is in pixels, in virtual Screen space.</p></li>
 </ul>
 </div>
 <div class="section" id="margin">

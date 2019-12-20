@@ -1,12 +1,10 @@
 
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
   
   <!-- Licensed under the Apache 2.0 License -->
   <link rel="stylesheet" type="text/css" href="_static/fonts/open-sans/stylesheet.css" />
@@ -130,8 +128,8 @@
 <h3>Adding Functionality<a class="headerlink" href="#adding-functionality" title="Permalink to this headline">¶</a></h3>
 <p>You can add functionality to an Entity by adding components to it.</p>
 <ul class="simple">
-<li>Select the Entity in the <a class="reference internal" href="editor.html#scene-view"><span class="std std-ref">Scene View</span></a> or the <a class="reference internal" href="editor.html#preview-area"><span class="std std-ref">Preview Area</span></a></li>
-<li>Click on Add Component <img alt="add_component" src="_images/add_component.png" /> in the <a class="reference internal" href="editor.html#properties-view"><span class="std std-ref">Properties View</span></a></li>
+<li><p>Select the Entity in the <a class="reference internal" href="editor.html#scene-view"><span class="std std-ref">Scene View</span></a> or the <a class="reference internal" href="editor.html#preview-area"><span class="std std-ref">Preview Area</span></a></p></li>
+<li><p>Click on Add Component <img alt="add_component" src="_images/add_component.png" /> in the <a class="reference internal" href="editor.html#properties-view"><span class="std std-ref">Properties View</span></a></p></li>
 </ul>
 </div>
 </div>
@@ -143,22 +141,24 @@
 <p>All the data describing your Entity will be moved from the Scene to the Prefab.</p>
 <p>When an Entity is linked to a Prefab, the Editor shows a Prefab icon next to it:</p>
 <blockquote>
-<div><img alt="prefab_instance" src="_images/prefab_instance.png" /></div></blockquote>
+<div><p><img alt="prefab_instance" src="_images/prefab_instance.png" /></p>
+</div></blockquote>
 <div class="section" id="overriding">
 <h3>Overriding<a class="headerlink" href="#overriding" title="Permalink to this headline">¶</a></h3>
 <p>It’s possible to override Prefab information on a per Entity basis.</p>
 <p>To do so, simply modify the Entity as you would normally.</p>
 <p>When an Entity linked to a Prefab is overriden, the Editor shows a different Prefab icon next to it:</p>
 <blockquote>
-<div><img alt="prefab_instance_overriden" src="_images/prefab_instance_overriden.png" /></div></blockquote>
+<div><p><img alt="prefab_instance_overriden" src="_images/prefab_instance_overriden.png" /></p>
+</div></blockquote>
 <p>If you change your mind, you can reset the Entity to its Prefab state, by right-clicking and selecting <strong>Revert to Prefab</strong>.</p>
 </div>
 <div class="section" id="updating-a-prefab">
 <h3>Updating a Prefab<a class="headerlink" href="#updating-a-prefab" title="Permalink to this headline">¶</a></h3>
 <p>You can apply all changes from an Entity back to its prefab by right-clicking and selecting <strong>Apply to Prefab</strong>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This will affect all Entity instances using the same Prefab. Don’t worry though, Prefab overrides in other Entity instances won’t be lost.</p>
+<p class="admonition-title">Note</p>
+<p>This will affect all Entity instances using the same Prefab. Don’t worry though, Prefab overrides in other Entity instances won’t be lost.</p>
 </div>
 </div>
 <div class="section" id="detaching-from-a-prefab">
@@ -172,8 +172,8 @@
 <p>A Scene is a hierarchy of entities. Only one scene can be open at a time.</p>
 <p>You can load and switch scenes using <a class="reference internal" href="behavior.html#behaviors"><span class="std std-ref">Behaviors</span></a></p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">After a scene switch is completed, the previous scene is unloaded from memory.</p>
+<p class="admonition-title">Note</p>
+<p>After a scene switch is completed, the previous scene is unloaded from memory.</p>
 </div>
 </div>
 </div>
