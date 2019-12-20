@@ -65,8 +65,12 @@ export namespace EntityInternal {
     // tslint:disable-next-line
     export function setComponentFromInstance(entity: any, instance: Component) {
         const typeName = instance.constructor.name;
-        clearComponent(entity, typeName);
-        entity._components[instance.constructor.name] = instance;
+        const previous = entity._components[typeName];
+        if (previous) {
+            instance.onReplace(previous);
+            previous.destroy();
+        }
+        entity._components[typeName] = instance;
         instance.setEntity(entity);
     }
 

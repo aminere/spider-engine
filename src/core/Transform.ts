@@ -250,6 +250,10 @@ export class Transform extends Component {
         this.dirtifyWorldMatrix();
     }
 
+    onReplace(previous: Transform) {
+        this.changed = previous.changed;
+    }
+
     private attachToPosition() {
         Object.defineProperty(this._position, "x", {
             set: value => { this._position[Vector3Internal.xKey] = value; this.dirtifyWorldMatrix(); },

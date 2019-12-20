@@ -42,4 +42,7 @@ export class Component extends SerializableObject {
         const fresh = IFactoryInternal.instance.createObject(typeName) as Component;
         EntityInternal.setComponentFromInstance(this.entity, fresh);
     }
+
+    onReplace(previous: Component) {
+    }
 }
