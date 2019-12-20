@@ -20,6 +20,7 @@ export * from "./assets/DefaultAssets";
 export * from "./graphics/Camera";
 export * from "./graphics/Visual";
 export * from "./graphics/lighting/Light";
+export * from "./graphics/lighting/DirectionalLight";
 export * from "./graphics/Particles";
 export { Material } from "./graphics/Material";
 export { Shader } from "./graphics/Shader";
