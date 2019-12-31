@@ -119,7 +119,7 @@ export class Shader extends GraphicAsset {
         }
 
         // Apply shader params
-        for (const param in materialParams) {
+        for (const param of Object.keys(materialParams)) {
             this.applyParam(param, materialParams[param]);
         }
 
@@ -330,7 +330,7 @@ export class Shader extends GraphicAsset {
         if (!instance.params) {
             instance.params = this.extractUniforms(vertexCode, fragmentCode);
         }
-        for (const param in instance.params) {
+        for (const param of Object.keys(instance.params)) {
             const location = gl.getUniformLocation(program, param);
             instance.params[param].uniformLocation = location;
             // console.assert(location !== null, `getUniformLocation(${param}) failed in shader '${this.templatePath}'`);
@@ -339,7 +339,7 @@ export class Shader extends GraphicAsset {
         if (!instance.attributes) {
             instance.attributes = this.extractAttributes(vertexCode);
         }        
-        for (const attribute in instance.attributes) {
+        for (const attribute of Object.keys(instance.attributes)) {
             const location = gl.getAttribLocation(program, attribute);
             instance.attributes[attribute].location = location;
             // console.assert(location !== null, `getAttribLocation(${attribute}) failed in shader '${this.templatePath}'`);
