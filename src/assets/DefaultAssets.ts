@@ -141,6 +141,8 @@ namespace Private {
             get: () => defaultAssets.transitionScene
         }        
     ];
+
+    export let isLoaded = false;
 }
 
 /**
@@ -159,11 +161,21 @@ export namespace DefaultAssetsInternal {
     }
 
     export function isLoaded() {
+        if (Private.isLoaded) {
+            return true;
+        }
+
         for (const a of Private.definitions) {
             if (!a.get().isLoaded()) {
                 return false;
             }
         }
-        return EngineHud.isLoaded();
+
+        if (!EngineHud.isLoaded()) {
+            return false;
+        }
+
+        Private.isLoaded = true;
+        return true;
     }
 }

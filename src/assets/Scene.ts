@@ -13,11 +13,10 @@ import * as Attributes from "../core/Attributes";
 import { Reference, SerializedReference } from "../serialization/Reference";
 import { Environment, ColorEnvironment } from "../graphics/Environment";
 import { Fog } from "../graphics/Fog";
-import { Shader } from "../graphics/Shader";
 import { SerializedObject } from "../core/SerializableObject";
 import { Component } from "../core/Component";
 import { IObjectManagerInternal } from "../core/IObjectManager";
-import { EngineUtils } from "../core/EngineUtils";
+import { Shader } from "../graphics/Shader";
 
 /**
  * @hidden
@@ -87,7 +86,7 @@ export class Scene extends Asset {
     private _fog: Reference<Fog>;
 
     @Attributes.unserializable()
-    private _isLoadedCache = false;
+    private _isLoaded = false;
 
     constructor() {
         super();
@@ -98,14 +97,16 @@ export class Scene extends Asset {
     }
 
     isLoaded() {
-        if (this._isLoadedCache) {
-            return this._isLoadedCache;
+        if (this._isLoaded) {
+            return true;
         }
-        const isLoaded = this.root.isLoaded();
-        if (isLoaded) {
-            this._isLoadedCache = true;
+
+        if (!this.root.isLoaded()) {
+            return false;
         }
-        return isLoaded;
+
+        this._isLoaded = true;
+        return true;
     }    
     
     serialize(): SerializedScene {
