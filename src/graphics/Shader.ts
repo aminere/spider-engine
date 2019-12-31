@@ -75,10 +75,12 @@ export class Shader extends GraphicAsset {
     set vertexCode(vertexCode: string) {
         this._vertexCode = vertexCode;
         this.invalidateProgram();
+        this.tryExtractUniforms();
     }    
     set fragmentCode(fragmentCode: string) {
         this._fragmentCode = fragmentCode;
         this.invalidateProgram();
+        this.tryExtractUniforms();
     }
 
     @Attributes.hidden()
@@ -117,7 +119,7 @@ export class Shader extends GraphicAsset {
         }
 
         // Apply shader params
-        for (const param of Object.keys(materialParams)) {
+        for (const param in materialParams) {
             this.applyParam(param, materialParams[param]);
         }
 
@@ -256,20 +258,20 @@ export class Shader extends GraphicAsset {
     }
     
     graphicUnload() {
-        for (const bucketId of Object.keys(this._instances)) {
-            const instance = this._instances[bucketId];
-            const program = instance.program;
-            if (program) {
-                const gl = WebGL.context;
-                gl.deleteShader(instance.vertexShader);
-                gl.deleteShader(instance.fragmentShader);
-                gl.deleteProgram(program);
-                instance.vertexShader = null;
-                instance.fragmentShader = null;
-                instance.program = null;
-                instance.params = null;
-                instance.attributes = null;
+        for (const instance of Object.values(this._instances)) {
+            const { program } = instance;
+            if (!program) {
+                continue;
             }
+            const gl = WebGL.context;
+            gl.deleteShader(instance.vertexShader);
+            gl.deleteShader(instance.fragmentShader);
+            gl.deleteProgram(program);
+            instance.vertexShader = null;
+            instance.fragmentShader = null;
+            instance.program = null;
+            instance.params = null;
+            instance.attributes = null;
         }
     }
     
@@ -277,9 +279,6 @@ export class Shader extends GraphicAsset {
         this._executedOnce = false;
         this._shaderError = false;
         this.graphicUnload();
-        if (this._vertexCode && this._fragmentCode) {
-            this._instances[0].params = this.extractUniforms(this._vertexCode, this._fragmentCode);
-        }
     }
     
     getAttributes(bucketId?: string) {
@@ -331,14 +330,16 @@ export class Shader extends GraphicAsset {
         if (!instance.params) {
             instance.params = this.extractUniforms(vertexCode, fragmentCode);
         }
-        for (const param of Object.keys(instance.params)) {
+        for (const param in instance.params) {
             const location = gl.getUniformLocation(program, param);
             instance.params[param].uniformLocation = location;
             // console.assert(location !== null, `getUniformLocation(${param}) failed in shader '${this.templatePath}'`);
         }
 
-        instance.attributes = this.extractAttributes(vertexCode);
-        for (const attribute of Object.keys(instance.attributes)) {
+        if (!instance.attributes) {
+            instance.attributes = this.extractAttributes(vertexCode);
+        }        
+        for (const attribute in instance.attributes) {
             const location = gl.getAttribLocation(program, attribute);
             instance.attributes[attribute].location = location;
             // console.assert(location !== null, `getAttribLocation(${attribute}) failed in shader '${this.templatePath}'`);
@@ -499,5 +500,11 @@ export class Shader extends GraphicAsset {
             }
         }
         return currentTextureStage;
+    }
+
+    private tryExtractUniforms() {
+        if (this._vertexCode && this._fragmentCode) {
+            this._instances[0].params = this.extractUniforms(this._vertexCode, this._fragmentCode);
+        }
     }
 }
