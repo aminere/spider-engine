@@ -142,7 +142,9 @@ namespace Private {
                         shader.applyParam("directionalLightCount", numDirectionalLights, visualBucketId);
                         if (hasShadows) {
                             shader.applyNumberArrayParam("shadowCascadeEdges", shadowCascadeEdges, visualBucketId);
+                            shader.applyReferenceArrayParam("directionalShadowMaps", Private.directionalShadowMaps, visualBucketId);
                         }
+
                         for (let i = 0; i < numDirectionalLights; ++i) {
                             const { light, projectionMatrices, viewMatrices } = Private.directionalLights[i];
                             if (hasShadows) {
@@ -152,8 +154,7 @@ namespace Private {
                                         viewMatrices[j]
                                     );
                                     shader.applyParam(`directionalLightMatrices[${i * maxShadowCascades + j}]`, lightMatrix, visualBucketId);
-                                }
-                                shader.applyReferenceArrayParam("directionalShadowMaps", Private.directionalShadowMaps, visualBucketId);
+                                }                                
                             }
                             const lightDir = Vector3.fromPool()
                                 .copy(light.entity.transform.worldForward)
@@ -174,8 +175,7 @@ namespace Private {
                             } else {
                                 shader.applyParam(`directionalLights[${i}].shadow`, false, visualBucketId);
                             }
-
-                            shader.applyParam(`directionalLights[${i}].shadowBias`, light.shadowBias, visualBucketId);
+                            
                             shader.applyParam(`directionalLights[${i}].intensity`, light.intensity, visualBucketId);
                         }
                     } else {
@@ -418,9 +418,6 @@ namespace Private {
         context.enable(context.DEPTH_TEST);
         context.disable(context.BLEND);
         context.depthMask(true);
-        // render back faces to avoid self-shadowing artifacts
-        context.enable(context.CULL_FACE);
-        context.cullFace(context.FRONT);
 
         // Directional shadow maps
         const numDirectionalLights = Math.min(Private.directionalLights.length, maxDirectionalLights);

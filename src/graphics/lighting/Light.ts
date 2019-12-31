@@ -24,9 +24,6 @@ export class Light extends Component {
     intensity = 1;
     color = new Color(1, 1, 1, 1);
 
-    @Attributes.hidden()
-    shadowBias = .00005;
-
     @Attributes.enumLiterals(
         TextureSizePow2, 
         name => name.substring(1) // Trim the _ from the display name

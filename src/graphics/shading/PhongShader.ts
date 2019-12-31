@@ -39,7 +39,6 @@ export class PhongShader extends Shader {
                 [`directionalLights[${i}].color`]: { type: "vec4", uniformLocation: null },
                 [`directionalLights[${i}].shadow`]: { type: "bool", uniformLocation: null },
                 [`directionalLights[${i}].shadowType`]: { type: "int", uniformLocation: null },
-                [`directionalLights[${i}].shadowBias`]: { type: "float", uniformLocation: null },
                 [`directionalLights[${i}].shadowRadius`]: { type: "float", uniformLocation: null },
                 [`directionalLights[${i}].intensity`]: { type: "float", uniformLocation: null }
             } as { [name: string]: ShaderParam };
