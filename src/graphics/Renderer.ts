@@ -204,9 +204,22 @@ namespace Private {
                                 vertexBuffer.updateBufferDatas(gl);
                             }
                             const worldMatrix = renderPassDefinition.makeWorldMatrix(visual.worldTransform);
-                            const modelViewMatrix = visual.isSkinned
-                                ? viewMatrix
-                                : Private.dummyMatrix.multiplyMatrices(viewMatrix, worldMatrix);
+
+                            let modelViewMatrix: Matrix44;
+                            if (visual.isSkinned) {
+                                modelViewMatrix = viewMatrix;
+                                const skinnedMesh = (visual.geometry as SkinnedMesh);
+                                // This is done because skin matrices are guaranteed to be up-to-date if 
+                                // this visual was rendered to a shadow map in the current frame - so no need to update it twice.
+                                // TODO find a better way to do this
+                                if (!visual.castShadows) {
+                                    skinnedMesh.updateMatrices();
+                                }
+                                skinnedMesh.updateShader(shader, visualBucketId);
+                            } else {
+                                modelViewMatrix = Private.dummyMatrix.multiplyMatrices(viewMatrix, worldMatrix);
+                            }
+
                             Private.normalMatrix.getNormalMatrix(modelViewMatrix);
                             shader.applyParam("worldMatrix", worldMatrix, visualBucketId);
                             shader.applyParam("modelViewMatrix", modelViewMatrix, visualBucketId);
@@ -466,10 +479,9 @@ namespace Private {
                     vertexBuffer.begin(context, currentShader);
                     for (const visual of visuals) {
                         if (hasSkinning) {
-                            const skinnedMesh = visual.geometry as SkinnedMesh;
-                            if (!skinnedMesh.boneTexture) {
-                                continue;
-                            }
+                            const skinnedMesh = visual.geometry as SkinnedMesh;                            
+                            skinnedMesh.updateMatrices();
+                            skinnedMesh.updateShader(currentShader, visual.bucketId);
                             currentShader.applyParam("bindMatrix", skinnedMesh.bindMatrix);
                             currentShader.applyParam("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
                             if (WebGL.extensions.OES_texture_float) {
