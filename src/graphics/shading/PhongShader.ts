@@ -12,6 +12,8 @@ import { graphicSettings } from "../GraphicSettings";
 export namespace PhongShaderInternal {
     export const diffuseKey = "diffuse";
     export const diffuseMapKey = "diffuseMap";
+    export const ambientKey = "ambient";
+    export const emissiveKey = "emissive";
 }
 
 @Attributes.displayName("Phong Shader")

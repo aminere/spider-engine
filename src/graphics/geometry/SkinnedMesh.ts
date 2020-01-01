@@ -73,9 +73,36 @@ export class SkinnedMesh extends StaticMesh {
             this._vb.unload(WebGL.context);
         }
         super.destroy();
-    }    
+    }
 
-    initMatrices() {
+    updateMatrices() {
+        if (!this._boneMatrices) {
+            this.initMatrices();
+        }
+
+        const { offsetMatrix } = Private;
+        for (let i = 0; i < this._bones.length; ++i) {
+            // compute the offset between the current and the original transform
+            const matrix = this._bones[i] ? this._bones[i].transform.worldMatrix : Matrix44.identity;
+            offsetMatrix.multiplyMatrices(matrix, this._boneInverses[i]);
+            offsetMatrix.toArray(this._boneMatrices, i * 16);
+        }
+    }
+
+    updateShader(shader: Shader, bucketId: string) {
+        if (WebGL.extensions.OES_texture_float) {
+            this._boneTexture.dirtify();
+            shader.applyReferenceParam("boneTexture", this._boneTexture, bucketId);
+            shader.applyParam("boneTextureSize", this._boneTextureSize, bucketId);
+        } else {
+            shader.applyParam("boneMatrices", this._boneMatrices);
+        }
+
+        shader.applyParam("bindMatrix", this._bindMatrix, bucketId);
+        shader.applyParam("bindMatrixInverse", this._bindMatrixInverse, bucketId);
+    }
+
+    private initMatrices() {
         const entity = this._skeleton.entity as Entity;
         // TODO handle the case where the texture is not supported
         this._bones = [];
@@ -112,32 +139,5 @@ export class SkinnedMesh extends StaticMesh {
             this._boneTexture = new MemoryTexture(this._boneMatrices, size, size, gl.RGBA, gl.FLOAT);
             this._boneTextureSize = size;
         }
-    }
-
-    updateMatrices() {
-        if (!this._boneMatrices) {
-            this.initMatrices();
-        }
-
-        const { offsetMatrix } = Private;
-        for (let i = 0; i < this._bones.length; ++i) {
-            // compute the offset between the current and the original transform
-            const matrix = this._bones[i] ? this._bones[i].transform.worldMatrix : Matrix44.identity;
-            offsetMatrix.multiplyMatrices(matrix, this._boneInverses[i]);
-            offsetMatrix.toArray(this._boneMatrices, i * 16);
-        }
-    }
-
-    updateShader(shader: Shader, bucketId: string) {
-        if (WebGL.extensions.OES_texture_float) {
-            this._boneTexture.dirtify();
-            shader.applyReferenceParam("boneTexture", this._boneTexture, bucketId);
-            shader.applyParam("boneTextureSize", this._boneTextureSize, bucketId);
-        } else {
-            shader.applyParam("boneMatrices", this._boneMatrices);
-        }
-
-        shader.applyParam("bindMatrix", this._bindMatrix, bucketId);
-        shader.applyParam("bindMatrixInverse", this._bindMatrixInverse, bucketId);
     }
 }
