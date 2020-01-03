@@ -191,7 +191,9 @@ export class Particles extends Component {
     initialSize = new Range(1, 2);
     initialColor = new Color(1, 1, 1, 1);
 
+    @Attributes.nullable(false)
     private _volume = new Reference(Volume);
+    @Attributes.nullable(false)
     private _shape = new Reference(ParticleShape);
     private _speedOverLife = new ArrayProperty(ParticleNumberOverLife);
     private _sizeOverLife = new ArrayProperty(ParticleNumberOverLife);
