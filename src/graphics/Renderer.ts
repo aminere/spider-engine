@@ -108,14 +108,15 @@ namespace Private {
         if (renderPassDefinition.renderStateBucketMap.size === 0) {
             return;
         }
-        const hasDirectionalLights = Private.directionalLights.length > 0;
+        const { maxDirectionalLights, maxShadowCascades, shadowCascadeEdges } = graphicSettings;
+        const numDirectionalLights = Math.min(maxDirectionalLights, directionalLights.length);
         const fog = ScenesInternal.list()[0].fog;
         renderPassDefinition.begin(gl);
         // this ensure materials with additive blending mode are rendered last
+        // Because BlendingModes.Additive > BlendingModes.Linear
         // TODO implement a more rebust method of controlling material render order
         // (for example separate into different buckets based on priority - controls the order but doesn't need uploadState multiple times.)
         const sortedBuckedIds = Array.from(renderPassDefinition.renderStateBucketMap.keys()).sort();
-        const { maxDirectionalLights, maxShadowCascades, shadowCascadeEdges } = graphicSettings;
         for (const bucketId of sortedBuckedIds) {
             const renderStateBucket = renderPassDefinition.renderStateBucketMap.get(bucketId) as IRenderStateBucket;
             renderStateBucket.reference.uploadState();
@@ -136,32 +137,33 @@ namespace Private {
                     shader.applyParam("viewMatrix", viewMatrix, visualBucketId);
 
                     // lighting & shadowing
-                    if (hasDirectionalLights) {
-                        const hasShadows = visualBucket.reference.receiveShadows;
-                        const numDirectionalLights = Math.min(maxDirectionalLights, directionalLights.length);
+                    if (numDirectionalLights > 0) {
+                        const { receiveShadows } = visualBucket.reference;
                         shader.applyParam("directionalLightCount", numDirectionalLights, visualBucketId);
-                        if (hasShadows) {
+                        if (receiveShadows) {
                             shader.applyNumberArrayParam("shadowCascadeEdges", shadowCascadeEdges, visualBucketId);
-                            shader.applyReferenceArrayParam("directionalShadowMaps", Private.directionalShadowMaps, visualBucketId);
+                            shader.applyReferenceArrayParam("directionalShadowMaps", directionalShadowMaps, visualBucketId);
                         }
 
+                        const lightDir = Vector3.fromPool();
                         for (let i = 0; i < numDirectionalLights; ++i) {
-                            const { light, projectionMatrices, viewMatrices } = Private.directionalLights[i];
+                            const { light } = directionalLights[i];
+                            lightDir.copy(light.entity.transform.worldForward).transformDirection(viewMatrix);
+                            shader.applyParam(`directionalLights[${i}].direction`, lightDir, visualBucketId);
+                            shader.applyParam(`directionalLights[${i}].color`, light.color, visualBucketId);
+                            shader.applyParam(`directionalLights[${i}].intensity`, light.intensity, visualBucketId);
+
+                            const hasShadows = receiveShadows && light.castShadows;
                             if (hasShadows) {
+                                const { projectionMatrices, viewMatrices } = directionalLights[i];
                                 for (let j = 0; j < maxShadowCascades; ++j) {
-                                    const lightMatrix = Private.dummyMatrix.multiplyMatrices(
+                                    const lightMatrix = dummyMatrix.multiplyMatrices(
                                         projectionMatrices[j],
                                         viewMatrices[j]
                                     );
                                     shader.applyParam(`directionalLightMatrices[${i * maxShadowCascades + j}]`, lightMatrix, visualBucketId);
-                                }                                
-                            }
-                            const lightDir = Vector3.fromPool()
-                                .copy(light.entity.transform.worldForward)
-                                .transformDirection(viewMatrix);
-                            shader.applyParam(`directionalLights[${i}].direction`, lightDir, visualBucketId);
-                            shader.applyParam(`directionalLights[${i}].color`, light.color, visualBucketId);
-                            if (light.castShadows) {
+                                }
+
                                 const shadow = light.shadow as Shadow;
                                 shader.applyParam(`directionalLights[${i}].shadow`, true, visualBucketId);
                                 shader.applyParam(`directionalLights[${i}].shadowType`, shadow.getTypeIndex(), visualBucketId);
@@ -175,8 +177,6 @@ namespace Private {
                             } else {
                                 shader.applyParam(`directionalLights[${i}].shadow`, false, visualBucketId);
                             }
-                            
-                            shader.applyParam(`directionalLights[${i}].intensity`, light.intensity, visualBucketId);
                         }
                     } else {
                         shader.applyParam("directionalLightCount", 0, visualBucketId);
