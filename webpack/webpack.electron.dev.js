@@ -43,7 +43,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"]
+    extensions: [".ts", ".js"]
   },
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
