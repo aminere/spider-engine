@@ -1,10 +1,7 @@
 
 import { AsyncEvent } from "ts-events";
 import { IOUtils, AssetChangeAction } from "../io/IOUtils";
-import { AsyncUtils } from "../core/AsyncUtils";
 import { IFileInternal } from "../io/File/IFile";
-import { FolderInternal, Folder } from "../io/Folder";
-import { FoldersInternal } from "../io/Folders";
 import { EngineError } from "../core/EngineError";
 
 interface IdToPath {
@@ -14,7 +11,6 @@ interface IdToPath {
 namespace Private {
     export let idDatabase: IdToPath = {};
     export let defaultAssetIds: IdToPath = {};
-    export let externalsIdDatabase: { [externalName: string]: IdToPath } = {};
 }
 
 /**
@@ -50,26 +46,6 @@ export class AssetIdDatabaseInternal {
     static reload() {
         Private.idDatabase = { ...Private.defaultAssetIds };
         return AssetIdDatabaseInternal.load();
-    }
-
-    static getPath(id: string) {
-        let path = Private.idDatabase[id];
-        if (path) {
-            return path;
-        }
-
-        if (process.env.CONFIG === "editor") {
-            // look into externals                
-            for (const external of Object.keys(Private.externalsIdDatabase)) {
-                const externalIds = Private.externalsIdDatabase[external];
-                path = externalIds[id];
-                if (path) {
-                    return path;
-                }
-            }
-        }
-
-        return null;
     }
 
     static setPath(id: string, path: string) {
@@ -120,43 +96,10 @@ export class AssetIdDatabaseInternal {
             });
         }
     }
-
-    static loadExternalIds() {
-        Private.externalsIdDatabase = {};
-        const externals = FoldersInternal.folders.externals.folders.data;
-        return new Promise<void>(resolve => {
-            AsyncUtils.processBatch(
-                externals,
-                (external, success) => {
-                    AssetIdDatabaseInternal.addExternalIdDatabase(
-                        external.name,
-                        FolderInternal.getFolderPath(external)
-                    ).then(success);
-                },
-                () => resolve()
-            );
-        });
-    }
-
-    static addExternalIdDatabase(name: string, path: string) {
-        return new Promise(resolve => {
-            IFileInternal.instance.read(`${path}/${AssetIdDatabaseInternal.path}`)
-                .then(data => {
-                    const extenalIds = JSON.parse(data);
-                    Private.externalsIdDatabase[name] = extenalIds;
-                    resolve();
-                })
-                .catch(resolve);
-        });
-    }
-
-    static deleteExternalIds(external: string) {
-        delete Private.externalsIdDatabase[external];
-    }
 }
 
 export class AssetIdDatabase {    
-    static getPath(id: string) {
-        return AssetIdDatabaseInternal.getPath(id);
+    static getPath = (id: string): string | undefined => {
+        return Private.idDatabase[id];
     }
 }

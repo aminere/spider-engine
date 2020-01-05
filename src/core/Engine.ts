@@ -34,7 +34,6 @@ import { ScenesInternal, Scenes } from "./Scenes";
 import { EntityUtilsInternal } from "./EntityUtils";
 import { SerializableObject } from "./SerializableObject";
 import { Input, InputInternal } from "../input/Input";
-import { FoldersInternal } from "../io/Folders";
 import { SavedDataInternal } from "../io/SavedData";
 import { IObjectManagerInternal } from "./IObjectManager";
 import { EngineError } from "./EngineError";
@@ -455,8 +454,6 @@ export class Engine {
         if (process.env.CONFIG === "editor") {            
             return Private.createFileInterface()
                 .then(() => tryInitializeWithCanvas())
-                .then(() => FoldersInternal.load())
-                .then(() => AssetIdDatabaseInternal.loadExternalIds())
                 .then(() => SavedDataInternal.preload())
                 .then(() => {
                     Private.engineActive = true;
