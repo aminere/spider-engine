@@ -41,8 +41,8 @@ export class StaticCubemap extends GraphicAsset {
                 this.initConfigIfNecessary();
                 let info = this._config.find(c => c.id === name);
                 if (info) {
-                    textureToReload.loadTextureData(() => {
-                        let gl = WebGL.context;
+                    textureToReload.loadTextureData().then(() => {
+                        const gl = WebGL.context;
                         gl.activeTexture(gl.TEXTURE0);
                         gl.bindTexture(gl.TEXTURE_CUBE_MAP, this._textureId);
                         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
@@ -54,7 +54,7 @@ export class StaticCubemap extends GraphicAsset {
                             gl.RGBA, 
                             gl.UNSIGNED_BYTE, 
                             (textureToReload as Texture2D).image
-                        );                        
+                        );      
                     });
                 }
             }            

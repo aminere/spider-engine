@@ -46,7 +46,7 @@ export class Texture2D extends Texture {
         this._textureData = data;
         delete this._canvas;
         delete this._pixels;
-        this.loadTextureData(() => {
+        this.loadTextureData().then(() => {
             if (CommonEditorEvents) {
                 CommonEditorEvents.textureDataLoaded.post(this);
             }
@@ -116,19 +116,21 @@ export class Texture2D extends Texture {
         return true;
     }
 
-    loadTextureData(loaded: () => void) {
+    loadTextureData() {
         if (this._textureDataLoaded) {
-            loaded();
-            return;
-        }        
-        this._image = new Image();
-        // Debug.log(`Loading ${this.templatePath}`);
-        this._image.onload = () => {            
-            // Debug.log(`${this.templatePath} Loaded!`);
-            this._textureDataLoaded = true;
-            loaded();
-        };
-        this._image.src = this._textureData as string;
+            return Promise.resolve();
+        }
+        return new Promise<void>((resolve, reject) => {
+            this._image = new Image();
+            // Debug.log(`Loading ${this.templatePath}`);
+            this._image.onload = () => {
+                // Debug.log(`${this.templatePath} Loaded!`);
+                this._textureDataLoaded = true;
+                resolve();
+            };
+            this._image.onerror = e => reject(e);
+            this._image.src = this._textureData as string;
+        });
     }
 
     graphicLoad() {
