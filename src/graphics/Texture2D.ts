@@ -118,15 +118,15 @@ export class Texture2D extends Texture {
 
     loadTextureData() {
         if (this._textureDataLoaded) {
-            return Promise.resolve();
+            return Promise.resolve(this._image);
         }
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<HTMLImageElement>((resolve, reject) => {
             this._image = new Image();
             // Debug.log(`Loading ${this.templatePath}`);
             this._image.onload = () => {
                 // Debug.log(`${this.templatePath} Loaded!`);
                 this._textureDataLoaded = true;
-                resolve();
+                resolve(this._image);
             };
             this._image.onerror = e => reject(e);
             this._image.src = this._textureData as string;
