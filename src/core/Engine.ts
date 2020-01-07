@@ -52,9 +52,9 @@ export interface IEngineConfig {
     projectId?: string; // Need a unique ID for persistent saved data
     customTypes?: TypeDefinition<SerializableObject>[];
     initialTouchPosition?: Vector2;
-    preRender?: (camera: Camera) => void,
-    postRender?: (camera: Camera) => void,
-    uiPostRender?: () => void,
+    preRender?: (camera: Camera) => void;
+    postRender?: (camera: Camera) => void;
+    uiPostRender?: () => void;
     onSceneLoaded?: (path: string) => void;
     onDownloadProgress?: (amount: number, finished: boolean) => void;
 }
