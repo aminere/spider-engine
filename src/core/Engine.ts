@@ -45,13 +45,16 @@ import { Light } from "../graphics/lighting/Light";
 import { Screen } from "../ui/Screen";
 import { AABB } from "../math/AABB";
 
-export interface EngineConfig {
+export interface IEngineConfig {
     container?: HTMLCanvasElement;
     startupScene?: string;
     startupUrl?: string;
     projectId?: string; // Need a unique ID for persistent saved data
     customTypes?: TypeDefinition<SerializableObject>[];
     initialTouchPosition?: Vector2;
+    preRender?: (camera: Camera) => void,
+    postRender?: (camera: Camera) => void,
+    uiPostRender?: () => void,
     onSceneLoaded?: (path: string) => void;
     onDownloadProgress?: (amount: number, finished: boolean) => void;
 }
@@ -59,7 +62,7 @@ export interface EngineConfig {
 namespace Private {
     export let targetCanvas: HTMLCanvasElement;
     export let canvasResized = false;
-    export let engineConfig: EngineConfig;
+    export let engineConfig: IEngineConfig;
     export let playRequestId: string | null = null;    
     export let engineActive = false;    
     export let loadingInProgress = false;
@@ -365,9 +368,12 @@ export namespace EngineInternal {
             Screen,
             Camera
         ]);
+
         const cameras = renderables.Camera as Camera[];
         cameras.sort((a, b) => a.priority - b.priority);
-        render(cameras, renderables);
+        
+        const { preRender, postRender, uiPostRender } = Private.engineConfig;
+        render(cameras, renderables, preRender, postRender, uiPostRender);
 
         requestAnimationFrame(() => updateFrame());
     }
@@ -379,7 +385,7 @@ export class Engine {
      * Only one instance is allowed per window. If you need multiple instances, use iframes.
      * @param config - the engine configuration
      */
-    static create(config: EngineConfig) {
+    static create(config: IEngineConfig) {
         Debug.log(`SpiderEngine creation - Platform: ${process.env.PLATFORM}, Config: ${process.env.CONFIG}, Env: ${process.env.NODE_ENV}`);
         Private.engineConfig = config;
 
