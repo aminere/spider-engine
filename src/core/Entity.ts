@@ -104,10 +104,12 @@ export class Entity extends UniqueObject {
     get transform() { return this.getComponent(Transform) as Transform; }
     get active() { return this._active; }
     set active(active: boolean) {
-        this._active = active;
         if (CommonEditorEvents) {
-            CommonEditorEvents.entityActivated.post(this);
+            if (active !== this._active) {
+                CommonEditorEvents.entityActivated.post({ entity: this, active });
+            }
         }
+        this._active = active;
     }
     children: Entity[] = [];
     parent?: Entity;   
