@@ -67,11 +67,6 @@ type VisualBucketsMap = Map<string, IVisualBucket>;
 type ShaderToVisualBucketsMap = Map<Shader, VisualBucketsMap>;
 type RenderStateBucketsMap = Map<string, IRenderStateBucket>;
 
-interface IShadowCasters {
-    visuals: VertexBufferToVisualsMap;
-    bounds: AABB;
-}
-
 namespace Private {
     export let canvas: HTMLCanvasElement;
     export const initialShadowCastersPoolSize = 128;
