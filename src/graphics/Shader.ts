@@ -89,8 +89,6 @@ export class Shader extends GraphicAsset {
     protected _fragmentCode!: string;
     @Attributes.unserializable()
     protected _shaderError = false;
-    @Attributes.unserializable()
-    protected _usedTextureStages = 0;
 
     @Attributes.unserializable()
     private _instances: ShaderInstances = {
@@ -330,10 +328,29 @@ export class Shader extends GraphicAsset {
         if (!instance.params) {
             instance.params = this.extractUniforms(vertexCode, fragmentCode);
         }
-        for (const param of Object.keys(instance.params)) {
-            const location = gl.getUniformLocation(program, param);
-            instance.params[param].uniformLocation = location;
+
+        let textureStage = 0;
+        for (const paramName of Object.keys(instance.params)) {
+            const param = instance.params[paramName];
+            const location = gl.getUniformLocation(program, paramName);            
+            param.uniformLocation = location;
             // console.assert(location !== null, `getUniformLocation(${param}) failed in shader '${this.templatePath}'`);
+
+            if (location === null) {
+                continue;
+            }
+
+            // setup texture stages
+            const textureUniform = param.type.match(/sampler+[234D]*/);
+            if (textureUniform) {
+                const { arraySize } = param;
+                if (arraySize !== undefined) {
+                    param.textureStage
+                        = Array.from(new Array(arraySize)).map(() => textureStage++);
+                } else {
+                    param.textureStage = textureStage++;
+                }
+            }
         }
 
         if (!instance.attributes) {
@@ -419,18 +436,18 @@ export class Shader extends GraphicAsset {
 
     private extractUniforms(vertexCode: string, fragmentCode: string) {
         const shaderParams: ShaderParams = {};
-        this._usedTextureStages = this.parseUniforms(vertexCode, shaderParams, 0);
-        this._usedTextureStages = this.parseUniforms(fragmentCode, shaderParams, this._usedTextureStages);
+        this.parseUniforms(vertexCode, shaderParams);
+        this.parseUniforms(fragmentCode, shaderParams);
         return shaderParams;
     }
 
-    private parseUniforms(code: string, shaderParams: ShaderParams, currentTextureStage: number) {
+    private parseUniforms(code: string, shaderParams: ShaderParams) {
         const regex = /uniform ((vec|float|uint|int|bool|mat|sampler|samplerCube)[234D]*) ([_a-zA-Z0-9]+)(\[([_a-zA-Z0-9]+)\])*;/;
         const _code = Private.removeComments(code);
         const matches = _code.match(new RegExp(regex, "g"));
         if (matches) {
 
-            const parseArraySize = (arraySize?: string) => {
+            const parseArraySize = (arraySize?: string): number | undefined => {
                 if (arraySize === undefined) {
                     return undefined;
                 }
@@ -458,12 +475,11 @@ export class Shader extends GraphicAsset {
                 return parseInt(size, 10);
             };
 
-            const registerDefaultParam = (name: string, type: string, arraySize?: string) => {
+            const registerDefaultParam = (name: string, type: string, arraySize?: number) => {
                 shaderParams[name] = {
                     type: type as ShaderParamType,
                     uniformLocation: null,
-                    textureStage: type.match(/sampler+[234D]*/) ? (currentTextureStage++) : undefined,
-                    arraySize: parseArraySize(arraySize)
+                    arraySize
                 };
             };
 
@@ -477,7 +493,6 @@ export class Shader extends GraphicAsset {
                             shaderParams[name] = {
                                 type: "sampler2DArray",
                                 uniformLocation: null,
-                                textureStage: Array.from(new Array(_arraySize)).map(s => currentTextureStage++),
                                 arraySize: _arraySize
                             };
                         } else if (type === "mat4") {
@@ -489,17 +504,16 @@ export class Shader extends GraphicAsset {
                                 };
                             }
                         } else {
-                            registerDefaultParam(name, type, arraySize);
+                            registerDefaultParam(name, type, _arraySize);
                         }
                     } else {
-                        registerDefaultParam(name, type, arraySize);
+                        registerDefaultParam(name, type);
                     }                                    
                 } else {
                     Debug.logWarning(`Invalid shader uniform syntax: '${match[0]}', ignoring this uniform.`);
                 }
             }
         }
-        return currentTextureStage;
     }
 
     private tryExtractUniforms() {

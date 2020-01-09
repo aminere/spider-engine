@@ -191,7 +191,7 @@ export class Camera extends Component {
         let screenW: number;
         let screenH: number;
         let renderTarget = this.renderTarget;
-        if (renderTarget && renderTarget.isValid) {
+        if (renderTarget && renderTarget.valid) {
             screenW = renderTarget.getWidth();
             screenH = renderTarget.getHeight();
         } else {
@@ -326,7 +326,7 @@ export class Camera extends Component {
             this._invalidFrustum = true;
             if (this._renderTarget.id) {
                 let renderTarget = this.renderTarget;
-                if (renderTarget && renderTarget.isValid) {
+                if (renderTarget && renderTarget.valid) {
                     let ratio = renderTarget.getWidth() / renderTarget.getHeight();
                     projector.updateFrustum(this.entity.transform, ratio);
                     this._invalidFrustum = false;

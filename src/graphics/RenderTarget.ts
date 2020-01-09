@@ -33,7 +33,7 @@ export class RenderTarget extends Texture {
         }
     }
 
-    get isValid() { return this._frameBuffer; }   
+    get valid() { return Boolean(this._frameBuffer); }
 
     /**
      * @event

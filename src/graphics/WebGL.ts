@@ -66,7 +66,7 @@ export class WebGL {
         const r = func();
         const e = Private.context.getError();
         if (e) {
-            Debug.logError(`WebGL error '${e}'`);
+            Debug.logError(`WebGL error 0x${Number(e).toString(16)}`);
         }
         return r;
     }
