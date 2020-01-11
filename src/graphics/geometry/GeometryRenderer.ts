@@ -279,7 +279,7 @@ export class GeometryRenderer {
         Private.drawQuad(vTop2, vTop4, vBottom2, vBottom4);
     }
 
-    static drawBox(box: BoxCollisionShape, color: Color, worldMatrix: Matrix44) {
+    static drawBox(center: Vector3, extent: Vector3, color: Color, worldMatrix: Matrix44) {
         Private.material.applyParameter("ambient", color);
 
         // TODO support oriented bbs in CollisionUtils
@@ -287,11 +287,11 @@ export class GeometryRenderer {
         const rotation = Quaternion.fromPool();
         const scale = Vector3.fromPool();
         worldMatrix.decompose(position, rotation, scale);     
-        const rotatedCenter = Vector3.fromPool().copy(box.center).rotate(rotation);   
+        const rotatedCenter = Vector3.fromPool().copy(center).rotate(rotation);   
         position.add(rotatedCenter);
-        scale.x *= box.extent.x;
-        scale.y *= box.extent.y;
-        scale.z *= box.extent.z;
+        scale.x *= extent.x;
+        scale.y *= extent.y;
+        scale.z *= extent.z;
         Private.modelViewMatrix.compose(position, rotation, scale);
 
         // let position = Vector3.fromPool();
