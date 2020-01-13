@@ -332,7 +332,13 @@ export class Particles extends Component {
                     const life = this.life.random();
                     this.geometry.setData("life", i, life);
                     this.geometry.setData("remainingLife", i, life);
-                    this.geometry.setData("size", i, this.initialSize.random());
+
+                    if (this._sizeOverLife.data.length > 0) {
+                        const size = ParticleValueOverLife.evaluate(this._sizeOverLife.data, 0);
+                        this.geometry.setData("size", i, size);
+                    } else {
+                        this.geometry.setData("size", i, this.initialSize.random());
+                    }
 
                     // init position
                     (emitVolume as Volume).emitPoint(particlePos);
@@ -352,7 +358,15 @@ export class Particles extends Component {
                     }
                     this.geometry.setVector3("position", i, particlePos);
                     this.geometry.setVector3("velocity", i, particleVelocity);
-                    this.geometry.setColor(i, this.initialColor);
+
+                    if (this._colorOverLife.data.length > 0) {
+                        ParticleValueOverLife.evaluate(this._colorOverLife.data, 0, particleColor);
+                        this.geometry.setColor(i, particleColor);
+                    } else {
+                        this.geometry.setColor(i, this.initialColor);
+
+                    }
+
                     ++emittedParticles;
                     ++this._particleCount;
                     --particlesToProcess;
