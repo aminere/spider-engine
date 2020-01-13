@@ -60,6 +60,7 @@ export declare class Transform extends Component {
     dirtifyWorldMatrix(): void;
     setLocalMatrix(matrix: Matrix44): void;
     reset(): void;
+    onReplace(previous: Transform): void;
     private attachToPosition;
     private attachToScale;
     private attachToRotation;

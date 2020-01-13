@@ -15,4 +15,5 @@ export declare class Component extends SerializableObject {
     setEntity(entity: Entity): void;
     isLoaded(): boolean;
     reset(): void;
+    onReplace(previous: Component): void;
 }

@@ -1,6 +1,9 @@
 import { Matrix44 } from "./Matrix44";
 import { Quaternion } from "./Quaternion";
 import { ObjectPool } from "../core/ObjectPool";
+/**
+ * @hidden
+ */
 export declare namespace Vector3Internal {
     const xKey = "_x";
     const yKey = "_y";

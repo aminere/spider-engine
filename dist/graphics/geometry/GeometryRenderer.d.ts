@@ -1,7 +1,6 @@
 import { Vector3 } from "../../math/Vector3";
 import { Matrix44 } from "../../math/Matrix44";
 import { AABB } from "../../math/AABB";
-import { BoxCollisionShape } from "../../collision/BoxCollisionShape";
 import { Asset } from "../../assets/Asset";
 import { Color } from "../Color";
 import { Camera } from "../Camera";
@@ -25,7 +24,7 @@ export declare class GeometryRenderer {
     static drawQuad(topLeft: Vector3, topRight: Vector3, botLeft: Vector3, botRight: Vector3, color: Color, worldMatrix: Matrix44): void;
     static drawCircle(color: Color, worldMatrix: Matrix44): void;
     static drawAABB(aabb: AABB, color: Color, worldMatrix: Matrix44): void;
-    static drawBox(box: BoxCollisionShape, color: Color, worldMatrix: Matrix44): void;
+    static drawBox(center: Vector3, extent: Vector3, color: Color, worldMatrix: Matrix44): void;
     static drawSphere(center: Vector3, radius: Vector3, color: Color, worldMatrix: Matrix44): void;
     static drawPlane(normal: Vector3, distToOrigin: number, color: Color, worldMatrix: Matrix44): void;
     static draw2DRect(minX: number, minY: number, maxX: number, maxY: number, color: Color, matrix: Matrix44): void;

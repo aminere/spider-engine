@@ -4,7 +4,7 @@ import { VoidAsyncEvent } from "ts-events";
 export declare class RenderTarget extends Texture {
     width: Size;
     height: Size;
-    readonly isValid: WebGLFramebuffer | null;
+    readonly valid: boolean;
     /**
      * @event
      */

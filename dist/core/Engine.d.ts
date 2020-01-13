@@ -3,13 +3,16 @@ import { Vector2 } from "../math/Vector2";
 import { Camera } from "../graphics/Camera";
 import { SerializableObject } from "./SerializableObject";
 import { Component } from "./Component";
-export interface EngineConfig {
+export interface IEngineConfig {
     container?: HTMLCanvasElement;
     startupScene?: string;
     startupUrl?: string;
     projectId?: string;
     customTypes?: TypeDefinition<SerializableObject>[];
     initialTouchPosition?: Vector2;
+    preRender?: (camera: Camera) => void;
+    postRender?: (camera: Camera) => void;
+    uiPostRender?: () => void;
     onSceneLoaded?: (path: string) => void;
     onDownloadProgress?: (amount: number, finished: boolean) => void;
 }
@@ -49,7 +52,7 @@ export declare class Engine {
      * Only one instance is allowed per window. If you need multiple instances, use iframes.
      * @param config - the engine configuration
      */
-    static create(config: EngineConfig): Promise<void>;
+    static create(config: IEngineConfig): Promise<void>;
     static destroy(): void;
     static isLoadingInProgress(): boolean;
 }

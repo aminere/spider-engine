@@ -29,7 +29,6 @@ export declare class Shader extends GraphicAsset {
     protected _vertexCode: string;
     protected _fragmentCode: string;
     protected _shaderError: boolean;
-    protected _usedTextureStages: number;
     private _instances;
     private _executedOnce;
     constructor(props?: ObjectProps<Shader>);
@@ -52,4 +51,5 @@ export declare class Shader extends GraphicAsset {
     private extractAttributes;
     private extractUniforms;
     private parseUniforms;
+    private tryExtractUniforms;
 }

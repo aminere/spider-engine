@@ -36,7 +36,7 @@ export declare class Scene extends Asset {
     environment: Environment | undefined;
     private _environment;
     private _fog;
-    private _isLoadedCache;
+    private _isLoaded;
     constructor();
     isLoaded(): boolean;
     serialize(): SerializedScene;

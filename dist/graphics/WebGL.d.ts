@@ -5,6 +5,7 @@ export declare class WebGL {
     static extensions: {
         OES_texture_float: boolean;
         OES_standard_derivatives: boolean;
+        WEBGL_depth_texture: boolean;
     };
     static version: number;
     static caps: {

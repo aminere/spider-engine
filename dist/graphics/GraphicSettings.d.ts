@@ -1,4 +1,4 @@
-export declare namespace GraphicSettings {
+export declare namespace graphicSettings {
     const maxDirectionalLights = 4;
     const maxShadowCascades = 3;
     const maxShadowDistance = 100;

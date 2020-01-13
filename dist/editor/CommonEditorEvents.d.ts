@@ -27,5 +27,8 @@ export declare class CommonEditorEvents {
     static operatorActivated: AsyncEvent<OperatorActivationInfo>;
     static operatorDeactivated: AsyncEvent<OperatorActivationInfo>;
     static signalFired: AsyncEvent<SignalFiredInfo>;
-    static entityActivated: AsyncEvent<Entity>;
+    static entityActivated: AsyncEvent<{
+        entity: Entity;
+        active: boolean;
+    }>;
 }

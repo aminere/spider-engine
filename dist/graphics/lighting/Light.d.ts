@@ -12,7 +12,6 @@ export declare class Light extends Component {
     readonly shadow: Shadow | undefined;
     intensity: number;
     color: Color;
-    shadowBias: number;
     private _type;
     private _shadows;
     constructor(props?: ObjectProps<Light>);

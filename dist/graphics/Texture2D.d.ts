@@ -28,7 +28,7 @@ export declare class Texture2D extends Texture {
     setProperty(name: string, value: any): void;
     isLoaded(): boolean;
     begin(stage: number): boolean;
-    loadTextureData(loaded: () => void): void;
+    loadTextureData(): Promise<HTMLImageElement>;
     graphicLoad(): boolean;
     getPixel(x: number, y: number, colorOut: Color): void;
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
