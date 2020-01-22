@@ -18,6 +18,16 @@ export class Vector2 {
 
     private _array!: number[];    
 
+    static distance(a: Vector2, b: Vector2) {
+        return Math.sqrt(Vector2.distanceSq(a, b));
+    }
+
+    static distanceSq(a: Vector2, b: Vector2) {
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        return dx * dx + dy * dy;
+    }
+
     static fromArray(arr: number[]) {
         const v = new Vector2();
         if (arr.length > 0) { v.x = arr[0]; }
