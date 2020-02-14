@@ -27,7 +27,8 @@ export class BehaviorAPIFactory {
         Triangle: (a?: Vector3, b?: Vector3, c?: Vector3) => new Triangle(a, b, c),
         Ray: (origin?: Vector3, direction?: Vector3, length?: number) => new Ray(origin, direction, length),
         Basis: () => new Basis(),
-        VertexBuffer: (props?: ObjectProps<VertexBuffer>) => new VertexBuffer(props)        
+        VertexBuffer: (props?: ObjectProps<VertexBuffer>) => new VertexBuffer(props),
+        Array: (length?: number) => new Array(length) 
     };
 
     // tslint:disable-next-line
