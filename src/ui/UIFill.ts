@@ -214,13 +214,27 @@ export class TextureFill extends UIFill {
 
 @Attributes.displayName("Color")
 export class ColorFill extends UIFill {
-    color = new Color(1, 1, 1, 1);
+
+    get version() { return 2; }
+
+    get color() { return this._color; }
+    set color(color: Color) { this._color.copy(color); }
+
+    private _color = new Color(1, 1, 1, 1);
 
     constructor(color?: Color) {
         super();
         if (color) {
-            this.color.copy(color);
+            this._color.copy(color);
         }
+    }
+
+    upgrade(json: SerializedObject, previousVersion: number) {
+        if (previousVersion === 1) {
+            Object.assign(json.properties, { _color: json.properties.color });
+            delete json.properties.color;
+        }
+        return json;
     }
 }
 
