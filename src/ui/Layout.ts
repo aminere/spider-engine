@@ -9,6 +9,7 @@ import * as Attributes from "../core/Attributes";
 import { Color } from "../graphics/Color";
 import { SerializedObject } from "../core/SerializableObject";
 import { Component } from "../core/Component";
+import { ObjectProps } from "../core/Types";
 
 @Attributes.mandatory()
 @Attributes.sortOrder(0)
@@ -109,6 +110,13 @@ export class Layout extends Component {
     private _actualHeight = 0;    
     @Attributes.unserializable()
     private _finalTint = new Color(1, 1, 1, 1);
+
+    constructor(props?: ObjectProps<Layout>) {
+        super();
+        if (props) {
+            this.setState(props);
+        }
+    }
 
     upgrade(json: SerializedObject, previousVersion: number) {        
         if (previousVersion === 1) {
