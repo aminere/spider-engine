@@ -28,7 +28,9 @@ export class BehaviorAPIFactory {
         Ray: (origin?: Vector3, direction?: Vector3, length?: number) => new Ray(origin, direction, length),
         Basis: () => new Basis(),
         VertexBuffer: (props?: ObjectProps<VertexBuffer>) => new VertexBuffer(props),
-        Array: (length?: number) => new Array(length) 
+        Array: (length?: number) => new Array(length),
+        // tslint:disable-next-line
+        Promise: (executor: any) => new Promise(executor)
     };
 
     // tslint:disable-next-line
