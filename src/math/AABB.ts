@@ -106,6 +106,28 @@ export class AABB {
         && p.z >= this.min.z && p.z <= this.max.z;
     }
 
+    collidesWith(other: AABB) {
+        if (this.min.x > other.max.x) {
+            return false;
+        }
+        if (this.min.y > other.max.y) {
+            return false;
+        }
+        if (this.min.z > other.max.z) {
+            return false;
+        }
+        if (other.min.x > this.max.x) {
+            return false;
+        }
+        if (other.min.y > this.max.y) {
+            return false;
+        }
+        if (other.min.z > this.max.z) {
+            return false;
+        }
+        return true;
+    }
+
     add(other: AABB) {
         return this.addAABBs(this, other);
     }
