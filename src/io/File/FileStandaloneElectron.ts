@@ -1,4 +1,5 @@
 import { IFile } from "./IFile";
+import { Debug } from "../Debug";
 
 // tslint:disable-next-line
 let fs: any = undefined;
@@ -25,24 +26,45 @@ export class FileStandaloneElectron implements IFile {
 
     // tslint:disable-next-line
     write(path: string, data: any) {
-        // Nothing to do, no asset changes are permitted in standalone
-        return Promise.reject();
+        return new Promise<void>((resolve, reject) => {
+            fs.writeFile(path, data, (err: any) => {
+                if (!err) {
+                    resolve();
+                } else {
+                    reject(err);
+                }
+            });
+        });
     }
 
     // tslint:disable-next-line
     delete(path: string) {
-        // Nothing to do, no asset changes are permitted in standalone
-        return Promise.reject();
+        return new Promise<void>((resolve, reject) => {
+            fs.unlink(path, (err: any) => {
+                if (!err) {
+                    resolve();
+                } else {
+                    reject(err);
+                }
+            });
+        });
     }
 
     renameFile(oldPath: string, newPath: string) {
-        // Nothing to do, no asset changes are permitted in standalone
-        return Promise.reject();
+        return new Promise<void>((resolve, reject) => {
+            fs.rename(oldPath, newPath, (err: any) => {
+                if (err) {
+                    Debug.log(`Failed renaming '${oldPath}' to '${newPath}': ${err}`);
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
     }
 
     renameFolder(oldPath: string, newPath: string) {
-        // Nothing to do, no asset changes are permitted in standalone
-        return Promise.reject();
+        return this.renameFile(oldPath, newPath);
     }
 
     clearAllFiles() {
