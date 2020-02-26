@@ -4,14 +4,14 @@ import { ObjectDeclaration } from "./ObjectDeclaration";
 import { ReferenceArray } from "../serialization/ReferenceArray";
 import { BasePin } from "./Pin";
 import * as Attributes from "../core/Attributes";
-import { BehaviorUtils } from "./BehaviorUtils";
+import { BehaviorUtils, IObjectDefinition } from "./BehaviorUtils";
 import { Asset } from "../assets/Asset";
 import { IObjectManagerInternal } from "../core/IObjectManager";
 import { ObjectProps } from "../core/Types";
 
 @Attributes.displayName("Object Definition")
 @Attributes.creatable(false)
-export class ObjectDefinition extends Asset {
+export class ObjectDefinition extends Asset implements IObjectDefinition {
 
     set declaration(decl: ObjectDeclaration | null) {       
         this._declaration.asset = decl;

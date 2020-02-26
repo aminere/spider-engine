@@ -1,12 +1,12 @@
 import { ObjectDeclaration } from "./ObjectDeclaration";
 import { ReferenceArray } from "../serialization/ReferenceArray";
 import { BasePin } from "./Pin";
-import { BehaviorUtils } from "./BehaviorUtils";
+import { BehaviorUtils, IObjectDefinition } from "./BehaviorUtils";
 import { AssetReference, AssetChangedEvent } from "../serialization/AssetReference";
 import { Component } from "../core/Component";
 import { ObjectProps } from "../core/Types";
 
-export class Data extends Component {
+export class Data extends Component implements IObjectDefinition {
 
     static pinsPropertyKey = "_pins";
 
