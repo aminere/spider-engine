@@ -27,6 +27,7 @@ export class FileStandaloneElectron implements IFile {
     // tslint:disable-next-line
     write(path: string, data: any) {
         return new Promise<void>((resolve, reject) => {
+            // tslint:disable-next-line
             fs.writeFile(path, data, (err: any) => {
                 if (!err) {
                     resolve();
@@ -40,6 +41,7 @@ export class FileStandaloneElectron implements IFile {
     // tslint:disable-next-line
     delete(path: string) {
         return new Promise<void>((resolve, reject) => {
+            // tslint:disable-next-line
             fs.unlink(path, (err: any) => {
                 if (!err) {
                     resolve();
@@ -52,6 +54,7 @@ export class FileStandaloneElectron implements IFile {
 
     renameFile(oldPath: string, newPath: string) {
         return new Promise<void>((resolve, reject) => {
+            // tslint:disable-next-line
             fs.rename(oldPath, newPath, (err: any) => {
                 if (err) {
                     Debug.log(`Failed renaming '${oldPath}' to '${newPath}': ${err}`);
