@@ -209,14 +209,19 @@ export class SerializerUtils {
                 }
             }
 
-            if (process.env.CONFIG === "editor") {
-                if (id && SerializerUtilsInternal.serializeIdsAsPaths) {
-                    const path = AssetIdDatabase.getPath(id);
-                    if (path) {
-                        id = path;
+            if (id && SerializerUtilsInternal.serializeIdsAsPaths) {
+                const path = (() => {
+                    if (process.env.CONFIG === "editor") {
+                        return AssetIdDatabase.getPath(id);
+                    } else {
+                        return assetRef.asset?.templatePath;
                     }
+                })();
+                if (path) {
+                    id = path;
                 }
             }
+
             const result = {
                 typeName: assetRef.typeName(),
                 id: id
