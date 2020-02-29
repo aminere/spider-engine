@@ -14,7 +14,7 @@ import { Triangle } from "../math/Triangle";
 import { ObjectManagerInternal } from "./ObjectManager";
 import { SerializerInternal } from "../serialization/Serializer";
 import { WebGL } from "../graphics/WebGL";
-import { IFileInternal } from "../io/File/IFile";
+import { IFileInternal, IFile } from "../io/File/IFile";
 import { AssetIdDatabaseInternal } from "../assets/AssetIdDatabase";
 
 import { Debug } from "../io/Debug";
@@ -52,6 +52,7 @@ export interface IEngineConfig {
     projectId?: string; // Need a unique ID for persistent saved data
     customTypes?: TypeDefinition<SerializableObject>[];
     initialTouchPosition?: Vector2;
+    customFileIO?: IFile;
     preRender?: (camera: Camera) => void;
     postRender?: (camera: Camera) => void;
     uiPostRender?: () => void;
@@ -74,7 +75,12 @@ namespace Private {
         }
     }
 
-    export function createFileInterface(): Promise<void> {        
+    export function createFileInterface(customFileIO?: IFile): Promise<void> {    
+        if (customFileIO) {
+            IFileInternal.instance = customFileIO;
+            return Promise.resolve();
+        }
+
         const fileCtor = function () {
             if (process.env.CONFIG === "editor") {
                 if (process.env.PLATFORM === "web") {
@@ -97,7 +103,10 @@ namespace Private {
             return null;
         }();
 
-        console.assert(fileCtor);
+        if (!fileCtor) {
+            return Promise.reject("Could not create a file I/O interface on this platform");
+        }
+        
         IFileInternal.instance = new fileCtor();
         if (process.env.CONFIG === "editor" && process.env.PLATFORM === "web") {
             const dbName = `spider-${process.env.CONFIG}`;
@@ -458,7 +467,7 @@ export class Engine {
         };
 
         if (process.env.CONFIG === "editor") {            
-            return Private.createFileInterface()
+            return Private.createFileInterface(config.customFileIO)
                 .then(() => tryInitializeWithCanvas())
                 .then(() => SavedDataInternal.preload())
                 .then(() => {
@@ -469,7 +478,7 @@ export class Engine {
                     return Promise.reject(error);
                 });
         } else {
-            return Private.createFileInterface()
+            return Private.createFileInterface(config.customFileIO)
                 .then(() => {
                     if (config.startupUrl) {
                         return Private.downloadPlayableProject(config.startupUrl);
