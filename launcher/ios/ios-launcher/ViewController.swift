@@ -24,7 +24,7 @@ class ViewController: UIViewController, WKUIDelegate {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view, typically from a nib.
-        let myURL = URL(string:"https://spiderengine.io")
+        let myURL = URL(string:"https://spiderengine.io/play/53c5f992-9a95-4e7b-9a1d-ec499e24c56a")
         let myRequest = URLRequest(url: myURL!)
         webView.load(myRequest)
     }
