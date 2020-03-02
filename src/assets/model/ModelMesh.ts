@@ -3,6 +3,7 @@ import { AssetReference } from "../../serialization/AssetReference";
 import { StaticMeshAsset } from "../StaticMeshAsset";
 import { Material } from "../../graphics/Material";
 import { SerializedObject } from "../../core/SerializableObject";
+import { EngineUtils } from "../../core/EngineUtils";
 
 export class ModelMesh extends ModelElement {
     
@@ -14,6 +15,11 @@ export class ModelMesh extends ModelElement {
     destroy() {
         this.material.detach();
         this.mesh.detach();
+    }
+
+    isLoaded() {
+        return EngineUtils.isAssetRefLoaded(this.material) 
+            && EngineUtils.isAssetRefLoaded(this.mesh);
     }
 
     upgrade(json: SerializedObject, previousVersion: number) {

@@ -43,4 +43,8 @@ export class ModelElement extends UniqueObject {
             }
         }
     }
+
+    isLoaded() {
+        return true;
+    }
 }

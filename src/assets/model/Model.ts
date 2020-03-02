@@ -38,6 +38,15 @@ export class Model extends Asset {
         super.destroy();
     }
 
+    isLoaded() {
+        for (const element of this.elements.data) {
+            if (element.instance && !element.instance.isLoaded()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     traverse(op: (child: ModelElement) => void) {
         for (const elem of this.elements.data.map(r => r.instance)) {
             if (elem) {
