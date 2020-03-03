@@ -45,7 +45,7 @@ export class ShaderCodeInjector {
         let directives = "";
         let definitions = "";
         let statements = "";
-        let needInjection = false;
+        let needInjection = WebGL.version > 1;
 
         if (Interfaces.renderer.showWireFrame) {
             definitions = `${definitions}
@@ -90,13 +90,14 @@ vBarycentric = barycentricCoord;`;
         if (needInjection) {
             let sections = Private.getSections(vertexCode);
             if (sections) {
-                return `${directives}
-                    ${sections.qualifiers}
-                    ${definitions}
-                    ${sections.coreMeat}
-                    ${statements}
-                }
-                `;
+                return `${WebGL.version === 2 ? "#version 300 es" : ""}
+${directives}
+${sections.qualifiers}
+${definitions}
+${sections.coreMeat}
+${statements}
+}
+`;
             }
         }
         return vertexCode;
@@ -112,7 +113,7 @@ vBarycentric = barycentricCoord;`;
         let directives = "";
         let definitions = "";
         let postProcess = "";
-        let needInjection = false;        
+        let needInjection = WebGL.version > 1;        
 
         if (Interfaces.renderer.showWireFrame) {
             // Wireframe visualization
@@ -191,7 +192,8 @@ float edgeFactor() {
         if (needInjection) {
             let sections = Private.getSections(fragmentCode);
             if (sections) {
-                return `${sections.qualifiers}
+                return `${WebGL.version === 2 ? "#version 300 es" : ""}
+${sections.qualifiers}
 ${directives}
 ${definitions}
 ${sections.coreMeat}
