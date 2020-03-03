@@ -45,12 +45,18 @@ export class ShaderCodeInjector {
         let directives = "";
         let definitions = "";
         let statements = "";
+        let version = "";
         let needInjection = false;
+
+        if (WebGL.version > 1) {
+            version = "#version 300 es";
+            needInjection = true;
+        }
 
         if (Interfaces.renderer.showWireFrame) {
             definitions = `${definitions}
-attribute vec3 barycentricCoord;
-varying vec3 vBarycentric;`;
+in vec3 barycentricCoord;
+out vec3 vBarycentric;`;
             statements = `${statements}
 vBarycentric = barycentricCoord;`;
             needInjection = true;
@@ -90,13 +96,14 @@ vBarycentric = barycentricCoord;`;
         if (needInjection) {
             let sections = Private.getSections(vertexCode);
             if (sections) {
-                return `${directives}
-                    ${sections.qualifiers}
-                    ${definitions}
-                    ${sections.coreMeat}
-                    ${statements}
-                }
-                `;
+                return `${version}
+${directives}
+${sections.qualifiers}
+${definitions}
+${sections.coreMeat}
+${statements}
+}
+`;
             }
         }
         return vertexCode;
@@ -112,7 +119,15 @@ vBarycentric = barycentricCoord;`;
         let directives = "";
         let definitions = "";
         let postProcess = "";
-        let needInjection = false;        
+        let version = "";
+        let fragColorLiteral = "gl_FragColor";
+        let needInjection = false;
+
+        if (WebGL.version > 1) {
+            version = "#version 300 es";
+            fragColorLiteral = "fragColor";
+            needInjection = true;
+        }
 
         if (Interfaces.renderer.showWireFrame) {
             // Wireframe visualization
@@ -127,7 +142,7 @@ vBarycentric = barycentricCoord;`;
             }
 
             definitions = `${definitions}
-varying vec3 vBarycentric;
+in vec3 vBarycentric;
 #ifdef Supports_GL_OES_standard_derivatives
 float edgeFactor() {
     vec3 d = fwidth(vBarycentric);
@@ -138,10 +153,10 @@ float edgeFactor() {
 
             postProcess = `${postProcess}
 #ifdef Supports_GL_OES_standard_derivatives
-    gl_FragColor = mix(vec4(.8, .8, .8, 1.0), gl_FragColor, edgeFactor());    
+    ${fragColorLiteral} = mix(vec4(.8, .8, .8, 1.0), ${fragColorLiteral}, edgeFactor());    
 #else
     if(any(lessThan(vBarycentric, vec3(0.01)))) {
-        gl_FragColor = vec4(vec3(.7), 1.0);
+        ${fragColorLiteral} = vec4(vec3(.7), 1.0);
     }
 #endif`;
 
@@ -191,7 +206,8 @@ float edgeFactor() {
         if (needInjection) {
             let sections = Private.getSections(fragmentCode);
             if (sections) {
-                return `${sections.qualifiers}
+                return `${version}
+${sections.qualifiers}
 ${directives}
 ${definitions}
 ${sections.coreMeat}

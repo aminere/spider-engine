@@ -246,7 +246,7 @@ export namespace EngineInternal {
             alpha: EngineSettings.instance.canvasAlpha 
         };
 
-        const webgl2 = null; // canvas.getContext("webgl2", contextOptions);
+        const webgl2 = canvas.getContext("webgl2", contextOptions);
         const context = webgl2
             || canvas.getContext("webgl", contextOptions) 
             || canvas.getContext("experimental-webgl", contextOptions);

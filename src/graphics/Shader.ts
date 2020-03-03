@@ -410,7 +410,7 @@ export class Shader extends GraphicAsset {
     }
 
     private extractAttributes(code: string) {
-        const regex = /attribute ((vec|float|uint|int|bool|mat|sampler|samplerCube)+[1234D]*) ([_a-zA-Z0-9]+);/;
+        const regex = /in ((vec|float|uint|int|bool|mat|sampler|samplerCube)+[1234D]*) ([_a-zA-Z0-9]+);/;
         const matches = Private.removeComments(code).match(new RegExp(regex, "g"));
         const attributes: ShaderAttributes = {};
         if (matches) {
