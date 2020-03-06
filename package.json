@@ -26,15 +26,15 @@
     "file-loader": "^3.0.1",
     "reflect-metadata": "^0.1.13",
     "source-map-loader": "^0.2.4",
-    "terser-webpack-plugin": "^1.2.3",
-    "ts-loader": "^6.0.0",
-    "tslint": "^5.15.0",
+    "terser-webpack-plugin": "^2.3.5",
+    "ts-loader": "^6.2.1",
+    "tslint": "^5.16.0",
     "tslint-loader": "^3.5.4",
-    "tslint-react": "^4.0.0",
-    "typescript": "^3.4.3",
-    "webpack": "^4.31.0",
+    "tslint-react": "^4.1.0",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.6",
     "webpack-bundle-analyzer": "^3.3.2",
-    "webpack-cli": "^3.3.2"
+    "webpack-cli": "^3.3.11"
   },
   "scripts": {
     "watch": "webpack --config=webpack/webpack.config.js --env=web.dev --watch",

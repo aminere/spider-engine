@@ -6,7 +6,6 @@ import { AssetReference, AssetReferenceState } from "./AssetReference";
 import { Asset } from "../assets/Asset";
 import { UniqueObject } from "../core/UniqueObject";
 import { ObjectReference } from "./ObjectReference";
-import { ObjectDefinition } from "../behavior/ObjectDefinition";
 import { ReferenceBase } from "./Reference";
 import { EngineEvents } from "../core/EngineEvents";
 import { Component } from "../core/Component";
