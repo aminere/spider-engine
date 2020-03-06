@@ -13,16 +13,17 @@ export declare class UIFill extends SerializableObject {
     isLoaded(): boolean;
 }
 export declare class MaterialFill extends UIFill {
-    readonly version: number;
-    material: Material | null;
+    get version(): number;
+    get material(): Material | null;
+    set material(material: Material | null);
     private _material;
     isLoaded(): boolean;
     destroy(): void;
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
 }
 export declare class SpriteFill extends UIFill {
-    readonly version: number;
-    readonly color: Color;
+    get version(): number;
+    get color(): Color;
     sprite: AssetReference<Sprite>;
     private _color;
     private _vertexBuffer;
@@ -42,11 +43,14 @@ export declare class SpriteFill extends UIFill {
 }
 export declare class TextureFill extends UIFill {
     static maskPropertyKey: string;
-    readonly version: number;
-    texture: Texture | null;
-    readonly textureRef: AssetReference<Texture>;
-    color: Color;
-    mask: Mask | null;
+    get version(): number;
+    get texture(): Texture | null;
+    set texture(texture: Texture | null);
+    get textureRef(): AssetReference<Texture>;
+    get color(): Color;
+    set color(color: Color);
+    get mask(): Mask | null;
+    set mask(mask: Mask | null);
     private _color;
     private _texture;
     private _mask;
@@ -56,16 +60,22 @@ export declare class TextureFill extends UIFill {
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
 }
 export declare class ColorFill extends UIFill {
-    color: Color;
+    get version(): number;
+    get color(): Color;
+    set color(color: Color);
+    private _color;
     constructor(color?: Color);
+    upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
 }
 export declare class SpriteSheetFill extends UIFill {
-    readonly version: number;
-    readonly texture: Texture | null;
-    readonly tileSize: Vector2;
-    currentTile: number;
-    spriteSheet: SpriteSheet | null;
-    readonly color: Color;
+    get version(): number;
+    get texture(): Texture | null;
+    get tileSize(): Vector2;
+    get currentTile(): number;
+    set spriteSheet(sheet: SpriteSheet | null);
+    get spriteSheet(): SpriteSheet | null;
+    set currentTile(tile: number);
+    get color(): Color;
     private _color;
     private _spriteSheet;
     private _currentTile;
@@ -81,7 +91,8 @@ export declare class SpriteSheetFill extends UIFill {
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
 }
 export declare class SpriteSheetMaterialFill extends SpriteSheetFill {
-    material: Material | null;
+    get material(): Material | null;
+    set material(material: Material | null);
     private _material;
     isLoaded(): boolean;
     destroy(): void;

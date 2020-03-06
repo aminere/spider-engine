@@ -13,5 +13,6 @@ export interface IRenderer {
  * @hidden
  */
 export declare class IRendererInternal {
-    static instance: IRenderer;
+    static set instance(instance: IRenderer);
+    static get instance(): IRenderer;
 }

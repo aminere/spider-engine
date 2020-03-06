@@ -5,17 +5,23 @@ export interface AnimationTargets {
     [targetName: string]: Entity;
 }
 export declare class AnimationInstance extends SerializableObject {
-    readonly version: number;
-    animation: Animation | null;
+    get version(): number;
+    get animation(): Animation | null;
+    set animation(value: Animation | null);
     loopCount: number;
     speed: number;
     autoPlay: boolean;
-    isPlaying: boolean;
-    localTime: number;
-    playTime: number;
-    readonly stopRequested: boolean;
-    playCount: number;
-    autoPlayStatus: boolean;
+    get isPlaying(): boolean;
+    set isPlaying(playing: boolean);
+    get localTime(): number;
+    set localTime(time: number);
+    get playTime(): number;
+    set playTime(time: number);
+    get stopRequested(): boolean;
+    get playCount(): number;
+    set playCount(value: number);
+    get autoPlayStatus(): boolean;
+    set autoPlayStatus(autoPlay: boolean);
     /**
      * @hidden
      */

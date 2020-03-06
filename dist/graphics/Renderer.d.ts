@@ -6,12 +6,15 @@ import { Environment } from "./Environment";
 import { IRenderer } from "./IRenderer";
 import { Component } from "../core/Component";
 export declare class Renderer implements IRenderer {
-    readonly screenSize: Vector2;
-    readonly defaultPerspectiveCamera: Camera | null;
-    readonly canvas: HTMLCanvasElement;
-    renderTarget: RenderTarget | null;
-    showWireFrame: boolean;
-    showShadowCascades: boolean;
+    get screenSize(): Vector2;
+    get defaultPerspectiveCamera(): Camera | null;
+    get canvas(): HTMLCanvasElement;
+    get renderTarget(): RenderTarget | null;
+    set renderTarget(rt: RenderTarget | null);
+    set showWireFrame(show: boolean);
+    get showWireFrame(): boolean;
+    set showShadowCascades(show: boolean);
+    get showShadowCascades(): boolean;
 }
 /**
  * @hidden
@@ -23,5 +26,5 @@ export declare class RendererInternal {
         [typeName: string]: Component[];
     }, preRender?: (camera: Camera) => void, postRender?: (camera: Camera) => void, uiPostRender?: () => void): void;
     static clearDefaultPerspectiveCamera(): void;
-    static readonly uiProjectionMatrix: Matrix44;
+    static get uiProjectionMatrix(): Matrix44;
 }

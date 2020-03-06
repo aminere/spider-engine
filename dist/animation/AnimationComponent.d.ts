@@ -12,8 +12,8 @@ export declare namespace AnimationComponentInternal {
     function getAnimationInstance(id: string | number, animations: AnimationInstance[]): AnimationInstance | null;
 }
 export declare class AnimationComponent extends Component {
-    readonly version: number;
-    readonly animations: AnimationInstance[];
+    get version(): number;
+    get animations(): AnimationInstance[];
     /**
      * @event
      */

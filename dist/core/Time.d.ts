@@ -7,9 +7,9 @@ export declare namespace TimeInternal {
     function incrementCurrentFrame(): void;
 }
 export declare class Time {
-    static readonly time: number;
-    static readonly deltaTime: number;
-    static readonly smoothDeltaTime: number;
-    static readonly fps: number;
-    static readonly currentFrame: number;
+    static get time(): number;
+    static get deltaTime(): number;
+    static get smoothDeltaTime(): number;
+    static get fps(): number;
+    static get currentFrame(): number;
 }

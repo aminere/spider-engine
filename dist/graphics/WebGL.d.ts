@@ -11,7 +11,7 @@ export declare class WebGL {
     static caps: {
         maxVertexUniforms: number;
     };
-    static readonly context: WebGLRenderingContext;
+    static get context(): WebGLRenderingContext;
     static create(context: WebGLRenderingContext, version: number): void;
     static do(func: () => any): any;
 }

@@ -4,9 +4,10 @@ import { Converter } from "../Converter";
 import { CodeBlock } from "../CodeBlock";
 import { BasePin } from "../Pin";
 export declare class CodeBlockConverterInstance extends Converter {
-    readonly version: number;
-    codeBlock: CodeBlock | null;
-    readonly customPins: ReferenceArray<BasePin>;
+    get version(): number;
+    set codeBlock(codeBlock: CodeBlock | null);
+    get codeBlock(): CodeBlock | null;
+    get customPins(): ReferenceArray<BasePin>;
     private _customPins;
     private _stateVariables;
     private _stateInitialized;

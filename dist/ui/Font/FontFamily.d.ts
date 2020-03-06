@@ -6,7 +6,7 @@ export declare class FontFamily extends Font {
     size: number;
     bold: boolean;
     italic: boolean;
-    shadow: FontShadow | undefined;
+    set shadow(shadow: FontShadow | undefined);
     texture: FontTexture;
     private _shadow;
     private _filtering;

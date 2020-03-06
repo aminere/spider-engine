@@ -17,6 +17,7 @@ export declare class SkySimulation extends Environment {
     sunPosition: Vector3;
 }
 export declare class SkyBoxEnvironment extends Environment {
-    cubeMap: StaticCubemap | null;
+    get cubeMap(): StaticCubemap | null;
+    set cubeMap(cubeMap: StaticCubemap | null);
     private _cubeMap;
 }

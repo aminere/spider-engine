@@ -3,10 +3,13 @@ import { Transform } from "../core/Transform";
 import { SerializedObject } from "../core/SerializableObject";
 import { Matrix44 } from "../math/Matrix44";
 export declare class PerspectiveProjector extends Projector {
-    readonly version: number;
-    fov: number;
-    zNear: number;
-    zFar: number;
+    get version(): number;
+    get fov(): number;
+    get zNear(): number;
+    get zFar(): number;
+    set fov(fov: number);
+    set zNear(zNear: number);
+    set zFar(zFar: number);
     private _fov;
     private _zNear;
     private _zFar;

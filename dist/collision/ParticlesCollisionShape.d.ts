@@ -6,10 +6,10 @@ import { SerializedObject } from "../core/SerializableObject";
 import { Entity } from "../core/Entity";
 import { ObjectProps } from "../core/Types";
 export declare class ParticlesCollisionShape extends CollisionShape {
-    readonly version: number;
+    get version(): number;
     tag: string;
-    particlesEntity: Entity;
-    readonly particles: Particles | null;
+    set particlesEntity(particlesEntity: Entity);
+    get particles(): Particles | null;
     private _particles;
     constructor(props?: ObjectProps<ParticlesCollisionShape>);
     getTestPriority(): CollisionTestPriority;

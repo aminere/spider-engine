@@ -7,7 +7,7 @@ export declare class Bloom extends SerializableObject {
     render(gl: WebGLRenderingContext, inputRT: RenderTarget, fullScreenQuad: VertexBuffer): RenderTarget | null;
 }
 export declare class FastBloom extends Bloom {
-    downSample: number;
+    set downSample(downSample: number);
     threshold: number;
     private _downSample;
     private _buffer1;
@@ -21,7 +21,7 @@ export declare class FastDesaturate extends Desaturate {
     rgbWeights: Vector3;
 }
 export declare class PostEffects extends SerializableObject {
-    readonly bloom: Bloom | undefined;
+    get bloom(): Bloom | undefined;
     private _bloom;
     destroy(): void;
 }

@@ -12,16 +12,17 @@ export declare namespace CodeBlockInternal {
     const trimId: (id: string) => string;
 }
 export declare class CodeBlock extends Asset implements ICodeBlock {
-    readonly version: number;
-    readonly pins: ReferenceArray<BasePin>;
-    code: string;
-    readonly program: any;
-    readonly hasCompileErrors: boolean;
-    readonly runtimeError: [string, number] | undefined;
-    readonly functions: {
+    get version(): number;
+    get pins(): ReferenceArray<BasePin>;
+    get code(): string;
+    get program(): any;
+    get hasCompileErrors(): boolean;
+    get runtimeError(): [string, number] | undefined;
+    get functions(): {
         [functioName: string]: Function;
     };
-    readonly isLoading: boolean;
+    get isLoading(): boolean;
+    set code(code: string);
     /**
      * @event
      */

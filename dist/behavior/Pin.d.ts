@@ -20,7 +20,7 @@ export declare class PinReference extends SerializableObject {
  * @hidden
  */
 export declare class BasePin extends SerializableObject {
-    readonly version: number;
+    get version(): number;
     id: string;
     name: string;
     type: PinType;

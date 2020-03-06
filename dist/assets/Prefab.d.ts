@@ -9,7 +9,7 @@ export interface SerializedPrefab {
     root: SerializedEntity;
 }
 export declare class Prefab extends Asset {
-    readonly version: number;
+    get version(): number;
     root: Entity;
     constructor();
     isLoaded(): boolean;

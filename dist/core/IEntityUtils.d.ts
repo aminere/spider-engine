@@ -18,5 +18,6 @@ export interface IEntityUtils {
  * @hidden
  */
 export declare class IEntityUtilsInternal {
-    static instance: IEntityUtils;
+    static set instance(instance: IEntityUtils);
+    static get instance(): IEntityUtils;
 }

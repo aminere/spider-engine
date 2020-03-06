@@ -6,14 +6,14 @@ interface IdToPath {
  * @hidden
  */
 export declare class AssetIdDatabaseInternal {
-    static readonly fileName: string;
-    static readonly path: string;
+    static get fileName(): string;
+    static get path(): string;
     static events: {
         assetsDeleted: AsyncEvent<string[]>;
         assetMoved: AsyncEvent<string>;
     };
-    static defaultAssetIds: IdToPath;
-    static readonly idDatabase: IdToPath;
+    static set defaultAssetIds(defaultAssetIds: IdToPath);
+    static get idDatabase(): IdToPath;
     static load(): Promise<void>;
     static reload(): Promise<void>;
     static setPath(id: string, path: string): void;

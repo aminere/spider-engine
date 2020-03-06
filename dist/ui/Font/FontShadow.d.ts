@@ -7,9 +7,9 @@ export declare class FontShadow extends SerializableObject {
     applyToContext(context: CanvasRenderingContext2D): void;
 }
 export declare class DefaultFontShadow extends FontShadow {
-    offset: Vector2;
-    blur: number;
-    color: Color;
+    set offset(offset: Vector2);
+    set blur(blur: number);
+    set color(color: Color);
     private _offset;
     private _blur;
     private _color;

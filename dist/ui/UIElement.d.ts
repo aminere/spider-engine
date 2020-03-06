@@ -6,8 +6,8 @@ export declare enum UIOverflow {
     Scroll = 1
 }
 export declare class UIElement extends Component {
-    readonly isTouchInside: boolean;
-    readonly isTouchPressed: boolean;
+    get isTouchInside(): boolean;
+    get isTouchPressed(): boolean;
     private _touchInside;
     private _touchPressed;
     setEntity(entity: Entity): void;

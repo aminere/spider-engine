@@ -9,5 +9,6 @@ export interface ISerializer {
  * @hidden
  */
 export declare class ISerializerInternal {
-    static instance: ISerializer;
+    static set instance(instance: ISerializer);
+    static get instance(): ISerializer;
 }

@@ -4,7 +4,7 @@ import { AnimationTrack, SerializedAnimationTrack, SerializedNumberTrack } from 
 import { BooleanKey, StringKey } from "../keys/NativeKey";
 import { Constructor } from "../../core/Types";
 export declare class SingleTrack<T extends AnimationKey> extends AnimationTrack {
-    readonly version: number;
+    get version(): number;
     keys: ArrayProperty<T>;
     internalCreateKey: () => AnimationKey;
     constructor(ctor: Constructor<T>);

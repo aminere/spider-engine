@@ -28,8 +28,9 @@ export declare namespace EntityInternal {
     function clearComponentByName(entity: any, typeName: string): void;
 }
 export declare class Entity extends UniqueObject {
-    readonly transform: Transform;
-    active: boolean;
+    get transform(): Transform;
+    get active(): boolean;
+    set active(active: boolean);
     children: Entity[];
     parent?: Entity;
     prefabId?: string;

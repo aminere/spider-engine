@@ -3,7 +3,7 @@ import { SerializedObject } from "./SerializableObject";
 import { Component } from "./Component";
 import { ObjectProps } from "./Types";
 export declare class Bone extends Component {
-    readonly version: number;
+    get version(): number;
     worldMatrix: SerializableMatrix44;
     inverseMatrix: SerializableMatrix44;
     fbxId: number;

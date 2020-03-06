@@ -1,10 +1,12 @@
 import { Texture } from "./Texture";
 import { Color } from "./Color";
 export declare class DrawableTexture extends Texture {
-    rgba: boolean;
-    width: number;
-    height: number;
-    data: Uint8Array;
+    set rgba(rgba: boolean);
+    get rgba(): boolean;
+    set width(width: number);
+    set height(height: number);
+    set data(data: Uint8Array);
+    get data(): Uint8Array;
     private _width;
     private _height;
     private _rgba;

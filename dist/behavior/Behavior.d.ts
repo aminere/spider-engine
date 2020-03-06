@@ -16,14 +16,16 @@ import { Reference } from "../serialization/Reference";
 import { Connection } from "./Connection";
 import { IBehavior } from "./IBehavior";
 export declare class Behavior extends Asset implements IBehavior {
-    readonly version: number;
-    readonly operators: Reference<BehaviorNode>[];
-    readonly connections: Connection[];
-    readonly pins: ReferenceArray<BasePin>;
-    customPins: ReferenceArray<BasePin>;
-    readonly inlineVariables: ArrayProperty<InlineVariable>;
-    readonly activeOperators: Operator[];
-    ownerComponent: IBehaviorComponent;
+    get version(): number;
+    get operators(): Reference<BehaviorNode>[];
+    get connections(): Connection[];
+    get pins(): ReferenceArray<BasePin>;
+    get customPins(): ReferenceArray<BasePin>;
+    get inlineVariables(): ArrayProperty<InlineVariable>;
+    get activeOperators(): Operator[];
+    set customPins(customPins: ReferenceArray<BasePin>);
+    set ownerComponent(owner: IBehaviorComponent);
+    get ownerComponent(): IBehaviorComponent;
     inputsPosition: Vector2;
     outputsPosition: Vector2;
     /**

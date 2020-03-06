@@ -4,7 +4,7 @@ import { Transform } from "../core/Transform";
 import { VoidSyncEvent } from "ts-events";
 import { IFrustum } from "./IFrustum";
 export declare class Projector extends SerializableObject {
-    readonly frustum: IFrustum;
+    get frustum(): IFrustum;
     changed: VoidSyncEvent;
     zNear: number;
     zFar: number;

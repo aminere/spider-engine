@@ -16,15 +16,17 @@ export declare enum CameraClear {
     None = 1
 }
 export declare class Camera extends Component {
-    readonly version: number;
-    projector: Projector;
-    readonly clearValue: CameraClear;
-    readonly postEffects: PostEffects | undefined;
-    renderTarget: RenderTarget | null;
-    readonly priority: number;
-    readonly sceneRenderTarget: RenderTarget;
-    readonly frustum: IFrustum;
-    filter: VisualFilter;
+    get version(): number;
+    set projector(projector: Projector);
+    get projector(): Projector;
+    get clearValue(): CameraClear;
+    get postEffects(): PostEffects | undefined;
+    get renderTarget(): RenderTarget | null;
+    get priority(): number;
+    get sceneRenderTarget(): RenderTarget;
+    get frustum(): IFrustum;
+    set renderTarget(renderTarget: RenderTarget | null);
+    set filter(filter: VisualFilter);
     private _projector;
     private _clearValue;
     private _priority;

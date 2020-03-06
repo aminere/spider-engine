@@ -7,10 +7,11 @@ import { BasePin } from "../Pin";
  * @hidden
  */
 export declare class CodeBlockInstance extends Operator {
-    readonly version: number;
-    codeBlock: CodeBlock | null;
-    readonly customPins: ReferenceArray<BasePin>;
-    readonly stateVariables: object;
+    get version(): number;
+    get codeBlock(): CodeBlock | null;
+    set codeBlock(codeBlock: CodeBlock | null);
+    get customPins(): ReferenceArray<BasePin>;
+    get stateVariables(): object;
     private _customPins;
     private _stateVariables;
     private _onStartExecutionPending;

@@ -20,10 +20,10 @@ export declare type Vector3Offset = "position" | "velocity";
  */
 export declare type DataOffset = Vector3Offset | ColorOffset | "life" | "remainingLife" | "size" | "active";
 export declare class ParticlesGeometry extends Geometry {
-    readonly vb: VertexBuffer;
-    worldSpace: boolean;
-    particleCount: number;
-    shape: ParticleShape | undefined;
+    get vb(): VertexBuffer;
+    set worldSpace(worldSpace: boolean);
+    set particleCount(count: number);
+    set shape(shape: ParticleShape | undefined);
     private _vb;
     private _interleavedData;
     private _worldTransform;

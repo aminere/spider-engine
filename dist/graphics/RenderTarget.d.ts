@@ -2,9 +2,9 @@ import { Texture } from "./Texture";
 import { Size } from "../core/Size";
 import { VoidAsyncEvent } from "ts-events";
 export declare class RenderTarget extends Texture {
-    width: Size;
-    height: Size;
-    readonly valid: boolean;
+    set width(width: Size);
+    set height(height: Size);
+    get valid(): boolean;
     /**
      * @event
      */

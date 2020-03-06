@@ -8,15 +8,16 @@ import { Entity } from "../core/Entity";
 import { CollisionFilter } from "./CollisionFilter";
 import { CollisionShape } from "./CollisionShape";
 export declare class Collider extends Component {
-    readonly version: number;
-    readonly group: CollisionGroup | null;
-    shapes: CollisionShape[];
-    readonly filter: CollisionFilter | undefined;
-    onCollision: ((info: CollisionInfo) => void) | null;
+    get version(): number;
+    get group(): CollisionGroup | null;
+    get shapes(): CollisionShape[];
+    get filter(): CollisionFilter | undefined;
+    set shapes(shapes: CollisionShape[]);
+    set onCollision(callback: ((info: CollisionInfo) => void) | null);
     /**
      * @event
      */
-    readonly collision: SyncEvent<CollisionInfo>;
+    get collision(): SyncEvent<CollisionInfo>;
     private _group;
     private _filter;
     private _shapes;

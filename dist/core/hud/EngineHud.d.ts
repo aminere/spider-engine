@@ -21,7 +21,7 @@ export declare class HudCommand extends HudControl {
     constructor(name: string, onTriggered: () => void);
 }
 export declare class EngineHud {
-    static load(): Promise<{}[]>;
+    static load(): Promise<unknown[]>;
     static isLoaded(): boolean;
     static create(): Entity | null;
     static setControls(controls: HudControl[]): void;

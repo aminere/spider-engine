@@ -9,10 +9,12 @@ export declare enum TexturePublishFormat {
     SVG = 2
 }
 export declare class Texture2D extends Texture {
-    readonly version: number;
-    readonly image: HTMLImageElement;
-    publishFormat: number;
-    textureData: string;
+    get version(): number;
+    get image(): HTMLImageElement;
+    get publishFormat(): number;
+    set publishFormat(format: number);
+    set textureData(data: string);
+    get textureData(): string;
     protected _filtering: TextureFiltering;
     protected _repeat: boolean;
     private _mipMaps;

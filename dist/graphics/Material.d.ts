@@ -23,15 +23,22 @@ interface MaterialProps {
     depthTest?: boolean;
 }
 export declare class Material extends Asset {
-    readonly version: number;
-    shader: Shader | null;
-    blending: BlendingModes;
-    renderPass: RenderPass;
-    cullMode: CullModes;
-    priority: number;
-    shaderParams: SerializableObject;
-    depthTest: boolean;
-    readonly buckedId: string;
+    get version(): number;
+    get shader(): Shader | null;
+    get blending(): BlendingModes;
+    get renderPass(): RenderPass;
+    get cullMode(): CullModes;
+    get priority(): number;
+    get shaderParams(): SerializableObject;
+    get depthTest(): boolean;
+    set shader(shader: Shader | null);
+    set blending(blending: BlendingModes);
+    set renderPass(renderPass: RenderPass);
+    set cullMode(cullMode: CullModes);
+    set priority(priority: number);
+    set depthTest(depthTest: boolean);
+    set shaderParams(paramDefinitions: SerializableObject);
+    get buckedId(): string;
     private _blending;
     private _renderPass;
     private _cullMode;

@@ -57,8 +57,9 @@ export declare class EntityReferencePin extends TDataPin<EntityReference> {
     constructor(id?: string, type?: PinType);
 }
 export declare class ComponentReferencePin<T extends Component> extends TDataPin<ComponentReference<T>> {
-    readonly version: number;
-    componentType: string;
+    get version(): number;
+    get componentType(): string;
+    set componentType(type: string);
     private _componentType;
     constructor(id?: string, type?: PinType, componentType?: string);
     setProperty(name: string, value: any): void;
@@ -68,13 +69,16 @@ export declare class CollisionInfoPin extends TDataPin<CollisionInfo> {
     constructor(id?: string, type?: PinType);
 }
 export declare class ObjectReferencePin extends TDataPin<ObjectReference> {
-    declarationId: string;
+    get declarationId(): string;
+    set declarationId(declarationId: string);
     constructor(declarationId: string, id?: string, type?: PinType);
     setProperty(name: string, value: any): void;
 }
 export declare class ArrayPin<T extends DataPin> extends TDataPin<ArrayProperty<T>> {
-    dataType: string | undefined;
-    declarationId: string | undefined;
+    get dataType(): string | undefined;
+    set dataType(type: string | undefined);
+    get declarationId(): string | undefined;
+    set declarationId(declarationId: string | undefined);
     private _dataType?;
     private _declarationId?;
     private _isDirty;
@@ -84,7 +88,8 @@ export declare class ArrayPin<T extends DataPin> extends TDataPin<ArrayProperty<
     setProperty(name: string, value: any): void;
 }
 export declare class AssetPin<T extends Asset> extends TDataPin<AssetReference<T>> {
-    assetType: string;
+    get assetType(): string;
+    set assetType(type: string);
     private _assetType;
     constructor(id?: string, type?: PinType, assetType?: string);
     setProperty(name: string, value: any): void;

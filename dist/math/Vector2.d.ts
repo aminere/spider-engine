@@ -6,11 +6,13 @@ export declare class Vector2 {
     static up: Vector2;
     static pool: ObjectPool<Vector2>;
     static dummy: Vector2;
-    readonly length: number;
-    readonly lengthSq: number;
+    get length(): number;
+    get lengthSq(): number;
     x: number;
     y: number;
     private _array;
+    static distance(a: Vector2, b: Vector2): number;
+    static distanceSq(a: Vector2, b: Vector2): number;
     static fromArray(arr: number[]): void;
     static fromPool(): Vector2;
     constructor(x?: number, y?: number);

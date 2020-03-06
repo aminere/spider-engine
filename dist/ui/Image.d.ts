@@ -5,8 +5,9 @@ import { VertexBuffer } from "../graphics/VertexBuffer";
 import { ObjectProps } from "../core/Types";
 import { Entity } from "../core/Entity";
 export declare class Image extends UIElement {
-    readonly version: number;
-    fill: UIFill | undefined;
+    get version(): number;
+    get fill(): UIFill | undefined;
+    set fill(fill: UIFill | undefined);
     private _fill;
     constructor(props?: ObjectProps<Image>);
     setEntity(entity: Entity): void;

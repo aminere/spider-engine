@@ -2,7 +2,7 @@ import { BehaviorNode } from "../BehaviorNode";
 import { SignalPin } from "../Pin";
 import { BooleanPin, Vector2Pin, EntityReferencePin } from "../DataPins";
 export declare class UIEvents extends BehaviorNode {
-    readonly stopPropagation: boolean;
+    get stopPropagation(): boolean;
     _touchDown: SignalPin;
     _click: SignalPin;
     _touchMove: SignalPin;

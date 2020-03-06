@@ -8,11 +8,12 @@ import { SerializedObject } from "../core/SerializableObject";
 import { Component } from "../core/Component";
 import { IBehaviorComponent } from "./IBehaviorComponent";
 export declare class BehaviorComponent extends Component implements IBehaviorComponent {
-    readonly version: number;
+    get version(): number;
     autoStart: boolean;
-    behavior: Behavior | null;
-    readonly customPins: ReferenceArray<BasePin>;
-    readonly activeOperators: Operator[];
+    get behavior(): Behavior | null;
+    set behavior(behavior: Behavior | null);
+    get customPins(): ReferenceArray<BasePin>;
+    get activeOperators(): Operator[];
     private _customPins;
     private _uniqueBehaviorInstance;
     private _behavior;

@@ -1,6 +1,6 @@
 import { GraphicAsset } from "./GraphicAsset";
 export declare class Texture extends GraphicAsset {
-    readonly textureId: WebGLTexture | null;
+    get textureId(): WebGLTexture | null;
     protected _textureId: WebGLTexture | null;
     getWidth(): number;
     getHeight(): number;

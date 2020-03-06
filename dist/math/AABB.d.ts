@@ -7,7 +7,7 @@ export declare class AABB {
     static pool: ObjectPool<AABB>;
     min: Vector3;
     max: Vector3;
-    readonly corners: Vector3[];
+    get corners(): Vector3[];
     private _corners;
     private _cornersDirty;
     static fromVertexBuffer(vb: VertexBuffer): AABB;
@@ -16,6 +16,7 @@ export declare class AABB {
     constructor(min?: Vector3, max?: Vector3);
     set(min: Vector3, max: Vector3): this;
     contains(p: Vector3): boolean;
+    collidesWith(other: AABB): boolean;
     add(other: AABB): this;
     addAABBs(a: AABB, b: AABB): this;
     copy(other: AABB): this;

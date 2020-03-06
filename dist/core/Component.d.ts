@@ -1,10 +1,11 @@
 import { SerializableObject } from "./SerializableObject";
 import { Entity } from "./Entity";
 export declare class Component extends SerializableObject {
-    readonly parent: Entity | undefined;
-    readonly entity: Entity;
-    readonly id: string;
-    active: boolean;
+    get parent(): Entity | undefined;
+    get entity(): Entity;
+    get id(): string;
+    get active(): boolean;
+    set active(active: boolean);
     /**
      * @hidden
      */

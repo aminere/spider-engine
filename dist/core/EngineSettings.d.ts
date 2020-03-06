@@ -8,12 +8,12 @@ export declare namespace EngineSettingsInternal {
 }
 export declare class EngineSettings extends UniqueObject {
     private static _instance;
-    readonly version: number;
+    get version(): number;
     canvasAlpha: boolean;
     startupScene?: string;
     useCustomDefaultAssets?: boolean;
-    static load(): Promise<{}>;
-    static readonly instance: EngineSettings;
+    static load(): Promise<unknown>;
+    static get instance(): EngineSettings;
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
     save(): void;
 }

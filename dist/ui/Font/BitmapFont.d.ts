@@ -6,7 +6,7 @@ import { Texture } from "../../graphics/Texture";
 import { SerializedObject } from "../../core/SerializableObject";
 import { FontMetrics } from "./FontMetrics";
 export declare class BitmapFont extends Font {
-    readonly version: number;
+    get version(): number;
     texture: AssetReference<Texture2D>;
     metrics: AssetReference<FontMetrics>;
     lineHeight: number;

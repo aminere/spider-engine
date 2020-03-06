@@ -14,15 +14,15 @@ export interface CacheEntry {
     element: Layout;
 }
 export declare class Screen extends Component {
-    readonly version: number;
-    readonly cache: CacheEntry[];
-    readonly cacheSize: number;
-    readonly offset: Vector2;
-    readonly translationX: number;
-    readonly translationY: number;
-    readonly scale: number;
-    readonly screenTransform: Matrix44;
-    readonly resolution: Resolution | undefined;
+    get version(): number;
+    get cache(): CacheEntry[];
+    get cacheSize(): number;
+    get offset(): Vector2;
+    get translationX(): number;
+    get translationY(): number;
+    get scale(): number;
+    get screenTransform(): Matrix44;
+    get resolution(): Resolution | undefined;
     private _resolution;
     private _integerPixels;
     private _cache;

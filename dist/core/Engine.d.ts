@@ -1,5 +1,6 @@
 import { TypeDefinition } from "../serialization/Factory";
 import { Vector2 } from "../math/Vector2";
+import { IFile } from "../io/File/IFile";
 import { Camera } from "../graphics/Camera";
 import { SerializableObject } from "./SerializableObject";
 import { Component } from "./Component";
@@ -10,6 +11,7 @@ export interface IEngineConfig {
     projectId?: string;
     customTypes?: TypeDefinition<SerializableObject>[];
     initialTouchPosition?: Vector2;
+    customFileIO?: IFile;
     preRender?: (camera: Camera) => void;
     postRender?: (camera: Camera) => void;
     uiPostRender?: () => void;

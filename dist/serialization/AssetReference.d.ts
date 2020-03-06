@@ -11,10 +11,13 @@ export interface AssetChangedEvent {
 }
 export declare class AssetReference<T extends Asset> {
     typeName: () => string;
-    id: string | undefined;
-    asset: T | null;
-    state: AssetReferenceState;
-    readonly isResolved: boolean;
+    get id(): string | undefined;
+    set id(id: string | undefined);
+    get asset(): T | null;
+    set asset(asset: T | null);
+    get state(): AssetReferenceState;
+    set state(state: AssetReferenceState);
+    get isResolved(): boolean;
     /**
      * @event
      */

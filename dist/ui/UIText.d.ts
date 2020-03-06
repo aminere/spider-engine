@@ -5,11 +5,13 @@ import { SerializedObject } from "../core/SerializableObject";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { Entity } from "../core/Entity";
 export declare class Text extends UIElement {
-    readonly version: number;
-    text: string;
-    alignment: number;
-    color: Color;
-    readonly font: Font | undefined;
+    get version(): number;
+    set text(text: string);
+    set alignment(alignment: number);
+    set color(color: Color);
+    get text(): string;
+    get color(): Color;
+    get font(): Font | undefined;
     private _color;
     private _font;
     private _text;

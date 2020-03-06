@@ -5,7 +5,7 @@ export interface INativeArray {
 }
 export declare type SerializedNativeArray = INativeArray;
 export declare class NativeArray<T extends NativeType> implements INativeArray {
-    readonly typeName: string;
+    get typeName(): string;
     data: T[];
     private _typeName;
     constructor(typeName: string, data?: T[]);

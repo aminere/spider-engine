@@ -34,16 +34,16 @@ export declare class ParticleColorOverLife extends ParticleValueOverLife {
     protected lerp(src: Color, dest: Color, factor: number, target?: Color): Color;
 }
 export declare class Particles extends Component {
-    readonly version: number;
-    readonly visual: Visual;
-    readonly geometry: ParticlesGeometry;
-    volume: Volume | undefined;
-    shape: ParticleShape | undefined;
-    speedOverLife: ParticleNumberOverLife[];
-    sizeOverLife: ParticleNumberOverLife[];
-    colorOverLife: ParticleColorOverLife[];
-    group: VisualGroup;
-    material: Material;
+    get version(): number;
+    get visual(): Visual;
+    get geometry(): ParticlesGeometry;
+    set volume(volume: Volume | undefined);
+    set shape(shape: ParticleShape | undefined);
+    set speedOverLife(samples: ParticleNumberOverLife[]);
+    set sizeOverLife(samples: ParticleNumberOverLife[]);
+    set colorOverLife(samples: ParticleColorOverLife[]);
+    set group(group: VisualGroup);
+    set material(material: Material);
     duration: number;
     isLooping: boolean;
     worldSpace: boolean;

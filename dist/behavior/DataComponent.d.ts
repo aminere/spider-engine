@@ -1,13 +1,15 @@
 import { ObjectDeclaration } from "./ObjectDeclaration";
 import { ReferenceArray } from "../serialization/ReferenceArray";
 import { BasePin } from "./Pin";
+import { IObjectDefinition } from "./BehaviorUtils";
 import { Component } from "../core/Component";
 import { ObjectProps } from "../core/Types";
-export declare class Data extends Component {
+export declare class Data extends Component implements IObjectDefinition {
     static pinsPropertyKey: string;
-    declaration: ObjectDeclaration | null;
-    readonly declarationId: string | undefined;
-    readonly pins: ReferenceArray<BasePin>;
+    set declaration(decl: ObjectDeclaration | null);
+    get declaration(): ObjectDeclaration | null;
+    get declarationId(): string | undefined;
+    get pins(): ReferenceArray<BasePin>;
     _pins: ReferenceArray<BasePin>;
     private _declaration;
     constructor(props?: ObjectProps<Data>);

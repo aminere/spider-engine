@@ -13,8 +13,10 @@ export interface TouchEvent {
     button: number;
 }
 export declare class Input {
-    static touchX: number;
-    static touchY: number;
+    static get touchX(): number;
+    static get touchY(): number;
+    static set touchX(touchX: number);
+    static set touchY(touchY: number);
     static touchPressed: SyncEvent<TouchEvent>;
     static touchMoved: SyncEvent<TouchEvent>;
     static touchReleased: SyncEvent<TouchEvent>;
@@ -27,7 +29,7 @@ export declare class Input {
  */
 export declare class InputInternal {
     static create(touchPos: Vector2): void;
-    static readonly keyChangedInfo: KeyEvent;
+    static get keyChangedInfo(): KeyEvent;
     static onTouchDown(x: number, y: number, button: number): void;
     static onTouchMove(x: number, y: number, button: number): void;
     static onTouchUp(x: number, y: number, button: number): void;

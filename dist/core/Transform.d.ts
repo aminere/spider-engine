@@ -14,27 +14,31 @@ export declare namespace TransformInternal {
     const scaleKey = "_scale";
 }
 export declare class Transform extends Component {
-    readonly version: number;
+    get version(): number;
     /**
      * @event
      */
     changed: VoidSyncEvent;
-    position: Vector3;
-    rotation: Quaternion;
-    scale: Vector3;
-    eventsEnabled: boolean;
-    readonly localMatrix: Matrix44;
-    readonly worldMatrix: Matrix44;
-    readonly invWorldMatrix: Matrix44;
-    readonly worldRight: Vector3;
-    readonly worldForward: Vector3;
-    readonly worldUp: Vector3;
-    readonly right: Vector3;
-    readonly forward: Vector3;
-    readonly up: Vector3;
-    worldPosition: Vector3;
-    readonly worldRotation: Quaternion;
-    readonly worldScale: Vector3;
+    get position(): Vector3;
+    get rotation(): Quaternion;
+    get scale(): Vector3;
+    set position(position: Vector3);
+    set rotation(rotation: Quaternion);
+    set scale(scale: Vector3);
+    set eventsEnabled(enabled: boolean);
+    get localMatrix(): Matrix44;
+    get worldMatrix(): Matrix44;
+    get invWorldMatrix(): Matrix44;
+    get worldRight(): Vector3;
+    get worldForward(): Vector3;
+    get worldUp(): Vector3;
+    get right(): Vector3;
+    get forward(): Vector3;
+    get up(): Vector3;
+    get worldPosition(): Vector3;
+    set worldPosition(worldPosition: Vector3);
+    get worldRotation(): Quaternion;
+    get worldScale(): Vector3;
     private _position;
     private _rotation;
     private _scale;

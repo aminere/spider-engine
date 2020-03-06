@@ -13,8 +13,9 @@ export declare class BehaviorNode extends SerializableObject {
      * @hidden
      */
     widthInEditor: number;
-    readonly pins: ReferenceArray<BasePin>;
-    ownerBehavior: IBehavior;
+    get pins(): ReferenceArray<BasePin>;
+    set ownerBehavior(owner: IBehavior);
+    get ownerBehavior(): IBehavior;
     private _ownerBehavior;
     private _pins;
     constructor();

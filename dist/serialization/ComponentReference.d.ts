@@ -5,9 +5,11 @@ export interface SerializedComponentReference {
     typeName: string;
 }
 export declare class ComponentReference<T extends Component> {
-    entityId: string | undefined;
-    readonly typeName: string;
-    component: T | null;
+    get entityId(): string | undefined;
+    set entityId(id: string | undefined);
+    get typeName(): string;
+    set component(component: T | null);
+    get component(): T | null;
     private _entityId?;
     private _typeName;
     private _entity;

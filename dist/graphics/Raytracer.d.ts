@@ -3,8 +3,8 @@ import { Projector } from "./Projector";
 import { Component } from "../core/Component";
 import { ObjectProps } from "../core/Types";
 export declare class Raytracer extends Component {
-    target: DrawableTexture;
-    projector: Projector;
+    set target(target: DrawableTexture);
+    set projector(projector: Projector);
     reflections: boolean;
     shadows: boolean;
     shadowRadius: number;

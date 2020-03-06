@@ -18,7 +18,7 @@ export declare enum FrustumTest {
     Intersect = 2
 }
 export declare class Frustum {
-    readonly corners: Vector3[];
+    get corners(): Vector3[];
     private _planes;
     private _corners;
     constructor();

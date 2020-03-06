@@ -10,9 +10,10 @@ export interface IFile {
  * @hidden
  */
 export declare class IFileInternal {
-    static instance: IFile;
-    static defaultAssets: {
+    static set instance(instance: IFile);
+    static get instance(): IFile;
+    static set defaultAssets(defaultAssets: {
         [path: string]: string;
-    };
+    });
     static getDefaultAsset(path: string): string;
 }

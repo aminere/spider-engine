@@ -7,9 +7,10 @@ export declare enum RigidBodyType {
     Kinematic
 }
 export declare class RigidBody extends Component {
-    mass: number;
-    readonly body: Cannon.Body;
-    type: number;
+    set mass(mass: number);
+    get mass(): number;
+    get body(): Cannon.Body;
+    set type(type: number);
     private _mass;
     private _type;
     private _rigidBody;

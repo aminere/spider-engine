@@ -19,5 +19,6 @@ export interface IObjectManager {
  * @hidden
  */
 export declare class IObjectManagerInternal {
-    static instance: IObjectManager;
+    static set instance(instance: IObjectManager);
+    static get instance(): IObjectManager;
 }

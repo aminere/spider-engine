@@ -6,13 +6,19 @@ declare type VertexAttributes = {
     [P in VertexAttribute]?: number[];
 };
 export declare class VertexBuffer {
-    vertexCount: number;
-    primitiveType: PrimitiveType;
-    isDynamic: boolean;
-    name: string | undefined;
-    attributes: VertexAttributes;
-    readonly id: string;
-    indices: number[] | undefined;
+    set vertexCount(count: number);
+    get vertexCount(): number;
+    set primitiveType(type: PrimitiveType);
+    get primitiveType(): PrimitiveType;
+    set isDynamic(dynamic: boolean);
+    get isDynamic(): boolean;
+    set name(name: string | undefined);
+    get name(): string | undefined;
+    get attributes(): VertexAttributes;
+    set attributes(attributes: VertexAttributes);
+    get id(): string;
+    get indices(): number[] | undefined;
+    set indices(indices: number[] | undefined);
     private _attributes;
     private _vertexCount;
     private _primitiveType;

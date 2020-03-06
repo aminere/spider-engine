@@ -19,13 +19,15 @@ export interface ShaderInstance {
     fragmentShader: WebGLShader | null;
 }
 export declare class Shader extends GraphicAsset {
-    readonly version: number;
+    get version(): number;
     /**
      * @event
      */
     codeChanged: AsyncEvent<string>;
-    vertexCode: string;
-    fragmentCode: string;
+    get vertexCode(): string;
+    get fragmentCode(): string;
+    set vertexCode(vertexCode: string);
+    set fragmentCode(fragmentCode: string);
     protected _vertexCode: string;
     protected _fragmentCode: string;
     protected _shaderError: boolean;

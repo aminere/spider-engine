@@ -1,5 +1,5 @@
 export declare class ObjectPool<T extends object> {
-    readonly size: number;
+    get size(): number;
     private _objects;
     private _capacity;
     private _size;

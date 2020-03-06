@@ -23,5 +23,6 @@ export interface IFactory {
  * @hidden
  */
 export declare class IFactoryInternal {
-    static instance: IFactory;
+    static set instance(instance: IFactory);
+    static get instance(): IFactory;
 }

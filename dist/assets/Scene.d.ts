@@ -26,14 +26,16 @@ export interface SerializedScene {
     fog: SerializedReference;
 }
 export declare class Scene extends Asset {
-    readonly version: number;
+    get version(): number;
     root: Entity;
     /**
      * @hidden
      */
     prefabInstances?: PrefabInstances;
-    fog: Fog | undefined;
-    environment: Environment | undefined;
+    set fog(fog: Fog | undefined);
+    get fog(): Fog | undefined;
+    set environment(environment: Environment | undefined);
+    get environment(): Environment | undefined;
     private _environment;
     private _fog;
     private _isLoaded;

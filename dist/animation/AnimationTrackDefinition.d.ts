@@ -3,8 +3,8 @@ import { SerializableObject, SerializedObject } from "../core/SerializableObject
 import { AnimationTrack } from "./tracks/AnimationTrack";
 import { AnimationTrackTransition } from "./AnimationTypes";
 export declare class AnimationTrackDefinition extends SerializableObject {
-    readonly version: number;
-    readonly id: string;
+    get version(): number;
+    get id(): string;
     propertyPath: string;
     track: Reference<AnimationTrack>;
     targetName?: string;

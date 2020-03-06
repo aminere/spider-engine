@@ -16,10 +16,13 @@ export declare class RaySphereCollisionResult extends RayAABBCollisionResult {
 }
 export declare class Ray {
     static dummy: Ray;
-    origin: Vector3;
-    direction: Vector3;
-    readonly destination: Vector3;
-    length: number;
+    get origin(): Vector3;
+    get direction(): Vector3;
+    get destination(): Vector3;
+    get length(): number;
+    set origin(start: Vector3);
+    set direction(direction: Vector3);
+    set length(length: number);
     private _origin;
     private _direction;
     private _destination;

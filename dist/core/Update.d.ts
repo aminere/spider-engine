@@ -9,5 +9,5 @@ export declare class Update {
     /**
      * @event
      */
-    static readonly hook: VoidSyncEvent;
+    static get hook(): VoidSyncEvent;
 }

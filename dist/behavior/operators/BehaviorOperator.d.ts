@@ -7,9 +7,10 @@ import { Behavior } from "../Behavior";
 import { BasePin } from "../Pin";
 import { ExecutionStatus } from "../ExecutionStatus";
 export declare class BehaviorOperator extends Operator {
-    readonly version: number;
-    behavior: Behavior | null;
-    readonly customPins: ReferenceArray<BasePin>;
+    get version(): number;
+    set behavior(behavior: Behavior | null);
+    get behavior(): Behavior | null;
+    get customPins(): ReferenceArray<BasePin>;
     private _uniqueBehaviorInstance;
     private _customPins;
     private _behavior;

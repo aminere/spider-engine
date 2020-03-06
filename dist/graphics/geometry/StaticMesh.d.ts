@@ -5,8 +5,9 @@ import { VertexBuffer } from "../VertexBuffer";
 import { ObjectProps } from "../../core/Types";
 import { SerializedObject } from "../../core/SerializableObject";
 export declare class StaticMesh extends Geometry {
-    readonly version: number;
-    mesh: StaticMeshAsset | null;
+    get version(): number;
+    set mesh(mesh: StaticMeshAsset | null);
+    get mesh(): StaticMeshAsset | null;
     private _mesh;
     constructor(props?: ObjectProps<StaticMesh>);
     getVertexBuffer(): VertexBuffer | null;

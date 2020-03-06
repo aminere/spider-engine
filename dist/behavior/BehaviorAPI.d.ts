@@ -179,7 +179,7 @@ export declare class BehaviorAPI {
         };
         Array: {
             isArray: (a: any) => boolean;
-            from: (a: any) => {}[];
+            from: (a: any) => unknown[];
         };
         Physics: {
             rayCast: (ray: Ray, filter?: CollisionFilter | undefined) => RaycastResult | null;

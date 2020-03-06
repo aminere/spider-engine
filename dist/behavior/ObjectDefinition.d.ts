@@ -1,12 +1,14 @@
 import { ObjectDeclaration } from "./ObjectDeclaration";
 import { ReferenceArray } from "../serialization/ReferenceArray";
 import { BasePin } from "./Pin";
+import { IObjectDefinition } from "./BehaviorUtils";
 import { Asset } from "../assets/Asset";
 import { ObjectProps } from "../core/Types";
-export declare class ObjectDefinition extends Asset {
-    declaration: ObjectDeclaration | null;
-    readonly declarationId: string | undefined;
-    readonly pins: ReferenceArray<BasePin>;
+export declare class ObjectDefinition extends Asset implements IObjectDefinition {
+    set declaration(decl: ObjectDeclaration | null);
+    get declaration(): ObjectDeclaration | null;
+    get declarationId(): string | undefined;
+    get pins(): ReferenceArray<BasePin>;
     _pins: ReferenceArray<BasePin>;
     private _declaration;
     constructor(props?: ObjectProps<ObjectDefinition>);

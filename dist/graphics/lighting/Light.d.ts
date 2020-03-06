@@ -6,10 +6,11 @@ import { ObjectProps } from "../../core/Types";
 import { LightType } from "./LightType";
 import { Shadow } from "./Shadow";
 export declare class Light extends Component {
-    readonly version: number;
-    type: LightType;
-    readonly castShadows: boolean;
-    readonly shadow: Shadow | undefined;
+    get version(): number;
+    set type(type: LightType);
+    get type(): LightType;
+    get castShadows(): boolean;
+    get shadow(): Shadow | undefined;
     intensity: number;
     color: Color;
     private _type;

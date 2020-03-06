@@ -7,10 +7,11 @@ export declare enum PhysicsBroadPhaseType {
     SAP = 2
 }
 export declare class PhysicsContext extends Component {
-    broadPhase: number;
-    gravity: Vector3;
-    solverIterations: number;
-    world: Cannon.World;
+    set broadPhase(broadPhase: number);
+    set gravity(gravity: Vector3);
+    set solverIterations(iterations: number);
+    get world(): Cannon.World;
+    set world(world: Cannon.World);
     private _gravity;
     private _broadPhase;
     private _solverIterations;

@@ -25,11 +25,14 @@ export declare class Vector3 {
      */
     static dummy2: Vector3;
     static pool: ObjectPool<Vector3>;
-    x: number;
-    y: number;
-    z: number;
-    readonly length: number;
-    readonly lengthSq: number;
+    get x(): number;
+    get y(): number;
+    get z(): number;
+    set x(x: number);
+    set y(y: number);
+    set z(z: number);
+    get length(): number;
+    get lengthSq(): number;
     private _x;
     private _y;
     private _z;
