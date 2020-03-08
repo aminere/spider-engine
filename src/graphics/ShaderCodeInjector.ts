@@ -45,7 +45,13 @@ export class ShaderCodeInjector {
         let directives = "";
         let definitions = "";
         let statements = "";
-        let needInjection = WebGL.version > 1;
+        let version = "";
+        let needInjection = false;
+
+        if (WebGL.version > 1) {
+            version = "#version 300 es";
+            needInjection = true;
+        }
 
         if (Interfaces.renderer.showWireFrame) {
             definitions = `${definitions}
@@ -90,7 +96,7 @@ vBarycentric = barycentricCoord;`;
         if (needInjection) {
             let sections = Private.getSections(vertexCode);
             if (sections) {
-                return `${WebGL.version === 2 ? "#version 300 es" : ""}
+                return `${version}
 ${directives}
 ${sections.qualifiers}
 ${definitions}
@@ -113,7 +119,15 @@ ${statements}
         let directives = "";
         let definitions = "";
         let postProcess = "";
-        let needInjection = WebGL.version > 1;        
+        let version = "";
+        let fragColorLiteral = "gl_FragColor";
+        let needInjection = false;
+
+        if (WebGL.version > 1) {
+            version = "#version 300 es";
+            fragColorLiteral = "fragColor";
+            needInjection = true;
+        }
 
         if (Interfaces.renderer.showWireFrame) {
             // Wireframe visualization
@@ -139,10 +153,10 @@ float edgeFactor() {
 
             postProcess = `${postProcess}
 #ifdef Supports_GL_OES_standard_derivatives
-    gl_FragColor = mix(vec4(.8, .8, .8, 1.0), gl_FragColor, edgeFactor());    
+    ${fragColorLiteral} = mix(vec4(.8, .8, .8, 1.0), ${fragColorLiteral}, edgeFactor());    
 #else
     if(any(lessThan(vBarycentric, vec3(0.01)))) {
-        gl_FragColor = vec4(vec3(.7), 1.0);
+        ${fragColorLiteral} = vec4(vec3(.7), 1.0);
     }
 #endif`;
 
@@ -192,7 +206,7 @@ float edgeFactor() {
         if (needInjection) {
             let sections = Private.getSections(fragmentCode);
             if (sections) {
-                return `${WebGL.version === 2 ? "#version 300 es" : ""}
+                return `${version}
 ${sections.qualifiers}
 ${directives}
 ${definitions}
