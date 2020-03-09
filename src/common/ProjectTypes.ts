@@ -7,6 +7,7 @@ export interface CompactProjectInfo {
     isOpenSource: boolean;
     thumbnailTimestamp: number;
     sourceFileId: string;
+    defaultAssetsVersion?: string;
 }
 
 export interface ProjectImportInfo {
