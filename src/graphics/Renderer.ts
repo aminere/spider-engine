@@ -99,6 +99,8 @@ namespace Private {
     export const cameraToShadowCastersMap = new Map<Camera, Visual[]>();
     export const skinnedRenderDepthBonesTexture = new AssetReference(Texture);
 
+    export const updatedSkinnedMeshes = new Map<SkinnedMesh, boolean>();
+
     export function doRenderPass(renderPassDefinition: IRenderPassDefinition, gl: WebGLRenderingContext, camera: Camera) {
         if (renderPassDefinition.renderStateBucketMap.size === 0) {
             return;
@@ -204,10 +206,7 @@ namespace Private {
                             if (visual.isSkinned) {
                                 modelViewMatrix = viewMatrix;
                                 const skinnedMesh = (visual.geometry as SkinnedMesh);
-                                // This is done because skin matrices are guaranteed to be up-to-date if 
-                                // this visual was rendered to a shadow map in the current frame - so no need to update it twice.
-                                // TODO find a better way to do this
-                                if (!visual.castShadows) {
+                                if (!updatedSkinnedMeshes.has(skinnedMesh)) {
                                     skinnedMesh.updateMatrices();
                                 }
                                 skinnedMesh.updateShader(shader, visualBucketId);
@@ -474,8 +473,10 @@ namespace Private {
                     vertexBuffer.begin(context, currentShader);
                     for (const visual of visuals) {
                         if (hasSkinning) {
-                            const skinnedMesh = visual.geometry as SkinnedMesh;                            
+                            const skinnedMesh = visual.geometry as SkinnedMesh;
                             skinnedMesh.updateMatrices();
+                            updatedSkinnedMeshes.set(skinnedMesh, true);
+
                             skinnedMesh.updateShader(currentShader, visual.bucketId);
                             currentShader.applyParam("bindMatrix", skinnedMesh.bindMatrix);
                             currentShader.applyParam("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
@@ -684,6 +685,7 @@ export class RendererInternal {
 
         // gl.depthMask(true);
         if (Private.cameraToRenderPassMap.size > 0) {
+            Private.updatedSkinnedMeshes.clear();
             Private.cameraToRenderPassMap.forEach((renderPassSelector, camera) => {
 
                 // prepare shadow maps
