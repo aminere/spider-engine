@@ -54,6 +54,12 @@ export class WebGL {
             console.log(`${extension}: ${this.extensions[extension]}`);
         }
 
+        if (version > 1) {
+            const ext = context.getExtension("EXT_color_buffer_float");
+            console.log(`EXT_color_buffer_float: ${Boolean(ext)}`);
+            console.assert(ext, "EXT_color_buffer_float extension is required for skinning.");
+        }
+
         console.assert(this.extensions.OES_texture_float, "OES_texture_float extension is required for skinning.");
         console.assert(this.extensions.OES_standard_derivatives, "OES_standard_derivatives is required for enhanced wireframe visualization.");
         WebGL.caps.maxVertexUniforms = context.getParameter(context.MAX_VERTEX_UNIFORM_VECTORS);
