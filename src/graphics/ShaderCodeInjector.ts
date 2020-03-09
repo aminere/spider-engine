@@ -36,7 +36,7 @@ namespace Private {
 
 export class ShaderCodeInjector {
     static doVertexShader(
-        vertexCode: string, 
+        vertexCode: string,
         useSkinning?: boolean,
         useFog?: boolean,
         useShadowMap?: boolean,
@@ -61,7 +61,7 @@ out vec3 vBarycentric;`;
 vBarycentric = barycentricCoord;`;
             needInjection = true;
         }
-        
+
         if (useSkinning === true) {
             directives = `${directives}
 #define USE_SKINNING`;
@@ -75,11 +75,11 @@ vBarycentric = barycentricCoord;`;
 #define USE_FOG`;
                 if (fog.isA(ExponentialFog)) {
                     directives = `${directives}
-#define USE_EXPONENTIAL_FOG`;                    
+#define USE_EXPONENTIAL_FOG`;
                 }
                 needInjection = true;
             }
-        }      
+        }
 
         if (useShadowMap === true) {
             directives = `${directives}
@@ -110,7 +110,7 @@ ${statements}
     }
 
     static doFragmentShader(
-        fragmentCode: string, 
+        fragmentCode: string,
         useFog?: boolean,
         useShadowMap?: boolean,
         useVertexColor?: boolean,
@@ -177,11 +177,11 @@ float edgeFactor() {
 #define USE_FOG`;
                 if (fog.isA(ExponentialFog)) {
                     directives = `${directives}
-#define USE_EXPONENTIAL_FOG`;                    
+#define USE_EXPONENTIAL_FOG`;
                 }
                 needInjection = true;
             }
-        }      
+        }
 
         if (useShadowMap === true) {
             if (Interfaces.renderer.showShadowCascades) {
@@ -196,12 +196,34 @@ float edgeFactor() {
 #define MAX_SHADOW_CASCADES ${graphicSettings.maxShadowCascades}`;
             needInjection = true;
         }
-        
+
         if (useVertexColor === true) {
             directives = `${directives}
 #define USE_VERTEX_COLOR`;
             needInjection = true;
         }
+
+        fragmentCode = fragmentCode.replace(
+            new RegExp(/_loop_([0-9A-Z_]+)[\r\n]+\$(.*?)\$/, "sg"),
+            (x, iterations, code) => {
+                const iters = (() => {
+                    if (isNaN(iterations)) {
+                        if (iterations in graphicSettings.shaderDefinitions) {
+                            return graphicSettings.shaderDefinitions[iterations]() as number;
+                        }
+                        return undefined;
+                    } else {
+                        return parseInt(iterations, 10);
+                    }
+                })();
+
+                if (iters === undefined) {
+                    return x;
+                }
+
+                const arr = Array.from(new Array(iters));
+                return `${arr.map((a, i) => code.replace(/_i_/g, i)).join("")}`;
+            });
 
         if (needInjection) {
             let sections = Private.getSections(fragmentCode);
