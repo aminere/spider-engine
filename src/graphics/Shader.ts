@@ -56,7 +56,7 @@ interface ShaderInstances {
 @Attributes.hasDedicatedEditor(true)
 export class Shader extends GraphicAsset {
     
-    get version() { return 2; }
+    get version() { return 3; }
 
     /**
      * @event
@@ -292,6 +292,41 @@ export class Shader extends GraphicAsset {
                     typeName: "String",
                     data: json.properties._fragmentCode
                 }
+            });
+        } else if (previousVersion === 2) {
+            // Convert to GLSL 300
+            const convertVertex = (str: string) => {
+                let res = str.replace(/attribute (vec3|vec2|vec4) ([a-zA-Z]+)/g, (x, type, attrName) => {
+                    return `in ${type} ${attrName}`;
+                });
+                res = res.replace(/varying (vec3|vec2|vec4|float) ([a-zA-Z]+)/g, (x, type, attrName) => {
+                    return `out ${type} ${attrName}`;
+                });
+                res = res.replace(/texture(2D|Cube)/g, (x, i) => {
+                    return "texture";
+                });
+                return res;
+            };
+            const convertFragment = (str: string) => {
+                let res = str.replace(/varying (vec3|vec2|vec4|float) ([a-zA-Z]+)/g, (x, type, attrName) => {
+                    return `in ${type} ${attrName}`;
+                });
+                res = res.replace(/texture(2D|Cube)/g, (x, i) => {
+                    return "texture";
+                });
+                res = res.replace(/gl_FragColor/g, "fragColor");
+                res = res.replace(
+                    /void main/,
+                    `out vec4 fragColor;
+void main`
+                );
+                return res;
+            };
+            Object.assign(json.properties._vertexCode, {
+                data: convertVertex(json.properties._vertexCode.data)
+            });
+            Object.assign(json.properties._fragmentCode, {
+                data: convertFragment(json.properties._fragmentCode.data)
             });
         }
         return json;
