@@ -136,7 +136,14 @@ export class SkinnedMesh extends StaticMesh {
 
         if (WebGL.extensions.OES_texture_float) {
             const gl = WebGL.context;
-            this._boneTexture = new MemoryTexture(this._boneMatrices, size, size, gl.RGBA, gl.FLOAT);
+            this._boneTexture = new MemoryTexture(
+                this._boneMatrices, 
+                size, 
+                size, 
+                (WebGL.version > 1) ? (gl as WebGL2RenderingContext).RGBA32F : gl.RGBA,
+                gl.RGBA,
+                gl.FLOAT
+            );
             this._boneTextureSize = size;
         }
     }
