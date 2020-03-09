@@ -55,8 +55,8 @@ export class ShaderCodeInjector {
 
         if (Interfaces.renderer.showWireFrame) {
             definitions = `${definitions}
-attribute vec3 barycentricCoord;
-varying vec3 vBarycentric;`;
+in vec3 barycentricCoord;
+out vec3 vBarycentric;`;
             statements = `${statements}
 vBarycentric = barycentricCoord;`;
             needInjection = true;
@@ -142,7 +142,7 @@ ${statements}
             }
 
             definitions = `${definitions}
-varying vec3 vBarycentric;
+in vec3 vBarycentric;
 #ifdef Supports_GL_OES_standard_derivatives
 float edgeFactor() {
     vec3 d = fwidth(vBarycentric);
