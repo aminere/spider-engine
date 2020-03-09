@@ -56,6 +56,7 @@ export class WebGL {
 
         if (version > 1) {
             const ext = context.getExtension("EXT_color_buffer_float");
+            // tslint:disable-next-line
             console.log(`EXT_color_buffer_float: ${Boolean(ext)}`);
             console.assert(ext, "EXT_color_buffer_float extension is required for skinning.");
         }

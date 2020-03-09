@@ -9,17 +9,26 @@ export class MemoryTexture extends Texture {
     private _data: Float32Array;
     private _width: number;
     private _height: number;
+    private _internalFormat: number;
     private _format: number;
     private _type: number;
 
     @Attributes.unserializable()
     private _isDirty = true;
 
-    constructor(data: Float32Array, width: number, height: number, format: number, type: number) {
+    constructor(
+        data: Float32Array, 
+        width: number, 
+        height: number, 
+        internalFormat: number, 
+        format: number, 
+        type: number
+    ) {
         super();
         this._data = data;
         this._width = width;
         this._height = height;
+        this._internalFormat = internalFormat;
         this._format = format;
         this._type = type;
         this.isPersistent = false;
@@ -59,6 +68,16 @@ export class MemoryTexture extends Texture {
         let gl = WebGL.context;        
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
         gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-        gl.texImage2D(gl.TEXTURE_2D, 0, this._format, this._width, this._height, 0, this._format, this._type, this._data);
+        gl.texImage2D(
+            gl.TEXTURE_2D, 
+            0, 
+            this._internalFormat, 
+            this._width, 
+            this._height, 
+            0, 
+            this._format,
+            this._type, 
+            this._data
+        );
     }
 }
