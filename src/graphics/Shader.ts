@@ -27,13 +27,7 @@ namespace Private {
 
     export function removeComments(code: string) {
         return code.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, "");
-    }
-
-    export const engineManagedDefinitions = {
-        MAX_DIRECTIONAL_LIGHTS: () => graphicSettings.maxDirectionalLights,        
-        MAX_DIRECTIONAL_SHADOWMAPS: () => graphicSettings.maxDirectionalLights * graphicSettings.maxShadowCascades,
-        MAX_SHADOW_CASCADES: () => graphicSettings.maxShadowCascades
-    };
+    }    
 }
 
 export interface ShaderAttribute {
@@ -457,8 +451,8 @@ export class Shader extends GraphicAsset {
                     return i;
                 }
 
-                if (arraySize in Private.engineManagedDefinitions) {
-                    return Private.engineManagedDefinitions[arraySize]();
+                if (arraySize in graphicSettings.shaderDefinitions) {
+                    return graphicSettings.shaderDefinitions[arraySize]();
                 }
                 
                 // Size is a string literal, check it it's defined somewhere
