@@ -27,13 +27,7 @@ namespace Private {
 
     export function removeComments(code: string) {
         return code.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, "");
-    }
-
-    export const engineManagedDefinitions = {
-        MAX_DIRECTIONAL_LIGHTS: () => graphicSettings.maxDirectionalLights,        
-        MAX_DIRECTIONAL_SHADOWMAPS: () => graphicSettings.maxDirectionalLights * graphicSettings.maxShadowCascades,
-        MAX_SHADOW_CASCADES: () => graphicSettings.maxShadowCascades
-    };
+    }    
 }
 
 export interface ShaderAttribute {
@@ -62,7 +56,7 @@ interface ShaderInstances {
 @Attributes.hasDedicatedEditor(true)
 export class Shader extends GraphicAsset {
     
-    get version() { return 2; }
+    get version() { return 3; }
 
     /**
      * @event
@@ -299,6 +293,41 @@ export class Shader extends GraphicAsset {
                     data: json.properties._fragmentCode
                 }
             });
+        } else if (previousVersion === 2) {
+            // Convert to GLSL 300
+            const convertVertex = (str: string) => {
+                let res = str.replace(/attribute (vec3|vec2|vec4) ([a-zA-Z]+)/g, (x, type, attrName) => {
+                    return `in ${type} ${attrName}`;
+                });
+                res = res.replace(/varying (vec3|vec2|vec4|float) ([a-zA-Z]+)/g, (x, type, attrName) => {
+                    return `out ${type} ${attrName}`;
+                });
+                res = res.replace(/texture(2D|Cube)/g, (x, i) => {
+                    return "texture";
+                });
+                return res;
+            };
+            const convertFragment = (str: string) => {
+                let res = str.replace(/varying (vec3|vec2|vec4|float) ([a-zA-Z]+)/g, (x, type, attrName) => {
+                    return `in ${type} ${attrName}`;
+                });
+                res = res.replace(/texture(2D|Cube)/g, (x, i) => {
+                    return "texture";
+                });
+                res = res.replace(/gl_FragColor/g, "fragColor");
+                res = res.replace(
+                    /void main/,
+                    `out vec4 fragColor;
+void main`
+                );
+                return res;
+            };
+            Object.assign(json.properties._vertexCode, {
+                data: convertVertex(json.properties._vertexCode.data)
+            });
+            Object.assign(json.properties._fragmentCode, {
+                data: convertFragment(json.properties._fragmentCode.data)
+            });
         }
         return json;
     }
@@ -410,7 +439,7 @@ export class Shader extends GraphicAsset {
     }
 
     private extractAttributes(code: string) {
-        const regex = /attribute ((vec|float|uint|int|bool|mat|sampler|samplerCube)+[1234D]*) ([_a-zA-Z0-9]+);/;
+        const regex = /in ((vec|float|uint|int|bool|mat|sampler|samplerCube)+[1234D]*) ([_a-zA-Z0-9]+);/;
         const matches = Private.removeComments(code).match(new RegExp(regex, "g"));
         const attributes: ShaderAttributes = {};
         if (matches) {
@@ -457,8 +486,8 @@ export class Shader extends GraphicAsset {
                     return i;
                 }
 
-                if (arraySize in Private.engineManagedDefinitions) {
-                    return Private.engineManagedDefinitions[arraySize]();
+                if (arraySize in graphicSettings.shaderDefinitions) {
+                    return graphicSettings.shaderDefinitions[arraySize]();
                 }
                 
                 // Size is a string literal, check it it's defined somewhere

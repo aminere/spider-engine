@@ -36,7 +36,7 @@ namespace Private {
 
 export class ShaderCodeInjector {
     static doVertexShader(
-        vertexCode: string, 
+        vertexCode: string,
         useSkinning?: boolean,
         useFog?: boolean,
         useShadowMap?: boolean,
@@ -45,17 +45,23 @@ export class ShaderCodeInjector {
         let directives = "";
         let definitions = "";
         let statements = "";
+        let version = "";
         let needInjection = false;
+
+        if (WebGL.version > 1) {
+            version = "#version 300 es";
+            needInjection = true;
+        }
 
         if (Interfaces.renderer.showWireFrame) {
             definitions = `${definitions}
-attribute vec3 barycentricCoord;
-varying vec3 vBarycentric;`;
+in vec3 barycentricCoord;
+out vec3 vBarycentric;`;
             statements = `${statements}
 vBarycentric = barycentricCoord;`;
             needInjection = true;
         }
-        
+
         if (useSkinning === true) {
             directives = `${directives}
 #define USE_SKINNING`;
@@ -69,11 +75,11 @@ vBarycentric = barycentricCoord;`;
 #define USE_FOG`;
                 if (fog.isA(ExponentialFog)) {
                     directives = `${directives}
-#define USE_EXPONENTIAL_FOG`;                    
+#define USE_EXPONENTIAL_FOG`;
                 }
                 needInjection = true;
             }
-        }      
+        }
 
         if (useShadowMap === true) {
             directives = `${directives}
@@ -90,20 +96,21 @@ vBarycentric = barycentricCoord;`;
         if (needInjection) {
             let sections = Private.getSections(vertexCode);
             if (sections) {
-                return `${directives}
-                    ${sections.qualifiers}
-                    ${definitions}
-                    ${sections.coreMeat}
-                    ${statements}
-                }
-                `;
+                return `${version}
+${directives}
+${sections.qualifiers}
+${definitions}
+${sections.coreMeat}
+${statements}
+}
+`;
             }
         }
         return vertexCode;
     }
 
     static doFragmentShader(
-        fragmentCode: string, 
+        fragmentCode: string,
         useFog?: boolean,
         useShadowMap?: boolean,
         useVertexColor?: boolean,
@@ -112,7 +119,15 @@ vBarycentric = barycentricCoord;`;
         let directives = "";
         let definitions = "";
         let postProcess = "";
-        let needInjection = false;        
+        let version = "";
+        let fragColorLiteral = "gl_FragColor";
+        let needInjection = false;
+
+        if (WebGL.version > 1) {
+            version = "#version 300 es";
+            fragColorLiteral = "fragColor";
+            needInjection = true;
+        }
 
         if (Interfaces.renderer.showWireFrame) {
             // Wireframe visualization
@@ -127,7 +142,7 @@ vBarycentric = barycentricCoord;`;
             }
 
             definitions = `${definitions}
-varying vec3 vBarycentric;
+in vec3 vBarycentric;
 #ifdef Supports_GL_OES_standard_derivatives
 float edgeFactor() {
     vec3 d = fwidth(vBarycentric);
@@ -138,10 +153,10 @@ float edgeFactor() {
 
             postProcess = `${postProcess}
 #ifdef Supports_GL_OES_standard_derivatives
-    gl_FragColor = mix(vec4(.8, .8, .8, 1.0), gl_FragColor, edgeFactor());    
+    ${fragColorLiteral} = mix(vec4(.8, .8, .8, 1.0), ${fragColorLiteral}, edgeFactor());    
 #else
     if(any(lessThan(vBarycentric, vec3(0.01)))) {
-        gl_FragColor = vec4(vec3(.7), 1.0);
+        ${fragColorLiteral} = vec4(vec3(.7), 1.0);
     }
 #endif`;
 
@@ -162,11 +177,11 @@ float edgeFactor() {
 #define USE_FOG`;
                 if (fog.isA(ExponentialFog)) {
                     directives = `${directives}
-#define USE_EXPONENTIAL_FOG`;                    
+#define USE_EXPONENTIAL_FOG`;
                 }
                 needInjection = true;
             }
-        }      
+        }
 
         if (useShadowMap === true) {
             if (Interfaces.renderer.showShadowCascades) {
@@ -181,17 +196,40 @@ float edgeFactor() {
 #define MAX_SHADOW_CASCADES ${graphicSettings.maxShadowCascades}`;
             needInjection = true;
         }
-        
+
         if (useVertexColor === true) {
             directives = `${directives}
 #define USE_VERTEX_COLOR`;
             needInjection = true;
         }
 
+        fragmentCode = fragmentCode.replace(
+            new RegExp(/_loop_([0-9A-Z_]+)[\r\n]+\$(.*?)\$/, "sg"),
+            (x, iterations, code) => {
+                const iters = (() => {
+                    if (isNaN(iterations)) {
+                        if (iterations in graphicSettings.shaderDefinitions) {
+                            return graphicSettings.shaderDefinitions[iterations]() as number;
+                        }
+                        return undefined;
+                    } else {
+                        return parseInt(iterations, 10);
+                    }
+                })();
+
+                if (iters === undefined) {
+                    return x;
+                }
+
+                const arr = Array.from(new Array(iters));
+                return `${arr.map((a, i) => code.replace(/_i_/g, i)).join("")}`;
+            });
+
         if (needInjection) {
             let sections = Private.getSections(fragmentCode);
             if (sections) {
-                return `${sections.qualifiers}
+                return `${version}
+${sections.qualifiers}
 ${directives}
 ${definitions}
 ${sections.coreMeat}
