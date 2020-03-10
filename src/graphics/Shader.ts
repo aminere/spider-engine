@@ -441,23 +441,26 @@ void main`
     private extractAttributes(code: string) {
         const regex = /in ((vec|float|uint|int|bool|mat|sampler|samplerCube)+[1234D]*) ([_a-zA-Z0-9]+);/;
         const matches = Private.removeComments(code).match(new RegExp(regex, "g"));
+
         const attributes: ShaderAttributes = {};
-        if (matches) {
-            for (const match of matches) {
-                const [m, type, n, name] = match.match(regex) as RegExpMatchArray;
-                if (type && name) {
-                    const componentCount = Private.attributeTypeToComponentCount[type];
-                    if (componentCount !== undefined) {
-                        attributes[name] = {
-                            location: -1,
-                            componentCount: componentCount
-                        };
-                    } else {
-                        Debug.logWarning(`Unsupported type: '${type}' for shader attribute '${name}', ignoring this attribute.`);
-                    }                    
+        if (!matches) {
+            return attributes;
+        }
+        
+        for (const match of matches) {
+            const [m, type, n, name] = match.match(regex) as RegExpMatchArray;
+            if (type && name) {
+                const componentCount = Private.attributeTypeToComponentCount[type];
+                if (componentCount !== undefined) {
+                    attributes[name] = {
+                        location: -1,
+                        componentCount: componentCount
+                    };
                 } else {
-                    Debug.logWarning(`Invalid shader attribute syntax: '${match[0]}', ignoring this attribute.`);
+                    Debug.logWarning(`Unsupported type: '${type}' for shader attribute '${name}', ignoring this attribute.`);
                 }
+            } else {
+                Debug.logWarning(`Invalid shader attribute syntax: '${match[0]}', ignoring this attribute.`);
             }
         }
         return attributes;
@@ -474,73 +477,74 @@ void main`
         const regex = /uniform ((vec|float|uint|int|bool|mat|sampler|samplerCube)[234D]*) ([_a-zA-Z0-9]+)(\[([_a-zA-Z0-9]+)\])*;/;
         const _code = Private.removeComments(code);
         const matches = _code.match(new RegExp(regex, "g"));
-        if (matches) {
+        if (!matches) {
+            return;
+        }
 
-            const parseArraySize = (arraySize?: string): number | undefined => {
-                if (arraySize === undefined) {
-                    return undefined;
-                }
+        const parseArraySize = (arraySize?: string): number | undefined => {
+            if (arraySize === undefined) {
+                return undefined;
+            }
 
-                const i = parseInt(arraySize, 10);
-                if (`${i}` === arraySize) {
-                    return i;
-                }
+            const i = parseInt(arraySize, 10);
+            if (`${i}` === arraySize) {
+                return i;
+            }
 
-                if (arraySize in graphicSettings.shaderDefinitions) {
-                    return graphicSettings.shaderDefinitions[arraySize]();
-                }
-                
-                // Size is a string literal, check it it's defined somewhere
-                const match = code.match(/#define [_a-zA-Z]+ ([0-9]+)/);
-                if (!match) {
-                    return undefined;
-                }
+            if (arraySize in graphicSettings.shaderDefinitions) {
+                return graphicSettings.shaderDefinitions[arraySize]();
+            }
 
-                const [m, size] = match;
-                if (size === undefined) {
-                    return undefined;
-                }
+            // Size is a string literal, check it it's defined somewhere
+            const match = code.match(/#define [_a-zA-Z]+ ([0-9]+)/);
+            if (!match) {
+                return undefined;
+            }
 
-                return parseInt(size, 10);
+            const [m, size] = match;
+            if (size === undefined) {
+                return undefined;
+            }
+
+            return parseInt(size, 10);
+        };
+
+        const registerDefaultParam = (name: string, type: string, arraySize?: number) => {
+            shaderParams[name] = {
+                type: type as ShaderParamType,
+                uniformLocation: null,
+                arraySize
             };
+        };
 
-            const registerDefaultParam = (name: string, type: string, arraySize?: number) => {
-                shaderParams[name] = {
-                    type: type as ShaderParamType,
-                    uniformLocation: null,
-                    arraySize
-                };
-            };
-
-            for (const match of matches) {
-                const [m, type, n, name, a, arraySize] = match.match(regex) as RegExpMatchArray;
-                // save shader param
-                if (type && name) {
-                    if (Boolean(arraySize)) {
-                        const _arraySize = parseArraySize(arraySize) as number;
-                        if (type === "sampler2D") {
-                            shaderParams[name] = {
-                                type: "sampler2DArray",
-                                uniformLocation: null,
-                                arraySize: _arraySize
+        for (const match of matches) {
+            const [m, type, n, name, a, arraySize] = match.match(regex) as RegExpMatchArray;
+            // save shader param
+            if (type && name) {
+                if (Boolean(arraySize)) {
+                    const _arraySize = parseArraySize(arraySize) as number;
+                    if (type === "sampler2D") {
+                        shaderParams[name] = {
+                            type: "sampler2DArray",
+                            uniformLocation: null,
+                            arraySize: _arraySize
+                        };
+                    } else if (type === "mat4") {
+                        for (let i = 0; i < _arraySize; ++i) {
+                            const paramName = `${name}[${i}]`;
+                            shaderParams[paramName] = {
+                                type: type as ShaderParamType,
+                                uniformLocation: null
                             };
-                        } else if (type === "mat4") {
-                            for (let i = 0; i < _arraySize; ++i) {
-                                const paramName = `${name}[${i}]`;
-                                shaderParams[paramName] = {
-                                    type: type as ShaderParamType,
-                                    uniformLocation: null
-                                };
-                            }
-                        } else {
-                            registerDefaultParam(name, type, _arraySize);
                         }
                     } else {
-                        registerDefaultParam(name, type);
-                    }                                    
+                        registerDefaultParam(name, type, _arraySize);
+                    }
                 } else {
-                    Debug.logWarning(`Invalid shader uniform syntax: '${match[0]}', ignoring this uniform.`);
+                    registerDefaultParam(name, type);
                 }
+            } else {
+                Debug.logWarning(`Invalid shader uniform syntax: '${match[0]}', ignoring this uniform.`);
             }
         }
     }
