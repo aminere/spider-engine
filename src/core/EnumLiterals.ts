@@ -1,5 +1,5 @@
 
 export interface EnumLiterals {
-    literals: object;
+    literals: { [property: string]: string };
     getDisplayName?: (literal: string) => string;
 }

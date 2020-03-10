@@ -51,17 +51,15 @@ export function helpUrl(url: string) {
 
 export function enumLiterals(enumObject: object, getDisplayName?: (literal: string) => string) {
 
-    const literals = {};
+    const literals: { [property: string]: string } = {};
     const entries = Object.entries(enumObject);
     console.assert(entries.length % 2 === 0);
     for (let i = entries.length / 2; i < entries.length; ++i) {
-        Object.assign(literals, { [entries[i][0]]: entries[i][1] });
+        const [literal, value] = entries[i];
+        Object.assign(literals, { [literal]: value });
     }
 
-    return Reflect.metadata("enumLiterals", {
-        literals: literals,
-        getDisplayName: getDisplayName
-    } as EnumLiterals);
+    return Reflect.metadata("enumLiterals", { literals, getDisplayName } as EnumLiterals);
 }
 
 export function requires(typeName: string) {
