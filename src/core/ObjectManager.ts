@@ -126,12 +126,13 @@ export class ObjectManager implements IObjectManager {
         });
     }     
 
-    getObject(id: string) {
-        let path = AssetIdDatabase.getPath(id);
-        if (path && path in Private.objectCache) {
-            return Private.objectCache[path];
-        }
-        return null;
+    getObject(path: string) {
+        return Private.objectCache[path] ?? null;
+    }
+
+    getObjectById(id: string) {
+        const path = AssetIdDatabase.getPath(id);
+        return path ? this.getObject(path) : null;
     }
 
     // tslint:disable-next-line
