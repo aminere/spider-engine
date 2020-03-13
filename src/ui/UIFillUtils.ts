@@ -205,7 +205,7 @@ export class UIFillUtils {
             const material = materialFill.material;
             const shader = material ? material.shader : undefined;
             if (shader) {
-                const shaderParams = shader.getParams();
+                const shaderParams = shader.getUniforms();
                 const materialParams = (material as Material).shaderParams;
                 for (const param of Object.keys(shaderParams)) {
                     if (shaderParams[param].type === "sampler2D" && param in materialParams) {

@@ -63,14 +63,12 @@ export class Material extends Asset {
         }
 
         // convert textures to AssetReference<Texture>
-        const paramDeclarations = this.shader.getParams();
+        const paramDeclarations = this.shader.getUniforms();
         const textureParams = Object.keys(paramDefinitions)
             .filter(definition => {
-                if (definition in paramDeclarations) {
-                    if (paramDeclarations[definition].type === "sampler2D"
-                    || paramDeclarations[definition].type === "sampler1D") {
-                        return true;
-                    }
+                const decl = paramDeclarations[definition];
+                if (decl) {
+                    return Boolean(decl.type.match(/sampler/));
                 }
                 return false;
             });
@@ -80,12 +78,7 @@ export class Material extends Asset {
             console.assert(param);
             const isUrl = typeof (param) === "string";
             if (isUrl) {
-                paramDefinitions[textureParam] = new AssetReference(
-                    Texture,
-                    new Texture2D({
-                        textureData: param
-                    })
-                );
+                paramDefinitions[textureParam] = new AssetReference(Texture, new Texture2D({ textureData: param }));
             } else if (param.isA && param.isA(Texture)) {
                 paramDefinitions[textureParam] = new AssetReference(Texture, param);
             } else {
@@ -100,13 +93,13 @@ export class Material extends Asset {
 
     get buckedId() {
         // tslint:disable-next-line
-        let blendingId = 1 << this.blending;
+        const blendingId = 1 << this.blending;
         // tslint:disable-next-line
-        let cullId = (1 << (BlendingModes.Additive + 1)) << this.cullMode;
+        const cullId = (1 << (BlendingModes.Additive + 1)) << this.cullMode;
         // tslint:disable-next-line
-        let depthTestId = (1 << ((BlendingModes.Additive + 1) + (CullModes.None + 1))) << (this._depthTest ? 0 : 1);
+        const depthTestId = (1 << ((BlendingModes.Additive + 1) + (CullModes.None + 1))) << (this._depthTest ? 0 : 1);
         // tslint:disable-next-line
-        let id = blendingId | cullId | depthTestId;
+        const id = blendingId | cullId | depthTestId;
         return `${id}`;
     }
 
@@ -288,11 +281,11 @@ export class Material extends Asset {
     }
 
     private onShaderCodeChanged(shaderId: string) {
-        let shader = this.shader;
+        const shader = this.shader;
         if (!shader) {
             return;
         }
-        this._shaderParams = ShaderUtils.buildMaterialParams(shader.getParams(), this._shaderParams, true);
+        this.updateParamsFromShader(shader, true);
         this.updateRuntimeAccessors();
     }
 
@@ -307,14 +300,13 @@ export class Material extends Asset {
                 // attach to new shader
                 (info.newAsset as Shader).codeChanged.attach(this.onShaderCodeChanged);
             }
-            this._shaderParams = ShaderUtils.buildMaterialParams((info.newAsset as Shader).getParams(), this._shaderParams, false);
+            this.updateParamsFromShader(info.newAsset as Shader, false);
             this.updateRuntimeAccessors();
         }
     }
 
     private updateRuntimeAccessors() {
-        for (const paramName of Object.keys(this._shaderParams)) {
-            const param = this._shaderParams[paramName];
+        Object.entries(this._shaderParams).forEach(([paramName, param]) => {
             if (param.constructor.name === "AssetReference") {
                 Object.defineProperty(this, paramName, {
                     get: () => (param as AssetReference<Asset>).asset,
@@ -326,12 +318,17 @@ export class Material extends Asset {
             } else {
                 Object.defineProperty(this, paramName, {
                     get: () => this._shaderParams[paramName],
-                    set: value => {
-                        this._shaderParams[paramName] = value;
-                    },
+                    set: value => this._shaderParams[paramName] = value,
                     configurable: true
                 });
             }
+        });
+    }
+
+    private updateParamsFromShader(shader: Shader, liveCodeChange: boolean) {
+        if (!shader.getUniforms()) {
+            shader.initializeUniforms();
         }
+        this._shaderParams = ShaderUtils.buildMaterialParams(shader.getUniforms(), this._shaderParams, liveCodeChange);
     }
 }

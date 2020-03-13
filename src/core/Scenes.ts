@@ -72,7 +72,7 @@ namespace Private {
         if (fogType !== previousFogType) {
             IObjectManagerInternal.instance.forEach(o => {
                 if (o.isA(Shader)) {
-                    (o as Shader).invalidateProgram();
+                    (o as Shader).invalidate();
                 }
             });
         }

@@ -279,10 +279,6 @@ export class ShaderUtils {
     }
 
     static buildMaterialParams(shaderParams: ShaderParams, previousParams: SerializableObject, liveCodeChange: boolean) {
-        if (!shaderParams) {
-            console.assert(false);
-            return previousParams;
-        }
         const materialParams = new SerializableObject();
         for (const paramName of Object.keys(shaderParams)) {
 
@@ -328,4 +324,8 @@ export class ShaderUtils {
         }
         return materialParams;
     }
+
+    static removeComments(code: string) {
+        return code.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, "");
+    } 
 }

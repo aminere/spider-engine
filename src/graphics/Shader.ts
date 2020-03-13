@@ -23,11 +23,24 @@ namespace Private {
     };
     export const ref = new AssetReference(GraphicAsset);
     export const refArray = new AssetReferenceArray(GraphicAsset);
-    export const numberArray = new ArrayProperty(Number);    
+    export const numberArray = new ArrayProperty(Number);       
 
-    export function removeComments(code: string) {
-        return code.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, "");
-    }    
+    export function makeInstance() {
+        return {
+            program: null,
+
+            vertexShader: null,
+            vertexCode: null,
+            vertexUniforms: null,
+            vertexAttribs: null,
+            
+            fragmentShader: null,
+            fragmentCode: null,
+            fragmentUniforms: null,
+
+            uniforms: null,
+        } as ShaderInstance;
+    }
 }
 
 export interface ShaderAttribute {
@@ -40,11 +53,18 @@ export interface ShaderAttributes {
 }
 
 export interface ShaderInstance {
-    attributes: ShaderAttributes | null;
-    params: ShaderParams | null; // uniforms
     program: WebGLProgram | null;
+
     vertexShader: WebGLShader | null;
+    vertexCode: string | null;
+    vertexUniforms: ShaderParams | null;
+    vertexAttribs: ShaderAttributes | null;
+
     fragmentShader: WebGLShader | null;
+    fragmentCode: string | null;
+    fragmentUniforms: ShaderParams | null;
+
+    uniforms: ShaderParams | null;
 }
 
 interface ShaderInstances {
@@ -68,13 +88,41 @@ export class Shader extends GraphicAsset {
     get fragmentCode() { return this._fragmentCode; }
     set vertexCode(vertexCode: string) {
         this._vertexCode = vertexCode;
-        this.invalidateProgram();
-        this.tryExtractUniforms();
+        Object.values(this._instances).forEach(i => {
+            if (i.program) {
+                // TODO see if necessary
+                WebGL.context.deleteProgram(i.program);
+                i.program = null;
+            }
+            if (i.vertexShader) {
+                WebGL.context.deleteShader(i.vertexShader);
+                i.vertexShader = null;
+            }            
+            i.vertexCode = null;
+            i.vertexUniforms = null;
+            i.vertexAttribs = null;
+            i.uniforms = null;
+            
+        });
     }    
     set fragmentCode(fragmentCode: string) {
         this._fragmentCode = fragmentCode;
-        this.invalidateProgram();
-        this.tryExtractUniforms();
+        Object.values(this._instances).forEach(i => {
+            if (i.program) {
+                // TODO see if necessary
+                WebGL.context.deleteProgram(i.program);
+                i.program = null;
+            }
+            if (i.fragmentShader) {
+                WebGL.context.deleteShader(i.fragmentShader);
+                i.vertexShader = null;
+            }      
+            i.fragmentShader = null;
+            i.fragmentCode = null;
+            i.fragmentUniforms = null;
+            i.uniforms = null;
+            i.program = null;
+        });
     }
 
     @Attributes.hidden()
@@ -85,15 +133,7 @@ export class Shader extends GraphicAsset {
     protected _shaderError = false;
 
     @Attributes.unserializable()
-    private _instances: ShaderInstances = {
-        0: {
-            attributes: null,
-            params: null,
-            program: null,
-            vertexShader: null,
-            fragmentShader: null
-        }
-    };
+    private _instances = { 0: Private.makeInstance() };
 
     @Attributes.unserializable()
     private _executedOnce = false;
@@ -126,28 +166,14 @@ export class Shader extends GraphicAsset {
         } else {
             this._executedOnce = true;
         }
-        const gl = WebGL.context;
-        const program = this._instances[0].program;
-        if (!program) {
-            const vertexCode = ShaderCodeInjector.doVertexShader(this._vertexCode);
-            const vertexShader = this.createShader(gl.VERTEX_SHADER, vertexCode, "vertex");
-            if (!vertexShader) {
-                this._shaderError = true;
-                return false;
-            }
-            const fragmentCode = ShaderCodeInjector.doFragmentShader(this._fragmentCode);
-            const fragmentShader = this.createShader(gl.FRAGMENT_SHADER, fragmentCode, "fragment");
-            if (!fragmentShader) {
-                this._shaderError = true;
-                return false;
-            }
-            if (!this.loadInstance(gl, this._instances[0], vertexShader, fragmentShader, vertexCode, fragmentCode)) {
-                return false;
-            }
-        } else {
-            gl.useProgram(this._instances[0].program);
+
+        const { program } = this._instances[0];
+        if (program) {
+            WebGL.context.useProgram(program);
+            return true;
         }
-        return true;
+
+        return this.setupInstance(this._instances[0]);        
     }
     
     beginWithVisual(visual: Visual): ShaderInstance | null {
@@ -158,58 +184,49 @@ export class Shader extends GraphicAsset {
         } else {
             this._executedOnce = true;
         }
-        const bucketId = visual.bucketId;
+
+        const { bucketId } = visual;
         let instance = this._instances[bucketId];
         if (!instance) {
-            instance = {
-                program: null,
-                vertexShader: null,
-                fragmentShader: null,
-                attributes: null,
-                params: null
-            };
+            instance = Private.makeInstance();
             this._instances[bucketId] = instance;
         }
-        const gl = WebGL.context;
-        if (!instance.program) {
-            if (!this.setupInstance(instance, gl, visual)) {
+
+        if (instance.program) {
+            WebGL.context.useProgram(instance.program);
+        } else {
+            if (!this.setupInstance(instance, visual)) {
                 return null;
             }
-        } else {
-            gl.useProgram(instance.program);
         }
+
         return instance;
     }
 
     // tslint:disable-next-line
     applyParam(name: string, value: any, bucketId?: string) {
-        const instance = this._instances[bucketId || 0];
-        const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
-        const param = params[name];
-        if (param === undefined) {
+        const uniform = this.getUniform(name, bucketId);
+        if (uniform === undefined) {
             return;
         }
-        ShaderUtils.applyShaderParam(WebGL.context, param, value);
+        ShaderUtils.applyShaderParam(WebGL.context, uniform, value);
     }
 
     applyReferenceParam(name: string, referred: GraphicAsset, bucketId?: string) {
-        const instance = this._instances[bucketId || 0];
-        const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
-        const param = params[name];
-        if (param === undefined) {
+        const uniform = this.getUniform(name, bucketId);
+        if (uniform === undefined) {
             return;
         }
         Private.ref.setAssetFast(referred);
-        ShaderUtils.applyShaderParam(WebGL.context, param, Private.ref);
+        ShaderUtils.applyShaderParam(WebGL.context, uniform, Private.ref);
     }
 
     applyReferenceArrayParam(name: string, referreds: GraphicAsset[], bucketId?: string) {
-        const instance = this._instances[bucketId || 0];
-        const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
-        const param = params[name];
-        if (param === undefined) {
+        const uniform = this.getUniform(name, bucketId);
+        if (uniform === undefined) {
             return;
         }
+
         const { refArray } = Private;
         let currentRef = 0;
         for (let i = 0; i < referreds.length && i < refArray.data.length; ++i) {
@@ -221,64 +238,61 @@ export class Shader extends GraphicAsset {
             ++currentRef;
         }
         refArray.data.length = currentRef;
-        ShaderUtils.applyShaderParam(WebGL.context, param, refArray);
+        ShaderUtils.applyShaderParam(WebGL.context, uniform, refArray);
     }
 
     applyNumberArrayParam(name: string, numbers: number[], bucketId?: string) {
-        const instance = this._instances[bucketId || 0];
-        const params = (instance ? instance.params : this._instances[0].params) as ShaderParams;
-        const param = params[name];
-        if (param === undefined) {
+        const uniform = this.getUniform(name, bucketId);
+        if (uniform === undefined) {
             return;
         }
         Private.numberArray.data = numbers;
-        ShaderUtils.applyShaderParam(WebGL.context, param, Private.numberArray);
-    }
-    
-    // tslint:disable-next-line
-    setProperty(property: string, value: any) {
-        super.setProperty(property, value);
-        if (property === "_fragmentCode") {
-            if (this._vertexCode) {
-                this._instances[0].params = this.extractUniforms(this._vertexCode, this._fragmentCode);
-            }
-        } else if (property === "_vertexCode") {
-            if (this._fragmentCode) {
-                this._instances[0].params = this.extractUniforms(this._vertexCode, this._fragmentCode);
-            }
-        }
+        ShaderUtils.applyShaderParam(WebGL.context, uniform, Private.numberArray);
     }
     
     graphicUnload() {
-        for (const instance of Object.values(this._instances)) {
-            const { program } = instance;
-            if (!program) {
-                continue;
+        Object.values(this._instances).forEach(instance => {
+            if (!instance.program) {
+                return;
             }
-            const gl = WebGL.context;
-            gl.deleteShader(instance.vertexShader);
-            gl.deleteShader(instance.fragmentShader);
-            gl.deleteProgram(program);
-            instance.vertexShader = null;
-            instance.fragmentShader = null;
-            instance.program = null;
-            instance.params = null;
-            instance.attributes = null;
-        }
+            WebGL.context.deleteShader(instance.vertexShader);
+            WebGL.context.deleteShader(instance.fragmentShader);
+            WebGL.context.deleteProgram(instance.program);
+        });
+        this._instances = { 0: Private.makeInstance() };
     }
     
-    invalidateProgram() {
+    invalidate() {
         this._executedOnce = false;
         this._shaderError = false;
         this.graphicUnload();
     }
     
     getAttributes(bucketId?: string) {
-        return (this._instances[bucketId || 0].attributes) as ShaderAttributes;
+        return (this._instances[bucketId ?? 0].vertexAttribs) as ShaderAttributes;
     }
     
-    getParams(bucketId?: string) {
-        return (this._instances[bucketId || 0].params) as ShaderParams;
+    getUniforms(bucketId?: string) {
+        return (this._instances[bucketId ?? 0].uniforms) as ShaderParams;
+    }
+
+    initializeUniforms() {
+        const instance = this._instances[0];
+        if (!instance.vertexCode) {
+            instance.vertexCode = ShaderCodeInjector.doVertexShader(ShaderUtils.removeComments(this._vertexCode));
+        }
+        if (!instance.fragmentCode) {
+            instance.fragmentCode = ShaderCodeInjector.doFragmentShader(ShaderUtils.removeComments(this._fragmentCode));
+        }
+        if (!instance.uniforms) {
+            if (!instance.vertexUniforms) {
+                instance.vertexUniforms = this.parseUniforms(instance.vertexCode);
+            }
+            if (!instance.fragmentUniforms) {
+                instance.fragmentUniforms = this.parseUniforms(instance.fragmentCode);
+            }
+            instance.uniforms = { ...instance.vertexUniforms, ...instance.fragmentUniforms };
+        }
     }
     
     upgrade(json: SerializedObject, previousVersion: number) {
@@ -327,17 +341,12 @@ void main`
         return json;
     }
     
-    protected loadInstance(
-        gl: WebGLRenderingContext,
-        instance: ShaderInstance,
-        vertexShader: WebGLShader,
-        fragmentShader: WebGLShader,
-        vertexCode: string,
-        fragmentCode: string
-    ) {
+    protected loadInstance(instance: ShaderInstance) {
+        const gl = WebGL.context;
+
         const program = gl.createProgram() as WebGLProgram;
-        gl.attachShader(program, vertexShader);
-        gl.attachShader(program, fragmentShader);
+        gl.attachShader(program, instance.vertexShader as WebGLShader);
+        gl.attachShader(program, instance.fragmentShader as WebGLShader);
         gl.linkProgram(program);
 
         if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
@@ -349,19 +358,24 @@ void main`
 
         // extract uniform & attribute locations
         gl.useProgram(program);
-        if (!instance.params) {
-            instance.params = this.extractUniforms(vertexCode, fragmentCode);
+        if (!instance.uniforms) {
+            if (!instance.vertexUniforms) {
+                instance.vertexUniforms = this.parseUniforms(instance.vertexCode as string);    
+            }
+            if (!instance.fragmentUniforms) {
+                instance.fragmentUniforms = this.parseUniforms(instance.fragmentCode as string);
+            }
+            instance.uniforms = { ...instance.vertexUniforms, ...instance.fragmentUniforms };
         }
 
         let textureStage = 0;
-        for (const paramName of Object.keys(instance.params)) {
-            const param = instance.params[paramName];
-            const location = gl.getUniformLocation(program, paramName);            
+        Object.entries(instance.uniforms as ShaderParams).forEach(([paramName, param]) => {
+            const location = gl.getUniformLocation(program, paramName);
             param.uniformLocation = location;
             // console.assert(location !== null, `getUniformLocation(${param}) failed in shader '${this.templatePath}'`);
 
             if (location === null) {
-                continue;
+                return;
             }
 
             // setup texture stages
@@ -375,50 +389,26 @@ void main`
                     param.textureStage = textureStage++;
                 }
             }
+        });
+
+        if (!instance.vertexAttribs) {
+            instance.vertexAttribs = this.extractAttributes(instance.vertexCode as string);
         }
 
-        if (!instance.attributes) {
-            instance.attributes = this.extractAttributes(vertexCode);
-        }        
-        for (const attribute of Object.keys(instance.attributes)) {
-            const location = gl.getAttribLocation(program, attribute);
-            instance.attributes[attribute].location = location;
-            // console.assert(location !== null, `getAttribLocation(${attribute}) failed in shader '${this.templatePath}'`);
-        }
-        instance.vertexShader = vertexShader;
-        instance.fragmentShader = fragmentShader;
+        Object.entries(instance.vertexAttribs).forEach(([attrName, attribute]) => {
+            attribute.location = gl.getAttribLocation(program, attrName);
+            // console.assert(attribute.location !== null, `getAttribLocation(${attribute}) failed in '${this.templatePath}'`);
+        });
+
         instance.program = program;
         return true;
+    }    
+
+    protected useDirectionalLights() {
+        return false;
     }
 
-    protected setupInstance(instance: ShaderInstance, gl: WebGLRenderingContext, visual: Visual) {
-        const vertexCode = ShaderCodeInjector.doVertexShader(
-            this._vertexCode, 
-            visual.isSkinned,
-            visual.receiveFog,
-            visual.receiveShadows,
-            visual.hasVertexColor
-        );
-        const vertexShader = this.createShader(gl.VERTEX_SHADER, vertexCode, "vertex");
-        if (!vertexShader) {
-            this._shaderError = true;
-            return false;
-        }
-        const fragmentCode = ShaderCodeInjector.doFragmentShader(
-            this._fragmentCode, 
-            visual.receiveFog,
-            visual.receiveShadows,
-            visual.hasVertexColor
-        );
-        const fragmentShader = this.createShader(gl.FRAGMENT_SHADER, fragmentCode, "fragment");
-        if (!fragmentShader) {
-            this._shaderError = true;
-            return false;
-        }
-        return this.loadInstance(gl, instance, vertexShader, fragmentShader, vertexCode, fragmentCode);
-    }
-
-    protected createShader(type: number, code: string, logTypeName: string) {
+    private createShader(type: number, code: string, logTypeName: string) {
         const gl = WebGL.context;
         const shader = gl.createShader(type) as WebGLShader;
         gl.shaderSource(shader, code);
@@ -433,9 +423,48 @@ void main`
         return shader;
     }
 
+    private setupInstance(instance: ShaderInstance, visual?: Visual) {
+        if (!instance.vertexShader) {
+            if (!instance.vertexCode) {
+                instance.vertexCode = ShaderCodeInjector.doVertexShader(
+                    ShaderUtils.removeComments(this._vertexCode), 
+                    visual?.isSkinned,
+                    visual?.receiveFog,
+                    visual?.receiveShadows,
+                    visual?.hasVertexColor
+                );
+            }
+            const vertexShader = this.createShader(WebGL.context.VERTEX_SHADER, instance.vertexCode, "vertex");
+            if (!vertexShader) {
+                this._shaderError = true;
+                return false;
+            }
+            instance.vertexShader = vertexShader;            
+        }
+
+        if (!instance.fragmentShader) {
+            if (!instance.fragmentCode) {
+                instance.fragmentCode = ShaderCodeInjector.doFragmentShader(
+                    ShaderUtils.removeComments(this._fragmentCode),
+                    visual?.receiveFog,
+                    visual?.receiveShadows,
+                    visual?.hasVertexColor,
+                    this.useDirectionalLights()
+                );
+            }
+            const fragmentShader = this.createShader(WebGL.context.FRAGMENT_SHADER, instance.fragmentCode, "fragment");
+            if (!fragmentShader) {
+                this._shaderError = true;
+                return false;
+            }
+            instance.fragmentShader = fragmentShader;
+        }        
+        return this.loadInstance(instance);
+    }
+
     private extractAttributes(code: string) {
         const regex = /in ((vec|float|uint|int|bool|mat|sampler|samplerCube)+[1234D]*) ([_a-zA-Z0-9]+);/;
-        const matches = Private.removeComments(code).match(new RegExp(regex, "g"));
+        const matches = code.match(new RegExp(regex, "g"));
 
         const attributes: ShaderAttributes = {};
         if (!matches) {
@@ -461,19 +490,11 @@ void main`
         return attributes;
     }
 
-    private extractUniforms(vertexCode: string, fragmentCode: string) {
-        const shaderParams: ShaderParams = {};
-        this.parseUniforms(vertexCode, shaderParams);
-        this.parseUniforms(fragmentCode, shaderParams);
-        return shaderParams;
-    }
-
-    private parseUniforms(code: string, shaderParams: ShaderParams) {
+    private parseUniforms(code: string) {
         const regex = /uniform ((vec|float|uint|int|bool|mat|sampler|samplerCube)+[1234D]*) ([_a-zA-Z0-9]+)(\[([_a-zA-Z0-9]+)\])*;/;
-        const _code = Private.removeComments(code);
-        const matches = _code.match(new RegExp(regex, "g"));
+        const matches = code.match(new RegExp(regex, "g"));
         if (!matches) {
-            return;
+            return {};
         }
 
         const parseArraySize = (arraySize?: string): number | undefined => {
@@ -491,7 +512,7 @@ void main`
             }
 
             // Size is a string literal, check it it's defined somewhere
-            const match = code.match(/#define [_a-zA-Z]+ ([0-9]+)/);
+            const match = code.match(new RegExp(`#define ${arraySize} ([0-9]+)`));
             if (!match) {
                 return undefined;
             }
@@ -504,6 +525,7 @@ void main`
             return parseInt(size, 10);
         };
 
+        const shaderParams: ShaderParams = {};
         const registerDefaultParam = (name: string, type: string, arraySize?: number) => {
             shaderParams[name] = {
                 type: type as ShaderParamType,
@@ -542,11 +564,12 @@ void main`
                 Debug.logWarning(`Invalid shader uniform syntax: '${match[0]}', ignoring this uniform.`);
             }
         }
+
+        return shaderParams;
     }
 
-    private tryExtractUniforms() {
-        if (this._vertexCode && this._fragmentCode) {
-            this._instances[0].params = this.extractUniforms(this._vertexCode, this._fragmentCode);
-        }
+    private getUniform(name: string, bucketId?: string) {
+        const instance = (this._instances[bucketId ?? 0] ?? this._instances[0]) as ShaderInstance;
+        return (instance.uniforms as ShaderParams)[name];
     }
 }

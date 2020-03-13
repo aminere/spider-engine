@@ -190,7 +190,7 @@ namespace Private {
                         }
                     }
 
-                    const shaderAttributes = shaderInstance.attributes as ShaderAttributes;
+                    const shaderAttributes = shaderInstance.vertexAttribs as ShaderAttributes;
                     visualBucket.vertexBufferToVisualsMap.forEach((visuals, vertexBuffer) => {
                         vertexBuffer.bindBuffers(gl);
                         vertexBuffer.bindAttributes(gl, shaderAttributes);
@@ -541,7 +541,7 @@ namespace Private {
     export function invalidateShaders() {
         IObjectManagerInternal.instance.forEach(o => {
             if (o.isA(Shader)) {
-                (o as Shader).invalidateProgram();
+                (o as Shader).invalidate();
             }
         });
     }
