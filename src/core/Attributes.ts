@@ -51,7 +51,7 @@ export function helpUrl(url: string) {
 
 export function enumLiterals(enumObject: object, getDisplayName?: (literal: string) => string) {
 
-    const literals: { [property: string]: string } = {};
+    const literals: { [property: string]: number } = {};
     const entries = Object.entries(enumObject);
     console.assert(entries.length % 2 === 0);
     for (let i = entries.length / 2; i < entries.length; ++i) {
