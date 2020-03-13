@@ -168,8 +168,7 @@ namespace Private {
                     return;
                 }
                 const textureStage = param.textureStage as number;
-                const textureRef = value as AssetReference<Texture>;
-                const texture = textureRef.asset;
+                const texture = (value as AssetReference<Texture>).asset;
                 if (texture && texture.begin(textureStage)) {
                     gl.uniform1i(param.uniformLocation, textureStage);
                 } else {
@@ -206,15 +205,10 @@ namespace Private {
                 if (param.textureStage === undefined) {
                     return;
                 }
-                const textureRef = value as AssetReference<Texture>;
-                const texture = textureRef.asset;
+                const texture = (value as AssetReference<Texture>).asset;
                 const textureStage = param.textureStage as number;
                 if (texture && texture.begin(textureStage)) {
                     gl.uniform1i(param.uniformLocation, textureStage);
-                } else {
-                    if (defaultAssets.whiteTexture.begin(textureStage)) {
-                        gl.uniform1i(param.uniformLocation, textureStage);
-                    }
                 }
             }
         },
@@ -223,9 +217,13 @@ namespace Private {
             typeName: "StaticCubemap",
             create: () => new AssetReference(StaticCubemap),
             apply: (gl, param, value) => {
+                if (param.textureStage === undefined) {
+                    return;
+                }
                 const cubemap = (value as AssetReference<StaticCubemap>).asset;
-                if (cubemap && cubemap.begin(0)) {
-                    gl.uniform1i(param.uniformLocation, 0);
+                const textureStage = param.textureStage as number;
+                if (cubemap && cubemap.begin(textureStage)) {
+                    gl.uniform1i(param.uniformLocation, textureStage);
                 }
             }
         },

@@ -73,7 +73,7 @@ export class StaticCubemap extends GraphicAsset {
             }
         }
         let gl = WebGL.context;
-        gl.activeTexture(gl.TEXTURE0);
+        gl.activeTexture(gl.TEXTURE0 + stage);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, this._textureId);
         return true;
     }

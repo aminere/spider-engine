@@ -365,7 +365,7 @@ void main`
             }
 
             // setup texture stages
-            const textureUniform = param.type.match(/sampler+[234D]*/);
+            const textureUniform = param.type.match(/sampler/);
             if (textureUniform) {
                 const { arraySize } = param;
                 if (arraySize !== undefined) {
@@ -469,7 +469,7 @@ void main`
     }
 
     private parseUniforms(code: string, shaderParams: ShaderParams) {
-        const regex = /uniform ((vec|float|uint|int|bool|mat|sampler|samplerCube)[234D]*) ([_a-zA-Z0-9]+)(\[([_a-zA-Z0-9]+)\])*;/;
+        const regex = /uniform ((vec|float|uint|int|bool|mat|sampler|samplerCube)+[1234D]*) ([_a-zA-Z0-9]+)(\[([_a-zA-Z0-9]+)\])*;/;
         const _code = Private.removeComments(code);
         const matches = _code.match(new RegExp(regex, "g"));
         if (!matches) {
