@@ -87,6 +87,8 @@ export class Shader extends GraphicAsset {
     get vertexCode() { return this._vertexCode; }    
     get fragmentCode() { return this._fragmentCode; }
     set vertexCode(vertexCode: string) {
+        this._executedOnce = false;
+        this._shaderError = false;
         this._vertexCode = vertexCode;
         Object.values(this._instances).forEach(i => {
             if (i.program) {
@@ -106,6 +108,8 @@ export class Shader extends GraphicAsset {
         });
     }    
     set fragmentCode(fragmentCode: string) {
+        this._executedOnce = false;
+        this._shaderError = false;
         this._fragmentCode = fragmentCode;
         Object.values(this._instances).forEach(i => {
             if (i.program) {
