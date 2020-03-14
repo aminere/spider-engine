@@ -1,7 +1,7 @@
 
 import { Components } from "./Components";
 import { Raytracer } from "../graphics/Raytracer";
-import { Particles } from "../graphics/Particles";
+import { Particles } from "../graphics/particles/Particles";
 import { GamepadsInternal } from "../input/Gamepads";
 import { AnimationSystem } from "../animation/AnimationSystem";
 import { TimeInternal } from "./Time";

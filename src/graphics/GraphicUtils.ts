@@ -1,10 +1,19 @@
 import { VertexBuffer } from "./VertexBuffer";
-import { Shader } from "./Shader";
+import { Shader } from "./shading/Shader";
+import { IObjectManagerInternal } from "../core/IObjectManager";
 
 export class GraphicUtils {
-    static drawVertexBuffer(gl: WebGLRenderingContext, vb: VertexBuffer, shader: Shader) {
-        vb.begin(gl, shader);        
-        vb.draw(gl);
-        vb.end(gl, shader);
+    public static drawVertexBuffer(vb: VertexBuffer, shader: Shader) {
+        vb.begin(shader);
+        vb.draw();
+        vb.end(shader);
+    }
+
+    public static invalidateShaders() {
+        IObjectManagerInternal.instance.forEach(o => {
+            if (o.isA(Shader)) {
+                (o as Shader).invalidate();
+            }
+        });
     }
 }

@@ -1,10 +1,10 @@
 
-import * as Attributes from "../core/Attributes";
+import * as Attributes from "../../core/Attributes";
 import { Projector } from "./Projector";
-import { Transform } from "../core/Transform";
-import { SerializedObject } from "../core/SerializableObject";
-import { Matrix44 } from "../math/Matrix44";
-import { graphicSettings } from "./GraphicSettings";
+import { Transform } from "../../core/Transform";
+import { SerializedObject } from "../../core/SerializableObject";
+import { Matrix44 } from "../../math/Matrix44";
+import { graphicSettings } from "../GraphicSettings";
 
 export class OrthographicProjector extends Projector {    
     

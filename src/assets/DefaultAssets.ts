@@ -1,11 +1,11 @@
 
-import { Texture2D } from "../graphics/Texture2D";
+import { Texture2D } from "../graphics/texture/Texture2D";
 import { Asset } from "./Asset";
 import { StaticMeshAsset } from "./StaticMeshAsset";
 import { Material } from "../graphics/Material";
 import { Scene } from "./Scene";
 import { Prefab } from "./Prefab";
-import { Shader } from "../graphics/Shader";
+import { Shader } from "../graphics/shading/Shader";
 import { AssetLoadingDefinition } from "./AssetLoadingDefinition";
 import { EngineHud } from "../core/hud/EngineHud";
 import { IObjectManagerInternal } from "../core/IObjectManager";

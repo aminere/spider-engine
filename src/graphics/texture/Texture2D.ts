@@ -1,13 +1,13 @@
 
-import { Debug } from "../io/Debug";
+import { Debug } from "../../io/Debug";
 import { Texture } from "./Texture";
-import { MathEx } from "../math/MathEx";
-import { TextureFiltering } from "./GraphicTypes";
-import { Color } from "./Color";
-import * as Attributes from "../core/Attributes";
-import { SerializedObject } from "../core/SerializableObject";
-import { WebGL } from "./WebGL";
-import { ObjectProps } from "../core/Types";
+import { MathEx } from "../../math/MathEx";
+import { TextureFiltering } from "../GraphicTypes";
+import { Color } from "../Color";
+import * as Attributes from "../../core/Attributes";
+import { SerializedObject } from "../../core/SerializableObject";
+import { WebGL } from "../WebGL";
+import { ObjectProps } from "../../core/Types";
 
 /**
  * @hidden
@@ -15,7 +15,7 @@ import { ObjectProps } from "../core/Types";
 // tslint:disable-next-line
 var CommonEditorEvents: any = undefined;
 if (process.env.CONFIG === "editor") {
-    CommonEditorEvents = require("../editor/CommonEditorEvents").CommonEditorEvents;
+    CommonEditorEvents = require("../../editor/CommonEditorEvents").CommonEditorEvents;
 }
 
 export enum TexturePublishFormat {

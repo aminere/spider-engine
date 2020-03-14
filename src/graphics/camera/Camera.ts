@@ -1,28 +1,28 @@
 
-import { Reference } from "../serialization/Reference";
+import { Reference } from "../../serialization/Reference";
 import { Projector } from "./Projector";
-import { Matrix44 } from "../math/Matrix44";
-import { Entity } from "../core/Entity";
-import { Vector3 } from "../math/Vector3";
-import { AssetReference, AssetChangedEvent } from "../serialization/AssetReference";
-import { RenderTarget } from "./RenderTarget";
-import { VisualGroup } from "./VisualGroup";
-import { MathEx } from "../math/MathEx";
+import { Matrix44 } from "../../math/Matrix44";
+import { Entity } from "../../core/Entity";
+import { Vector3 } from "../../math/Vector3";
+import { AssetReference, AssetChangedEvent } from "../../serialization/AssetReference";
+import { RenderTarget } from "../texture/RenderTarget";
+import { VisualGroup } from "../VisualGroup";
+import { MathEx } from "../../math/MathEx";
 import { PerspectiveProjector } from "./PerspectiveProjector";
-import { PostEffects } from "./postfx/PostEffects";
-import { Size, SizeType } from "../core/Size";
-import * as Attributes from "../core/Attributes";
-import { SerializedObject } from "../core/SerializableObject";
-import { Ray } from "../math/Ray";
-import { Vector2 } from "../math/Vector2";
-import { Vector4 } from "../math/Vector4";
+import { PostEffects } from "../postfx/PostEffects";
+import { Size, SizeType } from "../../core/Size";
+import * as Attributes from "../../core/Attributes";
+import { SerializedObject } from "../../core/SerializableObject";
+import { Ray } from "../../math/Ray";
+import { Vector2 } from "../../math/Vector2";
+import { Vector4 } from "../../math/Vector4";
 import { OrthographicProjector } from "./OrthographicProjector";
 import { Frustum } from "./Frustum";
-import { Component } from "../core/Component";
-import { Interfaces } from "../core/Interfaces";
-import { Transform } from "../core/Transform";
-import { ObjectProps } from "../core/Types";
-import { VisualFilter } from "./VisualFilter";
+import { Component } from "../../core/Component";
+import { Interfaces } from "../../core/Interfaces";
+import { Transform } from "../../core/Transform";
+import { ObjectProps } from "../../core/Types";
+import { VisualFilter } from "../VisualFilter";
 import { IFrustum } from "./IFrustum";
 
 export enum CameraClear {

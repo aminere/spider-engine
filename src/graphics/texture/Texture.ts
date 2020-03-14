@@ -1,8 +1,8 @@
 
-import * as Attributes from "../core/Attributes";
+import * as Attributes from "../../core/Attributes";
 
-import { GraphicAsset } from "./GraphicAsset";
-import { WebGL } from "./WebGL";
+import { GraphicAsset } from "../GraphicAsset";
+import { WebGL } from "../WebGL";
 
 export class Texture extends GraphicAsset {
 

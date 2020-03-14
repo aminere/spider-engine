@@ -19,7 +19,7 @@ import { AssetIdDatabaseInternal } from "../assets/AssetIdDatabase";
 
 import { Debug } from "../io/Debug";
 import { GeometryProvider } from "../graphics/geometry/GeometryProvider";
-import { Camera } from "../graphics/Camera";
+import { Camera } from "../graphics/camera/Camera";
 import { IOUtils } from "../io/IOUtils";
 import { WebUtils } from "../common/WebUtils";
 import { EngineSettings } from "./EngineSettings";
@@ -280,7 +280,7 @@ export namespace EngineInternal {
     }
     
     export function unload() {
-        GeometryProvider.unload(WebGL.context);
+        GeometryProvider.unload();
         ScenesInternal.destroy();
         IObjectManagerInternal.instance.clearCache();
         BehaviorErrors.clear();

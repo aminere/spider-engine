@@ -1,9 +1,9 @@
-import * as Attributes from "../core/Attributes";
-import { AssetReference } from "../serialization/AssetReference";
-import { GraphicAsset } from "./GraphicAsset";
+import * as Attributes from "../../core/Attributes";
+import { AssetReference } from "../../serialization/AssetReference";
+import { GraphicAsset } from "../GraphicAsset";
 import { Texture2D } from "./Texture2D";
-import { EngineUtils } from "../core/EngineUtils";
-import { WebGL } from "./WebGL";
+import { EngineUtils } from "../../core/EngineUtils";
+import { WebGL } from "../WebGL";
 
 /**
  * @hidden

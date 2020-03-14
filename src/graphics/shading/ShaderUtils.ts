@@ -1,18 +1,18 @@
 
-import { SerializableObject } from "../core/SerializableObject";
-import { Vector2 } from "../math/Vector2";
-import { Vector3 } from "../math/Vector3";
-import { Matrix44 } from "../math/Matrix44";
-import { Color } from "./Color";
-import { SerializerUtils } from "../serialization/SerializerUtils";
-import { AssetReference } from "../serialization/AssetReference";
-import { StaticCubemap } from "./StaticCubemap";
-import { Asset } from "../assets/Asset";
-import { Matrix33 } from "../math/Matrix33";
-import { Texture } from "./Texture";
-import { defaultAssets } from "../assets/DefaultAssets";
-import { Vector4 } from "../math/Vector4";
-import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
+import { SerializableObject } from "../../core/SerializableObject";
+import { Vector2 } from "../../math/Vector2";
+import { Vector3 } from "../../math/Vector3";
+import { Matrix44 } from "../../math/Matrix44";
+import { Color } from "../Color";
+import { SerializerUtils } from "../../serialization/SerializerUtils";
+import { AssetReference } from "../../serialization/AssetReference";
+import { StaticCubemap } from "../texture/StaticCubemap";
+import { Asset } from "../../assets/Asset";
+import { Matrix33 } from "../../math/Matrix33";
+import { Texture } from "../texture/Texture";
+import { defaultAssets } from "../../assets/DefaultAssets";
+import { Vector4 } from "../../math/Vector4";
+import { AssetReferenceArray } from "../../serialization/AssetReferenceArray";
 
 export type ShaderParamType =
     "vec2"
@@ -79,16 +79,22 @@ namespace Private {
         "worldMatrix": true,
         "normalMatrix": true,
         "modelViewMatrix": true,
+        "cameraPosition": true,
+
+        // Skinning
         "boneTexture": true,
         "boneTextureSize": true,
         "boneMatrices": true,
         "bindMatrix": true,
         "bindMatrixInverse": true,
+
+        // Fog
         "fogColor": true,
         "fogDensity": true,
         "fogNear": true,
         "fogFar": true,
 
+        // Logic
         "time": true,
         "deltaTime": true,
         "frame": true,
@@ -97,7 +103,10 @@ namespace Private {
         "directionalLightMatrices": true,
         "directionalShadowMaps": true,
         "directionalLightCount": true,
-        "shadowCascadeEdges": true
+        "directionalLightDirs": true,
+        "shadowCascadeEdges": true,
+
+        "envMap": true
     };
 
     const textureStages: number[] = [];

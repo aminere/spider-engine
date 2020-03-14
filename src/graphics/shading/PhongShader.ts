@@ -1,9 +1,7 @@
 
 import * as Attributes from "../../core/Attributes";
-import { Shader, ShaderInstance } from "../Shader";
-import { ShaderParams, ShaderParam } from "../ShaderUtils";
-import { ShaderCodeInjector } from "../ShaderCodeInjector";
-import { Visual } from "../Visual";
+import { Shader, ShaderInstance } from "./Shader";
+import { ShaderParams, ShaderParam } from "./ShaderUtils";
 import { graphicSettings } from "../GraphicSettings";
 import { WebGL } from "../WebGL";
 
@@ -31,7 +29,6 @@ export class PhongShader extends Shader {
         
         const lightUniforms = Array.from(new Array(graphicSettings.maxDirectionalLights)).map((a, i) => {
             return {
-                [`directionalLights[${i}].direction`]: { type: "vec3", uniformLocation: null },
                 [`directionalLights[${i}].color`]: { type: "vec4", uniformLocation: null },
                 [`directionalLights[${i}].shadow`]: { type: "bool", uniformLocation: null },
                 [`directionalLights[${i}].shadowType`]: { type: "int", uniformLocation: null },

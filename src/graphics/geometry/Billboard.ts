@@ -6,8 +6,8 @@ import * as Attributes from "../../core/Attributes";
 import { VertexBuffer } from "../VertexBuffer";
 import { GeometryProvider } from "./GeometryProvider";
 import { Transform } from "../../core/Transform";
-import { Camera } from "../Camera";
-import { Shader } from "../Shader";
+import { Camera } from "../camera/Camera";
+import { Shader } from "../shading/Shader";
 
 export class Billboard extends Geometry {
 
@@ -22,7 +22,7 @@ export class Billboard extends Geometry {
         return this._orientMatrix;
     }
     
-    graphicUpdate(camera: Camera, shader: Shader, buckedId: string, transform: Transform, deltaTime: number) {
+    graphicUpdate(camera: Camera, transform: Transform) {
         const { worldForward, worldUp } = camera.entity.transform;
         this._orientMatrix.makeLookAt(worldForward, worldUp).transpose();
         this._orientMatrix.scale(transform.worldScale);

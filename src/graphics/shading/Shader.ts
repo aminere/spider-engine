@@ -1,19 +1,23 @@
 
-import * as Attributes from "../core/Attributes";
-import { SerializableObject, SerializedObject } from "../core/SerializableObject";
-import { Debug } from "../io/Debug";
-import { GraphicAsset } from "./GraphicAsset";
+import * as Attributes from "../../core/Attributes";
+import { SerializableObject, SerializedObject } from "../../core/SerializableObject";
+import { Debug } from "../../io/Debug";
+import { GraphicAsset } from "../GraphicAsset";
 import { AsyncEvent } from "ts-events";
-import { ShaderCodeInjector } from "./ShaderCodeInjector";
-import { Visual } from "./Visual";
-import { AssetReference } from "../serialization/AssetReference";
+import { ShaderInjector } from "./ShaderInjector";
+import { Visual } from "../Visual";
+import { AssetReference } from "../../serialization/AssetReference";
 import { ShaderUtils, ShaderParams, ShaderParamType } from "./ShaderUtils";
-import { WebGL } from "./WebGL";
-import { ObjectProps } from "../core/Types";
-import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
-import { ArrayProperty } from "../serialization/ArrayProperty";
-import { graphicSettings } from "./GraphicSettings";
-
+import { WebGL } from "../WebGL";
+import { ObjectProps } from "../../core/Types";
+import { AssetReferenceArray } from "../../serialization/AssetReferenceArray";
+import { ArrayProperty } from "../../serialization/ArrayProperty";
+import { graphicSettings } from "../GraphicSettings";
+import { ScenesInternal } from "../../core/Scenes";
+import { SkyBoxEnvironment } from "../Environment";
+import { Vector3 } from "../../math/Vector3";
+import { IShadingContext } from "./IShadingContext";
+ 
 namespace Private {
     export const attributeTypeToComponentCount = {
         float: 1,
@@ -23,7 +27,8 @@ namespace Private {
     };
     export const ref = new AssetReference(GraphicAsset);
     export const refArray = new AssetReferenceArray(GraphicAsset);
-    export const numberArray = new ArrayProperty(Number);       
+    export const numberArray = new ArrayProperty(Number);
+    export const vec3Array = new ArrayProperty(Vector3);
 
     export function makeInstance() {
         return {
@@ -40,6 +45,18 @@ namespace Private {
 
             uniforms: null,
         } as ShaderInstance;
+    }
+
+    export function makeDefaultShadingContext() {
+        return {
+            skinning: false,
+            fog: false,
+            shadowMap: false,
+            vertexColor: false,
+            directionalLights: false,
+            envMap: false,
+            normalMap: false
+        } as IShadingContext;
     }
 }
 
@@ -65,10 +82,6 @@ export interface ShaderInstance {
     fragmentUniforms: ShaderParams | null;
 
     uniforms: ShaderParams | null;
-}
-
-interface ShaderInstances {
-    [bucketId: string]: ShaderInstance;
 }
 
 @Attributes.creatable(true)
@@ -149,20 +162,7 @@ export class Shader extends GraphicAsset {
         }
     }
 
-    beginWithParams(materialParams: SerializableObject): boolean {
-        if (!this.begin()) {
-            return false;
-        }
-
-        // Apply shader params
-        for (const param of Object.keys(materialParams)) {
-            this.applyParam(param, materialParams[param]);
-        }
-
-        return true;
-    }
-
-    begin(): boolean {
+    begin(context?: IShadingContext): boolean {
         if (this._executedOnce) {
             if (this._shaderError) {
                 return false;
@@ -177,10 +177,11 @@ export class Shader extends GraphicAsset {
             return true;
         }
 
-        return this.setupInstance(this._instances[0]);        
+        return this.setupInstance(this._instances[0], context ?? Private.makeDefaultShadingContext());
     }
     
-    beginWithVisual(visual: Visual): ShaderInstance | null {
+    // tslint:disable-next-line
+    beginWithVisual(visual: Visual, bucketId: string): ShaderInstance | null {
         if (this._executedOnce) {
             if (this._shaderError) {
                 return null;
@@ -189,7 +190,6 @@ export class Shader extends GraphicAsset {
             this._executedOnce = true;
         }
 
-        const { bucketId } = visual;
         let instance = this._instances[bucketId];
         if (!instance) {
             instance = Private.makeInstance();
@@ -199,7 +199,25 @@ export class Shader extends GraphicAsset {
         if (instance.program) {
             WebGL.context.useProgram(instance.program);
         } else {
-            if (!this.setupInstance(instance, visual)) {
+
+            const useEnvMap = () => {
+                const mainScene = ScenesInternal.list()[0];
+                const { environment } = mainScene;
+                const envMap = (environment?.isA(SkyBoxEnvironment) ? (environment as SkyBoxEnvironment).cubeMap : null);
+                return Boolean(envMap) && visual.isReflective;
+            };            
+
+            const context: IShadingContext = {
+                skinning: visual.isSkinned,
+                fog: visual.receiveFog,
+                shadowMap: visual.receiveShadows,
+                vertexColor: visual.hasVertexColor,
+                directionalLights: this.useDirectionalLights(),
+                envMap: useEnvMap(),
+                normalMap: visual.hasNormalMap
+            };
+
+            if (!this.setupInstance(instance, context)) {
                 return null;
             }
         }
@@ -253,6 +271,15 @@ export class Shader extends GraphicAsset {
         Private.numberArray.data = numbers;
         ShaderUtils.applyShaderParam(WebGL.context, uniform, Private.numberArray);
     }
+
+    applyVec3ArrayParam(name: string, vecs: Vector3[], bucketId?: string) {
+        const uniform = this.getUniform(name, bucketId);
+        if (uniform === undefined) {
+            return;
+        }
+        Private.vec3Array.data = vecs;
+        ShaderUtils.applyShaderParam(WebGL.context, uniform, Private.vec3Array);
+    }
     
     graphicUnload() {
         Object.values(this._instances).forEach(instance => {
@@ -282,21 +309,16 @@ export class Shader extends GraphicAsset {
 
     initializeUniforms() {
         const instance = this._instances[0];
-        if (!instance.vertexCode) {
-            instance.vertexCode = ShaderCodeInjector.doVertexShader(ShaderUtils.removeComments(this._vertexCode));
+        if (instance.uniforms) {
+            return;
         }
-        if (!instance.fragmentCode) {
-            instance.fragmentCode = ShaderCodeInjector.doFragmentShader(ShaderUtils.removeComments(this._fragmentCode));
+        if (!instance.vertexUniforms) {
+            instance.vertexUniforms = this.parseUniforms(this._vertexCode);
         }
-        if (!instance.uniforms) {
-            if (!instance.vertexUniforms) {
-                instance.vertexUniforms = this.parseUniforms(instance.vertexCode);
-            }
-            if (!instance.fragmentUniforms) {
-                instance.fragmentUniforms = this.parseUniforms(instance.fragmentCode);
-            }
-            instance.uniforms = { ...instance.vertexUniforms, ...instance.fragmentUniforms };
+        if (!instance.fragmentUniforms) {
+            instance.fragmentUniforms = this.parseUniforms(this._fragmentCode);
         }
+        instance.uniforms = { ...instance.vertexUniforms, ...instance.fragmentUniforms };
     }
     
     upgrade(json: SerializedObject, previousVersion: number) {
@@ -427,16 +449,12 @@ void main`
         return shader;
     }
 
-    private setupInstance(instance: ShaderInstance, visual?: Visual) {
+    // tslint:disable-next-line
+    private setupInstance(instance: ShaderInstance, context: IShadingContext) {
         if (!instance.vertexShader) {
             if (!instance.vertexCode) {
-                instance.vertexCode = ShaderCodeInjector.doVertexShader(
-                    ShaderUtils.removeComments(this._vertexCode), 
-                    visual?.isSkinned,
-                    visual?.receiveFog,
-                    visual?.receiveShadows,
-                    visual?.hasVertexColor
-                );
+                const code = ShaderUtils.removeComments(this._vertexCode);
+                instance.vertexCode = ShaderInjector.doVertexShader(code, context);
             }
             const vertexShader = this.createShader(WebGL.context.VERTEX_SHADER, instance.vertexCode, "vertex");
             if (!vertexShader) {
@@ -448,13 +466,8 @@ void main`
 
         if (!instance.fragmentShader) {
             if (!instance.fragmentCode) {
-                instance.fragmentCode = ShaderCodeInjector.doFragmentShader(
-                    ShaderUtils.removeComments(this._fragmentCode),
-                    visual?.receiveFog,
-                    visual?.receiveShadows,
-                    visual?.hasVertexColor,
-                    this.useDirectionalLights()
-                );
+                const code = ShaderUtils.removeComments(this._fragmentCode);
+                instance.fragmentCode = ShaderInjector.doFragmentShader(code, context);
             }
             const fragmentShader = this.createShader(WebGL.context.FRAGMENT_SHADER, instance.fragmentCode, "fragment");
             if (!fragmentShader) {

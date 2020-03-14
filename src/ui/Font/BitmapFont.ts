@@ -2,13 +2,12 @@
 import * as Attributes from "../../core/Attributes";
 import { Font } from "./Font";
 import { AssetReference } from "../../serialization/AssetReference";
-import { Texture2D } from "../../graphics/Texture2D";
+import { Texture2D } from "../../graphics/texture/Texture2D";
 import { VertexBuffer } from "../../graphics/VertexBuffer";
-import { Texture } from "../../graphics/Texture";
+import { Texture } from "../../graphics/texture/Texture";
 import { EngineUtils } from "../../core/EngineUtils";
 import { SerializedObject } from "../../core/SerializableObject";
 import { FontMetrics } from "./FontMetrics";
-import { WebGL } from "../../graphics/WebGL";
 import { TextAlignment } from "../Alignment";
 
 namespace Private {
@@ -94,13 +93,10 @@ export class BitmapFont extends Font {
             && EngineUtils.isAssetRefLoaded(this.metrics);
     }
 
-    /**
-     * @hidden
-     */
     destroy() {
         this.texture.detach();
         if (this._vertexBuffer) {
-            this._vertexBuffer.unload(WebGL.context);
+            this._vertexBuffer.unload();
         }
         super.destroy();
     }
@@ -112,9 +108,6 @@ export class BitmapFont extends Font {
         return json;
     }
 
-    /**
-     * @hidden
-     */
     tesselate(pivotX: number, pivotY: number) {
         if (!this._vertexBuffer) {
             this._vertexBuffer = new VertexBuffer();
@@ -160,9 +153,6 @@ export class BitmapFont extends Font {
         return this._vertexBuffer;
     }
 
-    /**
-     * @hidden
-     */
     // tslint:disable-next-line
     setProperty(name: string, value: any) {
         super.setProperty(name, value);
@@ -181,9 +171,6 @@ export class BitmapFont extends Font {
         }
     }
 
-    /**
-     * @hidden
-     */
     prepareForRendering(screenScaleFactor: number, maxWidth: number) {
         // Scale factor is useless for bitmap fonts
         if (this._maxWidth !== maxWidth) {

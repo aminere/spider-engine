@@ -3,11 +3,11 @@ import { UIFill, TextureFill, SpriteFill, MaterialFill, SpriteSheetFill, ColorFi
 import { Material } from "../graphics/Material";
 import { Matrix44 } from "../math/Matrix44";
 import { VertexBuffer } from "../graphics/VertexBuffer";
-import { Shader } from "../graphics/Shader";
+import { Shader } from "../graphics/shading/Shader";
 import { Color } from "../graphics/Color";
 import { GraphicUtils } from "../graphics/GraphicUtils";
 import { AssetReference } from "../serialization/AssetReference";
-import { Texture } from "../graphics/Texture";
+import { Texture } from "../graphics/texture/Texture";
 import { GeometryProvider } from "../graphics/geometry/GeometryProvider";
 import { defaultAssets } from "../assets/DefaultAssets";
 import { uiSettings } from "./UISettings";
@@ -105,7 +105,7 @@ export class UIFillUtils {
                 material.queueParameter("tint", tint);
                 material.queueParameter("time", Time.time);
                 if (material.begin()) {
-                    GraphicUtils.drawVertexBuffer(context, vertexBuffer, material.shader);
+                    GraphicUtils.drawVertexBuffer(vertexBuffer, material.shader);
                 }
             }
         } else if (_fill.isA(ColorFill)) {
@@ -115,7 +115,7 @@ export class UIFillUtils {
             uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, texture);
             uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
             if (uiMaterial.begin()) {
-                GraphicUtils.drawVertexBuffer(context, vertexBuffer, uiMaterial.shader as Shader);
+                GraphicUtils.drawVertexBuffer(vertexBuffer, uiMaterial.shader as Shader);
             }
         } else if (_fill.isA(TextureFill)) {
             const fill = _fill as TextureFill;
@@ -149,7 +149,7 @@ export class UIFillUtils {
                 uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, fill.texture);
                 uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
                 if (uiMaterial.begin()) {
-                    GraphicUtils.drawVertexBuffer(context, vertexBuffer, uiMaterial.shader as Shader);
+                    GraphicUtils.drawVertexBuffer(vertexBuffer, uiMaterial.shader as Shader);
                 }
             }
         } else if (_fill.isA(SpriteFill)) {
@@ -160,7 +160,7 @@ export class UIFillUtils {
                 uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, spriteTexture);
                 uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
                 if (uiMaterial.begin()) {
-                    GraphicUtils.drawVertexBuffer(context, vertexBuffer, uiMaterial.shader as Shader);
+                    GraphicUtils.drawVertexBuffer(vertexBuffer, uiMaterial.shader as Shader);
                 }
             }
         } else if (_fill.isA(SpriteSheetMaterialFill)) {
@@ -171,7 +171,7 @@ export class UIFillUtils {
                 material.queueParameter("modelViewMatrix", modelView);
                 material.queueParameter("tint", tint);
                 if (material.begin()) {
-                    GraphicUtils.drawVertexBuffer(context, vertexBuffer, material.shader);
+                    GraphicUtils.drawVertexBuffer(vertexBuffer, material.shader);
                 }
             }
         } else if (_fill.isA(SpriteSheetFill)) {
@@ -181,7 +181,7 @@ export class UIFillUtils {
                 uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, fill.texture);
                 uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, Private.tint.copy(fill.color).multiplyColor(tint));
                 if (uiMaterial.begin()) {
-                    GraphicUtils.drawVertexBuffer(context, vertexBuffer, uiMaterial.shader as Shader);
+                    GraphicUtils.drawVertexBuffer(vertexBuffer, uiMaterial.shader as Shader);
                 }
             }
         }

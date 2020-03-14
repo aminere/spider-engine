@@ -365,12 +365,12 @@ export class Entity extends UniqueObject {
         }
     }
 
-    hasComponent(typeName: string) {
+    hasComponentByName(typeName: string) {
         return typeName in this._components;
     }
 
-    hasComponentByType<T>(ctor: Constructor<T>) {
-        return this.hasComponent(ctor.name);
+    hasComponent<T>(ctor: Constructor<T>) {
+        return this.hasComponentByName(ctor.name);
     }
     
     serialize() {

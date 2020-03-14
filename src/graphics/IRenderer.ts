@@ -1,7 +1,7 @@
 
 import { Vector2 } from "../math/Vector2";
-import { Camera } from "./Camera";
-import { RenderTarget } from "./RenderTarget";
+import { Camera } from "./camera/Camera";
+import { RenderTarget } from "./texture/RenderTarget";
 
 export interface IRenderer {    
     readonly screenSize: Vector2;

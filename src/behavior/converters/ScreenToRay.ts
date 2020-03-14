@@ -1,6 +1,6 @@
 
 import * as Attributes from "../../core/Attributes";
-import { Camera } from "../../graphics/Camera";
+import { Camera } from "../../graphics/camera/Camera";
 import { Interfaces } from "../../core/Interfaces";
 import { Converter } from "../Converter";
 import { Vector2Pin, ComponentReferencePin, RayPin } from "../DataPins";

@@ -1,13 +1,13 @@
 
-import * as Attributes from "../core/Attributes";
+import * as Attributes from "../../core/Attributes";
 
 import { Projector } from "./Projector";
-import { Transform } from "../core/Transform";
-import { MathEx } from "../math/MathEx";
-import { SerializedObject } from "../core/SerializableObject";
-import { Matrix44 } from "../math/Matrix44";
+import { Transform } from "../../core/Transform";
+import { MathEx } from "../../math/MathEx";
+import { SerializedObject } from "../../core/SerializableObject";
+import { Matrix44 } from "../../math/Matrix44";
 import { Frustum } from "./Frustum";
-import { graphicSettings } from "./GraphicSettings";
+import { graphicSettings } from "../GraphicSettings";
 
 export class PerspectiveProjector extends Projector {
     

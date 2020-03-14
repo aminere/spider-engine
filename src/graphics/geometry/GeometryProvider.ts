@@ -137,12 +137,12 @@ export class GeometryProvider {
         return Private.skyBox;
     }
 
-    static unload(gl: WebGLRenderingContext) {
-        Private.centeredQuad.unload(gl);
-        Private.quad.unload(gl);
-        Private.uiQuad.unload(gl);
+    static unload() {
+        Private.centeredQuad.unload();
+        Private.quad.unload();
+        Private.uiQuad.unload();
         if (Private.skyBox) {
-            Private.skyBox.unload(gl);
+            Private.skyBox.unload();
         }
     }
 }

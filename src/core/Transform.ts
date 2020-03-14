@@ -212,23 +212,19 @@ export class Transform extends Component {
         this._worldMatrixDirty = true;
         this._invWorldMatrixDirty = true;
         if (this.entity) {
-            this.entity.traverse(e => {
-                const { transform } = e;
-                if (transform) {
-                    transform._worldMatrixDirty = true;
-                    transform._invWorldMatrixDirty = true;
-                    Private.changeCallbacks.push(transform.changed);
-                    return true;
-                } else {
+            this.entity.traverse(({ transform }) => {
+                if (!transform) {
                     return false;
                 }
+                transform._worldMatrixDirty = true;
+                transform._invWorldMatrixDirty = true;
+                Private.changeCallbacks.push(transform.changed);
+                return true;
             });
         }
 
         if (this._eventsEnabled) {
-            for (const changed of Private.changeCallbacks) {
-                changed.post();
-            }
+            Private.changeCallbacks.forEach(c => c.post());
             this.changed.post();
         }
         Private.changeCallbacks.length = 0;        

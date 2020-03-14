@@ -16,7 +16,7 @@ import { Fog } from "../graphics/Fog";
 import { SerializedObject } from "../core/SerializableObject";
 import { Component } from "../core/Component";
 import { IObjectManagerInternal } from "../core/IObjectManager";
-import { Shader } from "../graphics/Shader";
+import { GraphicUtils } from "../graphics/GraphicUtils";
 
 /**
  * @hidden
@@ -55,19 +55,12 @@ export class Scene extends Asset {
     @Attributes.hidden()
     prefabInstances?: PrefabInstances;
 
-    set fog(fog: Fog | undefined) { 
-        if (fog !== this._fog.instance) {
-            const oldType = this._fog.instance ? this._fog.instance.constructor.name : undefined;
-            const newType = fog ? fog.constructor.name : undefined;
-            if (oldType !== newType) {
-                IObjectManagerInternal.instance.forEach(o => {
-                    if (o.isA(Shader)) {
-                        (o as Shader).invalidate();
-                    }
-                });
-            }            
-            this._fog.instance = fog;
-        }        
+    set fog(fog: Fog | undefined) {
+        if (fog === this._fog.instance) {
+            return;
+        }
+        GraphicUtils.invalidateShaders();
+        this._fog.instance = fog;
     }
 
     get fog() {
@@ -75,6 +68,10 @@ export class Scene extends Asset {
     }
 
     set environment(environment: Environment | undefined) {
+        if (environment === this._environment.instance) {
+            return;
+        }
+        GraphicUtils.invalidateShaders();
         this._environment.instance = environment;
     }
 
@@ -287,7 +284,7 @@ export class Scene extends Asset {
                 let target: Component | Entity | null = null;
                 if (overridenObjectTypeName === "Entity") {
                     target = instance;  
-                } else if (instance.hasComponent(overridenObjectTypeName)) {
+                } else if (instance.hasComponentByName(overridenObjectTypeName)) {
                     target = EntityInternal.getComponentByName(instance, overridenObjectTypeName) as Component;
                 } else {
                     // component doesn't exist on the entity, create it

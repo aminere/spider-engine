@@ -4,8 +4,8 @@ import { SerializableObject } from "../../core/SerializableObject";
 import { Matrix44 } from "../../math/Matrix44";
 import { Transform } from "../../core/Transform";
 import { VertexBuffer } from "../VertexBuffer";
-import { Camera } from "../Camera";
-import { Shader } from "../Shader";
+import { Camera } from "../camera/Camera";
+import { Shader } from "../shading/Shader";
 
 export enum GraphicUpdateResult {
     Changed,
@@ -25,7 +25,7 @@ export class Geometry extends SerializableObject {
         return transform.worldMatrix;
     }
 
-    graphicUpdate(camera: Camera, shader: Shader, bucketId: string, transform: Transform, deltaTime: number) {
+    graphicUpdate(camera: Camera, transform: Transform) {
         return GraphicUpdateResult.Unchanged;
     }
 }

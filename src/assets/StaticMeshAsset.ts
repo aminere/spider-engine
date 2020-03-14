@@ -34,6 +34,6 @@ export class StaticMeshAsset extends GraphicAsset {
     private _boundingBox!: AABB;
 
     graphicUnload() {
-        this._vertexBuffer.unload(WebGL.context);
+        this._vertexBuffer.unload();
     }
 }
