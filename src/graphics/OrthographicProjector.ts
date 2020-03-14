@@ -10,25 +10,13 @@ export class OrthographicProjector extends Projector {
     
     get version() { return 2; }
     
-    get zNear() { return this._zNear; }
-    get zFar() { return this._zFar; }
     get size() { return this._size; }
 
-    set zNear(zNear: number) {
-        this._zNear = zNear;
-        this.changed.post();
-    }
-    set zFar(zFar: number) {
-        this._zFar = zFar;
-        this.changed.post();
-    }
     set size(size: number) {
         this._size = size;
         this.changed.post();
     }
 
-    private _zNear = .1;
-    private _zFar = 1000;    
     private _size = 5;
 
     @Attributes.unserializable()

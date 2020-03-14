@@ -10,20 +10,30 @@ import { graphicSettings } from "./GraphicSettings";
 
 export class Projector extends SerializableObject {
     
-    get frustum() { 
-        return this._frustum;
-    }
+    get frustum() { return this._frustum; }
     
     @Attributes.unserializable()
     changed = new VoidSyncEvent();
 
-    zNear: number = 0.2;
-    zFar: number = 1000.0;
+    get zNear() { return this._zNear; }
+    get zFar() { return this._zFar; }
+    
+    set zNear(zNear: number) {
+        this._zNear = zNear;
+        this.changed.post();
+    }
+    set zFar(zFar: number) {
+        this._zFar = zFar;
+        this.changed.post();
+    }
+
+    protected _zNear = .1;
+    protected _zFar = 800;
 
     @Attributes.unserializable()
     protected _frustum: IFrustum = {
         full: new Frustum(),
-        splits: Array.from(new Array(graphicSettings.maxShadowCascades)).map(f => new Frustum())
+        splits: Array.from(new Array(graphicSettings.maxShadowCascades)).map(() => new Frustum())
     };
 
     getProjectionMatrix() { 

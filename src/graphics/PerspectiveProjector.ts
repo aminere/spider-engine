@@ -14,25 +14,13 @@ export class PerspectiveProjector extends Projector {
     get version() { return 2; }
 
     get fov() { return this._fov; }
-    get zNear() { return this._zNear; }
-    get zFar() { return this._zFar; }
-    
+
     set fov(fov: number) {
         this._fov = fov;
         this.changed.post();
     }
-    set zNear(zNear: number) {
-        this._zNear = zNear;
-        this.changed.post();
-    }
-    set zFar(zFar: number) {
-        this._zFar = zFar;
-        this.changed.post();
-    }
 
     private _fov = 60;
-    private _zNear = .1;
-    private _zFar = 800;
 
     @Attributes.unserializable()
     private _projectionMatrix = new Matrix44();
