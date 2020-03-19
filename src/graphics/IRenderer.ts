@@ -7,9 +7,11 @@ export interface IRenderer {
     readonly screenSize: Vector2;
     readonly defaultPerspectiveCamera: Camera | null;
     readonly canvas: HTMLCanvasElement;
-    renderTarget: RenderTarget | null;
+    readonly renderTarget: RenderTarget | null;
     showWireFrame: boolean;
     showShadowCascades: boolean;
+
+    setRenderTarget: (target: RenderTarget | null, cubeMapFace?: number) => void;
 }
 
 namespace Private {

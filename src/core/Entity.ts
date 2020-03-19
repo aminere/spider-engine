@@ -10,6 +10,7 @@ import { Component } from "./Component";
 import { IEntityUtilsInternal } from "./IEntityUtils";
 import { IFactoryInternal } from "../serialization/IFactory";
 import { ObjectProps, Constructor } from "./Types";
+import * as Attributes from "../core/Attributes";
 
 /**
  * @hidden
@@ -114,6 +115,9 @@ export class Entity extends UniqueObject {
     children: Entity[] = [];
     parent?: Entity;   
     prefabId?: string;
+
+    @Attributes.unserializable()
+    transient = false;
 
     private _components: { [typeName: string]: Component } = {};
     private _tags: { [tag: string]: boolean } = {};
@@ -439,7 +443,7 @@ export class Entity extends UniqueObject {
     }
 
     private getComponentsInChildren(typeName: string, components: Component[]) {
-        if (!this.active) {
+        if (!this.active || this.transient) {
             return;
         }
 

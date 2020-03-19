@@ -18,14 +18,13 @@ import { Size, SizeType } from "../core/Size";
 import { Environment, ColorEnvironment, SkySimulation, SkyBoxEnvironment } from "./Environment";
 import { SkinnedMesh } from "./geometry/SkinnedMesh";
 import { GraphicUtils } from "./GraphicUtils";
-import { ExponentialFog, LinearFog } from "./Fog";
+import { ExponentialFog, LinearFog, Fog } from "./Fog";
 import { Matrix33 } from "../math/Matrix33";
 import { AssetReference } from "../serialization/AssetReference";
 import { Texture } from "./texture/Texture";
 import { GeometryProvider } from "./geometry/GeometryProvider";
 import { WebGL } from "./WebGL";
 import { Time } from "../core/Time";
-import { ScenesInternal } from "../core/Scenes";
 import { defaultAssets } from "../assets/DefaultAssets";
 import { IRenderer, IRendererInternal } from "./IRenderer";
 import { Component } from "../core/Component";
@@ -36,6 +35,10 @@ import { Entity } from "../core/Entity";
 import { Shadow, PCFShadow } from "./lighting/Shadow";
 import { AABB } from "../math/AABB";
 import { graphicSettings } from "./GraphicSettings";
+import { ReflectionProbe } from "./ReflectionProbe";
+import { Bloom } from "./postfx/PostEffects";
+import { PhongShaderInternal } from "./shading/PhongShader";
+import { Color } from "./Color";
 
 interface IRenderPassDefinition {
     allowDepthWrite: () => boolean;
@@ -63,6 +66,7 @@ type VertexBufferToVisualsMap = Map<VertexBuffer, Visual[]>;
 type VisualBucketsMap = Map<string, IVisualBucket>;
 type ShaderToVisualBucketsMap = Map<Shader, VisualBucketsMap>;
 type RenderStateBucketsMap = Map<string, IRenderStateBucket>;
+type CameraToRenderPassToDefinitionMap = Map<Camera, RenderPassToDefinitionMap>;
 
 namespace Private {
     export let canvas: HTMLCanvasElement;
@@ -78,6 +82,7 @@ namespace Private {
     export const normalMatrix = new Matrix33();
     export const uiProjectionMatrix = new Matrix44();
     export const cameraToRenderPassMap = new Map<Camera, RenderPassToDefinitionMap>();
+    export const probeToRenderPassMap = new Map<ReflectionProbe, CameraToRenderPassToDefinitionMap>();
 
     export const renderPassToDefinitionMapPool = new MapPool<number, IRenderPassDefinition>(Private.initialCameraPoolSize);
     export const renderStateBucketMapPool = new MapPool<string, IRenderStateBucket>(Private.numRenderPasses * 3); // average 3 cameras
@@ -85,8 +90,10 @@ namespace Private {
     export const visualBucketsMapPool = new MapPool<string, IVisualBucket>(16);
     export const vertexBufferToVisualsMapPool = new MapPool<VertexBuffer, Visual[]>(16);
     export const shadowCastersMapPool = new MapPool<VertexBuffer, Visual[]>(16);
+    export const cameraToRenderPassMapPool = new MapPool<Camera, RenderPassToDefinitionMap>(16);
 
     export let currentRenderTarget: RenderTarget | null = null;
+    export let currentCubemapFace: number | undefined = undefined;
     export let showWireFrame = false;
     export let showShadowCascades = false;
 
@@ -98,7 +105,7 @@ namespace Private {
 
     export const updatedSkinnedMeshes = new Map<SkinnedMesh, boolean>();
 
-    export function doRenderPass(renderPassDefinition: IRenderPassDefinition, gl: WebGLRenderingContext, camera: Camera) {
+    function doRenderPass(renderPassDefinition: IRenderPassDefinition, camera: Camera, fog?: Fog) {
         if (renderPassDefinition.renderStateBucketMap.size === 0) {
             return;
         }
@@ -106,10 +113,6 @@ namespace Private {
         const viewMatrix = camera.getViewMatrix();
         const { maxDirectionalLights, maxShadowCascades, shadowCascadeEdges } = graphicSettings;
         const numDirectionalLights = Math.min(maxDirectionalLights, directionalLights.length);
-
-        const mainScene = ScenesInternal.list()[0];
-        const { fog, environment } = mainScene;
-        const envMap = (environment?.isA(SkyBoxEnvironment) ? (environment as SkyBoxEnvironment).cubeMap : null);
 
         // this ensure materials with additive blending mode are rendered last
         // Because BlendingModes.Additive > BlendingModes.Linear
@@ -134,11 +137,7 @@ namespace Private {
 
                     shader.applyParam("projectionMatrix", camera.getProjectionMatrix(), visualBucketId);
                     shader.applyParam("viewMatrix", viewMatrix, visualBucketId);
-
-                    if (envMap && visualBucket.reference.isReflective) {
-                        shader.applyParam("cameraPosition", camera.entity.transform.worldPosition, visualBucketId);
-                        shader.applyReferenceParam("envMap", envMap, visualBucketId);
-                    }                    
+                    shader.applyParam("cameraPosition", camera.entity.transform.worldPosition, visualBucketId);
 
                     // lighting & shadowing
                     if (numDirectionalLights > 0) {
@@ -218,7 +217,8 @@ namespace Private {
                                 const skinnedMesh = (visual.geometry as SkinnedMesh);
                                 if (!updatedSkinnedMeshes.has(skinnedMesh)) {
                                     skinnedMesh.updateMatrices();
-                                }
+                                    updatedSkinnedMeshes.set(skinnedMesh, true);
+                                }                                
                                 skinnedMesh.updateShader(shader, visualBucketId);
                             } else {
                                 modelViewMatrix = Private.dummyMatrix.multiplyMatrices(viewMatrix, visual.worldTransform);
@@ -232,6 +232,12 @@ namespace Private {
                             shader.applyParam("time", Time.time, visualBucketId);
                             shader.applyParam("deltaTime", Time.deltaTime, visualBucketId);
                             shader.applyParam("frame", Time.currentFrame, visualBucketId);
+
+                            const envMap = visual.envMap;
+                            if (envMap) {
+                                shader.applyReferenceParam("envMap", envMap, visualBucketId);
+                            }
+                            
                             const material = (visual.animatedMaterial ?? visual.material) as Material;
                             const materialParams = material.shaderParams;
                             for (const [paramName, param] of Object.entries(materialParams)) {
@@ -244,52 +250,35 @@ namespace Private {
                 });
             });
         }
-    }
+    }    
 
-    export function addToRenderMap(camera: Camera, visual: Visual) {
-        const vertexBuffer = visual.vertexBuffer;
-        if (!vertexBuffer) {
-            return;
-        }
-        const material = visual.animatedMaterial || visual.material;
-        if (!material || !material.shader) {
-            return;
-        }
-
-        const renderPassToDefinitionMap = Private.cameraToRenderPassMap.get(camera);
-        const renderStateBuckedIdToShadersMap = (renderPassToDefinitionMap?.get(material.renderPass))?.renderStateBucketMap;
-        const materialBucketId = material.buckedId;
-        let renderStateBucket = renderStateBuckedIdToShadersMap?.get(materialBucketId);
-        if (!renderStateBucket) {
-            renderStateBucket = {
-                reference: material,
-                shaderToVisualBucketsMap: Private.shaderToVisualBucketsMapPool.get()
-            };
-            renderStateBuckedIdToShadersMap?.set(materialBucketId, renderStateBucket);
-        }
-
-        let visualBucketsMap = renderStateBucket.shaderToVisualBucketsMap.get(material.shader);
-        if (!visualBucketsMap) {
-            visualBucketsMap = Private.visualBucketsMapPool.get();
-            renderStateBucket.shaderToVisualBucketsMap.set(material.shader, visualBucketsMap);
-        }
-
-        const { bucketId } = visual;
-        let visualBucket = visualBucketsMap.get(bucketId);
-        if (!visualBucket) {
-            visualBucket = {
-                reference: visual,
-                vertexBufferToVisualsMap: Private.vertexBufferToVisualsMapPool.get()
-            };
-            visualBucketsMap.set(bucketId, visualBucket);
-        }
-
-        const visuals = visualBucket.vertexBufferToVisualsMap.get(vertexBuffer);
-        if (!visuals) {
-            visualBucket.vertexBufferToVisualsMap.set(vertexBuffer, [visual]);
-        } else {
-            visuals.push(visual);
-        }
+    function doReflectionRenderPass(renderPassDefinition: IRenderPassDefinition, camera: Camera, viewMatrix: Matrix44) {
+        const cubemapShader = defaultAssets.shaders.dynamicCubemap;
+        renderPassDefinition.renderStateBucketMap.forEach((renderStateBucket, bucketId) => {
+            renderStateBucket.shaderToVisualBucketsMap.forEach((visualBuckets, shader) => {
+                const uniforms = shader.getUniforms();
+                const diffuseMap = uniforms[PhongShaderInternal.diffuseMapKey];
+                const hasDiffuseMap = diffuseMap && diffuseMap.type === "sampler2D";
+                const diffuse = uniforms[PhongShaderInternal.diffuseKey];
+                const hasDiffuse = diffuse && diffuse.type === "vec4";
+                visualBuckets.forEach((visualBucket, visualBucketId) => {                     
+                    visualBucket.vertexBufferToVisualsMap.forEach((visuals, vertexBuffer) => {
+                        vertexBuffer.begin(cubemapShader);
+                        for (const visual of visuals) {
+                            const modelViewMatrix = Private.dummyMatrix.multiplyMatrices(viewMatrix, visual.worldTransform);
+                            const material = (visual.material ?? visual.animatedMaterial) as Material;
+                            const texture = hasDiffuseMap ? material[PhongShaderInternal.diffuseMapKey] : defaultAssets.whiteTexture;
+                            const color = hasDiffuse ? material[PhongShaderInternal.diffuseKey] : Color.white;
+                            cubemapShader.applyReferenceParam("diffuse", texture);
+                            cubemapShader.applyParam("ambient", color);
+                            cubemapShader.applyParam("modelViewMatrix", modelViewMatrix);
+                            vertexBuffer.draw();
+                        }
+                        vertexBuffer.end(cubemapShader);
+                    });
+                });
+            });
+        });
     }
 
     function findBounds(
@@ -377,10 +366,10 @@ namespace Private {
 
             const vertexBuffer = shadowCaster.vertexBuffer as VertexBuffer;
             const visuals = visibleShadowCasters.get(vertexBuffer);
-            if (!visuals) {
-                visibleShadowCasters.set(vertexBuffer, [shadowCaster]);
+            if (visuals) {
+                visuals.push(shadowCaster);                
             } else {
-                visuals.push(shadowCaster);
+                visibleShadowCasters.set(vertexBuffer, [shadowCaster]);
             }
         }
 
@@ -424,7 +413,7 @@ namespace Private {
     }
 
     export const dummyAABB = new AABB();
-    export function renderShadowMaps(camera: Camera) {
+    function renderShadowMaps(camera: Camera) {
         const { maxDirectionalLights, maxShadowCascades } = graphicSettings;
         const maxDirectionalShadowMaps = maxDirectionalLights * maxShadowCascades;
         Private.directionalShadowMaps.length = maxDirectionalShadowMaps;
@@ -453,7 +442,7 @@ namespace Private {
 
             for (let j = 0; j < maxShadowCascades; ++j) {
                 const cascade = Private.directionalShadowMaps[i * maxShadowCascades + j];
-                IRendererInternal.instance.renderTarget = cascade;
+                IRendererInternal.instance.setRenderTarget(cascade);
 
                 // This is done here so that the shadow maps get cleared (in renderTarget = cascade)
                 // otherwise, the shadows remain even if shadowcasters are gone
@@ -488,9 +477,10 @@ namespace Private {
                     for (const visual of visuals) {
                         if (hasSkinning) {
                             const skinnedMesh = visual.geometry as SkinnedMesh;
-                            skinnedMesh.updateMatrices();
-                            updatedSkinnedMeshes.set(skinnedMesh, true);
-
+                            if (!updatedSkinnedMeshes.has(skinnedMesh)) {
+                                skinnedMesh.updateMatrices();
+                                updatedSkinnedMeshes.set(skinnedMesh, true);
+                            }
                             skinnedMesh.updateShader(currentShader, visual.bucketId);
                             currentShader.applyParam("bindMatrix", skinnedMesh.bindMatrix);
                             currentShader.applyParam("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
@@ -516,7 +506,213 @@ namespace Private {
         }
     }
 
-    export function setupCameraRenderPassDefinition(camera: Camera) {
+    function tryClearWithColor(environment: Environment) {
+        const gl = WebGL.context;
+        if ((environment as Environment).isA(ColorEnvironment)) {
+            const color = (environment as ColorEnvironment).color;
+            gl.clearColor(color.r, color.g, color.b, color.a);
+            // tslint:disable-next-line
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            return true;
+        } else {
+            gl.clear(gl.DEPTH_BUFFER_BIT);
+        }
+        return false;
+    }
+
+    function makeSkyViewMatrix(camera: Camera) {
+        const { zFar } = camera.projector;
+        return Matrix44.fromPool()
+            .copy(camera.entity.transform.worldMatrix)
+            .setPosition(Vector3.zero)
+            .transpose()
+            .scaleFromCoords(zFar, zFar, zFar);
+    }   
+
+    function tryClearWithEnvironment(camera: Camera, environment: Environment) {
+        if ((environment as Environment).isA(SkySimulation)) {
+            const skySim = environment as SkySimulation;
+            WebGL.enableDepthTest(true);
+            WebGL.enableDepthWrite(false);
+            const { sky } = defaultAssets.materials;
+            sky.queueParameter("projectionMatrix", camera.getProjectionMatrix());
+            sky.queueParameter("modelViewMatrix", makeSkyViewMatrix(camera));
+            sky.queueParameter("sunPosition", skySim.sunPosition);
+            sky.queueParameter("rayleigh", skySim.rayleigh);
+            sky.queueParameter("turbidity", skySim.turbidity);
+            sky.queueParameter("mieCoefficient", skySim.mieCoefficient);
+            sky.queueParameter("luminance", skySim.luminance);
+            sky.queueParameter("mieDirectionalG", skySim.mieDirectionalG);
+            if (sky.begin()) {
+                const { sphere } = defaultAssets.primitives;
+                GraphicUtils.drawVertexBuffer(sphere.vertexBuffer, sky.shader as Shader);
+            }
+        } else if ((environment as Environment).isA(SkyBoxEnvironment)) {
+            const sky = environment as SkyBoxEnvironment;
+            if (sky.cubeMap) {
+                WebGL.enableDepthTest(true);
+                WebGL.enableDepthWrite(false);
+                const { cubeMap } = defaultAssets.materials;
+                cubeMap.queueParameter("projectionMatrix", camera.getProjectionMatrix());
+                cubeMap.queueParameter("modelViewMatrix", makeSkyViewMatrix(camera));
+                cubeMap.queueReferenceParameter("cubemap", sky.cubeMap);
+                if (cubeMap.begin()) {
+                    GraphicUtils.drawVertexBuffer(GeometryProvider.skyBox, cubeMap.shader as Shader);
+                }
+            }
+        }
+    }
+
+    function doPostFX(camera: Camera, bloom: Bloom) {
+        const fullScreenQuad = GeometryProvider.centeredQuad;
+        const inputRT = bloom.render(camera.sceneRenderTarget, fullScreenQuad) as RenderTarget;
+        // add post effects to scene RT
+        const composeShader = defaultAssets.shaders.compose;
+        if (composeShader.begin()) {
+            IRendererInternal.instance.setRenderTarget(camera.renderTarget);
+            composeShader.applyReferenceParam("scene", camera.sceneRenderTarget);
+            composeShader.applyReferenceParam("postFX", inputRT);
+            composeShader.applyParam("postFxIntensity", bloom.intensity);
+            GraphicUtils.drawVertexBuffer(fullScreenQuad, composeShader);
+        }
+    }
+
+    export function addToRenderMap(renderMap: RenderPassToDefinitionMap, visual: Visual) {
+        const vertexBuffer = visual.vertexBuffer;
+        if (!vertexBuffer) {
+            return;
+        }
+        const material = visual.animatedMaterial || visual.material;
+        if (!material || !material.shader) {
+            return;
+        }
+
+        const renderStateBuckedIdToShadersMap = (renderMap.get(material.renderPass))?.renderStateBucketMap;
+        const materialBucketId = material.buckedId;
+        let renderStateBucket = renderStateBuckedIdToShadersMap?.get(materialBucketId);
+        if (!renderStateBucket) {
+            renderStateBucket = {
+                reference: material,
+                shaderToVisualBucketsMap: Private.shaderToVisualBucketsMapPool.get()
+            };
+            renderStateBuckedIdToShadersMap?.set(materialBucketId, renderStateBucket);
+        }
+
+        let visualBucketsMap = renderStateBucket.shaderToVisualBucketsMap.get(material.shader);
+        if (!visualBucketsMap) {
+            visualBucketsMap = Private.visualBucketsMapPool.get();
+            renderStateBucket.shaderToVisualBucketsMap.set(material.shader, visualBucketsMap);
+        }
+
+        const bucketId = visual.bucketId;
+        let visualBucket = visualBucketsMap.get(bucketId);
+        if (!visualBucket) {
+            visualBucket = {
+                reference: visual,
+                vertexBufferToVisualsMap: Private.vertexBufferToVisualsMapPool.get()
+            };
+            visualBucketsMap.set(bucketId, visualBucket);
+        }
+
+        const visuals = visualBucket.vertexBufferToVisualsMap.get(vertexBuffer);
+        if (visuals) {
+            visuals.push(visual);
+        } else {
+            visualBucket.vertexBufferToVisualsMap.set(vertexBuffer, [visual]);            
+        }
+    }
+
+    export function renderReflections(
+        selector: RenderPassToDefinitionMap,
+        camera: Camera,
+        cubeMapFace: number,
+        environment?: Environment
+    ) {
+        camera.setupFrame();
+        IRendererInternal.instance.setRenderTarget(camera.renderTarget, cubeMapFace);
+
+        const needClear = (camera.clearValue === CameraClear.Environment) && Boolean(environment);
+        const cleared = needClear && tryClearWithColor(environment as Environment);        
+
+        WebGL.enableDepthTest(true);
+        WebGL.enableBlending(false);
+
+        // ignore entity rotation
+        const viewMatrix = Matrix44.fromPool()
+            .compose(
+                camera.entity.transform.worldPosition,
+                camera.entity.transform.rotation,
+                Vector3.one
+            )
+            .invert();
+
+        const cubemapShader = defaultAssets.shaders.dynamicCubemap;
+        const beginPass = () => {
+            WebGL.enableDepthWrite(true);            
+            cubemapShader.begin();
+            cubemapShader.applyParam("projectionMatrix", camera.getProjectionMatrix());    
+        };
+
+        beginPass();
+        doReflectionRenderPass(selector.get(RenderPass.Opaque) as IRenderPassDefinition, camera, viewMatrix);
+
+        if (needClear && !cleared) {
+            tryClearWithEnvironment(camera, environment as Environment);
+            beginPass();
+        }
+
+        doReflectionRenderPass(selector.get(RenderPass.Transparent) as IRenderPassDefinition, camera, viewMatrix);
+    }
+
+    export function render(
+        selector: RenderPassToDefinitionMap,
+        camera: Camera,
+        environment?: Environment,
+        fog?: Fog,
+        preRender?: (camera: Camera) => void,
+        postRender?: (camera: Camera) => void,
+    ) {
+        renderShadowMaps(camera);
+        camera.setupFrame();
+
+        const bloom = camera.postEffects?.bloom;
+        if (bloom) {
+            IRendererInternal.instance.setRenderTarget(camera.sceneRenderTarget);
+        } else {
+            IRendererInternal.instance.setRenderTarget(camera.renderTarget);
+        }        
+
+        if (!Private.defaultPerspectiveCamera) {
+            const projector = camera.projector;
+            if (projector && projector.isA(PerspectiveProjector)) {
+                Private.defaultPerspectiveCamera = camera;
+            }
+        }               
+
+        const needClear = (camera.clearValue === CameraClear.Environment) && Boolean(environment);
+        const cleared = needClear && tryClearWithColor(environment as Environment);
+
+        if (preRender) {
+            preRender(camera);
+        }
+        doRenderPass(selector.get(RenderPass.Opaque) as IRenderPassDefinition, camera, fog);
+        
+        if (needClear && !cleared) {
+            tryClearWithEnvironment(camera, environment as Environment);
+        }
+
+        doRenderPass(selector.get(RenderPass.Transparent) as IRenderPassDefinition, camera, fog);
+        if (postRender) {
+            postRender(camera);
+        }
+
+        // TODO handle all post effects here not just bloom!
+        if (bloom) {
+            doPostFX(camera, bloom);
+        }
+    }
+
+    export function makeRenderPassDefinitions() {
         const renderPassToDefinitionMap = Private.renderPassToDefinitionMapPool.get();
 
         // OPAQUE PASS
@@ -531,17 +727,8 @@ namespace Private {
             renderStateBucketMap: Private.renderStateBucketMapPool.get()
         });
 
-        Private.cameraToRenderPassMap.set(camera, renderPassToDefinitionMap);
-    }
-
-    export function makeSkyViewMatrix(camera: Camera) {
-        const { zFar } = camera.projector;
-        return Matrix44.fromPool()
-            .copy(camera.entity.transform.worldMatrix)
-            .setPosition(Vector3.zero)
-            .transpose()
-            .scaleFromCoords(zFar, zFar, zFar);
-    }    
+        return renderPassToDefinitionMap;
+    }     
 }
 
 export class Renderer implements IRenderer {
@@ -549,23 +736,7 @@ export class Renderer implements IRenderer {
     get defaultPerspectiveCamera() { return Private.defaultPerspectiveCamera; }
     get canvas() { return Private.canvas; }
     get renderTarget() { return Private.currentRenderTarget; }
-    set renderTarget(rt: RenderTarget | null) {
-        if (rt === Private.currentRenderTarget) {
-            return;
-        }
-        if (rt) {
-            const result = rt.bind();
-            if (result) {
-                Private.currentRenderTarget = rt;
-            } else {
-                throw "RenderTarget not ready for rendering";
-            }
-        } else {
-            WebGL.context.bindFramebuffer(WebGL.context.FRAMEBUFFER, null);
-            WebGL.context.viewport(0, 0, this.screenSize.x, this.screenSize.y);
-            Private.currentRenderTarget = null;
-        }
-    }
+    
     set showWireFrame(show: boolean) {
         if (show === Private.showWireFrame) {
             return;
@@ -583,6 +754,26 @@ export class Renderer implements IRenderer {
         Private.showShadowCascades = show;
     }
     get showShadowCascades() { return Private.showShadowCascades; }
+
+    setRenderTarget(rt: RenderTarget | null, cubeMapFace?: number) {
+        if (rt === Private.currentRenderTarget && Private.currentCubemapFace === cubeMapFace) {
+            return;
+        }
+        if (rt) {
+            const result = rt.bind(cubeMapFace);
+            if (result) {
+                Private.currentRenderTarget = rt;
+                Private.currentCubemapFace = cubeMapFace;
+            } else {
+                throw "RenderTarget not ready for rendering";
+            }
+        } else {
+            WebGL.context.bindFramebuffer(WebGL.context.FRAMEBUFFER, null);
+            WebGL.context.viewport(0, 0, this.screenSize.x, this.screenSize.y);
+            Private.currentRenderTarget = null;
+            Private.currentCubemapFace = undefined;
+        }
+    }
 }
 
 /**
@@ -613,6 +804,7 @@ export class RendererInternal {
 
     static render(
         environment: Environment | undefined,
+        fog: Fog | undefined,
         cameras: Camera[],
         renderables: { [typeName: string]: Component[] },
         preRender?: (camera: Camera) => void,
@@ -625,42 +817,110 @@ export class RendererInternal {
         Private.visualBucketsMapPool.flush();
         Private.vertexBufferToVisualsMapPool.flush();
         Private.shadowCastersMapPool.flush();
+        Private.cameraToRenderPassMapPool.flush();
 
         // setup render pass definitions
         Private.cameraToRenderPassMap.clear();
-        for (const camera of cameras) {
-            Private.setupCameraRenderPassDefinition(camera);
-        }
+        cameras.forEach(camera => {
+            Private.cameraToRenderPassMap.set(camera, Private.makeRenderPassDefinitions());
+        });
+        Private.probeToRenderPassMap.clear();        
 
-        // collect rendrables
+        // collect renderables
         Private.defaultPerspectiveCamera = null;
         Private.cameraToShadowCastersMap.clear();
+
+        // TODO support sky simulation environment maps
+        const sceneEnvMap = (environment?.isA(SkyBoxEnvironment) ? (environment as SkyBoxEnvironment).cubeMap : null);        
 
         for (const visual of renderables.Visual as Visual[]) {
             if (!visual.vertexBuffer) {
                 continue;
             }
+
+            let visualAABB: AABB | null = null;
+
+            let closestProbe: ReflectionProbe | null = null;
+            let distToClosestProbe = Number.MAX_VALUE;
+            if (visual.isReflective) {
+                for (const probe of renderables.ReflectionProbe as ReflectionProbe[]) {
+                    const distToProbe = Vector3.distanceSq(
+                        probe.entity.transform.worldPosition,
+                        visual.entity.transform.worldPosition
+                    );
+                    if (distToProbe < distToClosestProbe) {
+                        closestProbe = probe;                        
+                        distToClosestProbe = distToProbe;
+                    }
+                }
+                visual.envMap = closestProbe?.renderTarget ?? sceneEnvMap;   
+            } else {
+                visual.envMap = null;
+            }
+
+            for (const probe of renderables.ReflectionProbe as ReflectionProbe[]) {
+
+                if (!probe.canCapture()) {
+                    continue;
+                }
+
+                let probeMap = Private.probeToRenderPassMap.get(probe);
+                if (!probeMap) {
+                    probeMap = Private.cameraToRenderPassMapPool.get();
+                    Private.probeToRenderPassMap.set(probe, probeMap);
+                    probe.traverseCameras(camera => {
+                        probeMap?.set(camera, Private.makeRenderPassDefinitions());
+                    });
+                }
+
+                if (
+                    probe === closestProbe
+                    || !probe.canRenderGroup(visual.group)
+                ) {
+                    continue;
+                }
+
+                const bbox = visual.geometry?.getBoundingBox();
+                if (bbox) {
+                    visualAABB = Private.dummyAABB.copy(bbox).transform(visual.worldTransform);
+                    probe.traverseCameras(camera => {
+                        // Disable frustum culling for now because scene is low resolution anyway
+                        // Re-enable it but make sure the frustum is not rotated!! otherwise objects disappear
+                        // (Reflection probes' transform must keep an identity rotation)
+                        // if (camera.frustum.full.testAABB(visualAABB as AABB) !== FrustumTest.Out) {
+                            const selector = probeMap?.get(camera) as RenderPassToDefinitionMap;
+                            Private.addToRenderMap(selector, visual);
+                        // }
+                    });
+                } else {
+                    // TODO cull geometries that don't have an AABB?
+                    probe.traverseCameras(camera => {
+                        const selector = probeMap?.get(camera) as RenderPassToDefinitionMap;
+                        Private.addToRenderMap(selector, visual);
+                    });
+                }
+            }
+
             for (const camera of cameras) {
 
                 if (!camera.canRenderGroup(visual.group)) {
                     continue;
                 }
 
-                const visualAABB = (visual.geometry as Geometry).getBoundingBox();
-
-                if (visualAABB) {
+                const bbox = visual.geometry?.getBoundingBox();
+                if (bbox) {
                     if (visual.castShadows) {
                         const visuals = Private.cameraToShadowCastersMap.get(camera);
-                        if (!visuals) {
-                            Private.cameraToShadowCastersMap.set(camera, [visual]);
+                        if (visuals) {
+                            visuals.push(visual);                           
                         } else {
-                            visuals.push(visual);
+                            Private.cameraToShadowCastersMap.set(camera, [visual]);
                         }
                     }
 
                     // Frustum culling
-                    Private.dummyAABB.copy(visualAABB).transform(visual.worldTransform);
-                    if (camera.frustum.full.testAABB(Private.dummyAABB) === FrustumTest.Out) {
+                    const aabb = visualAABB ?? Private.dummyAABB.copy(bbox).transform(visual.worldTransform);                    
+                    if (camera.frustum.full.testAABB(aabb) === FrustumTest.Out) {
                         continue;
                     }
 
@@ -668,11 +928,11 @@ export class RendererInternal {
                     // TODO cull & shadow cast geometries that don't have an AABB?
                 }
 
-                Private.addToRenderMap(camera, visual);
-            }
+                const renderMap = Private.cameraToRenderPassMap.get(camera) as RenderPassToDefinitionMap;
+                Private.addToRenderMap(renderMap, visual);
+            }            
         }
 
-        const gl = WebGL.context;
         const lights = (renderables.Light as Light[]);
         Private.directionalLights = lights
             .filter(light => light.type.isA(DirectionalLight))
@@ -682,106 +942,34 @@ export class RendererInternal {
                 projectionMatrices: Array.from(new Array(graphicSettings.maxShadowCascades)).map(a => Matrix44.fromPool())
             }));
 
-        // gl.depthMask(true);
-        if (Private.cameraToRenderPassMap.size > 0) {
-            Private.updatedSkinnedMeshes.clear();
-            Private.cameraToRenderPassMap.forEach((renderPassSelector, camera) => {
+        Private.updatedSkinnedMeshes.clear();
 
-                // prepare shadow maps
-                Private.renderShadowMaps(camera);
+        // update reflection maps
+        for (const probe of renderables.ReflectionProbe as ReflectionProbe[]) {
+            probe.tick();
+        }
+        Private.probeToRenderPassMap.forEach((cameraToRenderPass, probe) => {
+            cameraToRenderPass.forEach((selector, camera) => {
+                const index = probe.getCameraIndex(camera);
+                const cubeMapFace = WebGL.cubeMapFaces[index];
+                Private.renderReflections(selector, camera, cubeMapFace, environment);
+            });
+        });
 
-                camera.setupFrame();
-
-                const postEffects = camera.postEffects;
-                const bloom = postEffects ? postEffects.bloom : undefined;
-                if (bloom) {
-                    IRendererInternal.instance.renderTarget = camera.sceneRenderTarget;
-                } else {
-                    IRendererInternal.instance.renderTarget = camera.renderTarget;
-                }
-
-                if (!Private.defaultPerspectiveCamera) {
-                    const projector = camera.projector;
-                    if (projector && projector.isA(PerspectiveProjector)) {
-                        Private.defaultPerspectiveCamera = camera;
-                    }
-                }               
-
-                const { clearValue } = camera;
-                const clear = (clearValue === CameraClear.Environment) && Boolean(environment);
-                let cleared = false;
-                if (clear) {
-                    if ((environment as Environment).isA(ColorEnvironment)) {
-                        const color = (environment as ColorEnvironment).color;
-                        gl.clearColor(color.r, color.g, color.b, color.a);
-                        // tslint:disable-next-line
-                        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                        cleared = true;
-                    }
-                }
-
-                if (preRender) {
-                    preRender(camera);
-                }
-                Private.doRenderPass(renderPassSelector.get(RenderPass.Opaque) as IRenderPassDefinition, gl, camera);
-                
-                if (clear && !cleared) {
-                    if ((environment as Environment).isA(SkySimulation)) {
-                        const skySim = environment as SkySimulation;
-                        WebGL.enableDepthTest(true);
-                        WebGL.enableDepthWrite(false);
-                        const { sky } = defaultAssets.materials;
-                        sky.queueParameter("projectionMatrix", camera.getProjectionMatrix());
-                        sky.queueParameter("modelViewMatrix", Private.makeSkyViewMatrix(camera));
-                        sky.queueParameter("sunPosition", skySim.sunPosition);
-                        sky.queueParameter("rayleigh", skySim.rayleigh);
-                        sky.queueParameter("turbidity", skySim.turbidity);
-                        sky.queueParameter("mieCoefficient", skySim.mieCoefficient);
-                        sky.queueParameter("luminance", skySim.luminance);
-                        sky.queueParameter("mieDirectionalG", skySim.mieDirectionalG);
-                        if (sky.begin()) {
-                            const { sphere } = defaultAssets.primitives;
-                            GraphicUtils.drawVertexBuffer(sphere.vertexBuffer, sky.shader as Shader);
-                        }
-                    } else if ((environment as Environment).isA(SkyBoxEnvironment)) {
-                        const sky = environment as SkyBoxEnvironment;
-                        if (sky.cubeMap) {
-                            WebGL.enableDepthTest(true);
-                            WebGL.enableDepthWrite(false);
-                            const { cubeMap } = defaultAssets.materials;
-                            cubeMap.queueParameter("projectionMatrix", camera.getProjectionMatrix());
-                            cubeMap.queueParameter("modelViewMatrix", Private.makeSkyViewMatrix(camera));
-                            cubeMap.queueReferenceParameter("cubemap", sky.cubeMap);
-                            if (cubeMap.begin()) {
-                                GraphicUtils.drawVertexBuffer(GeometryProvider.skyBox, cubeMap.shader as Shader);
-                            }
-                        }
-                    }
-                }
-
-                Private.doRenderPass(renderPassSelector.get(RenderPass.Transparent) as IRenderPassDefinition, gl, camera);
-                if (postRender) {
-                    postRender(camera);
-                }
-
-                // TODO handle all post effects here not just bloom!
-                if (bloom) {
-                    const fullScreenQuad = GeometryProvider.centeredQuad;
-                    const inputRT = bloom.render(gl, camera.sceneRenderTarget, fullScreenQuad) as RenderTarget;
-                    // add post effects to scene RT
-                    const composeShader = defaultAssets.shaders.compose;
-                    if (composeShader.begin()) {
-                        IRendererInternal.instance.renderTarget = camera.renderTarget;
-                        composeShader.applyReferenceParam("scene", camera.sceneRenderTarget);
-                        composeShader.applyReferenceParam("postFX", inputRT);
-                        composeShader.applyParam("postFxIntensity", bloom.intensity);
-                        GraphicUtils.drawVertexBuffer(fullScreenQuad, composeShader);
-                    }
-                }
+        if (Private.cameraToRenderPassMap.size > 0) {            
+            Private.cameraToRenderPassMap.forEach((selector, camera) => {
+                Private.render(
+                    selector,
+                    camera,                    
+                    environment,
+                    fog,                    
+                    preRender,
+                    postRender
+                );
             });
         } else {
             // Empty scene, so at least do the pre and post rendering
-            IRendererInternal.instance.renderTarget = null;
+            IRendererInternal.instance.setRenderTarget(null);
             if (preRender) {
                 if (cameras.length > 0) {
                     preRender(cameras[0]);
@@ -796,7 +984,7 @@ export class RendererInternal {
 
         // render UI
         if (renderables.Screen.length) {
-            IRendererInternal.instance.renderTarget = null;
+            IRendererInternal.instance.setRenderTarget(null);
             WebGL.enableDepthTest(false);
             const { ui } = defaultAssets.materials;
             ui.queueParameter("projectionMatrix", Private.uiProjectionMatrix);

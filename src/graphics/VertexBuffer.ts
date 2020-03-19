@@ -87,10 +87,14 @@ export class VertexBuffer {
 
     setAttribute(attribute: VertexAttribute, data: number[]) {
         this._attributes[attribute] = data;
-        this._metaData[attribute] = {
-            glBuffer: null,
-            isDirty: true
-        };
+        if (attribute in this._metaData) {
+            this._metaData[attribute].isDirty = true;
+        } else {
+            this._metaData[attribute] = {
+                glBuffer: null,
+                isDirty: true
+            };
+        }        
         if (attribute === "position") {
             this._vertexCount = data.length / 3;
         }

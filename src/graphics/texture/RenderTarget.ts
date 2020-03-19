@@ -49,31 +49,41 @@ export class RenderTarget extends Texture {
     private _filtering = TextureFiltering.Linear;
 
     @Attributes.unserializable()
-    private _frameBuffer!: WebGLFramebuffer | null;
+    private _frameBuffer: WebGLFramebuffer | null = null;
     @Attributes.unserializable()
-    private _depthBuffer!: WebGLRenderbuffer | null;
+    private _depthBuffer: WebGLRenderbuffer | null = null;
     @Attributes.unserializable()
     private _loadError = false;
     @Attributes.unserializable()
-    private _actualWidth!: number;
+    private _actualWidth = 0;
     @Attributes.unserializable()
-    private _actualHeight!: number;
+    private _actualHeight = 0;
+    @Attributes.unserializable()
+    private _isCubeMap: boolean;
 
     getWidth() { return this._actualWidth; }
     getHeight() { return this._actualHeight; }
 
-    constructor(width?: Size, height?: Size, rgba?: boolean, persistent?: boolean, filtering?: number) {
+    constructor(
+        width?: Size, 
+        height?: Size, 
+        rgba?: boolean, 
+        persistent?: boolean, 
+        filtering?: number,
+        cubeMap?: boolean
+    ) {
         super();
-        this._width = width || new Size();
-        this._height = height || new Size();
-        this._rgba = rgba !== undefined ? rgba : false;
-        this.isPersistent = persistent !== undefined ? persistent : true;
+        this._width = width ?? new Size();
+        this._height = height ?? new Size();
+        this._rgba = rgba ?? false;
+        this.isPersistent = persistent ?? true;
+        this._isCubeMap = cubeMap ?? false;
         if (filtering !== undefined) {
             this._filtering = filtering;
         }
     }
 
-    bind() {
+    bind(cubeMapFace?: number) {
         // start rendering to this render target
         if (!this._frameBuffer) {
             if (!this._loadError) {
@@ -87,6 +97,11 @@ export class RenderTarget extends Texture {
 
         const gl = WebGL.context;
         gl.bindFramebuffer(gl.FRAMEBUFFER, this._frameBuffer);
+
+        if (cubeMapFace !== undefined) {
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, cubeMapFace, this._textureId, 0);
+        }
+
         gl.viewport(0, 0, this._actualWidth, this._actualHeight);
         // this is necessary otherwise depth is not cleared
         WebGL.enableDepthWrite(true);
@@ -106,7 +121,12 @@ export class RenderTarget extends Texture {
             return false;
         }
         WebGL.context.activeTexture(WebGL.context.TEXTURE0 + stage);
-        WebGL.context.bindTexture(WebGL.context.TEXTURE_2D, this._textureId);
+
+        if (this._isCubeMap) {
+            WebGL.context.bindTexture(WebGL.context.TEXTURE_CUBE_MAP, this._textureId);
+        } else {
+            WebGL.context.bindTexture(WebGL.context.TEXTURE_2D, this._textureId);
+        }
         return true;
     }
 
@@ -122,8 +142,12 @@ export class RenderTarget extends Texture {
         this._textureId = gl.createTexture();
         this._depthBuffer = gl.createRenderbuffer();
         this.resize();
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this._textureId, 0);
-        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this._depthBuffer);
+
+        if (!this._isCubeMap) {
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this._textureId, 0);
+        }
+        
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this._depthBuffer);  
 
         let status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
         if (status !== gl.FRAMEBUFFER_COMPLETE) {
@@ -138,43 +162,59 @@ export class RenderTarget extends Texture {
     graphicUnload() {
         super.graphicUnload();
         if (this._frameBuffer) {
-            let gl = WebGL.context;
-            gl.deleteFramebuffer(this._frameBuffer);
-            gl.deleteRenderbuffer(this._depthBuffer);
+            WebGL.context.deleteFramebuffer(this._frameBuffer);
+            WebGL.context.deleteRenderbuffer(this._depthBuffer);
             this._frameBuffer = null;
             this._depthBuffer = null;
         }
     }
 
     private resize() {
-        const gl = WebGL.context;
         this._actualWidth = this._width.value;
-        if (this._width.type === SizeType.Relative) {
-            this._actualWidth = Interfaces.renderer.screenSize.x * this._actualWidth;
-        }
-
         this._actualHeight = this._height.value;
-        if (this._height.type === SizeType.Relative) {
-            this._actualHeight = Interfaces.renderer.screenSize.y * this._actualHeight;
-        }
 
-        gl.bindTexture(gl.TEXTURE_2D, this._textureId);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        const gl = WebGL.context;
+        if (this._isCubeMap) {
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, this._textureId);
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0);
+            gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
+    
+            WebGL.cubeMapFaces.forEach(t => {
+                gl.texImage2D(t, 0, gl.RGBA, this._actualWidth, this._actualHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            });
 
-        if (this._rgba) {
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._actualWidth, this._actualHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-        } else {
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, this._actualWidth, this._actualHeight, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
-        }
+            gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    
+        } else {            
+            gl.bindTexture(gl.TEXTURE_2D, this._textureId);
+            if (this._width.type === SizeType.Relative) {
+                this._actualWidth = Interfaces.renderer.screenSize.x * this._actualWidth;
+            }
+            
+            if (this._height.type === SizeType.Relative) {
+                this._actualHeight = Interfaces.renderer.screenSize.y * this._actualHeight;
+            }    
+    
+            if (this._rgba) {
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, this._actualWidth, this._actualHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            } else {
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, this._actualWidth, this._actualHeight, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
+            }
+    
+            if (this._filtering === TextureFiltering.Nearest) {
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            } else {
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            }       
 
-        if (this._filtering === TextureFiltering.Nearest) {
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        } else {
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        }       
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        }        
 
         gl.bindRenderbuffer(gl.RENDERBUFFER, this._depthBuffer);
         gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this._actualWidth, this._actualHeight);

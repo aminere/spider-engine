@@ -20,8 +20,7 @@ export class Texture extends GraphicAsset {
 
     graphicUnload() {
         if (this._textureId) {
-            let gl = WebGL.context;
-            gl.deleteTexture(this._textureId);
+            WebGL.context.deleteTexture(this._textureId);
             this._textureId = null;
         }
     }    

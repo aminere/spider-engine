@@ -158,7 +158,7 @@ export class Scene extends Asset {
         this.name = json.name;
         // TODO: should this be a deep copy??
         this.prefabInstances = json.prefabInstances;
-        SerializerUtils.deserializeEntity(this.root, json.root, true);
+        SerializerUtils.deserializeEntity(this.root, json.root);
         
         const prefabsToLoad: PrefabToLoadInfo[] = [];
         this.root.traverse(e => {

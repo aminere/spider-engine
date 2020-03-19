@@ -54,7 +54,7 @@ export class Prefab extends Asset {
         }
         this.id = json.id;
         this.name = json.name;
-        SerializerUtils.deserializeEntity(this.root, json.root, true);
+        SerializerUtils.deserializeEntity(this.root, json.root);
         return Promise.resolve(this);
     }
 }

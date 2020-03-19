@@ -44,6 +44,7 @@ import { Visual } from "../graphics/Visual";
 import { Light } from "../graphics/lighting/Light";
 import { Screen } from "../ui/Screen";
 import { AABB } from "../math/AABB";
+import { ReflectionProbe } from "../graphics/ReflectionProbe";
 
 export interface IEngineConfig {
     container?: HTMLCanvasElement;
@@ -326,6 +327,7 @@ export namespace EngineInternal {
         for (const scene of ScenesInternal.list()) {
             RendererInternal.render(
                 scene.environment, 
+                scene.fog,
                 cameras, 
                 renderables,
                 preRender, 
@@ -344,7 +346,7 @@ export namespace EngineInternal {
 
         if (!DefaultAssetsInternal.isLoaded()) {
             Private.loadingInProgress = true;
-            requestAnimationFrame(() => updateFrame());
+            requestAnimationFrame(updateFrame);
             return;
         }
 
@@ -356,13 +358,13 @@ export namespace EngineInternal {
         if (scenes.length === 0) {
             // tslint:disable-next-line
             WebGL.context.clear(WebGL.context.COLOR_BUFFER_BIT | WebGL.context.DEPTH_BUFFER_BIT);
-            requestAnimationFrame(() => updateFrame());
+            requestAnimationFrame(updateFrame);
             return;
         }
 
         if (!scenes.every(s => s.isLoaded())) {
             Private.loadingInProgress = true;
-            requestAnimationFrame(() => updateFrame());
+            requestAnimationFrame(updateFrame);
             return;
         }
 
@@ -375,7 +377,8 @@ export namespace EngineInternal {
             Visual,
             Light,
             Screen,
-            Camera
+            Camera,
+            ReflectionProbe
         ]);
 
         const cameras = renderables.Camera as Camera[];
@@ -384,7 +387,7 @@ export namespace EngineInternal {
         const { preRender, postRender, uiPostRender } = Private.engineConfig;
         render(cameras, renderables, preRender, postRender, uiPostRender);
 
-        requestAnimationFrame(() => updateFrame());
+        requestAnimationFrame(updateFrame);
     }
 }
 

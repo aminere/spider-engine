@@ -13,6 +13,7 @@ namespace Private {
 export class WebGL {
 
     static primitiveTypes: { [type: string]: number };
+    static cubeMapFaces: number[];
 
     static extensions = {
         OES_texture_float: false,
@@ -38,6 +39,15 @@ export class WebGL {
             TRIANGLE_FAN: context.TRIANGLE_FAN,
             TRIANGLES: context.TRIANGLES
         };        
+
+        WebGL.cubeMapFaces = [
+            context.TEXTURE_CUBE_MAP_POSITIVE_Z,
+            context.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+            context.TEXTURE_CUBE_MAP_POSITIVE_Y,
+            context.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+            context.TEXTURE_CUBE_MAP_NEGATIVE_X,
+            context.TEXTURE_CUBE_MAP_POSITIVE_X                   
+        ];
 
         // These extensions are available by default in Webgl 2        
         WebGL.extensions.OES_texture_float = version > 1;

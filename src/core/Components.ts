@@ -21,7 +21,7 @@ export class Components {
 
         ScenesInternal.list().forEach(scene => {
             scene.root.traverse(e => {
-                if (!e.active) {
+                if (!e.active || e.transient) {
                     return false;
                 }
                 for (const ctor of ctors) {

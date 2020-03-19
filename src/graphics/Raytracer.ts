@@ -8,7 +8,6 @@ import { ScenesInternal } from "../core/Scenes";
 import { Component } from "../core/Component";
 import { Interfaces } from "../core/Interfaces";
 import { ObjectProps } from "../core/Types";
-import { IObjectManagerInternal } from "../core/IObjectManager";
 
 namespace Private {
     export let worker: Worker | null = null;

@@ -170,12 +170,11 @@ import { ModelSkinnedMesh } from "../assets/model/ModelSkinnedMesh";
 import { ModelBone } from "../assets/model/ModelBone";
 import { ModelMultiMesh, ModelSubMesh } from "../assets/model/ModelMultiMesh";
 import { InclusionVisualFilter, ExclusionVisualFilter } from "../graphics/VisualFilters";
-import * as html from "../ui/Html";
-import { Css } from "../ui/Css";
 import { Mask } from "../ui/Mask";
 import { LightType } from "../graphics/lighting/LightType";
 import { DirectionalLight } from "../graphics/lighting/DirectionalLight";
 import { Shadow, PCFSoftShadow, PCFShadow, HardShadow } from "../graphics/lighting/Shadow";
+import { ReflectionProbe, CaptureMode, CaptureOnce, CaptureByFrequency } from "../graphics/ReflectionProbe";
 
 /**
  * @hidden
@@ -229,8 +228,8 @@ export class TypeRegistration {
         factory.registerObject(RenderTarget, Texture);
         factory.registerObject(FontTexture, Texture);       
         factory.registerObject(MemoryTexture, Texture);    
-        factory.registerObject(DrawableTexture, Texture);    
-        factory.registerObject(StaticCubemap, GraphicAsset);
+        factory.registerObject(DrawableTexture, Texture);
+        factory.registerObject(StaticCubemap, Texture);
         factory.registerObject(StaticMeshAsset, GraphicAsset);
         factory.registerObject(Model, Asset);
         factory.registerObject(ModelElement, UniqueObject);
@@ -268,6 +267,10 @@ export class TypeRegistration {
         factory.registerObject(PCFShadow, Shadow);
         factory.registerObject(PCFSoftShadow, PCFShadow);
         factory.registerObject(HardShadow, Shadow);
+        factory.registerObject(ReflectionProbe, Component);
+        factory.registerObject(CaptureMode, SerializableObject);
+        factory.registerObject(CaptureOnce, CaptureMode);
+        factory.registerObject(CaptureByFrequency, CaptureMode);
 
         // Particles
         factory.registerObject(Particles, Component);
@@ -322,12 +325,6 @@ export class TypeRegistration {
         factory.registerObject(FontMetrics, Asset);
         factory.registerObject(Resolution, SerializableObject);
         factory.registerObject(CustomResolution, Resolution);
-        factory.registerObject(html.Html, Component);
-        factory.registerObject(html.Content, SerializableObject);
-        factory.registerObject(html.InnerHtml, html.Content);
-        factory.registerObject(html.InnerText, html.Content);
-        factory.registerObject(html.KeyValue, SerializableObject);
-        factory.registerObject(Css, Component);
 
         // Behavior
         factory.registerObject(ObjectDeclaration, Asset);

@@ -6,13 +6,13 @@ import { AssetReference } from "../serialization/AssetReference";
 import { Camera } from "./camera/Camera";
 import { VisualGroup } from "./VisualGroup";
 import { SkinnedMesh } from "./geometry/SkinnedMesh";
-import { Shader } from "./shading/Shader";
 import { SerializedObject } from "../core/SerializableObject";
 import { Component } from "../core/Component";
 import { ObjectProps } from "../core/Types";
 import { Entity } from "../core/Entity";
 import { Transform } from "../core/Transform";
 import * as Attributes from "../core/Attributes";
+import { Texture } from "./texture/Texture";
 
 @Attributes.helpUrl("https://docs.spiderengine.io/3d/visual.html")
 export class Visual extends Component {
@@ -57,6 +57,9 @@ export class Visual extends Component {
         this._uniqueAnimatedMaterialInstance = animatedMaterial; 
     }
 
+    get envMap() { return this._envMap; }
+    set envMap(envMap: Texture | null) { this._envMap = envMap; }
+
     get worldTransform() {
         return this.geometry?.getWorldTransform(this.entity.transform) ?? this.entity.transform.worldMatrix;
     }
@@ -79,8 +82,8 @@ export class Visual extends Component {
             id |= 1 << 3;
         }
 
-        if (this.isReflective) {
-             // tslint:disable-next-line
+        if (this._envMap) {
+            // tslint:disable-next-line
             id |= 1 << 4;
         }
 
@@ -121,6 +124,9 @@ export class Visual extends Component {
     @Attributes.unserializable()
     @Attributes.hidden()
     private _uniqueAnimatedMaterialInstance?: Material;    
+
+    @Attributes.unserializable()
+    private _envMap: Texture | null = null;
 
     constructor(props?: ObjectProps<Visual>) {
         super();

@@ -1,6 +1,6 @@
 
 import * as Attributes from "../../core/Attributes";
-import { SerializableObject, SerializedObject } from "../../core/SerializableObject";
+import { SerializedObject } from "../../core/SerializableObject";
 import { Debug } from "../../io/Debug";
 import { GraphicAsset } from "../GraphicAsset";
 import { AsyncEvent } from "ts-events";
@@ -13,8 +13,6 @@ import { ObjectProps } from "../../core/Types";
 import { AssetReferenceArray } from "../../serialization/AssetReferenceArray";
 import { ArrayProperty } from "../../serialization/ArrayProperty";
 import { graphicSettings } from "../GraphicSettings";
-import { ScenesInternal } from "../../core/Scenes";
-import { SkyBoxEnvironment } from "../Environment";
 import { Vector3 } from "../../math/Vector3";
 import { IShadingContext } from "./IShadingContext";
  
@@ -198,14 +196,7 @@ export class Shader extends GraphicAsset {
 
         if (instance.program) {
             WebGL.context.useProgram(instance.program);
-        } else {
-
-            const useEnvMap = () => {
-                const mainScene = ScenesInternal.list()[0];
-                const { environment } = mainScene;
-                const envMap = (environment?.isA(SkyBoxEnvironment) ? (environment as SkyBoxEnvironment).cubeMap : null);
-                return Boolean(envMap) && visual.isReflective;
-            };            
+        } else {        
 
             const context: IShadingContext = {
                 skinning: visual.isSkinned,
@@ -213,7 +204,7 @@ export class Shader extends GraphicAsset {
                 shadowMap: visual.receiveShadows,
                 vertexColor: visual.hasVertexColor,
                 directionalLights: this.useDirectionalLights(),
-                envMap: useEnvMap(),
+                envMap: Boolean(visual.envMap),
                 normalMap: visual.hasNormalMap
             };
 
@@ -304,22 +295,8 @@ export class Shader extends GraphicAsset {
     }
     
     getUniforms(bucketId?: string) {
-        return (this._instances[bucketId ?? 0].uniforms) as ShaderParams;
-    }
-
-    initializeUniforms() {
-        const instance = this._instances[0];
-        if (instance.uniforms) {
-            return;
-        }
-        if (!instance.vertexUniforms) {
-            instance.vertexUniforms = this.parseUniforms(this._vertexCode);
-        }
-        if (!instance.fragmentUniforms) {
-            instance.fragmentUniforms = this.parseUniforms(this._fragmentCode);
-        }
-        instance.uniforms = { ...instance.vertexUniforms, ...instance.fragmentUniforms };
-    }
+       return (this._instances[bucketId ?? 0].uniforms as ShaderParams) ?? this.initializeUniforms();
+    }    
     
     upgrade(json: SerializedObject, previousVersion: number) {
         if (previousVersion === 1) {
@@ -588,5 +565,18 @@ void main`
     private getUniform(name: string, bucketId?: string) {
         const instance = (this._instances[bucketId ?? 0] ?? this._instances[0]) as ShaderInstance;
         return (instance.uniforms as ShaderParams)[name];
+    }
+
+    private initializeUniforms() {
+        const instance = this._instances[0];
+        if (!instance.vertexUniforms) {
+            instance.vertexUniforms = this.parseUniforms(this._vertexCode);
+        }
+        if (!instance.fragmentUniforms) {
+            instance.fragmentUniforms = this.parseUniforms(this._fragmentCode);
+        }
+        const uniforms = { ...instance.vertexUniforms, ...instance.fragmentUniforms } as ShaderParams;
+        instance.uniforms = uniforms;
+        return uniforms;
     }
 }

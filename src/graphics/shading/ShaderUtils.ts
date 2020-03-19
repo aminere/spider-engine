@@ -178,7 +178,7 @@ namespace Private {
                 }
                 const textureStage = param.textureStage as number;
                 const texture = (value as AssetReference<Texture>).asset;
-                if (texture && texture.begin(textureStage)) {
+                if (texture?.begin(textureStage)) {
                     gl.uniform1i(param.uniformLocation, textureStage);
                 } else {
                     if (defaultAssets.whiteTexture.begin(textureStage)) {
@@ -200,7 +200,7 @@ namespace Private {
                 for (let i = 0; i < textureRefs.data.length; ++i) {
                     const stage = textureStage[i];
                     const texture = textureRefs.data[i].asset;
-                    if (texture && texture.begin(stage)) {
+                    if (texture?.begin(stage)) {
                         textureStages.push(stage);
                     }
                 }
@@ -216,22 +216,23 @@ namespace Private {
                 }
                 const texture = (value as AssetReference<Texture>).asset;
                 const textureStage = param.textureStage as number;
-                if (texture && texture.begin(textureStage)) {
+                if (texture?.begin(textureStage)) {
                     gl.uniform1i(param.uniformLocation, textureStage);
                 }
             }
         },
         "samplerCube": {
-            // TODO support generic cubemaps
             typeName: "StaticCubemap",
-            create: () => new AssetReference(StaticCubemap),
+            create: () => {
+                return new AssetReference(StaticCubemap);
+            },
             apply: (gl, param, value) => {
                 if (param.textureStage === undefined) {
                     return;
                 }
                 const cubemap = (value as AssetReference<StaticCubemap>).asset;
                 const textureStage = param.textureStage as number;
-                if (cubemap && cubemap.begin(textureStage)) {
+                if (cubemap?.begin(textureStage)) {
                     gl.uniform1i(param.uniformLocation, textureStage);
                 }
             }

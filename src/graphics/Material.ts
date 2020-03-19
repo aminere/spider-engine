@@ -74,10 +74,10 @@ export class Material extends Asset {
         }
 
         // convert textures to AssetReference<Texture>
-        const paramDeclarations = this.shader.getUniforms();
+        const uniforms = this.shader.getUniforms();
         const textureParams = Object.keys(paramDefinitions)
             .filter(definition => {
-                const decl = paramDeclarations[definition];
+                const decl = uniforms[definition];
                 if (decl) {
                     return Boolean(decl.type.match(/sampler/));
                 }
@@ -98,7 +98,7 @@ export class Material extends Asset {
             }
         });
 
-        this._shaderParams = ShaderUtils.buildMaterialParams(paramDeclarations, paramDefinitions, false);
+        this._shaderParams = ShaderUtils.buildMaterialParams(uniforms, paramDefinitions, false);
         this.updateRuntimeAccessors();
     }
 
@@ -344,7 +344,7 @@ export class Material extends Asset {
                 });
             } else {
                 Object.defineProperty(this, paramName, {
-                    get: () => param,
+                    get: () => this._shaderParams[paramName],
                     set: value => {
 
                         if (paramName === "reflectivity") {
@@ -363,9 +363,6 @@ export class Material extends Asset {
     }
 
     private updateParamsFromShader(shader: Shader, liveCodeChange: boolean) {
-        if (!shader.getUniforms()) {
-            shader.initializeUniforms();
-        }
         this._shaderParams = ShaderUtils.buildMaterialParams(shader.getUniforms(), this._shaderParams, liveCodeChange);
     }
 }

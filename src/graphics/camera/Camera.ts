@@ -17,7 +17,6 @@ import { Ray } from "../../math/Ray";
 import { Vector2 } from "../../math/Vector2";
 import { Vector4 } from "../../math/Vector4";
 import { OrthographicProjector } from "./OrthographicProjector";
-import { Frustum } from "./Frustum";
 import { Component } from "../../core/Component";
 import { Interfaces } from "../../core/Interfaces";
 import { Transform } from "../../core/Transform";
@@ -159,7 +158,7 @@ export class Camera extends Component {
     }
 
     canRenderGroup(group: VisualGroup | null) {
-        return this._filter.instance ? this._filter.instance.canRender(group) : true;        
+        return this._filter.instance?.canRender(group) ?? true;        
     }
 
     getProjectionMatrix() {
