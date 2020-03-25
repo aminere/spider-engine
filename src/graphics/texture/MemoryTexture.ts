@@ -1,7 +1,7 @@
 
 import { Texture } from "./Texture";
-import * as Attributes from "../core/Attributes";
-import { WebGL } from "./WebGL";
+import * as Attributes from "../../core/Attributes";
+import { WebGL } from "../WebGL";
 
 @Attributes.referencable(false)
 export class MemoryTexture extends Texture {

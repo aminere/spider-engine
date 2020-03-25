@@ -62,7 +62,7 @@ export class IKGenericSolver extends IKSolverBase {
             entity.traverse(
                 child => {
                     // Stop traversing if found solvers down stream
-                    if (child.hasComponentByType(IKSolver) && child !== entity) {
+                    if (child.hasComponent(IKSolver) && child !== entity) {
                         return false;
                     }
 

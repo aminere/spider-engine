@@ -101,6 +101,10 @@ export class Matrix33 {
         return a * e * i - a * f * h - b * d * i + b * f * g + c * d * h - c * e * g;
     }
 
+    invert() {
+        return this.getInverse(this);
+    }
+
     getInverse(matrix: Matrix33) {
         let me = matrix.data,
             te = this.data,
@@ -136,10 +140,6 @@ export class Matrix33 {
         tmp = m[2]; m[2] = m[6]; m[6] = tmp;
         tmp = m[5]; m[5] = m[7]; m[7] = tmp;
         return this;
-    }
-
-    getNormalMatrix(matrix4: Matrix44) {
-        return this.setFromMatrix4(matrix4).getInverse(this).transpose();
     }
 
     scale(sx: number, sy: number) {

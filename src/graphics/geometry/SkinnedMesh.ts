@@ -9,9 +9,9 @@ import { MathEx } from "../../math/MathEx";
 import { ArrayProperty } from "../../serialization/ArrayProperty";
 import { Debug } from "../../io/Debug";
 import { VertexBuffer } from "../VertexBuffer";
-import { Shader } from "../Shader";
+import { Shader } from "../shading/Shader";
 import { WebGL } from "../WebGL";
-import { MemoryTexture } from "../MemoryTexture";
+import { MemoryTexture } from "../texture/MemoryTexture";
 
 namespace Private {
     export const offsetMatrix = new Matrix44();
@@ -70,7 +70,7 @@ export class SkinnedMesh extends StaticMesh {
 
     destroy() {
         if (this._vb) {
-            this._vb.unload(WebGL.context);
+            this._vb.unload();
         }
         super.destroy();
     }

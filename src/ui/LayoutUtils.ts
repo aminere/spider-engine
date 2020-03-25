@@ -96,7 +96,7 @@ export class LayoutUtils {
 
         // Only apply the resolution adjustment offset for elements that are direct children of the screen  
         // This is shaping to be a horrible hack might need to rethink in the future      
-        let applyOffset = layout.entity.parent && !layout.entity.parent.hasComponent("Layout");
+        let applyOffset = layout.entity.parent && !layout.entity.parent.hasComponent(Layout);
         let stretchX = layout.horizontalAlignment === HorizontalAlignment.Stretch;
         if (stretchX) {
             x += layout.margin.left;

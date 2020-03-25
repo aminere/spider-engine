@@ -1,18 +1,18 @@
 
-import { SerializableObject } from "../core/SerializableObject";
-import { Vector2 } from "../math/Vector2";
-import { Vector3 } from "../math/Vector3";
-import { Matrix44 } from "../math/Matrix44";
-import { Color } from "./Color";
-import { SerializerUtils } from "../serialization/SerializerUtils";
-import { AssetReference } from "../serialization/AssetReference";
-import { StaticCubemap } from "./StaticCubemap";
-import { Asset } from "../assets/Asset";
-import { Matrix33 } from "../math/Matrix33";
-import { Texture } from "./Texture";
-import { defaultAssets } from "../assets/DefaultAssets";
-import { Vector4 } from "../math/Vector4";
-import { AssetReferenceArray } from "../serialization/AssetReferenceArray";
+import { SerializableObject } from "../../core/SerializableObject";
+import { Vector2 } from "../../math/Vector2";
+import { Vector3 } from "../../math/Vector3";
+import { Matrix44 } from "../../math/Matrix44";
+import { Color } from "../Color";
+import { SerializerUtils } from "../../serialization/SerializerUtils";
+import { AssetReference } from "../../serialization/AssetReference";
+import { StaticCubemap } from "../texture/StaticCubemap";
+import { Asset } from "../../assets/Asset";
+import { Matrix33 } from "../../math/Matrix33";
+import { Texture } from "../texture/Texture";
+import { defaultAssets } from "../../assets/DefaultAssets";
+import { Vector4 } from "../../math/Vector4";
+import { AssetReferenceArray } from "../../serialization/AssetReferenceArray";
 
 export type ShaderParamType =
     "vec2"
@@ -79,16 +79,22 @@ namespace Private {
         "worldMatrix": true,
         "normalMatrix": true,
         "modelViewMatrix": true,
+        "cameraPosition": true,
+
+        // Skinning
         "boneTexture": true,
         "boneTextureSize": true,
         "boneMatrices": true,
         "bindMatrix": true,
         "bindMatrixInverse": true,
+
+        // Fog
         "fogColor": true,
         "fogDensity": true,
         "fogNear": true,
         "fogFar": true,
 
+        // Logic
         "time": true,
         "deltaTime": true,
         "frame": true,
@@ -97,7 +103,10 @@ namespace Private {
         "directionalLightMatrices": true,
         "directionalShadowMaps": true,
         "directionalLightCount": true,
-        "shadowCascadeEdges": true
+        "directionalLightDirs": true,
+        "shadowCascadeEdges": true,
+
+        "envMap": true
     };
 
     const textureStages: number[] = [];
@@ -169,7 +178,7 @@ namespace Private {
                 }
                 const textureStage = param.textureStage as number;
                 const texture = (value as AssetReference<Texture>).asset;
-                if (texture && texture.begin(textureStage)) {
+                if (texture?.begin(textureStage)) {
                     gl.uniform1i(param.uniformLocation, textureStage);
                 } else {
                     if (defaultAssets.whiteTexture.begin(textureStage)) {
@@ -191,7 +200,7 @@ namespace Private {
                 for (let i = 0; i < textureRefs.data.length; ++i) {
                     const stage = textureStage[i];
                     const texture = textureRefs.data[i].asset;
-                    if (texture && texture.begin(stage)) {
+                    if (texture?.begin(stage)) {
                         textureStages.push(stage);
                     }
                 }
@@ -207,22 +216,23 @@ namespace Private {
                 }
                 const texture = (value as AssetReference<Texture>).asset;
                 const textureStage = param.textureStage as number;
-                if (texture && texture.begin(textureStage)) {
+                if (texture?.begin(textureStage)) {
                     gl.uniform1i(param.uniformLocation, textureStage);
                 }
             }
         },
         "samplerCube": {
-            // TODO support generic cubemaps
             typeName: "StaticCubemap",
-            create: () => new AssetReference(StaticCubemap),
+            create: () => {
+                return new AssetReference(StaticCubemap);
+            },
             apply: (gl, param, value) => {
                 if (param.textureStage === undefined) {
                     return;
                 }
                 const cubemap = (value as AssetReference<StaticCubemap>).asset;
                 const textureStage = param.textureStage as number;
-                if (cubemap && cubemap.begin(textureStage)) {
+                if (cubemap?.begin(textureStage)) {
                     gl.uniform1i(param.uniformLocation, textureStage);
                 }
             }

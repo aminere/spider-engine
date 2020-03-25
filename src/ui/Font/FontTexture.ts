@@ -1,4 +1,4 @@
-import { Texture } from "../../graphics/Texture";
+import { Texture } from "../../graphics/texture/Texture";
 import * as Attributes from "../../core/Attributes";
 import { FontShadow, DefaultFontShadow } from "./FontShadow";
 import { WebGL } from "../../graphics/WebGL";

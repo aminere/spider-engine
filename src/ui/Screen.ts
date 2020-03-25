@@ -7,7 +7,7 @@ import { Button } from "./Button";
 import { Material } from "../graphics/Material";
 import { Matrix44 } from "../math/Matrix44";
 import { Vector3 } from "../math/Vector3";
-import { Shader } from "../graphics/Shader";
+import { Shader } from "../graphics/shading/Shader";
 import { TouchEvent, Input } from "../input/Input";
 import { AABB } from "../math/AABB";
 import { Vector2 } from "../math/Vector2";
@@ -304,7 +304,7 @@ export class Screen extends Component {
                     uiMaterial.queueReferenceParameter(UIFillUtils.uiShaderTextureParam, font.getTexture());
                     uiMaterial.queueParameter(UIFillUtils.uiShaderColorParam, tintColor.copy(text.color).multiplyColor(elem.finalTint));
                     if (uiMaterial.begin()) {
-                        GraphicUtils.drawVertexBuffer(context, text.getVertexBuffer(), uiMaterial.shader as Shader);
+                        GraphicUtils.drawVertexBuffer(text.getVertexBuffer(), uiMaterial.shader as Shader);
                     }
                 }
                 continue;

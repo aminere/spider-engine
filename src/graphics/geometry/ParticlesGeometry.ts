@@ -7,8 +7,8 @@ import { Transform } from "../../core/Transform";
 import { Color } from "../Color";
 import { VertexBuffer } from "../VertexBuffer";
 import { WebGL } from "../WebGL";
-import { Camera } from "../Camera";
-import { Shader } from "../Shader";
+import { Camera } from "../camera/Camera";
+import { Shader } from "../shading/Shader";
 import { ParticleShape } from "../particles/ParticleShape";
 
 /**
@@ -114,7 +114,7 @@ export class ParticlesGeometry extends Geometry {
 
     destroy() {
         if (this._vb) {
-            this._vb.unload(WebGL.context);
+            this._vb.unload();
         }
         super.destroy();
     }
@@ -133,7 +133,7 @@ export class ParticlesGeometry extends Geometry {
         return this._worldTransform;
     }
 
-    graphicUpdate(camera: Camera, shader: Shader, buckedId: string, transform: Transform, deltaTime: number) {
+    graphicUpdate(camera: Camera, transform: Transform) {
         // update
         if (!this._shape) {
             this._vb.vertexCount = 0;
@@ -196,7 +196,7 @@ export class ParticlesGeometry extends Geometry {
     initVertexBuffer(maxParticles: number) {
         // Init vertex buffer
         if (this._vb) {
-            this._vb.unload(WebGL.context);
+            this._vb.unload();
         }
 
         this._vb = new VertexBuffer();

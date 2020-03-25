@@ -1,7 +1,7 @@
-import { Plane, PlaneClassification } from "../math/Plane";
-import { Vector3 } from "../math/Vector3";
-import { Transform } from "../core/Transform";
-import { AABB } from "../math/AABB";
+import { Plane, PlaneClassification } from "../../math/Plane";
+import { Vector3 } from "../../math/Vector3";
+import { Transform } from "../../core/Transform";
+import { AABB } from "../../math/AABB";
 
 enum FrustumPlane {
     Near,

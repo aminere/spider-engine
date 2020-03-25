@@ -2,11 +2,18 @@ import { Debug } from "../io/Debug";
 
 namespace Private {
     export let context: WebGLRenderingContext;
+    export let depthTest = true;
+    export let depthWrite = true;
+    export let blending = false;
+    export let culling = true;
+    export let cullMode = -1;
+    export let blendFunc = [-1, -1];
 }
 
 export class WebGL {
 
     static primitiveTypes: { [type: string]: number };
+    static cubeMapFaces: number[];
 
     static extensions = {
         OES_texture_float: false,
@@ -22,12 +29,7 @@ export class WebGL {
 
     static get context() { return Private.context; }
     
-    static create(context: WebGLRenderingContext, version: number) {        
-        context.enable(context.DEPTH_TEST);
-        context.clearDepth(1);
-        context.depthFunc(context.LEQUAL);
-        context.frontFace(context.CCW);
-
+    static create(context: WebGLRenderingContext, version: number) {
         WebGL.primitiveTypes = {
             POINTS: context.POINTS,
             LINE_STRIP: context.LINE_STRIP,
@@ -37,6 +39,15 @@ export class WebGL {
             TRIANGLE_FAN: context.TRIANGLE_FAN,
             TRIANGLES: context.TRIANGLES
         };        
+
+        WebGL.cubeMapFaces = [
+            context.TEXTURE_CUBE_MAP_POSITIVE_Z,
+            context.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+            context.TEXTURE_CUBE_MAP_POSITIVE_Y,
+            context.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+            context.TEXTURE_CUBE_MAP_NEGATIVE_X,
+            context.TEXTURE_CUBE_MAP_POSITIVE_X                   
+        ];
 
         // These extensions are available by default in Webgl 2        
         WebGL.extensions.OES_texture_float = version > 1;
@@ -66,6 +77,14 @@ export class WebGL {
         WebGL.caps.maxVertexUniforms = context.getParameter(context.MAX_VERTEX_UNIFORM_VECTORS);
         WebGL.version = version;
         Private.context = context;
+
+        context.enable(context.DEPTH_TEST);
+        context.depthMask(true);
+        context.disable(context.BLEND);
+        context.enable(context.CULL_FACE);
+        context.clearDepth(1);
+        context.depthFunc(context.LEQUAL);
+        context.frontFace(context.CCW);
     }
 
     // tslint:disable-next-line
@@ -76,5 +95,66 @@ export class WebGL {
             Debug.logError(`WebGL error 0x${Number(e).toString(16)}`);
         }
         return r;
+    }
+
+    static enableDepthTest(enable: boolean) {
+        if (enable === Private.depthTest) {
+            return;
+        }
+        if (enable) {
+            WebGL.context.enable(WebGL.context.DEPTH_TEST);
+        } else {
+            WebGL.context.disable(WebGL.context.DEPTH_TEST);
+        }
+        Private.depthTest = enable;
+    }
+
+    static enableDepthWrite(enable: boolean) {
+        if (enable === Private.depthWrite) {
+            return;
+        }
+        WebGL.context.depthMask(enable);
+        Private.depthWrite = enable;
+    }
+
+    static enableBlending(enable: boolean) {
+        if (enable === Private.blending) {
+            return;
+        }
+        if (enable) {
+            WebGL.context.enable(WebGL.context.BLEND);
+        } else {
+            WebGL.context.disable(WebGL.context.BLEND);
+        }
+        Private.blending = enable;
+    }
+
+    static enableCulling(enable: boolean) {
+        if (enable === Private.culling) {
+            return;
+        }
+        if (enable) {
+            WebGL.context.enable(WebGL.context.CULL_FACE);
+        } else {
+            WebGL.context.disable(WebGL.context.CULL_FACE);
+        }
+        Private.culling = enable;
+    }
+
+    static setCullMode(mode: number) {
+        if (mode === Private.cullMode) {
+            return;
+        }
+        WebGL.context.cullFace(mode);
+        Private.cullMode = mode;
+    }
+
+    static setBlendFunc(src: number, dest: number) {
+        if (src === Private.blendFunc[0] && dest === Private.blendFunc[1]) {
+            return;
+        }
+        WebGL.context.blendFunc(src, dest);
+        Private.blendFunc[0] = src;
+        Private.blendFunc[1] = dest;
     }
 }

@@ -1,14 +1,13 @@
 import { AssetReference } from "../serialization/AssetReference";
-import { DrawableTexture } from "./DrawableTexture";
+import { DrawableTexture } from "./texture/DrawableTexture";
 import { Reference } from "../serialization/Reference";
-import { Projector } from "./Projector";
+import { Projector } from "./camera/Projector";
 import { Debug } from "../io/Debug";
 import * as Attributes from "../core/Attributes";
 import { ScenesInternal } from "../core/Scenes";
 import { Component } from "../core/Component";
 import { Interfaces } from "../core/Interfaces";
 import { ObjectProps } from "../core/Types";
-import { IObjectManagerInternal } from "../core/IObjectManager";
 
 namespace Private {
     export let worker: Worker | null = null;

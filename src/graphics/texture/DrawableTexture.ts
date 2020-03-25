@@ -1,11 +1,11 @@
 
 import { Texture } from "./Texture";
-import { Color } from "./Color";
-import { Debug } from "../io/Debug";
-import * as Attributes from "../core/Attributes";
-import { NativeU8Array } from "../serialization/NativeU8Array";
-import { TextureFiltering } from "./GraphicTypes";
-import { WebGL } from "./WebGL";
+import { Color } from "../Color";
+import { Debug } from "../../io/Debug";
+import * as Attributes from "../../core/Attributes";
+import { NativeU8Array } from "../../serialization/NativeU8Array";
+import { TextureFiltering } from "../GraphicTypes";
+import { WebGL } from "../WebGL";
 
 @Attributes.creatable(true)
 @Attributes.referencable(true)

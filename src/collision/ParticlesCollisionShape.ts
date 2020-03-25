@@ -1,5 +1,5 @@
 
-import { Particles } from "../graphics/Particles";
+import { Particles } from "../graphics/particles/Particles";
 import { ComponentReference } from "../serialization/ComponentReference";
 import { CollisionShape } from "./CollisionShape";
 import { CollisionTestPriority } from "./CollisionTestPriority";

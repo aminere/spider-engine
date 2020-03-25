@@ -1,18 +1,19 @@
 
 import { BlendingModes, RenderPass, CullModes } from "./GraphicTypes";
 import { Asset } from "../assets/Asset";
-import { Shader } from "./Shader";
+import { Shader } from "./shading/Shader";
 import { SerializableObject, SerializedObject } from "../core/SerializableObject";
 import { AssetReference, AssetChangedEvent } from "../serialization/AssetReference";
 import { Debug } from "../io/Debug";
 import { EngineUtils } from "../core/EngineUtils";
 import * as Attributes from "../core/Attributes";
 import { GraphicAsset } from "./GraphicAsset";
-import { ShaderUtils, ShaderParamInstanceType } from "./ShaderUtils";
+import { ShaderUtils, ShaderParamInstanceType } from "./shading/ShaderUtils";
 import { WebGL } from "./WebGL";
 import { ObjectProps } from "../core/Types";
-import { Texture2D } from "./Texture2D";
-import { Texture } from "./Texture";
+import { Texture2D } from "./texture/Texture2D";
+import { Texture } from "./texture/Texture";
+import { IShadingContext } from "./shading/IShadingContext";
 
 namespace Private {
     export const shaderParamsPropertySetter = "shaderParams";
@@ -49,11 +50,21 @@ export class Material extends Asset {
     get depthTest() { return this._depthTest; }
 
     set shader(shader: Shader | null) { this._shader.asset = shader; }
-    set blending(blending: BlendingModes) { this._blending = blending; }
     set renderPass(renderPass: RenderPass) { this._renderPass = renderPass; }
-    set cullMode(cullMode: CullModes) { this._cullMode = cullMode; }
-    set priority(priority: number) { this._priority = priority; }    
-    set depthTest(depthTest: boolean) { this._depthTest = depthTest; }
+    set priority(priority: number) { this._priority = priority; }
+
+    set blending(blending: BlendingModes) { 
+        this._blending = blending;
+        this._bucketId = null;
+    }
+    set cullMode(cullMode: CullModes) { 
+        this._cullMode = cullMode; 
+        this._bucketId = null;
+    }
+    set depthTest(depthTest: boolean) { 
+        this._depthTest = depthTest;
+        this._bucketId = null;
+    }
 
     set shaderParams(paramDefinitions: SerializableObject) {
         if (!this.shader) {
@@ -63,10 +74,10 @@ export class Material extends Asset {
         }
 
         // convert textures to AssetReference<Texture>
-        const paramDeclarations = this.shader.getUniforms();
+        const uniforms = this.shader.getUniforms();
         const textureParams = Object.keys(paramDefinitions)
             .filter(definition => {
-                const decl = paramDeclarations[definition];
+                const decl = uniforms[definition];
                 if (decl) {
                     return Boolean(decl.type.match(/sampler/));
                 }
@@ -87,20 +98,25 @@ export class Material extends Asset {
             }
         });
 
-        this._shaderParams = ShaderUtils.buildMaterialParams(paramDeclarations, paramDefinitions, false);
+        this._shaderParams = ShaderUtils.buildMaterialParams(uniforms, paramDefinitions, false);
         this.updateRuntimeAccessors();
     }
 
     get buckedId() {
+        if (this._bucketId) {
+            return this._bucketId;
+        }
+        const blendingCount = BlendingModes.Additive + 1;
+        const cullModeCount = CullModes.None + 1;
         // tslint:disable-next-line
         const blendingId = 1 << this.blending;
         // tslint:disable-next-line
-        const cullId = (1 << (BlendingModes.Additive + 1)) << this.cullMode;
+        const cullId = (1 << blendingCount) << this.cullMode;
         // tslint:disable-next-line
-        const depthTestId = (1 << ((BlendingModes.Additive + 1) + (CullModes.None + 1))) << (this._depthTest ? 0 : 1);
+        const depthTestId = (1 << (blendingCount + cullModeCount)) << (this._depthTest ? 0 : 1);
         // tslint:disable-next-line
-        const id = blendingId | cullId | depthTestId;
-        return `${id}`;
+        this._bucketId = `${blendingId | cullId | depthTestId}`;
+        return this._bucketId;
     }
 
     @Attributes.enumLiterals(BlendingModes)
@@ -117,6 +133,9 @@ export class Material extends Asset {
     // first shader params must be set, then the shader so it decides which params to keep.
     private _shaderParams = new SerializableObject();
     private _shader = new AssetReference(Shader);
+
+    @Attributes.unserializable()
+    private _bucketId: string | null = null;
 
     constructor(props?: MaterialProps) {
         super();
@@ -141,39 +160,42 @@ export class Material extends Asset {
         }
     }
 
-    begin() {
-        let shader = this.shader;
-        if (!shader || !shader.beginWithParams(this.shaderParams)) {
+    begin(context?: IShadingContext) {
+        const { shader } = this;
+        if (!shader || !shader.begin(context)) {
             return false;
         }
+        for (const [paramName, param] of Object.entries(this.shaderParams)) {
+            shader.applyParam(paramName, param);
+        }        
         this.uploadState();
         return true;
     }
 
     uploadState() {
         // blending
-        let gl = WebGL.context;
-        let blending = this.blending;
+        const gl = WebGL.context;
+        const blending = this.blending;
         if (blending === BlendingModes.None) {
-            gl.disable(gl.BLEND);
+            WebGL.enableBlending(false);
         } else if (blending === BlendingModes.Linear) {
-            gl.enable(gl.BLEND);
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+            WebGL.enableBlending(true);
+            WebGL.setBlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         } else if (blending === BlendingModes.Additive) {
-            gl.enable(gl.BLEND);
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+            WebGL.enableBlending(true);
+            WebGL.setBlendFunc(gl.SRC_ALPHA, gl.ONE);
         }
 
         // culling
-        let cullMode = this.cullMode;
+        const cullMode = this.cullMode;
         if (cullMode === CullModes.Back) {
-            gl.enable(gl.CULL_FACE);
-            gl.cullFace(gl.BACK);
+            WebGL.enableCulling(true);
+            WebGL.setCullMode(gl.BACK);
         } else if (cullMode === CullModes.Front) {
-            gl.enable(gl.CULL_FACE);
-            gl.cullFace(gl.FRONT);
+            WebGL.enableCulling(true);
+            WebGL.setCullMode(gl.FRONT);
         } else {
-            gl.disable(gl.CULL_FACE);
+            WebGL.enableCulling(false);
         }
     }
 
@@ -311,6 +333,11 @@ export class Material extends Asset {
                 Object.defineProperty(this, paramName, {
                     get: () => (param as AssetReference<Asset>).asset,
                     set: value => {
+                        if (paramName === "normalMap") {
+                            if (Boolean((param as AssetReference<Asset>).asset) !== Boolean(value)) {
+                                this.shader?.invalidate();
+                            }
+                        }
                         (param as AssetReference<Asset>).asset = value as Asset;
                     },
                     configurable: true
@@ -318,7 +345,17 @@ export class Material extends Asset {
             } else {
                 Object.defineProperty(this, paramName, {
                     get: () => this._shaderParams[paramName],
-                    set: value => this._shaderParams[paramName] = value,
+                    set: value => {
+
+                        if (paramName === "reflectivity") {
+                            const previous = this._shaderParams[paramName];
+                            if ((previous > 0) !== (value > 0)) {
+                                this.shader?.invalidate();
+                            }
+                        }
+                        
+                        this._shaderParams[paramName] = value;
+                    },
                     configurable: true
                 });
             }
@@ -326,9 +363,6 @@ export class Material extends Asset {
     }
 
     private updateParamsFromShader(shader: Shader, liveCodeChange: boolean) {
-        if (!shader.getUniforms()) {
-            shader.initializeUniforms();
-        }
         this._shaderParams = ShaderUtils.buildMaterialParams(shader.getUniforms(), this._shaderParams, liveCodeChange);
     }
 }

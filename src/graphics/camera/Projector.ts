@@ -1,12 +1,12 @@
 
-import { Matrix44 } from "../math/Matrix44";
-import { SerializableObject } from "../core/SerializableObject";
-import { Transform } from "../core/Transform";
-import * as Attributes from "../core/Attributes";
+import { Matrix44 } from "../../math/Matrix44";
+import { SerializableObject } from "../../core/SerializableObject";
+import { Transform } from "../../core/Transform";
+import * as Attributes from "../../core/Attributes";
 import { Frustum } from "./Frustum";
 import { VoidSyncEvent } from "ts-events";
 import { IFrustum } from "./IFrustum";
-import { graphicSettings } from "./GraphicSettings";
+import { graphicSettings } from "../GraphicSettings";
 
 export class Projector extends SerializableObject {
     

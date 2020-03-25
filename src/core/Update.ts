@@ -1,7 +1,7 @@
 
 import { Components } from "./Components";
 import { Raytracer } from "../graphics/Raytracer";
-import { Particles } from "../graphics/Particles";
+import { Particles } from "../graphics/particles/Particles";
 import { GamepadsInternal } from "../input/Gamepads";
 import { AnimationSystem } from "../animation/AnimationSystem";
 import { TimeInternal } from "./Time";
@@ -18,8 +18,6 @@ import { IKSolver } from "../animation/ik/IKSolver";
 import { AnimationComponent } from "../animation/AnimationComponent";
 import { Collider } from "../collision/Collider";
 import { CharacterCollider } from "../collision/CharacterCollider";
-import { Html } from "../ui/Html";
-import { Css } from "../ui/Css";
 
 namespace Private {
     export const updateHook = new VoidSyncEvent();
@@ -98,17 +96,13 @@ export namespace UpdateInternal {
             Screen,
             Raytracer,
             Collider,
-            CharacterCollider,
-            Html,
-            Css
+            CharacterCollider
         ]);
 
-        iterateComponents(IKSolver, components, component => component.update());
-        iterateComponents(Particles, components, component => component.update());
-        iterateComponents(Screen, components, component => component.update());
-        iterateComponents(Html, components, component => component.update());
-        iterateComponents(Css, components, component => component.update());
-        iterateComponents(Raytracer, components, component => component.update());
+        iterateComponents(IKSolver, components, c => c.update());
+        iterateComponents(Particles, components, c => c.update());
+        iterateComponents(Screen, components, c => c.update());
+        iterateComponents(Raytracer, components, c => c.update());
 
         CollisionSystem.update(
             components.Collider as Collider[],

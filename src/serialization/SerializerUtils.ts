@@ -46,7 +46,7 @@ export class SerializerUtils {
 
     static serializeEntity(e: Entity, serializeNonPersistentObjects?: boolean): SerializedEntity {
         SerializerUtils.serializeNonPersistentObjects(serializeNonPersistentObjects);
-        let childrenToSerialize = e.children;
+        let childrenToSerialize = e.children.filter(c => !c.transient);
         let children = childrenToSerialize.map(b => SerializerUtils.serializeEntity(b, serializeNonPersistentObjects));
         let componentsToSerialize: Component[] = [];
         e.iterateComponents(component => {
@@ -68,7 +68,7 @@ export class SerializerUtils {
         };
     }
 
-    static deserializeEntity(entity: Entity, json: SerializedEntity, persistent?: boolean) {
+    static deserializeEntity(entity: Entity, json: SerializedEntity) {
         entity.name = json.name;
         entity.id = json.id;
         entity.initializeActive(json.active);
@@ -95,7 +95,7 @@ export class SerializerUtils {
             for (const child of json.children) {
                 const childInstance = new Entity();
                 entity.addChild(childInstance);
-                SerializerUtils.deserializeEntity(childInstance, child, persistent);
+                SerializerUtils.deserializeEntity(childInstance, child);
             }
         }
     }
@@ -120,7 +120,10 @@ export class SerializerUtils {
                 })()
             };
         } else {
-            const children = e.children.map(b => SerializerUtils.serializeEntityWithPrefabRefs(b));
+            const children = e.children
+                .filter(c => !c.transient)
+                .map(b => SerializerUtils.serializeEntityWithPrefabRefs(b));
+
             const componentsToSerialize: Component[] = [];
             e.iterateComponents(component => {
                 if (!component.controller) {
@@ -323,7 +326,7 @@ export class SerializerUtils {
            
         } else if (typeName === "Entity") {
             const instance = new Entity();
-            SerializerUtils.deserializeEntity(instance, data as SerializedEntity, true);
+            SerializerUtils.deserializeEntity(instance, data as SerializedEntity);
             SerializerUtils.setProperty(target, index, instance);
 
         } else if (RTTI.isObjectOfType(typeName, "SerializableObject")) {

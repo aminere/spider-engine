@@ -1,14 +1,14 @@
 
 import { UniqueObject } from "./UniqueObject";
-import { Projector } from "../graphics/Projector";
+import { Projector } from "../graphics/camera/Projector";
 import { Asset } from "../assets/Asset";
 import { Geometry } from "../graphics/geometry/Geometry";
-import { Camera } from "../graphics/Camera";
-import { OrthographicProjector } from "../graphics/OrthographicProjector";
-import { PerspectiveProjector } from "../graphics/PerspectiveProjector";
+import { Camera } from "../graphics/camera/Camera";
+import { OrthographicProjector } from "../graphics/camera/OrthographicProjector";
+import { PerspectiveProjector } from "../graphics/camera/PerspectiveProjector";
 import { CenteredQuad } from "../graphics/geometry/CenteredQuad";
 import { Material } from "../graphics/Material";
-import { Texture } from "../graphics/Texture";
+import { Texture } from "../graphics/texture/Texture";
 import { SerializableObject } from "./SerializableObject";
 import { Behavior } from "../behavior/Behavior";
 import { Operator } from "../behavior/Operator";
@@ -34,7 +34,7 @@ import {
     RayPin
 } from "../behavior/DataPins";
 import { BehaviorComponent } from "../behavior/BehaviorComponent";
-import { Shader } from "../graphics/Shader";
+import { Shader } from "../graphics/shading/Shader";
 import { Visual } from "../graphics/Visual";
 
 import { Delay } from "../behavior/operators/Delay";
@@ -68,16 +68,16 @@ import { GraphicAsset } from "../graphics/GraphicAsset";
 import { FontTexture } from "../ui/Font/FontTexture";
 import { TouchInput } from "../behavior/operators/TouchInput";
 import { KeyInput } from "../behavior/operators/KeyInput";
-import { StaticCubemap } from "../graphics/StaticCubemap";
+import { StaticCubemap } from "../graphics/texture/StaticCubemap";
 import { ParticlesGeometry } from "../graphics/geometry/ParticlesGeometry";
-import { Volume } from "../graphics/volumes/Volume";
-import { SphereVolume } from "../graphics/volumes/SphereVolume";
-import { BoxVolume } from "../graphics/volumes/BoxVolume";
+import { Volume } from "../graphics/volume/Volume";
+import { SphereVolume } from "../graphics/volume/SphereVolume";
+import { BoxVolume } from "../graphics/volume/BoxVolume";
 import { Billboard } from "../graphics/geometry/Billboard";
 import { Light } from "../graphics/lighting/Light";
 import { QuadGeometry } from "../graphics/geometry/QuadGeometry";
-import { RenderTarget } from "../graphics/RenderTarget";
-import { Texture2D } from "../graphics/Texture2D";
+import { RenderTarget } from "../graphics/texture/RenderTarget";
+import { Texture2D } from "../graphics/texture/Texture2D";
 import { BehaviorNode } from "../behavior/BehaviorNode";
 import { Converter } from "../behavior/Converter";
 import { Vector2Converter } from "../behavior/converters/Vector2Converter";
@@ -88,7 +88,7 @@ import {
     ParticleNumberOverLife, 
     ParticleColorOverLife,    
     Particles 
-} from "../graphics/Particles";
+} from "../graphics/particles/Particles";
 import { Collider } from "../collision/Collider";
 import { CollisionShape } from "../collision/CollisionShape";
 import { SphereCollisionShape } from "../collision/SphereCollisionShape";
@@ -108,7 +108,7 @@ import { Environment, ColorEnvironment, SkySimulation, SkyBoxEnvironment } from 
 import { EngineSettings } from "./EngineSettings";
 import { Font } from "../ui/Font/Font";
 import { BitmapFont } from "../ui/Font/BitmapFont";
-import { MemoryTexture } from "../graphics/MemoryTexture";
+import { MemoryTexture } from "../graphics/texture/MemoryTexture";
 import { Bone } from "./Bone";
 import { DynamicGeometry } from "../graphics/geometry/DynamicGeometry";
 import { RigidBody } from "../physics/RigidBody";
@@ -122,7 +122,7 @@ import { VisualCollisionShape } from "../collision/VisualCollisionShape";
 import { CollisionGroup } from "../collision/CollisionGroup";
 import { GamepadRecorder } from "../behavior/operators/GamepadRecorder";
 import { GamepadData } from "../assets/GamepadData";
-import { DrawableTexture } from "../graphics/DrawableTexture";
+import { DrawableTexture } from "../graphics/texture/DrawableTexture";
 import { Raytracer } from "../graphics/Raytracer";
 import { Resolution, CustomResolution } from "../ui/Resolution";
 import { TouchInteractions } from "../ui/TouchInteractions";
@@ -170,12 +170,11 @@ import { ModelSkinnedMesh } from "../assets/model/ModelSkinnedMesh";
 import { ModelBone } from "../assets/model/ModelBone";
 import { ModelMultiMesh, ModelSubMesh } from "../assets/model/ModelMultiMesh";
 import { InclusionVisualFilter, ExclusionVisualFilter } from "../graphics/VisualFilters";
-import * as html from "../ui/Html";
-import { Css } from "../ui/Css";
 import { Mask } from "../ui/Mask";
 import { LightType } from "../graphics/lighting/LightType";
 import { DirectionalLight } from "../graphics/lighting/DirectionalLight";
 import { Shadow, PCFSoftShadow, PCFShadow, HardShadow } from "../graphics/lighting/Shadow";
+import { ReflectionProbe, CaptureMode, CaptureOnce, CaptureByFrequency } from "../graphics/ReflectionProbe";
 
 /**
  * @hidden
@@ -229,8 +228,8 @@ export class TypeRegistration {
         factory.registerObject(RenderTarget, Texture);
         factory.registerObject(FontTexture, Texture);       
         factory.registerObject(MemoryTexture, Texture);    
-        factory.registerObject(DrawableTexture, Texture);    
-        factory.registerObject(StaticCubemap, GraphicAsset);
+        factory.registerObject(DrawableTexture, Texture);
+        factory.registerObject(StaticCubemap, Texture);
         factory.registerObject(StaticMeshAsset, GraphicAsset);
         factory.registerObject(Model, Asset);
         factory.registerObject(ModelElement, UniqueObject);
@@ -268,6 +267,10 @@ export class TypeRegistration {
         factory.registerObject(PCFShadow, Shadow);
         factory.registerObject(PCFSoftShadow, PCFShadow);
         factory.registerObject(HardShadow, Shadow);
+        factory.registerObject(ReflectionProbe, Component);
+        factory.registerObject(CaptureMode, SerializableObject);
+        factory.registerObject(CaptureOnce, CaptureMode);
+        factory.registerObject(CaptureByFrequency, CaptureMode);
 
         // Particles
         factory.registerObject(Particles, Component);
@@ -322,12 +325,6 @@ export class TypeRegistration {
         factory.registerObject(FontMetrics, Asset);
         factory.registerObject(Resolution, SerializableObject);
         factory.registerObject(CustomResolution, Resolution);
-        factory.registerObject(html.Html, Component);
-        factory.registerObject(html.Content, SerializableObject);
-        factory.registerObject(html.InnerHtml, html.Content);
-        factory.registerObject(html.InnerText, html.Content);
-        factory.registerObject(html.KeyValue, SerializableObject);
-        factory.registerObject(Css, Component);
 
         // Behavior
         factory.registerObject(ObjectDeclaration, Asset);

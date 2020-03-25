@@ -1,6 +1,7 @@
 import { Matrix44 } from "./Matrix44";
 import { Quaternion } from "./Quaternion";
 import { ObjectPool } from "../core/ObjectPool";
+import { Matrix33 } from "./Matrix33";
 
 /**
  * @hidden
@@ -284,6 +285,15 @@ export class Vector3 {
         this._y = e[1] * _x + e[5] * _y + e[9] * _z;
         this._z = e[2] * _x + e[6] * _y + e[10] * _z;
         return this.normalize();
+    }
+
+    transformMatrix33(m: Matrix33) {
+        const { _x, _y, _z } = this;
+        var e = m.data;
+        this._x = e[0] * _x + e[3] * _y + e[6] * _z;
+        this._y = e[1] * _x + e[4] * _y + e[7] * _z;
+        this._z = e[2] * _x + e[5] * _y + e[8] * _z;
+        return this;
     }
 
     copy(other: Vector3) {

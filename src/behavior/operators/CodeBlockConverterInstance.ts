@@ -51,7 +51,7 @@ export class CodeBlockConverterInstance extends Converter {
             for (let variable of Object.keys(this._stateVariables)) {
                 let value = this._stateVariables[variable].value;
                 if (value && value.constructor && value.constructor.name === "VertexBuffer") {
-                    (value as VertexBuffer).unload(WebGL.context);
+                    (value as VertexBuffer).unload();
                 }
             }
         }

@@ -11,13 +11,14 @@ import { RendererInternal } from "../graphics/Renderer";
 import { SerializerUtils } from "../serialization/SerializerUtils";
 import { IObjectManagerInternal } from "./IObjectManager";
 import { defaultAssets } from "../assets/DefaultAssets";
-import { Shader } from "../graphics/Shader";
+import { GraphicUtils } from "../graphics/GraphicUtils";
 
 interface SceneLoadInfo {
     path: string;
     additive: boolean;
     scene?: Scene;
     previousFogType?: string;
+    previousEnvType?: string;
     resolve: (scene: Scene) => void;
 }
 
@@ -43,7 +44,14 @@ namespace Private {
             console.assert(false);
             return;
         }        
-        const { additive, scene, previousFogType, resolve } = Private.sceneLoadInProgress;
+        const { 
+            additive,
+            scene, 
+            previousFogType, 
+            previousEnvType, 
+            resolve 
+        } = Private.sceneLoadInProgress;
+
         if (!scene) {
             console.assert(false);
             return;
@@ -68,13 +76,10 @@ namespace Private {
         
         scenes.push(scene);
 
-        const fogType = scene.fog ? scene.fog.constructor.name : undefined;
-        if (fogType !== previousFogType) {
-            IObjectManagerInternal.instance.forEach(o => {
-                if (o.isA(Shader)) {
-                    (o as Shader).invalidate();
-                }
-            });
+        const fogType = scene?.fog?.constructor.name;
+        const envType = scene?.environment?.constructor.name;
+        if (fogType !== previousFogType || envType !== previousEnvType) {
+            GraphicUtils.invalidateShaders();
         }
 
         if (isFirstScene) {
@@ -175,14 +180,7 @@ export class Scenes {
                 `Only one scene load is supported at a time. Loading '${Private.sceneLoadInProgress.path}', skipping '${path}'`
             );
             return Promise.reject();
-        }
-
-        const getPreviousFogType = () => {
-            const previousScene = Private.scenes.length ? Private.scenes[0] : null;
-            const previousFogInstance = previousScene ? previousScene.fog : null;
-            const previousFogType = previousFogInstance ? previousFogInstance.constructor.name : undefined;
-            return previousFogType;
-        };
+        } 
 
         const preloadIndex = Private.preloadedScenes.findIndex(s => s.templatePath === path);
         if (preloadIndex >= 0) {
@@ -192,7 +190,8 @@ export class Scenes {
                 scene: scene,
                 path: path,
                 additive: additive,
-                previousFogType: getPreviousFogType(),
+                previousFogType: Private.scenes[0]?.fog?.constructor.name,
+                previousEnvType: Private.scenes[0]?.environment?.constructor.name,
                 resolve: () => {}
             };
             Private.finalizeSceneLoad();
@@ -203,7 +202,8 @@ export class Scenes {
             Private.sceneLoadInProgress = {
                 path: path,
                 additive: additive,
-                previousFogType: getPreviousFogType(),
+                previousFogType: Private.scenes[0]?.fog?.constructor.name,
+                previousEnvType: Private.scenes[0]?.environment?.constructor.name,
                 resolve: resolve
             };
             ObjectManagerInternal.loadObjectIgnoreCache(path)

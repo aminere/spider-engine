@@ -1,7 +1,7 @@
 import { SerializableObject } from "../core/SerializableObject";
 import { Color } from "./Color";
 import { AssetReference } from "../serialization/AssetReference";
-import { StaticCubemap } from "./StaticCubemap";
+import { StaticCubemap } from "./texture/StaticCubemap";
 import * as Attributes from "../core/Attributes";
 import { Vector3 } from "../math/Vector3";
 

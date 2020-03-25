@@ -1,11 +1,11 @@
 
-import { Texture2D } from "../graphics/Texture2D";
+import { Texture2D } from "../graphics/texture/Texture2D";
 import { Asset } from "./Asset";
 import { StaticMeshAsset } from "./StaticMeshAsset";
 import { Material } from "../graphics/Material";
 import { Scene } from "./Scene";
 import { Prefab } from "./Prefab";
-import { Shader } from "../graphics/Shader";
+import { Shader } from "../graphics/shading/Shader";
 import { AssetLoadingDefinition } from "./AssetLoadingDefinition";
 import { EngineHud } from "../core/hud/EngineHud";
 import { IObjectManagerInternal } from "../core/IObjectManager";
@@ -27,6 +27,7 @@ export namespace defaultAssets {
         export let compose: Shader;
         export let bloom: Shader;
         export let diffuse: Shader;
+        export let dynamicCubemap: Shader;
     }    
     
     export namespace primitives {    
@@ -39,8 +40,7 @@ export namespace defaultAssets {
     // misc
     export let whiteTexture: Texture2D;    
     export let transitionScene: Scene;    
-    export let hudPrefab: Prefab;
-    export let hudProperty: Prefab;    
+    export let cubemapCaptureRig: Prefab;
 }
 
 namespace Private {    
@@ -108,6 +108,11 @@ namespace Private {
             set: asset => defaultAssets.shaders.diffuse = asset as Shader,
             get: () => defaultAssets.shaders.diffuse
         },
+        {
+            path: "Assets/DefaultAssets/Shaders/DynamicCubemap.Shader",
+            set: asset => defaultAssets.shaders.dynamicCubemap = asset as Shader,
+            get: () => defaultAssets.shaders.dynamicCubemap            
+        },
         // primitives
         {
             path: "Assets/DefaultAssets/Geometry/Meshes/Cube.StaticMeshAsset",
@@ -139,7 +144,12 @@ namespace Private {
             path: "Assets/DefaultAssets/Transition/Transition.Scene",
             set: asset => defaultAssets.transitionScene = asset as Scene,
             get: () => defaultAssets.transitionScene
-        }        
+        },
+        {
+            path: "Assets/DefaultAssets/Prefabs/CubemapCaptureRig.Prefab",
+            set: asset => defaultAssets.cubemapCaptureRig = asset as Prefab,
+            get: () => defaultAssets.cubemapCaptureRig
+        }       
     ];
 
     export let isLoaded = false;

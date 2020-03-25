@@ -1,5 +1,5 @@
 
-import { Shader, ShaderAttributes } from "./Shader";
+import { Shader, ShaderAttributes } from "./shading/Shader";
 import { Debug } from "../io/Debug";
 import { EngineUtils } from "../core/EngineUtils";
 import { PrimitiveType } from "./GraphicTypes";
@@ -10,10 +10,12 @@ import { ObjectProps } from "../core/Types";
 export type VertexAttribute =
     "position"
     | "uv"
-    | "uv1"
+    | "uv2"
+    | "uv3"
+    | "uv4"
     | "normal"
+    | "tangents"
     | "color"
-    | "tangentBinormal"
     | "skinIndex"
     | "skinWeight"
     | "barycentricCoord";
@@ -85,10 +87,14 @@ export class VertexBuffer {
 
     setAttribute(attribute: VertexAttribute, data: number[]) {
         this._attributes[attribute] = data;
-        this._metaData[attribute] = {
-            glBuffer: null,
-            isDirty: true
-        };
+        if (attribute in this._metaData) {
+            this._metaData[attribute].isDirty = true;
+        } else {
+            this._metaData[attribute] = {
+                glBuffer: null,
+                isDirty: true
+            };
+        }        
         if (attribute === "position") {
             this._vertexCount = data.length / 3;
         }
@@ -100,7 +106,7 @@ export class VertexBuffer {
             if (attribute === "position") {
                 if (Interfaces.renderer.showWireFrame) {
                     // sync barycentric coords in editor to keep wireframe mode functional
-                    this.loadBarycentricCoords(WebGL.context);
+                    this.loadBarycentricCoords();
                 }
             }
         } else {
@@ -108,32 +114,32 @@ export class VertexBuffer {
         }
     }
 
-    updateBufferDatas(gl: WebGLRenderingContext) {
+    updateBufferDatas() {
         for (const attribute of Object.keys(this._metaData)) {
-            this.updateBufferDataIfNecessary(gl, attribute);
+            this.updateBufferDataIfNecessary(attribute);
         }
     }
 
-    begin(gl: WebGLRenderingContext, shader: Shader) {
-        this.bindBuffers(gl);
-        this.bindAttributes(gl, shader.getAttributes());
+    begin(shader: Shader) {
+        this.bindBuffers();
+        this.bindAttributes(shader.getAttributes());
     }
 
-    bindBuffers(gl: WebGLRenderingContext) {
+    bindBuffers() {
         if (!this._isLoaded) {
-            this.load(gl);
+            this.load();
             if (Interfaces.renderer.showWireFrame) {
-                this.loadBarycentricCoords(gl);
+                this.loadBarycentricCoords();
             }
             this._isLoaded = true;
         } else {
             const showWireFrame = Interfaces.renderer.showWireFrame;
             if (showWireFrame !== this.hasBarycentricCoords()) {
                 if (showWireFrame) {
-                    this.loadBarycentricCoords(gl);
+                    this.loadBarycentricCoords();
                 } else {
                     // remove barycentric coords buffer
-                    gl.deleteBuffer(this._metaData.barycentricCoord.glBuffer);
+                    WebGL.context.deleteBuffer(this._metaData.barycentricCoord.glBuffer);
                     delete this._attributes.barycentricCoord;
                     delete this._metaData.barycentricCoord;
                 }
@@ -141,19 +147,20 @@ export class VertexBuffer {
         }
 
         if (this._indicesMetaData) {
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._indicesMetaData.glBuffer);
+            WebGL.context.bindBuffer(WebGL.context.ELEMENT_ARRAY_BUFFER, this._indicesMetaData.glBuffer);
         }
     }    
 
-    end(gl: WebGLRenderingContext, shader: Shader) {
-        this.unbindAttributes(gl, shader.getAttributes());
+    end(shader: Shader) {
+        this.unbindAttributes(shader.getAttributes());
     }
 
-    draw(gl: WebGLRenderingContext) {
+    draw() {
         if (this._vertexCount === 0) {
             return;
         }
         const primitive = WebGL.primitiveTypes[this._primitiveType];
+        const gl = WebGL.context;
         if (this._indices) {            
             gl.drawElements(primitive, this._indices.length, gl.UNSIGNED_SHORT, 0);
         } else {
@@ -161,19 +168,21 @@ export class VertexBuffer {
         }
     }
 
-    load(gl: WebGLRenderingContext) {
-        for (const attribute of Object.keys(this._attributes)) {
+    load() {
+        const gl = WebGL.context;
+        for (const [attribute, value] of Object.entries(this._attributes)) {
             const buffer = gl.createBuffer();
-            if (buffer) {
-                gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-                gl.bufferData(
-                    gl.ARRAY_BUFFER,
-                    new Float32Array(this._attributes[attribute]),
-                    this._isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW
-                );
-                this._metaData[attribute].glBuffer = buffer;
-                this._metaData[attribute].isDirty = false;
+            if (!buffer) {
+                continue;
             }
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.bufferData(
+                gl.ARRAY_BUFFER,
+                new Float32Array(value as number[]),
+                this._isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW
+            );
+            this._metaData[attribute].glBuffer = buffer;
+            this._metaData[attribute].isDirty = false;
         }
         if (this._indices) {
             const buffer = gl.createBuffer();
@@ -187,54 +196,58 @@ export class VertexBuffer {
         }
     }
 
-    unload(gl: WebGLRenderingContext) {
-        if (this._isLoaded) {
-            for (const attribute of Object.keys(this._attributes)) {
-                if (this._metaData[attribute].glBuffer) {
-                    gl.deleteBuffer(this._metaData[attribute].glBuffer);
-                    this._metaData[attribute].glBuffer = null;
-                }
-            }
-            if (this._indices) {
-                const metadata = this._indicesMetaData as VertexMetadata;
-                if (metadata.glBuffer) {
-                    gl.deleteBuffer(metadata.glBuffer);
-                    metadata.glBuffer = null;
-                }
-            }
-            this._isLoaded = false;
+    unload() {
+        if (!this._isLoaded) {
+            return;
         }
+        const gl = WebGL.context;
+        for (const attribute of Object.keys(this._attributes)) {
+            const { glBuffer } = this._metaData[attribute];
+            if (glBuffer) {
+                gl.deleteBuffer(glBuffer);
+                this._metaData[attribute].glBuffer = null;
+            }
+        }        
+        if (this._indices) {
+            const metadata = this._indicesMetaData as VertexMetadata;
+            const { glBuffer } = metadata;
+            if (glBuffer) {
+                gl.deleteBuffer(glBuffer);
+                metadata.glBuffer = null;
+            }
+        }
+        this._isLoaded = false;
     }
 
-    bindAttributes(gl: WebGLRenderingContext, attributes: ShaderAttributes) {
-        for (const attribute of Object.keys(this._metaData)) {
-            if (!(attribute in attributes)) {
+    bindAttributes(attributes: ShaderAttributes) {
+        const gl = WebGL.context;
+        for (const [attribute, value] of Object.entries(this._metaData)) {
+            const location = attributes[attribute]?.location;
+            if (location === undefined || location < 0) {
                 // TODO log warning attribute not defined in shader??
                 continue;
             }
-            const location = attributes[attribute].location;
-            const glBuffer = this._metaData[attribute].glBuffer;
-            if (glBuffer && location >= 0) {
-                if (!this.updateBufferDataIfNecessary(gl, attribute)) {
-                    gl.bindBuffer(gl.ARRAY_BUFFER, this._metaData[attribute].glBuffer);
-                }
-                gl.enableVertexAttribArray(location);
-                gl.vertexAttribPointer(location, attributes[attribute].componentCount, gl.FLOAT, false, 0, 0);
+            const { glBuffer } = value;
+            if (!glBuffer) {
+                continue;
             }
+            if (!this.updateBufferDataIfNecessary(attribute)) {
+                gl.bindBuffer(gl.ARRAY_BUFFER, glBuffer);
+            }
+            gl.enableVertexAttribArray(location);
+            gl.vertexAttribPointer(location, attributes[attribute].componentCount, gl.FLOAT, false, 0, 0);
         }
     }
 
-    unbindAttributes(gl: WebGLRenderingContext, attributes: ShaderAttributes) {      
+    unbindAttributes(attributes: ShaderAttributes) {      
         // must disable vertex attributes, otherwise they might be used by an unrelated drawcall!  
-        for (const attribute of Object.keys(this._metaData)) {
-            if (!(attribute in attributes)) {
+        for (const [attribute, value] of Object.entries(this._metaData)) {
+            const location = attributes[attribute]?.location;
+            if (location === undefined || location < 0) {
                 // TODO log warning attribute not defined in shader??
                 continue;
             }
-            const location = attributes[attribute].location;
-            if (location >= 0) {
-                gl.disableVertexAttribArray(location);
-            }
+            WebGL.context.disableVertexAttribArray(location);
         }
     }
     
@@ -242,21 +255,23 @@ export class VertexBuffer {
         return attribute in this._metaData;
     }
 
-    private updateBufferDataIfNecessary(gl: WebGLRenderingContext, attribute: string) {
-        if (this._metaData[attribute].isDirty) {
-            gl.bindBuffer(gl.ARRAY_BUFFER, this._metaData[attribute].glBuffer);
-            gl.bufferData(
-                gl.ARRAY_BUFFER,
-                new Float32Array(this._attributes[attribute]),
-                this._isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW
-            );
-            this._metaData[attribute].isDirty = false;
-            return true;
+    private updateBufferDataIfNecessary(attribute: string) {
+        const attr = this._metaData[attribute];
+        if (!attr.isDirty) {
+            return false;
         }
-        return false;
+        const gl = WebGL.context;
+        gl.bindBuffer(gl.ARRAY_BUFFER, this._metaData[attribute].glBuffer);
+        gl.bufferData(
+            gl.ARRAY_BUFFER,
+            new Float32Array(this._attributes[attribute]),
+            this._isDynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW
+        );
+        this._metaData[attribute].isDirty = false;
+        return true;
     }
 
-    private loadBarycentricCoords(gl: WebGLRenderingContext) {
+    private loadBarycentricCoords() {
         if (!this._attributes.position || this.primitiveType !== "TRIANGLES") {
             return;
         }
@@ -280,6 +295,7 @@ export class VertexBuffer {
             this.dirtifyAttribute("barycentricCoord");
         } else {
             this.setAttribute("barycentricCoord", coords);
+            const gl = WebGL.context;
             const buffer = gl.createBuffer();
             if (buffer) {
                 gl.bindBuffer(gl.ARRAY_BUFFER, buffer);

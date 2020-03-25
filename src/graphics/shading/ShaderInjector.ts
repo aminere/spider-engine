@@ -1,10 +1,11 @@
 
-import { Debug } from "../io/Debug";
-import { ExponentialFog } from "./Fog";
-import { ScenesInternal } from "../core/Scenes";
-import { Interfaces } from "../core/Interfaces";
-import { WebGL } from "./WebGL";
-import { graphicSettings } from "./GraphicSettings";
+import { Debug } from "../../io/Debug";
+import { ExponentialFog } from "../Fog";
+import { ScenesInternal } from "../../core/Scenes";
+import { Interfaces } from "../../core/Interfaces";
+import { WebGL } from "../WebGL";
+import { graphicSettings } from "../GraphicSettings";
+import { IShadingContext } from "./IShadingContext";
 
 /**
  * @hidden
@@ -32,16 +33,34 @@ namespace Private {
             return null;
         }
     }
+
+    export function unrollLoops(code: string) {
+        return code.replace(
+            new RegExp(/_loop_([0-9A-Z_]+)[\r\n]+\$(.*?)\$/, "sg"),
+            (x, iterations, match) => {
+                const iters = (() => {
+                    if (isNaN(iterations)) {
+                        if (iterations in graphicSettings.shaderDefinitions) {
+                            return graphicSettings.shaderDefinitions[iterations]() as number;
+                        }
+                        return undefined;
+                    } else {
+                        return parseInt(iterations, 10);
+                    }
+                })();
+
+                if (iters === undefined) {
+                    return x;
+                }
+
+                const arr = Array.from(new Array(iters));
+                return `${arr.map((a, i) => match.replace(/_i_/g, i)).join("")}`;
+            });
+    }
 }
 
-export class ShaderCodeInjector {
-    static doVertexShader(
-        vertexCode: string,
-        useSkinning?: boolean,
-        useFog?: boolean,
-        useShadowMap?: boolean,
-        useVertexColor?: boolean
-    ) {
+export class ShaderInjector {
+    static doVertexShader(vertexCode: string, context: IShadingContext) {
         let directives = "";
         let definitions = "";
         let statements = "";
@@ -62,13 +81,20 @@ vBarycentric = barycentricCoord;`;
             needInjection = true;
         }
 
-        if (useSkinning === true) {
+        if (context.skinning) {
             directives = `${directives}
 #define USE_SKINNING`;
             needInjection = true;
         }
 
-        if (useFog === true) {
+        if (context.directionalLights) {
+            directives = `${directives}
+#define MAX_DIRECTIONAL_LIGHTS ${graphicSettings.maxDirectionalLights}     
+            `;
+            needInjection = true;
+        }
+
+        if (context.fog) {
             let fog = ScenesInternal.list()[0].fog;
             if (fog) {
                 directives = `${directives}
@@ -81,20 +107,32 @@ vBarycentric = barycentricCoord;`;
             }
         }
 
-        if (useShadowMap === true) {
+        if (context.shadowMap) {
             directives = `${directives}
 #define USE_SHADOW_MAP`;
             needInjection = true;
         }
 
-        if (useVertexColor === true) {
+        if (context.envMap) {
+            directives = `${directives}
+#define USE_ENV_MAP`;
+            needInjection = true;
+        }
+
+        if (context.vertexColor) {
             directives = `${directives}
 #define USE_VERTEX_COLOR`;
             needInjection = true;
         }
 
+        if (context.normalMap) {
+            directives = `${directives}
+#define USE_NORMAL_MAP`;
+            needInjection = true;
+        }        
+
         if (needInjection) {
-            let sections = Private.getSections(vertexCode);
+            const sections = Private.getSections(vertexCode);
             if (sections) {
                 return `${version}
 ${directives}
@@ -109,13 +147,7 @@ ${statements}
         return vertexCode;
     }
 
-    static doFragmentShader(
-        fragmentCode: string,
-        useFog?: boolean,
-        useShadowMap?: boolean,
-        useVertexColor?: boolean,
-        useDirectionalLights?: boolean
-    ) {
+    static doFragmentShader(fragmentCode: string, context: IShadingContext) {
         let directives = "";
         let definitions = "";
         let postProcess = "";
@@ -163,14 +195,14 @@ float edgeFactor() {
             needInjection = true;
         }
 
-        if (useDirectionalLights) {
+        if (context.directionalLights) {
             directives = `${directives}
 #define MAX_DIRECTIONAL_LIGHTS ${graphicSettings.maxDirectionalLights}     
             `;
             needInjection = true;
         }
 
-        if (useFog === true) {
+        if (context.fog) {
             let fog = ScenesInternal.list()[0].fog;
             if (fog) {
                 directives = `${directives}
@@ -183,7 +215,7 @@ float edgeFactor() {
             }
         }
 
-        if (useShadowMap === true) {
+        if (context.shadowMap) {
             if (Interfaces.renderer.showShadowCascades) {
                 directives = `${directives}
 #define SHOW_SHADOW_CASCADES`;
@@ -197,36 +229,28 @@ float edgeFactor() {
             needInjection = true;
         }
 
-        if (useVertexColor === true) {
+        if (context.vertexColor) {
             directives = `${directives}
 #define USE_VERTEX_COLOR`;
             needInjection = true;
         }
 
-        fragmentCode = fragmentCode.replace(
-            new RegExp(/_loop_([0-9A-Z_]+)[\r\n]+\$(.*?)\$/, "sg"),
-            (x, iterations, code) => {
-                const iters = (() => {
-                    if (isNaN(iterations)) {
-                        if (iterations in graphicSettings.shaderDefinitions) {
-                            return graphicSettings.shaderDefinitions[iterations]() as number;
-                        }
-                        return undefined;
-                    } else {
-                        return parseInt(iterations, 10);
-                    }
-                })();
+        if (context.envMap) {
+            directives = `${directives}
+#define USE_ENV_MAP`;
+            needInjection = true;
+        }    
+        
+        if (context.normalMap) {
+            directives = `${directives}
+#define USE_NORMAL_MAP`;
+            needInjection = true;
+        }
 
-                if (iters === undefined) {
-                    return x;
-                }
-
-                const arr = Array.from(new Array(iters));
-                return `${arr.map((a, i) => code.replace(/_i_/g, i)).join("")}`;
-            });
+        fragmentCode = Private.unrollLoops(fragmentCode);
 
         if (needInjection) {
-            let sections = Private.getSections(fragmentCode);
+            const sections = Private.getSections(fragmentCode);
             if (sections) {
                 return `${version}
 ${sections.qualifiers}

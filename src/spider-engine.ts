@@ -17,16 +17,16 @@ export * from "./serialization/Range";
 export * from "./assets/DefaultAssets";
 
 // Graphics
-export * from "./graphics/Camera";
+export * from "./graphics/camera/Camera";
 export * from "./graphics/Visual";
 export * from "./graphics/lighting/Light";
 export * from "./graphics/lighting/DirectionalLight";
-export * from "./graphics/Particles";
+export * from "./graphics/particles/Particles";
 export { Material } from "./graphics/Material";
-export { Shader } from "./graphics/Shader";
+export { Shader } from "./graphics/shading/Shader";
 export * from "./graphics/shading/PhongShader";
-export * from "./graphics/volumes/BoxVolume";
-export * from "./graphics/volumes/SphereVolume";
+export * from "./graphics/volume/BoxVolume";
+export * from "./graphics/volume/SphereVolume";
 export * from "./graphics/geometry/primitives/BoxGeometry";
 export * from "./graphics/geometry/primitives/SphereGeometry";
 export * from "./graphics/geometry/primitives/ConeGeometry";
@@ -41,7 +41,7 @@ export * from "./graphics/geometry/StaticMesh";
 export * from "./graphics/Color";
 export * from "./graphics/VertexBuffer";
 export * from "./graphics/VisualGroup";
-export * from "./graphics/RenderTarget";
+export * from "./graphics/texture/RenderTarget";
 export * from "./graphics/VisualFilters";
 
 // Animation

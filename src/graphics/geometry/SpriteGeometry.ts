@@ -30,7 +30,7 @@ export class SpriteGeometry extends Geometry {
 
     destroy() {
         if (this._vertexBuffer) {
-            this._vertexBuffer.unload(WebGL.context);
+            this._vertexBuffer.unload();
         }
         super.destroy();
     }

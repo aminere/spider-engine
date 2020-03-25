@@ -3,7 +3,7 @@ import * as Attributes from "../core/Attributes";
 import { Material } from "../graphics/Material";
 import { Sprite, SpriteRenderMode } from "./Sprite";
 import { Color } from "../graphics/Color";
-import { Texture } from "../graphics/Texture";
+import { Texture } from "../graphics/texture/Texture";
 import { AssetReference } from "../serialization/AssetReference";
 import { EngineUtils } from "../core/EngineUtils";
 import { SerializableObject, SerializedObject } from "../core/SerializableObject";
@@ -92,7 +92,7 @@ export class SpriteFill extends UIFill {
 
     destroy() {
         if (this._vertexBuffer) {
-            this._vertexBuffer.unload(WebGL.context);
+            this._vertexBuffer.unload();
         }
         this.sprite.detach();
         super.destroy();
@@ -279,7 +279,7 @@ export class SpriteSheetFill extends UIFill {
 
     destroy() {
         if (this._vertexBuffer) {
-            this._vertexBuffer.unload(WebGL.context);
+            this._vertexBuffer.unload();
         }
         this._spriteSheet.detach();
         super.destroy();

@@ -1,8 +1,8 @@
 
-import * as Attributes from "../core/Attributes";
+import * as Attributes from "../../core/Attributes";
 
-import { GraphicAsset } from "./GraphicAsset";
-import { WebGL } from "./WebGL";
+import { GraphicAsset } from "../GraphicAsset";
+import { WebGL } from "../WebGL";
 
 export class Texture extends GraphicAsset {
 
@@ -20,8 +20,7 @@ export class Texture extends GraphicAsset {
 
     graphicUnload() {
         if (this._textureId) {
-            let gl = WebGL.context;
-            gl.deleteTexture(this._textureId);
+            WebGL.context.deleteTexture(this._textureId);
             this._textureId = null;
         }
     }    

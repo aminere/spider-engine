@@ -70,7 +70,7 @@ export class CodeBlockInstance extends Operator {
 
                 const value = variable[TDataPin.runtimeValueAccessor];
                 if (value && value.constructor && value.constructor.name === "VertexBuffer") {
-                    (value as VertexBuffer).unload(WebGL.context);
+                    (value as VertexBuffer).unload();
                 }
             }
         }
