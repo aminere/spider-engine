@@ -4,8 +4,7 @@ import { Vector3 } from "../../math/Vector3";
 import { Transform } from "../../core/Transform";
 import { Color } from "../Color";
 import { VertexBuffer } from "../VertexBuffer";
-import { Camera } from "../Camera";
-import { Shader } from "../Shader";
+import { Camera } from "../camera/Camera";
 import { ParticleShape } from "../particles/ParticleShape";
 /**
  * @hidden
@@ -35,7 +34,7 @@ export declare class ParticlesGeometry extends Geometry {
     destroy(): void;
     getVertexBuffer(): VertexBuffer;
     getWorldTransform(transform: Transform): Matrix44;
-    graphicUpdate(camera: Camera, shader: Shader, buckedId: string, transform: Transform, deltaTime: number): GraphicUpdateResult;
+    graphicUpdate(camera: Camera, transform: Transform): GraphicUpdateResult;
     initVertexBuffer(maxParticles: number): void;
     resetData(maxParticles: number): void;
     getData(name: DataOffset, particleIndex: number, localOffset?: number): number;

@@ -1,8 +1,8 @@
 import { Font } from "./Font";
 import { AssetReference } from "../../serialization/AssetReference";
-import { Texture2D } from "../../graphics/Texture2D";
+import { Texture2D } from "../../graphics/texture/Texture2D";
 import { VertexBuffer } from "../../graphics/VertexBuffer";
-import { Texture } from "../../graphics/Texture";
+import { Texture } from "../../graphics/texture/Texture";
 import { SerializedObject } from "../../core/SerializableObject";
 import { FontMetrics } from "./FontMetrics";
 export declare class BitmapFont extends Font {
@@ -26,22 +26,10 @@ export declare class BitmapFont extends Font {
     setText(text: string): void;
     setAlignment(alignment: number): void;
     isLoaded(): boolean;
-    /**
-     * @hidden
-     */
     destroy(): void;
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
-    /**
-     * @hidden
-     */
     tesselate(pivotX: number, pivotY: number): VertexBuffer;
-    /**
-     * @hidden
-     */
     setProperty(name: string, value: any): void;
-    /**
-     * @hidden
-     */
     prepareForRendering(screenScaleFactor: number, maxWidth: number): void;
     private drawText;
 }

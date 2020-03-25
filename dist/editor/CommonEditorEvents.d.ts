@@ -1,6 +1,6 @@
 import { AsyncEvent } from "ts-events";
 import { Entity } from "../core/Entity";
-import { Texture2D } from "../graphics/Texture2D";
+import { Texture2D } from "../graphics/texture/Texture2D";
 export interface PinsChangedInfo {
     ownerId: string;
     pinIds: string[];

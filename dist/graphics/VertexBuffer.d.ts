@@ -1,7 +1,7 @@
-import { Shader, ShaderAttributes } from "./Shader";
+import { Shader, ShaderAttributes } from "./shading/Shader";
 import { PrimitiveType } from "./GraphicTypes";
 import { ObjectProps } from "../core/Types";
-export declare type VertexAttribute = "position" | "uv" | "uv1" | "normal" | "color" | "tangentBinormal" | "skinIndex" | "skinWeight" | "barycentricCoord";
+export declare type VertexAttribute = "position" | "uv" | "uv2" | "uv3" | "uv4" | "normal" | "tangents" | "color" | "skinIndex" | "skinWeight" | "barycentricCoord";
 declare type VertexAttributes = {
     [P in VertexAttribute]?: number[];
 };
@@ -33,15 +33,15 @@ export declare class VertexBuffer {
     copy(): VertexBuffer;
     setAttribute(attribute: VertexAttribute, data: number[]): void;
     dirtifyAttribute(attribute: VertexAttribute): void;
-    updateBufferDatas(gl: WebGLRenderingContext): void;
-    begin(gl: WebGLRenderingContext, shader: Shader): void;
-    bindBuffers(gl: WebGLRenderingContext): void;
-    end(gl: WebGLRenderingContext, shader: Shader): void;
-    draw(gl: WebGLRenderingContext): void;
-    load(gl: WebGLRenderingContext): void;
-    unload(gl: WebGLRenderingContext): void;
-    bindAttributes(gl: WebGLRenderingContext, attributes: ShaderAttributes): void;
-    unbindAttributes(gl: WebGLRenderingContext, attributes: ShaderAttributes): void;
+    updateBufferDatas(): void;
+    begin(shader: Shader): void;
+    bindBuffers(): void;
+    end(shader: Shader): void;
+    draw(): void;
+    load(): void;
+    unload(): void;
+    bindAttributes(attributes: ShaderAttributes): void;
+    unbindAttributes(attributes: ShaderAttributes): void;
     hasAttribute(attribute: string): boolean;
     private updateBufferDataIfNecessary;
     private loadBarycentricCoords;

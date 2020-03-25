@@ -1,5 +1,5 @@
 import { Texture } from "./Texture";
-import { Color } from "./Color";
+import { Color } from "../Color";
 export declare class DrawableTexture extends Texture {
     set rgba(rgba: boolean);
     get rgba(): boolean;

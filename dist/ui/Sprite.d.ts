@@ -1,6 +1,6 @@
 import { Asset } from "../assets/Asset";
 import { AssetReference } from "../serialization/AssetReference";
-import { Texture2D } from "../graphics/Texture2D";
+import { Texture2D } from "../graphics/texture/Texture2D";
 import { Vector2 } from "../math/Vector2";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 export declare enum SpriteRenderMode {

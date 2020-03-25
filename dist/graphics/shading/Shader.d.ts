@@ -1,9 +1,11 @@
-import { SerializableObject, SerializedObject } from "../core/SerializableObject";
-import { GraphicAsset } from "./GraphicAsset";
+import { SerializedObject } from "../../core/SerializableObject";
+import { GraphicAsset } from "../GraphicAsset";
 import { AsyncEvent } from "ts-events";
-import { Visual } from "./Visual";
+import { Visual } from "../Visual";
 import { ShaderParams } from "./ShaderUtils";
-import { ObjectProps } from "../core/Types";
+import { ObjectProps } from "../../core/Types";
+import { Vector3 } from "../../math/Vector3";
+import { IShadingContext } from "./IShadingContext";
 export interface ShaderAttribute {
     location: number;
     componentCount: number;
@@ -12,11 +14,15 @@ export interface ShaderAttributes {
     [name: string]: ShaderAttribute;
 }
 export interface ShaderInstance {
-    attributes: ShaderAttributes | null;
-    params: ShaderParams | null;
     program: WebGLProgram | null;
     vertexShader: WebGLShader | null;
+    vertexCode: string | null;
+    vertexUniforms: ShaderParams | null;
+    vertexAttribs: ShaderAttributes | null;
     fragmentShader: WebGLShader | null;
+    fragmentCode: string | null;
+    fragmentUniforms: ShaderParams | null;
+    uniforms: ShaderParams | null;
 }
 export declare class Shader extends GraphicAsset {
     get version(): number;
@@ -34,24 +40,24 @@ export declare class Shader extends GraphicAsset {
     private _instances;
     private _executedOnce;
     constructor(props?: ObjectProps<Shader>);
-    beginWithParams(materialParams: SerializableObject): boolean;
-    begin(): boolean;
-    beginWithVisual(visual: Visual): ShaderInstance | null;
+    begin(context?: IShadingContext): boolean;
+    beginWithVisual(visual: Visual, bucketId: string): ShaderInstance | null;
     applyParam(name: string, value: any, bucketId?: string): void;
     applyReferenceParam(name: string, referred: GraphicAsset, bucketId?: string): void;
     applyReferenceArrayParam(name: string, referreds: GraphicAsset[], bucketId?: string): void;
     applyNumberArrayParam(name: string, numbers: number[], bucketId?: string): void;
-    setProperty(property: string, value: any): void;
+    applyVec3ArrayParam(name: string, vecs: Vector3[], bucketId?: string): void;
     graphicUnload(): void;
-    invalidateProgram(): void;
+    invalidate(): void;
     getAttributes(bucketId?: string): ShaderAttributes;
-    getParams(bucketId?: string): ShaderParams;
+    getUniforms(bucketId?: string): ShaderParams;
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
-    protected loadInstance(gl: WebGLRenderingContext, instance: ShaderInstance, vertexShader: WebGLShader, fragmentShader: WebGLShader, vertexCode: string, fragmentCode: string): boolean;
-    protected setupInstance(instance: ShaderInstance, gl: WebGLRenderingContext, visual: Visual): boolean;
-    protected createShader(type: number, code: string, logTypeName: string): WebGLShader | null;
+    protected loadInstance(instance: ShaderInstance): boolean;
+    protected useDirectionalLights(): boolean;
+    private createShader;
+    private setupInstance;
     private extractAttributes;
-    private extractUniforms;
     private parseUniforms;
-    private tryExtractUniforms;
+    private getUniform;
+    private initializeUniforms;
 }

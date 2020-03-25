@@ -1,6 +1,6 @@
-import { Vector3 } from "../math/Vector3";
-import { Transform } from "../core/Transform";
-import { AABB } from "../math/AABB";
+import { Vector3 } from "../../math/Vector3";
+import { Transform } from "../../core/Transform";
+import { AABB } from "../../math/AABB";
 export declare enum FrustumCorner {
     FarTopLeft = 0,
     FarTopRight = 1,

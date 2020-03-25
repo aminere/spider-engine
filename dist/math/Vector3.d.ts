@@ -1,6 +1,7 @@
 import { Matrix44 } from "./Matrix44";
 import { Quaternion } from "./Quaternion";
 import { ObjectPool } from "../core/ObjectPool";
+import { Matrix33 } from "./Matrix33";
 /**
  * @hidden
  */
@@ -70,6 +71,7 @@ export declare class Vector3 {
     rotate(q: Quaternion): this;
     transform(m: Matrix44): this;
     transformDirection(m: Matrix44): this;
+    transformMatrix33(m: Matrix33): this;
     copy(other: Vector3): this;
     equals(other: Vector3): boolean;
     asArray(): number[];

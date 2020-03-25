@@ -1,9 +1,9 @@
-import { Texture2D } from "../graphics/Texture2D";
+import { Texture2D } from "../graphics/texture/Texture2D";
 import { StaticMeshAsset } from "./StaticMeshAsset";
 import { Material } from "../graphics/Material";
 import { Scene } from "./Scene";
 import { Prefab } from "./Prefab";
-import { Shader } from "../graphics/Shader";
+import { Shader } from "../graphics/shading/Shader";
 export declare namespace defaultAssets {
     namespace materials {
         let particles: Material;
@@ -20,6 +20,7 @@ export declare namespace defaultAssets {
         let compose: Shader;
         let bloom: Shader;
         let diffuse: Shader;
+        let dynamicCubemap: Shader;
     }
     namespace primitives {
         let box: StaticMeshAsset;
@@ -29,8 +30,7 @@ export declare namespace defaultAssets {
     }
     let whiteTexture: Texture2D;
     let transitionScene: Scene;
-    let hudPrefab: Prefab;
-    let hudProperty: Prefab;
+    let cubemapCaptureRig: Prefab;
 }
 /**
  * @hidden

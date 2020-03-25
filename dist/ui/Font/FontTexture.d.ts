@@ -1,4 +1,4 @@
-import { Texture } from "../../graphics/Texture";
+import { Texture } from "../../graphics/texture/Texture";
 import { FontShadow } from "./FontShadow";
 import { TextureFiltering } from "../../graphics/GraphicTypes";
 export declare class FontTexture extends Texture {

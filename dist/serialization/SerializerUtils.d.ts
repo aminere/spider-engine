@@ -10,7 +10,7 @@ export declare namespace SerializerUtilsInternal {
 }
 export declare class SerializerUtils {
     static serializeEntity(e: Entity, serializeNonPersistentObjects?: boolean): SerializedEntity;
-    static deserializeEntity(entity: Entity, json: SerializedEntity, persistent?: boolean): void;
+    static deserializeEntity(entity: Entity, json: SerializedEntity): void;
     static serializeEntityWithPrefabRefs(e: Entity): SerializedEntity;
     static serializeObject(o: SerializableObject): SerializedObject;
     static deserializeObject(target: SerializableObject, json: SerializedObject): void;

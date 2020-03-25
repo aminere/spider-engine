@@ -1,17 +1,17 @@
-import { Visual } from "./Visual";
-import { Range } from "../serialization/Range";
-import { Volume } from "./volumes/Volume";
-import { Color } from "./Color";
-import { SerializableObject, SerializedObject } from "../core/SerializableObject";
-import { Entity } from "../core/Entity";
-import { ParticlesGeometry } from "./geometry/ParticlesGeometry";
-import { Material } from "./Material";
-import { VisualGroup } from "./VisualGroup";
-import { CollisionShape } from "../collision/CollisionShape";
-import { Component } from "../core/Component";
-import { Transform } from "../core/Transform";
-import { ObjectProps } from "../core/Types";
-import { ParticleShape } from "./particles/ParticleShape";
+import { Visual } from "../Visual";
+import { Range } from "../../serialization/Range";
+import { Volume } from "../volume/Volume";
+import { Color } from "../Color";
+import { SerializableObject, SerializedObject } from "../../core/SerializableObject";
+import { Entity } from "../../core/Entity";
+import { ParticlesGeometry } from "../geometry/ParticlesGeometry";
+import { Material } from "../Material";
+import { VisualGroup } from "../VisualGroup";
+import { CollisionShape } from "../../collision/CollisionShape";
+import { Component } from "../../core/Component";
+import { Transform } from "../../core/Transform";
+import { ObjectProps } from "../../core/Types";
+import { ParticleShape } from "./ParticleShape";
 export declare enum ParticleEmitDirection {
     Up = 0,
     Forward = 1,

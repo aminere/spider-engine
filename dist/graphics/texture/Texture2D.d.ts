@@ -1,8 +1,8 @@
 import { Texture } from "./Texture";
-import { TextureFiltering } from "./GraphicTypes";
-import { Color } from "./Color";
-import { SerializedObject } from "../core/SerializableObject";
-import { ObjectProps } from "../core/Types";
+import { TextureFiltering } from "../GraphicTypes";
+import { Color } from "../Color";
+import { SerializedObject } from "../../core/SerializableObject";
+import { ObjectProps } from "../../core/Types";
 export declare enum TexturePublishFormat {
     JPEG = 0,
     PNG = 1,

@@ -1,7 +1,7 @@
 import { Material } from "../graphics/Material";
 import { Sprite } from "./Sprite";
 import { Color } from "../graphics/Color";
-import { Texture } from "../graphics/Texture";
+import { Texture } from "../graphics/texture/Texture";
 import { AssetReference } from "../serialization/AssetReference";
 import { SerializableObject, SerializedObject } from "../core/SerializableObject";
 import { Vector2 } from "../math/Vector2";

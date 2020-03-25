@@ -3,9 +3,9 @@ import { Matrix44 } from "../../math/Matrix44";
 import { AABB } from "../../math/AABB";
 import { Asset } from "../../assets/Asset";
 import { Color } from "../Color";
-import { Camera } from "../Camera";
+import { Camera } from "../camera/Camera";
 import { Material } from "../Material";
-import { Texture } from "../Texture";
+import { Texture } from "../texture/Texture";
 export declare class GeometryRenderer {
     static defaultAssets: {
         path: string;

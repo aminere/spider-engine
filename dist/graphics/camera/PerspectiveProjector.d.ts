@@ -1,18 +1,12 @@
 import { Projector } from "./Projector";
-import { Transform } from "../core/Transform";
-import { SerializedObject } from "../core/SerializableObject";
-import { Matrix44 } from "../math/Matrix44";
+import { Transform } from "../../core/Transform";
+import { SerializedObject } from "../../core/SerializableObject";
+import { Matrix44 } from "../../math/Matrix44";
 export declare class PerspectiveProjector extends Projector {
     get version(): number;
     get fov(): number;
-    get zNear(): number;
-    get zFar(): number;
     set fov(fov: number);
-    set zNear(zNear: number);
-    set zFar(zFar: number);
     private _fov;
-    private _zNear;
-    private _zFar;
     private _projectionMatrix;
     getProjectionMatrix(): Matrix44;
     updateFrustum(transform: Transform, ratio: number): void;

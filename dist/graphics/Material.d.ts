@@ -1,9 +1,10 @@
 import { BlendingModes, RenderPass, CullModes } from "./GraphicTypes";
 import { Asset } from "../assets/Asset";
-import { Shader } from "./Shader";
+import { Shader } from "./shading/Shader";
 import { SerializableObject, SerializedObject } from "../core/SerializableObject";
 import { GraphicAsset } from "./GraphicAsset";
-import { ShaderParamInstanceType } from "./ShaderUtils";
+import { ShaderParamInstanceType } from "./shading/ShaderUtils";
+import { IShadingContext } from "./shading/IShadingContext";
 /**
  * @hidden
  */
@@ -32,10 +33,10 @@ export declare class Material extends Asset {
     get shaderParams(): SerializableObject;
     get depthTest(): boolean;
     set shader(shader: Shader | null);
-    set blending(blending: BlendingModes);
     set renderPass(renderPass: RenderPass);
-    set cullMode(cullMode: CullModes);
     set priority(priority: number);
+    set blending(blending: BlendingModes);
+    set cullMode(cullMode: CullModes);
     set depthTest(depthTest: boolean);
     set shaderParams(paramDefinitions: SerializableObject);
     get buckedId(): string;
@@ -46,8 +47,9 @@ export declare class Material extends Asset {
     private _priority;
     private _shaderParams;
     private _shader;
+    private _bucketId;
     constructor(props?: MaterialProps);
-    begin(): boolean;
+    begin(context?: IShadingContext): boolean;
     uploadState(): void;
     destroy(): void;
     isLoaded(): boolean;
@@ -60,5 +62,6 @@ export declare class Material extends Asset {
     private onShaderCodeChanged;
     private onShaderChanged;
     private updateRuntimeAccessors;
+    private updateParamsFromShader;
 }
 export {};

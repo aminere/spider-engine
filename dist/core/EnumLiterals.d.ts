@@ -1,4 +1,6 @@
 export interface EnumLiterals {
-    literals: object;
+    literals: {
+        [property: string]: number;
+    };
     getDisplayName?: (literal: string) => string;
 }

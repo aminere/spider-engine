@@ -1,5 +1,6 @@
 import { VertexBuffer } from "./VertexBuffer";
-import { Shader } from "./Shader";
+import { Shader } from "./shading/Shader";
 export declare class GraphicUtils {
-    static drawVertexBuffer(gl: WebGLRenderingContext, vb: VertexBuffer, shader: Shader): void;
+    static drawVertexBuffer(vb: VertexBuffer, shader: Shader): void;
+    static invalidateShaders(): void;
 }

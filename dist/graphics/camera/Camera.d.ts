@@ -1,15 +1,15 @@
 import { Projector } from "./Projector";
-import { Matrix44 } from "../math/Matrix44";
-import { Entity } from "../core/Entity";
-import { Vector3 } from "../math/Vector3";
-import { RenderTarget } from "./RenderTarget";
-import { VisualGroup } from "./VisualGroup";
-import { PostEffects } from "./postfx/PostEffects";
-import { SerializedObject } from "../core/SerializableObject";
-import { Ray } from "../math/Ray";
-import { Component } from "../core/Component";
-import { ObjectProps } from "../core/Types";
-import { VisualFilter } from "./VisualFilter";
+import { Matrix44 } from "../../math/Matrix44";
+import { Entity } from "../../core/Entity";
+import { Vector3 } from "../../math/Vector3";
+import { RenderTarget } from "../texture/RenderTarget";
+import { VisualGroup } from "../VisualGroup";
+import { PostEffects } from "../postfx/PostEffects";
+import { SerializedObject } from "../../core/SerializableObject";
+import { Ray } from "../../math/Ray";
+import { Component } from "../../core/Component";
+import { ObjectProps } from "../../core/Types";
+import { VisualFilter } from "../VisualFilter";
 import { IFrustum } from "./IFrustum";
 export declare enum CameraClear {
     Environment = 0,

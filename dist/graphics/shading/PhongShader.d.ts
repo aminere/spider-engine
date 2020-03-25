@@ -1,5 +1,4 @@
-import { Shader, ShaderInstance } from "../Shader";
-import { Visual } from "../Visual";
+import { Shader, ShaderInstance } from "./Shader";
 /**
  * @hidden
  */
@@ -10,6 +9,6 @@ export declare namespace PhongShaderInternal {
     const emissiveKey = "emissive";
 }
 export declare class PhongShader extends Shader {
-    protected loadInstance(gl: WebGLRenderingContext, instance: ShaderInstance, vertexShader: WebGLShader, fragmentShader: WebGLShader, vertexCode: string, fragmentCode: string): boolean;
-    protected setupInstance(instance: ShaderInstance, gl: WebGLRenderingContext, visual: Visual): boolean;
+    protected loadInstance(instance: ShaderInstance): boolean;
+    protected useDirectionalLights(): boolean;
 }

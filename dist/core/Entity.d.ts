@@ -34,6 +34,7 @@ export declare class Entity extends UniqueObject {
     children: Entity[];
     parent?: Entity;
     prefabId?: string;
+    transient: boolean;
     private _components;
     private _tags;
     private _active;
@@ -67,8 +68,8 @@ export declare class Entity extends UniqueObject {
     getAncestor(typeName: string): Component | null;
     getAncestorOfType<T extends Component>(ctor: Constructor<T>): T | null;
     destroy(): void;
-    hasComponent(typeName: string): boolean;
-    hasComponentByType<T>(ctor: Constructor<T>): boolean;
+    hasComponentByName(typeName: string): boolean;
+    hasComponent<T>(ctor: Constructor<T>): boolean;
     serialize(): {
         typeName: string;
         version: number;

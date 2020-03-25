@@ -1,7 +1,7 @@
 import { TypeDefinition } from "../serialization/Factory";
 import { Vector2 } from "../math/Vector2";
 import { IFile } from "../io/File/IFile";
-import { Camera } from "../graphics/Camera";
+import { Camera } from "../graphics/camera/Camera";
 import { SerializableObject } from "./SerializableObject";
 import { Component } from "./Component";
 export interface IEngineConfig {

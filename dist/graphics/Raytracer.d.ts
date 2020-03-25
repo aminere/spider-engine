@@ -1,5 +1,5 @@
-import { DrawableTexture } from "./DrawableTexture";
-import { Projector } from "./Projector";
+import { DrawableTexture } from "./texture/DrawableTexture";
+import { Projector } from "./camera/Projector";
 import { Component } from "../core/Component";
 import { ObjectProps } from "../core/Types";
 export declare class Raytracer extends Component {

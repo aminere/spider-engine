@@ -1,5 +1,5 @@
 import { SerializableObject } from "../../core/SerializableObject";
-import { Texture } from "../../graphics/Texture";
+import { Texture } from "../../graphics/texture/Texture";
 export declare class Font extends SerializableObject {
     getTexture(): Texture;
     setText(text: string): void;

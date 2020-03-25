@@ -2,8 +2,8 @@ import { StaticMesh } from "./StaticMesh";
 import { Entity } from "../../core/Entity";
 import { SerializableMatrix44 } from "../../math/Matrix44";
 import { VertexBuffer } from "../VertexBuffer";
-import { Shader } from "../Shader";
-import { MemoryTexture } from "../MemoryTexture";
+import { Shader } from "../shading/Shader";
+import { MemoryTexture } from "../texture/MemoryTexture";
 export declare class SkinnedMesh extends StaticMesh {
     static skeletonPropertyKey: string;
     set skeleton(entity: Entity | null);

@@ -1,6 +1,6 @@
 import { SerializableObject } from "../core/SerializableObject";
 import { Color } from "./Color";
-import { StaticCubemap } from "./StaticCubemap";
+import { StaticCubemap } from "./texture/StaticCubemap";
 import { Vector3 } from "../math/Vector3";
 export declare class Environment extends SerializableObject {
 }

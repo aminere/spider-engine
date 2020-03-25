@@ -11,7 +11,8 @@ export declare namespace ObjectManagerInternal {
 export declare class ObjectManager implements IObjectManager {
     loadObject(path: string): Promise<[UniqueObject, boolean]>;
     loadObjectById(id: string): Promise<[UniqueObject, boolean]>;
-    getObject(id: string): UniqueObject | null;
+    getObject(path: string): UniqueObject;
+    getObjectById(id: string): UniqueObject | null;
     saveObject(obj: UniqueObject): Promise<void>;
     saveObjectAtPath(obj: UniqueObject, path: string, recordWriteTime?: boolean): Promise<void>;
     renameObject(oldPath: string, newPath: string): void;

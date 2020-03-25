@@ -1,5 +1,5 @@
 import { Texture } from "./Texture";
-import { Size } from "../core/Size";
+import { Size } from "../../core/Size";
 import { VoidAsyncEvent } from "ts-events";
 export declare class RenderTarget extends Texture {
     set width(width: Size);
@@ -18,10 +18,11 @@ export declare class RenderTarget extends Texture {
     private _loadError;
     private _actualWidth;
     private _actualHeight;
+    private _isCubeMap;
     getWidth(): number;
     getHeight(): number;
-    constructor(width?: Size, height?: Size, rgba?: boolean, persistent?: boolean, filtering?: number);
-    bind(gl: WebGLRenderingContext): boolean;
+    constructor(width?: Size, height?: Size, rgba?: boolean, persistent?: boolean, filtering?: number, cubeMap?: boolean);
+    bind(cubeMapFace?: number): boolean;
     begin(stage: number): boolean;
     graphicLoad(): boolean;
     graphicUnload(): void;
