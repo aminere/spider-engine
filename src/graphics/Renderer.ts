@@ -253,7 +253,7 @@ namespace Private {
     }    
 
     function doReflectionRenderPass(renderPassDefinition: IRenderPassDefinition, camera: Camera, viewMatrix: Matrix44) {
-        const cubemapShader = defaultAssets.shaders.dynamicCubemap;
+        let previousShader: Shader | null = null;
         renderPassDefinition.renderStateBucketMap.forEach((renderStateBucket, bucketId) => {
             renderStateBucket.shaderToVisualBucketsMap.forEach((visualBuckets, shader) => {
                 const uniforms = shader.getUniforms();
@@ -263,18 +263,53 @@ namespace Private {
                 const hasDiffuse = diffuse && diffuse.type === "vec4";
                 visualBuckets.forEach((visualBucket, visualBucketId) => {                     
                     visualBucket.vertexBufferToVisualsMap.forEach((visuals, vertexBuffer) => {
-                        vertexBuffer.begin(cubemapShader);
+
+                        // TODO This assumes that all the visual instances of a particular vertex buffer
+                        // Are renderer with the same shader type (skinned vs non-skinned), this is a fair assumption
+                        // But deserves a check in the future
+                        const hasSkinning = visuals[0].isSkinned;
+                        const currentShader = hasSkinning
+                            ? defaultAssets.shaders.skinnedDynamicCubemap
+                            : defaultAssets.shaders.dynamicCubemap;
+                        if (currentShader !== previousShader) {
+                            currentShader.begin();
+                            currentShader.applyParam("projectionMatrix", camera.getProjectionMatrix());
+                            if (hasSkinning) {
+                                currentShader.applyParam("viewMatrix", viewMatrix);
+                            }
+                            previousShader = currentShader;
+                        }
+                        
+                        vertexBuffer.begin(currentShader);
                         for (const visual of visuals) {
-                            const modelViewMatrix = Private.dummyMatrix.multiplyMatrices(viewMatrix, visual.worldTransform);
                             const material = (visual.material ?? visual.animatedMaterial) as Material;
                             const texture = hasDiffuseMap ? material[PhongShaderInternal.diffuseMapKey] : defaultAssets.whiteTexture;
                             const color = hasDiffuse ? material[PhongShaderInternal.diffuseKey] : Color.white;
-                            cubemapShader.applyReferenceParam("diffuse", texture);
-                            cubemapShader.applyParam("ambient", color);
-                            cubemapShader.applyParam("modelViewMatrix", modelViewMatrix);
+                            currentShader.applyReferenceParam("diffuse", texture);
+                            currentShader.applyParam("ambient", color);
+                            if (hasSkinning) {
+                                const skinnedMesh = visual.geometry as SkinnedMesh;
+                                if (!updatedSkinnedMeshes.has(skinnedMesh)) {
+                                    skinnedMesh.updateMatrices();
+                                    updatedSkinnedMeshes.set(skinnedMesh, true);
+                                }
+                                skinnedMesh.updateShader(currentShader, visual.bucketId);
+                                currentShader.applyParam("bindMatrix", skinnedMesh.bindMatrix);
+                                currentShader.applyParam("bindMatrixInverse", skinnedMesh.bindMatrixInverse);
+                                if (WebGL.extensions.OES_texture_float) {
+                                    Private.skinnedRenderDepthBonesTexture.asset = skinnedMesh.boneTexture;
+                                    currentShader.applyParam("boneTexture", Private.skinnedRenderDepthBonesTexture);
+                                    currentShader.applyParam("boneTextureSize", skinnedMesh.boneTextureSize);
+                                } else {
+                                    currentShader.applyParam("boneMatrices", skinnedMesh.boneMatrices);
+                                }
+                            } else {
+                                const modelViewMatrix = Private.dummyMatrix.multiplyMatrices(viewMatrix, visual.worldTransform);
+                                currentShader.applyParam("modelViewMatrix", modelViewMatrix);
+                            }
                             vertexBuffer.draw();
                         }
-                        vertexBuffer.end(cubemapShader);
+                        vertexBuffer.end(currentShader);
                     });
                 });
             });
@@ -421,7 +456,6 @@ namespace Private {
         // directional shadow maps
         const numDirectionalLights = Math.min(Private.directionalLights.length, maxDirectionalLights);
         let previousRenderDepthShader: Shader | null = null;
-        const gl = WebGL.context;
 
         if (numDirectionalLights > 0) {
             WebGL.enableDepthTest(true);
@@ -466,13 +500,13 @@ namespace Private {
                     const currentShader = hasSkinning ? defaultAssets.shaders.skinnedRenderDepth : defaultAssets.shaders.renderDepth;
                     if (currentShader !== previousRenderDepthShader) {
                         currentShader.begin();
+                        currentShader.applyParam("projectionMatrix", Private.directionalLights[i].projectionMatrices[j]);
+                        if (hasSkinning) {
+                            currentShader.applyParam("viewMatrix", Private.directionalLights[i].viewMatrices[j]);
+                        }    
                         previousRenderDepthShader = currentShader;
                     }
 
-                    currentShader.applyParam("projectionMatrix", Private.directionalLights[i].projectionMatrices[j]);
-                    if (hasSkinning) {
-                        currentShader.applyParam("viewMatrix", Private.directionalLights[i].viewMatrices[j]);
-                    }
                     vertexBuffer.begin(currentShader);
                     for (const visual of visuals) {
                         if (hasSkinning) {
@@ -646,11 +680,8 @@ namespace Private {
             )
             .invert();
 
-        const cubemapShader = defaultAssets.shaders.dynamicCubemap;
         const beginPass = () => {
             WebGL.enableDepthWrite(true);            
-            cubemapShader.begin();
-            cubemapShader.applyParam("projectionMatrix", camera.getProjectionMatrix());    
         };
 
         beginPass();

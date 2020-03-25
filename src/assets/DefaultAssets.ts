@@ -28,6 +28,7 @@ export namespace defaultAssets {
         export let bloom: Shader;
         export let diffuse: Shader;
         export let dynamicCubemap: Shader;
+        export let skinnedDynamicCubemap: Shader;
     }    
     
     export namespace primitives {    
@@ -112,6 +113,11 @@ namespace Private {
             path: "Assets/DefaultAssets/Shaders/DynamicCubemap.Shader",
             set: asset => defaultAssets.shaders.dynamicCubemap = asset as Shader,
             get: () => defaultAssets.shaders.dynamicCubemap            
+        },
+        {
+            path: "Assets/DefaultAssets/Shaders/SkinnedDynamicCubemap.Shader",
+            set: asset => defaultAssets.shaders.skinnedDynamicCubemap = asset as Shader,
+            get: () => defaultAssets.shaders.skinnedDynamicCubemap
         },
         // primitives
         {
