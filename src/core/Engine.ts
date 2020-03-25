@@ -45,6 +45,7 @@ import { Light } from "../graphics/lighting/Light";
 import { Screen } from "../ui/Screen";
 import { AABB } from "../math/AABB";
 import { ReflectionProbe } from "../graphics/ReflectionProbe";
+import { Version } from "../common/Version";
 
 export interface IEngineConfig {
     container?: HTMLCanvasElement;
@@ -437,7 +438,7 @@ export class Engine {
                                     // load default assets bundle
                                     return Http.request({
                                         method: "GET",
-                                        url: "/dist/default-assets.json"
+                                        url: `/dist/default-assets-${Version.assets}.json`
                                     })
                                     .then(_data => {
                                         const bundle = JSON.parse(_data);
