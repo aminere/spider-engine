@@ -461,6 +461,8 @@ namespace Private {
             WebGL.enableDepthTest(true);
             WebGL.enableBlending(false);
             WebGL.enableDepthWrite(true);
+            WebGL.enableCulling(true);
+            WebGL.setCullMode(WebGL.context.BACK);
         }
 
         const shadowCasters = Private.cameraToShadowCastersMap.get(camera);
