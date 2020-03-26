@@ -475,6 +475,7 @@ namespace Private {
             }
 
             for (let j = 0; j < maxShadowCascades; ++j) {
+                let matricesNeedUpdate = true;
                 const cascade = Private.directionalShadowMaps[i * maxShadowCascades + j];
                 IRendererInternal.instance.setRenderTarget(cascade);
 
@@ -500,11 +501,16 @@ namespace Private {
                     const currentShader = hasSkinning ? defaultAssets.shaders.skinnedRenderDepth : defaultAssets.shaders.renderDepth;
                     if (currentShader !== previousRenderDepthShader) {
                         currentShader.begin();
+                        previousRenderDepthShader = currentShader;
+                        matricesNeedUpdate = true;
+                    }
+
+                    if (matricesNeedUpdate) {
                         currentShader.applyParam("projectionMatrix", Private.directionalLights[i].projectionMatrices[j]);
                         if (hasSkinning) {
                             currentShader.applyParam("viewMatrix", Private.directionalLights[i].viewMatrices[j]);
-                        }    
-                        previousRenderDepthShader = currentShader;
+                        }
+                        matricesNeedUpdate = false;
                     }
 
                     vertexBuffer.begin(currentShader);
