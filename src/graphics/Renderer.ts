@@ -913,7 +913,7 @@ export class RendererInternal {
                 }
 
                 if (
-                    probe === closestProbe
+                    probe.entity.isAncestor(visual.entity)
                     || !probe.canRenderGroup(visual.group)
                 ) {
                     continue;
