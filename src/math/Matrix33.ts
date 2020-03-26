@@ -134,6 +134,10 @@ export class Matrix33 {
         return this;
     }
 
+    getNormalMatrix(matrix4: Matrix44) {
+        return this.setFromMatrix4(matrix4).getInverse(this).transpose();
+    }
+
     transpose() {
         let tmp, m = this.data;
         tmp = m[1]; m[1] = m[3]; m[3] = tmp;

@@ -222,9 +222,9 @@ namespace Private {
                                 skinnedMesh.updateShader(shader, visualBucketId);
                             } else {
                                 modelViewMatrix = Private.dummyMatrix.multiplyMatrices(viewMatrix, visual.worldTransform);
-                            }
+                            }                            
 
-                            Private.normalMatrix.setFromMatrix4(modelViewMatrix);
+                            Private.normalMatrix.getNormalMatrix(modelViewMatrix);
                             shader.applyParam("worldMatrix", visual.worldTransform, visualBucketId);
                             shader.applyParam("modelViewMatrix", modelViewMatrix, visualBucketId);
                             shader.applyParam("normalMatrix", Private.normalMatrix, visualBucketId);
