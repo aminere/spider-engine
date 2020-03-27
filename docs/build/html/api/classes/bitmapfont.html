@@ -103,15 +103,19 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="bitmapfont.html#copy" class="tsd-kind-icon">copy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="bitmapfont.html#deserialize" class="tsd-kind-icon">deserialize</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="bitmapfont.html#destroy" class="tsd-kind-icon">destroy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="bitmapfont.html#getheight" class="tsd-kind-icon">get<wbr>Height</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="bitmapfont.html#gettexture" class="tsd-kind-icon">get<wbr>Texture</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="bitmapfont.html#getwidth" class="tsd-kind-icon">get<wbr>Width</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="bitmapfont.html#isa" class="tsd-kind-icon">isA</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="bitmapfont.html#isloaded" class="tsd-kind-icon">is<wbr>Loaded</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="bitmapfont.html#prepareforrendering" class="tsd-kind-icon">prepare<wbr>For<wbr>Rendering</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="bitmapfont.html#serialize" class="tsd-kind-icon">serialize</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="bitmapfont.html#setalignment" class="tsd-kind-icon">set<wbr>Alignment</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="bitmapfont.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="bitmapfont.html#setstate" class="tsd-kind-icon">set<wbr>State</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="bitmapfont.html#settext" class="tsd-kind-icon">set<wbr>Text</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="bitmapfont.html#tesselate" class="tsd-kind-icon">tesselate</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="bitmapfont.html#upgrade" class="tsd-kind-icon">upgrade</a></li>
 							</ul>
 						</section>
@@ -126,7 +130,7 @@
 					<div class="tsd-signature tsd-kind-icon">line<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;16</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L44">src/ui/Font/BitmapFont.ts:44</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L43">src/ui/Font/BitmapFont.ts:43</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -136,7 +140,7 @@
 					<div class="tsd-signature tsd-kind-icon">metrics<span class="tsd-signature-symbol">:</span> <a href="assetreference.html" class="tsd-signature-type">AssetReference</a><span class="tsd-signature-symbol">&lt;</span><a href="fontmetrics.html" class="tsd-signature-type">FontMetrics</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new AssetReference(FontMetrics)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L43">src/ui/Font/BitmapFont.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L42">src/ui/Font/BitmapFont.ts:42</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -146,7 +150,7 @@
 					<div class="tsd-signature tsd-kind-icon">spacing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L45">src/ui/Font/BitmapFont.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L44">src/ui/Font/BitmapFont.ts:44</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -156,7 +160,7 @@
 					<div class="tsd-signature tsd-kind-icon">texture<span class="tsd-signature-symbol">:</span> <a href="assetreference.html" class="tsd-signature-type">AssetReference</a><span class="tsd-signature-symbol">&lt;</span><a href="texture2d.html" class="tsd-signature-type">Texture2D</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new AssetReference(Texture2D)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L42">src/ui/Font/BitmapFont.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L41">src/ui/Font/BitmapFont.ts:41</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -173,7 +177,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L40">src/ui/Font/BitmapFont.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L39">src/ui/Font/BitmapFont.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -194,7 +198,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#copy">copy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L27">src/core/SerializableObject.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L27">src/core/SerializableObject.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a></h4>
@@ -212,7 +216,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#deserialize">deserialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L45">src/core/SerializableObject.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L45">src/core/SerializableObject.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -222,6 +226,24 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="destroy" class="tsd-anchor"></a>
+					<h3>destroy</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">destroy<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#destroy">destroy</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L96">src/ui/Font/BitmapFont.ts:96</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -236,7 +258,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="font.html">Font</a>.<a href="font.html#getheight">getHeight</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L74">src/ui/Font/BitmapFont.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L73">src/ui/Font/BitmapFont.ts:73</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -254,7 +276,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="font.html">Font</a>.<a href="font.html#gettexture">getTexture</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L66">src/ui/Font/BitmapFont.ts:66</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L65">src/ui/Font/BitmapFont.ts:65</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="texture.html" class="tsd-signature-type">Texture</a></h4>
@@ -272,7 +294,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="font.html">Font</a>.<a href="font.html#getwidth">getWidth</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L70">src/ui/Font/BitmapFont.ts:70</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L69">src/ui/Font/BitmapFont.ts:69</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -290,7 +312,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#isa">isA</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -313,7 +335,7 @@
 												<li class="tsd-description">
 													<aside class="tsd-sources">
 														<ul>
-															<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
+															<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
 														</ul>
 													</aside>
 													<h4 class="tsd-parameters-title">Parameters</h4>
@@ -343,10 +365,37 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="font.html">Font</a>.<a href="font.html#isloaded">isLoaded</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L92">src/ui/Font/BitmapFont.ts:92</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L91">src/ui/Font/BitmapFont.ts:91</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="prepareforrendering" class="tsd-anchor"></a>
+					<h3>prepare<wbr>For<wbr>Rendering</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">prepare<wbr>For<wbr>Rendering<span class="tsd-signature-symbol">(</span>screenScaleFactor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, maxWidth<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides Font.prepareForRendering</p>
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L174">src/ui/Font/BitmapFont.ts:174</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>screenScaleFactor: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>maxWidth: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -361,7 +410,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#serialize">serialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L41">src/core/SerializableObject.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L41">src/core/SerializableObject.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../index.html#serializedobjecttype" class="tsd-signature-type">SerializedObjectType</a></h4>
@@ -379,13 +428,40 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="font.html">Font</a>.<a href="font.html#setalignment">setAlignment</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L85">src/ui/Font/BitmapFont.ts:85</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L84">src/ui/Font/BitmapFont.ts:84</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>alignment: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="setproperty" class="tsd-anchor"></a>
+					<h3>set<wbr>Property</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Property<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setproperty">setProperty</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L157">src/ui/Font/BitmapFont.ts:157</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>value: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -403,7 +479,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setstate">setState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L54">src/core/SerializableObject.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L54">src/core/SerializableObject.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -433,7 +509,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="font.html">Font</a>.<a href="font.html#settext">setText</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L78">src/ui/Font/BitmapFont.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L77">src/ui/Font/BitmapFont.ts:77</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -443,6 +519,32 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="tesselate" class="tsd-anchor"></a>
+					<h3>tesselate</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">tesselate<span class="tsd-signature-symbol">(</span>pivotX<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, pivotY<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="vertexbuffer.html" class="tsd-signature-type">VertexBuffer</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L111">src/ui/Font/BitmapFont.ts:111</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>pivotX: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>pivotY: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="vertexbuffer.html" class="tsd-signature-type">VertexBuffer</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -457,7 +559,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#upgrade">upgrade</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Font/BitmapFont.ts#L108">src/ui/Font/BitmapFont.ts:108</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/ui/Font/BitmapFont.ts#L104">src/ui/Font/BitmapFont.ts:104</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -512,6 +614,9 @@
 								<a href="bitmapfont.html#deserialize" class="tsd-kind-icon">deserialize</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="bitmapfont.html#destroy" class="tsd-kind-icon">destroy</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="bitmapfont.html#getheight" class="tsd-kind-icon">get<wbr>Height</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
@@ -526,17 +631,26 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="bitmapfont.html#isloaded" class="tsd-kind-icon">is<wbr>Loaded</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="bitmapfont.html#prepareforrendering" class="tsd-kind-icon">prepare<wbr>For<wbr>Rendering</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="bitmapfont.html#serialize" class="tsd-kind-icon">serialize</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="bitmapfont.html#setalignment" class="tsd-kind-icon">set<wbr>Alignment</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="bitmapfont.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
 								<a href="bitmapfont.html#setstate" class="tsd-kind-icon">set<wbr>State</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="bitmapfont.html#settext" class="tsd-kind-icon">set<wbr>Text</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="bitmapfont.html#tesselate" class="tsd-kind-icon">tesselate</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="bitmapfont.html#upgrade" class="tsd-kind-icon">upgrade</a>

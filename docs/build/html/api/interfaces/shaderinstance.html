@@ -81,11 +81,15 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="shaderinstance.html#attributes" class="tsd-kind-icon">attributes</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="shaderinstance.html#fragmentcode" class="tsd-kind-icon">fragment<wbr>Code</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="shaderinstance.html#fragmentshader" class="tsd-kind-icon">fragment<wbr>Shader</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="shaderinstance.html#params" class="tsd-kind-icon">params</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="shaderinstance.html#fragmentuniforms" class="tsd-kind-icon">fragment<wbr>Uniforms</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="shaderinstance.html#program" class="tsd-kind-icon">program</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="shaderinstance.html#uniforms" class="tsd-kind-icon">uniforms</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="shaderinstance.html#vertexattribs" class="tsd-kind-icon">vertex<wbr>Attribs</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="shaderinstance.html#vertexcode" class="tsd-kind-icon">vertex<wbr>Code</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="shaderinstance.html#vertexshader" class="tsd-kind-icon">vertex<wbr>Shader</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="shaderinstance.html#vertexuniforms" class="tsd-kind-icon">vertex<wbr>Uniforms</a></li>
 							</ul>
 						</section>
 					</div>
@@ -94,12 +98,12 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="attributes" class="tsd-anchor"></a>
-					<h3>attributes</h3>
-					<div class="tsd-signature tsd-kind-icon">attributes<span class="tsd-signature-symbol">:</span> <a href="shaderattributes.html" class="tsd-signature-type">ShaderAttributes</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
+					<a name="fragmentcode" class="tsd-anchor"></a>
+					<h3>fragment<wbr>Code</h3>
+					<div class="tsd-signature tsd-kind-icon">fragment<wbr>Code<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/graphics/Shader.ts#L49">src/graphics/Shader.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/shading/Shader.ts#L79">src/graphics/shading/Shader.ts:79</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -109,17 +113,17 @@
 					<div class="tsd-signature tsd-kind-icon">fragment<wbr>Shader<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLShader</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/graphics/Shader.ts#L53">src/graphics/Shader.ts:53</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/shading/Shader.ts#L78">src/graphics/shading/Shader.ts:78</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="params" class="tsd-anchor"></a>
-					<h3>params</h3>
-					<div class="tsd-signature tsd-kind-icon">params<span class="tsd-signature-symbol">:</span> <a href="shaderparams.html" class="tsd-signature-type">ShaderParams</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
+					<a name="fragmentuniforms" class="tsd-anchor"></a>
+					<h3>fragment<wbr>Uniforms</h3>
+					<div class="tsd-signature tsd-kind-icon">fragment<wbr>Uniforms<span class="tsd-signature-symbol">:</span> <a href="shaderparams.html" class="tsd-signature-type">ShaderParams</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/graphics/Shader.ts#L50">src/graphics/Shader.ts:50</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/shading/Shader.ts#L80">src/graphics/shading/Shader.ts:80</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -129,7 +133,37 @@
 					<div class="tsd-signature tsd-kind-icon">program<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLProgram</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/graphics/Shader.ts#L51">src/graphics/Shader.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/shading/Shader.ts#L71">src/graphics/shading/Shader.ts:71</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="uniforms" class="tsd-anchor"></a>
+					<h3>uniforms</h3>
+					<div class="tsd-signature tsd-kind-icon">uniforms<span class="tsd-signature-symbol">:</span> <a href="shaderparams.html" class="tsd-signature-type">ShaderParams</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/shading/Shader.ts#L82">src/graphics/shading/Shader.ts:82</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="vertexattribs" class="tsd-anchor"></a>
+					<h3>vertex<wbr>Attribs</h3>
+					<div class="tsd-signature tsd-kind-icon">vertex<wbr>Attribs<span class="tsd-signature-symbol">:</span> <a href="shaderattributes.html" class="tsd-signature-type">ShaderAttributes</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/shading/Shader.ts#L76">src/graphics/shading/Shader.ts:76</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="vertexcode" class="tsd-anchor"></a>
+					<h3>vertex<wbr>Code</h3>
+					<div class="tsd-signature tsd-kind-icon">vertex<wbr>Code<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/shading/Shader.ts#L74">src/graphics/shading/Shader.ts:74</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -139,7 +173,17 @@
 					<div class="tsd-signature tsd-kind-icon">vertex<wbr>Shader<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLShader</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/graphics/Shader.ts#L52">src/graphics/Shader.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/shading/Shader.ts#L73">src/graphics/shading/Shader.ts:73</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="vertexuniforms" class="tsd-anchor"></a>
+					<h3>vertex<wbr>Uniforms</h3>
+					<div class="tsd-signature tsd-kind-icon">vertex<wbr>Uniforms<span class="tsd-signature-symbol">:</span> <a href="shaderparams.html" class="tsd-signature-type">ShaderParams</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/shading/Shader.ts#L75">src/graphics/shading/Shader.ts:75</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -161,19 +205,31 @@
 						<a href="shaderinstance.html" class="tsd-kind-icon">Shader<wbr>Instance</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="shaderinstance.html#attributes" class="tsd-kind-icon">attributes</a>
+								<a href="shaderinstance.html#fragmentcode" class="tsd-kind-icon">fragment<wbr>Code</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="shaderinstance.html#fragmentshader" class="tsd-kind-icon">fragment<wbr>Shader</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="shaderinstance.html#params" class="tsd-kind-icon">params</a>
+								<a href="shaderinstance.html#fragmentuniforms" class="tsd-kind-icon">fragment<wbr>Uniforms</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="shaderinstance.html#program" class="tsd-kind-icon">program</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="shaderinstance.html#uniforms" class="tsd-kind-icon">uniforms</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="shaderinstance.html#vertexattribs" class="tsd-kind-icon">vertex<wbr>Attribs</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="shaderinstance.html#vertexcode" class="tsd-kind-icon">vertex<wbr>Code</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="shaderinstance.html#vertexshader" class="tsd-kind-icon">vertex<wbr>Shader</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="shaderinstance.html#vertexuniforms" class="tsd-kind-icon">vertex<wbr>Uniforms</a>
 							</li>
 						</ul>
 					</li>

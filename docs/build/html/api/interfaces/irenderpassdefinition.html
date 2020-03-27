@@ -81,9 +81,7 @@
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="irenderpassdefinition.html#begin" class="tsd-kind-icon">begin</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="irenderpassdefinition.html#makeviewmatrix" class="tsd-kind-icon">make<wbr>View<wbr>Matrix</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="irenderpassdefinition.html#makeworldmatrix" class="tsd-kind-icon">make<wbr>World<wbr>Matrix</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="irenderpassdefinition.html#allowdepthwrite" class="tsd-kind-icon">allow<wbr>Depth<wbr>Write</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="irenderpassdefinition.html#renderstatebucketmap" class="tsd-kind-icon">render<wbr>State<wbr>Bucket<wbr>Map</a></li>
 							</ul>
 						</section>
@@ -93,12 +91,12 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="begin" class="tsd-anchor"></a>
-					<h3>begin</h3>
-					<div class="tsd-signature tsd-kind-icon">begin<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<a name="allowdepthwrite" class="tsd-anchor"></a>
+					<h3>allow<wbr>Depth<wbr>Write</h3>
+					<div class="tsd-signature tsd-kind-icon">allow<wbr>Depth<wbr>Write<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/graphics/Renderer.ts#L42">src/graphics/Renderer.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/Renderer.ts#L44">src/graphics/Renderer.ts:44</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -106,79 +104,11 @@
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter-siganture">
 								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>gl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">WebGLRenderingContext</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 								</ul>
 								<ul class="tsd-descriptions">
 									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>gl: <span class="tsd-signature-type">WebGLRenderingContext</span></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="makeviewmatrix" class="tsd-anchor"></a>
-					<h3>make<wbr>View<wbr>Matrix</h3>
-					<div class="tsd-signature tsd-kind-icon">make<wbr>View<wbr>Matrix<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/graphics/Renderer.ts#L43">src/graphics/Renderer.ts:43</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-siganture">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>viewMatrixIn<span class="tsd-signature-symbol">: </span><a href="../classes/matrix44.html" class="tsd-signature-type">Matrix44</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/matrix44.html" class="tsd-signature-type">Matrix44</a></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>viewMatrixIn: <a href="../classes/matrix44.html" class="tsd-signature-type">Matrix44</a></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <a href="../classes/matrix44.html" class="tsd-signature-type">Matrix44</a></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="makeworldmatrix" class="tsd-anchor"></a>
-					<h3>make<wbr>World<wbr>Matrix</h3>
-					<div class="tsd-signature tsd-kind-icon">make<wbr>World<wbr>Matrix<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/graphics/Renderer.ts#L44">src/graphics/Renderer.ts:44</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-siganture">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>worldMatrixIn<span class="tsd-signature-symbol">: </span><a href="../classes/matrix44.html" class="tsd-signature-type">Matrix44</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/matrix44.html" class="tsd-signature-type">Matrix44</a></li>
-								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>worldMatrixIn: <a href="../classes/matrix44.html" class="tsd-signature-type">Matrix44</a></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <a href="../classes/matrix44.html" class="tsd-signature-type">Matrix44</a></h4>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 									</li>
 								</ul>
 							</li>
@@ -191,7 +121,7 @@
 					<div class="tsd-signature tsd-kind-icon">render<wbr>State<wbr>Bucket<wbr>Map<span class="tsd-signature-symbol">:</span> <a href="../index.html#renderstatebucketsmap" class="tsd-signature-type">RenderStateBucketsMap</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/graphics/Renderer.ts#L45">src/graphics/Renderer.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/Renderer.ts#L45">src/graphics/Renderer.ts:45</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -213,13 +143,7 @@
 						<a href="irenderpassdefinition.html" class="tsd-kind-icon">IRender<wbr>Pass<wbr>Definition</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="irenderpassdefinition.html#begin" class="tsd-kind-icon">begin</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="irenderpassdefinition.html#makeviewmatrix" class="tsd-kind-icon">make<wbr>View<wbr>Matrix</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="irenderpassdefinition.html#makeworldmatrix" class="tsd-kind-icon">make<wbr>World<wbr>Matrix</a>
+								<a href="irenderpassdefinition.html#allowdepthwrite" class="tsd-kind-icon">allow<wbr>Depth<wbr>Write</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
 								<a href="irenderpassdefinition.html#renderstatebucketmap" class="tsd-kind-icon">render<wbr>State<wbr>Bucket<wbr>Map</a>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Content | Spider Engine API</title>
+	<title>CaptureOnce | Spider Engine API</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="content.html">Content</a>
+					<a href="captureonce.html">CaptureOnce</a>
 				</li>
 			</ul>
-			<h1>Class Content</h1>
+			<h1>Class CaptureOnce</h1>
 		</div>
 	</div>
 </header>
@@ -70,18 +70,10 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a>
+						<a href="capturemode.html" class="tsd-signature-type">CaptureMode</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">Content</span>
-								<ul class="tsd-hierarchy">
-									<li>
-										<a href="innertext.html" class="tsd-signature-type">InnerText</a>
-									</li>
-									<li>
-										<a href="innerhtml.html" class="tsd-signature-type">InnerHtml</a>
-									</li>
-								</ul>
+								<span class="target">CaptureOnce</span>
 							</li>
 						</ul>
 					</li>
@@ -94,20 +86,22 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="content.html#value" class="tsd-kind-icon">value</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="captureonce.html#captured" class="tsd-kind-icon">captured</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="content.html#copy" class="tsd-kind-icon">copy</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="content.html#deserialize" class="tsd-kind-icon">deserialize</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="content.html#destroy" class="tsd-kind-icon">destroy</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="content.html#isa" class="tsd-kind-icon">isA</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="content.html#serialize" class="tsd-kind-icon">serialize</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="content.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="content.html#setstate" class="tsd-kind-icon">set<wbr>State</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="content.html#upgrade" class="tsd-kind-icon">upgrade</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="captureonce.html#cancapture" class="tsd-kind-icon">can<wbr>Capture</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="captureonce.html#copy" class="tsd-kind-icon">copy</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="captureonce.html#deserialize" class="tsd-kind-icon">deserialize</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="captureonce.html#destroy" class="tsd-kind-icon">destroy</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="captureonce.html#isa" class="tsd-kind-icon">isA</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="captureonce.html#serialize" class="tsd-kind-icon">serialize</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="captureonce.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="captureonce.html#setstate" class="tsd-kind-icon">set<wbr>State</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="captureonce.html#tick" class="tsd-kind-icon">tick</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="captureonce.html#upgrade" class="tsd-kind-icon">upgrade</a></li>
 							</ul>
 						</section>
 					</div>
@@ -116,18 +110,36 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="value" class="tsd-anchor"></a>
-					<h3>value</h3>
-					<div class="tsd-signature tsd-kind-icon">value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;&quot;</span></div>
+					<a name="captured" class="tsd-anchor"></a>
+					<h3>captured</h3>
+					<div class="tsd-signature tsd-kind-icon">captured<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/ui/Html.ts#L17">src/ui/Html.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/reflection/CaptureMode.ts#L14">src/graphics/reflection/CaptureMode.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="cancapture" class="tsd-anchor"></a>
+					<h3>can<wbr>Capture</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">can<wbr>Capture<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="capturemode.html">CaptureMode</a>.<a href="capturemode.html#cancapture">canCapture</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/reflection/CaptureMode.ts#L17">src/graphics/reflection/CaptureMode.ts:17</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="copy" class="tsd-anchor"></a>
 					<h3>copy</h3>
@@ -139,7 +151,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#copy">copy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L27">src/core/SerializableObject.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L27">src/core/SerializableObject.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a></h4>
@@ -157,7 +169,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#deserialize">deserialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L45">src/core/SerializableObject.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L45">src/core/SerializableObject.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -181,7 +193,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#destroy">destroy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L33">src/core/SerializableObject.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L33">src/core/SerializableObject.ts:33</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -199,7 +211,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#isa">isA</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -222,7 +234,7 @@
 												<li class="tsd-description">
 													<aside class="tsd-sources">
 														<ul>
-															<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
+															<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
 														</ul>
 													</aside>
 													<h4 class="tsd-parameters-title">Parameters</h4>
@@ -252,7 +264,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#serialize">serialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L41">src/core/SerializableObject.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L41">src/core/SerializableObject.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../index.html#serializedobjecttype" class="tsd-signature-type">SerializedObjectType</a></h4>
@@ -270,7 +282,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setproperty">setProperty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L37">src/core/SerializableObject.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L37">src/core/SerializableObject.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -297,7 +309,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setstate">setState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L54">src/core/SerializableObject.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L54">src/core/SerializableObject.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -316,6 +328,24 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="tick" class="tsd-anchor"></a>
+					<h3>tick</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">tick<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="capturemode.html">CaptureMode</a>.<a href="capturemode.html#tick">tick</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/graphics/reflection/CaptureMode.ts#L16">src/graphics/reflection/CaptureMode.ts:16</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="upgrade" class="tsd-anchor"></a>
 					<h3>upgrade</h3>
@@ -327,7 +357,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#upgrade">upgrade</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/73420e3/src/core/SerializableObject.ts#L50">src/core/SerializableObject.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/aminere/spider-engine/blob/8b2ba1e/src/core/SerializableObject.ts#L50">src/core/SerializableObject.ts:50</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -358,34 +388,40 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
-						<a href="content.html" class="tsd-kind-icon">Content</a>
+						<a href="captureonce.html" class="tsd-kind-icon">Capture<wbr>Once</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="content.html#value" class="tsd-kind-icon">value</a>
+								<a href="captureonce.html#captured" class="tsd-kind-icon">captured</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="captureonce.html#cancapture" class="tsd-kind-icon">can<wbr>Capture</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="content.html#copy" class="tsd-kind-icon">copy</a>
+								<a href="captureonce.html#copy" class="tsd-kind-icon">copy</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="content.html#deserialize" class="tsd-kind-icon">deserialize</a>
+								<a href="captureonce.html#deserialize" class="tsd-kind-icon">deserialize</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="content.html#destroy" class="tsd-kind-icon">destroy</a>
+								<a href="captureonce.html#destroy" class="tsd-kind-icon">destroy</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
-								<a href="content.html#isa" class="tsd-kind-icon">isA</a>
+								<a href="captureonce.html#isa" class="tsd-kind-icon">isA</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="content.html#serialize" class="tsd-kind-icon">serialize</a>
+								<a href="captureonce.html#serialize" class="tsd-kind-icon">serialize</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="content.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a>
+								<a href="captureonce.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
-								<a href="content.html#setstate" class="tsd-kind-icon">set<wbr>State</a>
+								<a href="captureonce.html#setstate" class="tsd-kind-icon">set<wbr>State</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="captureonce.html#tick" class="tsd-kind-icon">tick</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="content.html#upgrade" class="tsd-kind-icon">upgrade</a>
+								<a href="captureonce.html#upgrade" class="tsd-kind-icon">upgrade</a>
 							</li>
 						</ul>
 					</li>
