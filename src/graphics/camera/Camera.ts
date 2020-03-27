@@ -320,22 +320,23 @@ export class Camera extends Component {
     }
 
     private updateFrustum() {
-        let projector = this.projector;
-        if (projector) {
-            this._invalidFrustum = true;
-            if (this._renderTarget.id) {
-                let renderTarget = this.renderTarget;
-                if (renderTarget && renderTarget.valid) {
-                    let ratio = renderTarget.getWidth() / renderTarget.getHeight();
-                    projector.updateFrustum(this.entity.transform, ratio);
-                    this._invalidFrustum = false;
-                }
-            } else {
-                const { screenSize: size } = Interfaces.renderer;
-                let ratio = size.x / size.y;
+        const projector = this.projector;
+        if (!projector) {
+            return;
+        }
+        this._invalidFrustum = true;
+        if (this._renderTarget.id || this._renderTarget.asset) {
+            const renderTarget = this.renderTarget;
+            if (renderTarget && renderTarget.valid) {
+                const ratio = renderTarget.getWidth() / renderTarget.getHeight();
                 projector.updateFrustum(this.entity.transform, ratio);
                 this._invalidFrustum = false;
             }
+        } else {
+            const { screenSize: size } = Interfaces.renderer;
+            const ratio = size.x / size.y;
+            projector.updateFrustum(this.entity.transform, ratio);
+            this._invalidFrustum = false;
         }
     }
 
