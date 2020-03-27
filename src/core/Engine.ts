@@ -44,7 +44,7 @@ import { Visual } from "../graphics/Visual";
 import { Light } from "../graphics/lighting/Light";
 import { Screen } from "../ui/Screen";
 import { AABB } from "../math/AABB";
-import { ReflectionProbe } from "../graphics/ReflectionProbe";
+import { ReflectionProbe } from "../graphics/reflection/ReflectionProbe";
 
 export interface IEngineConfig {
     container?: HTMLCanvasElement;

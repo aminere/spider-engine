@@ -174,7 +174,8 @@ import { Mask } from "../ui/Mask";
 import { LightType } from "../graphics/lighting/LightType";
 import { DirectionalLight } from "../graphics/lighting/DirectionalLight";
 import { Shadow, PCFSoftShadow, PCFShadow, HardShadow } from "../graphics/lighting/Shadow";
-import { ReflectionProbe, CaptureMode, CaptureOnce, CaptureByFrequency } from "../graphics/ReflectionProbe";
+import { ReflectionProbe } from "../graphics/reflection/ReflectionProbe";
+import { CaptureOnce, CaptureByFrequency, CaptureMode, CaptureAllTheTime } from "../graphics/reflection/CaptureMode";
 
 /**
  * @hidden
@@ -271,6 +272,7 @@ export class TypeRegistration {
         factory.registerObject(CaptureMode, SerializableObject);
         factory.registerObject(CaptureOnce, CaptureMode);
         factory.registerObject(CaptureByFrequency, CaptureMode);
+        factory.registerObject(CaptureAllTheTime, CaptureMode);
 
         // Particles
         factory.registerObject(Particles, Component);

@@ -1,34 +1,16 @@
-import { Component } from "../core/Component";
-import { Reference } from "../serialization/Reference";
-import { SerializableObject } from "../core/SerializableObject";
-import * as Attributes from "../core/Attributes";
-import { Time } from "../core/Time";
-import { Entity } from "../core/Entity";
-import { Entities } from "../core/Entities";
-import { defaultAssets } from "../assets/DefaultAssets";
-import { VisualFilter } from "./VisualFilter";
-import { VisualGroup } from "./VisualGroup";
-import { Camera } from "./camera/Camera";
-import { PerspectiveProjector } from "./camera/PerspectiveProjector";
-import { RenderTarget } from "./texture/RenderTarget";
-import { Size, SizeType } from "../core/Size";
-
-export class CaptureMode extends SerializableObject {
-}
-
-@Attributes.displayName("Once")
-export class CaptureOnce extends CaptureMode {
-    @Attributes.unserializable()
-    captured = false;
-}
-
-@Attributes.displayName("Every X Seconds")
-export class CaptureByFrequency extends CaptureMode {
-    frequency = .2;
-
-    @Attributes.unserializable()
-    timer = -1;
-}
+import { Component } from "../../core/Component";
+import { Reference } from "../../serialization/Reference";
+import * as Attributes from "../../core/Attributes";
+import { Entity } from "../../core/Entity";
+import { Entities } from "../../core/Entities";
+import { defaultAssets } from "../../assets/DefaultAssets";
+import { VisualFilter } from "../VisualFilter";
+import { VisualGroup } from "../VisualGroup";
+import { Camera } from "../camera/Camera";
+import { PerspectiveProjector } from "../camera/PerspectiveProjector";
+import { RenderTarget } from "../texture/RenderTarget";
+import { Size, SizeType } from "../../core/Size";
+import { CaptureMode, CaptureOnce, CaptureByFrequency } from "./CaptureMode";
 
 export class ReflectionProbe extends Component {
 
@@ -39,7 +21,7 @@ export class ReflectionProbe extends Component {
     private _filter = new Reference(VisualFilter);
 
     @Attributes.nullable(false)
-    private _captureMode = new Reference(CaptureMode, new CaptureOnce());
+    private _captureMode = new Reference(CaptureMode, new CaptureByFrequency());
 
     @Attributes.unserializable()
     private _captureRig: Entity | null = null;
@@ -52,24 +34,11 @@ export class ReflectionProbe extends Component {
     }
     
     public canCapture() {
-        if (this._captureMode.instance?.isA(CaptureOnce)) {
-            return !(this._captureMode.instance as CaptureOnce).captured;
-        } else {
-            return (this._captureMode.instance as CaptureByFrequency).timer < 0;
-        }
+        return this._captureMode.instance?.canCapture();
     }        
 
     public tick() {
-        if (this._captureMode.instance?.isA(CaptureOnce)) {
-            (this._captureMode.instance as CaptureOnce).captured = true;
-        } else {
-            const freq = this._captureMode.instance as CaptureByFrequency;
-            if (freq.timer < 0) {
-                freq.timer = freq.frequency;
-            } else {
-                freq.timer -= Time.deltaTime;
-            }
-        }
+        this._captureMode.instance?.tick();
     }
 
     public traverseCameras(handler: (camera: Camera) => void) {
