@@ -15,6 +15,7 @@ export declare class Matrix33 {
     determinant(): number;
     invert(): this;
     getInverse(matrix: Matrix33): this;
+    getNormalMatrix(matrix4: Matrix44): this;
     transpose(): this;
     scale(sx: number, sy: number): this;
     rotate(theta: number): this;

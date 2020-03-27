@@ -21,6 +21,7 @@ export declare namespace defaultAssets {
         let bloom: Shader;
         let diffuse: Shader;
         let dynamicCubemap: Shader;
+        let skinnedDynamicCubemap: Shader;
     }
     namespace primitives {
         let box: StaticMeshAsset;
