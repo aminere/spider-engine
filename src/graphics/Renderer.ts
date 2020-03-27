@@ -35,7 +35,7 @@ import { Entity } from "../core/Entity";
 import { Shadow, PCFShadow } from "./lighting/Shadow";
 import { AABB } from "../math/AABB";
 import { graphicSettings } from "./GraphicSettings";
-import { ReflectionProbe } from "./ReflectionProbe";
+import { ReflectionProbe } from "./reflection/ReflectionProbe";
 import { Bloom } from "./postfx/PostEffects";
 import { PhongShaderInternal } from "./shading/PhongShader";
 import { Color } from "./Color";
@@ -569,16 +569,16 @@ namespace Private {
             .setPosition(Vector3.zero)
             .transpose()
             .scaleFromCoords(zFar, zFar, zFar);
-    }   
+    }
 
-    function tryClearWithEnvironment(camera: Camera, environment: Environment) {
+    function tryClearWithEnvironment(camera: Camera, environment: Environment, viewMatrix: Matrix44) {
         if ((environment as Environment).isA(SkySimulation)) {
             const skySim = environment as SkySimulation;
             WebGL.enableDepthTest(true);
             WebGL.enableDepthWrite(false);
             const { sky } = defaultAssets.materials;
             sky.queueParameter("projectionMatrix", camera.getProjectionMatrix());
-            sky.queueParameter("modelViewMatrix", makeSkyViewMatrix(camera));
+            sky.queueParameter("modelViewMatrix", viewMatrix);
             sky.queueParameter("sunPosition", skySim.sunPosition);
             sky.queueParameter("rayleigh", skySim.rayleigh);
             sky.queueParameter("turbidity", skySim.turbidity);
@@ -596,7 +596,7 @@ namespace Private {
                 WebGL.enableDepthWrite(false);
                 const { cubeMap } = defaultAssets.materials;
                 cubeMap.queueParameter("projectionMatrix", camera.getProjectionMatrix());
-                cubeMap.queueParameter("modelViewMatrix", makeSkyViewMatrix(camera));
+                cubeMap.queueParameter("modelViewMatrix", viewMatrix);
                 cubeMap.queueReferenceParameter("cubemap", sky.cubeMap);
                 if (cubeMap.begin()) {
                     GraphicUtils.drawVertexBuffer(GeometryProvider.skyBox, cubeMap.shader as Shader);
@@ -680,23 +680,21 @@ namespace Private {
         WebGL.enableBlending(false);
 
         // ignore entity rotation
-        const viewMatrix = Matrix44.fromPool()
-            .compose(
-                camera.entity.transform.worldPosition,
-                camera.entity.transform.rotation,
-                Vector3.one
-            )
-            .invert();
-
+        const { worldPosition, rotation } = camera.entity.transform;
+        const viewMatrix = Matrix44.fromPool().compose(worldPosition, rotation, Vector3.one).invert();
         const beginPass = () => {
-            WebGL.enableDepthWrite(true);            
+            WebGL.enableDepthWrite(true);
         };
 
         beginPass();
         doReflectionRenderPass(selector.get(RenderPass.Opaque) as IRenderPassDefinition, camera, viewMatrix);
 
         if (needClear && !cleared) {
-            tryClearWithEnvironment(camera, environment as Environment);
+            const { zFar } = camera.projector;
+            const skyViewMatrix = Matrix44.fromPool().compose(Vector3.zero, rotation, Vector3.one)
+                .transpose()
+                .scaleFromCoords(zFar, zFar, zFar);
+            tryClearWithEnvironment(camera, environment as Environment, skyViewMatrix);
             beginPass();
         }
 
@@ -737,7 +735,7 @@ namespace Private {
         doRenderPass(selector.get(RenderPass.Opaque) as IRenderPassDefinition, camera, fog);
         
         if (needClear && !cleared) {
-            tryClearWithEnvironment(camera, environment as Environment);
+            tryClearWithEnvironment(camera, environment as Environment, makeSkyViewMatrix(camera));
         }
 
         doRenderPass(selector.get(RenderPass.Transparent) as IRenderPassDefinition, camera, fog);

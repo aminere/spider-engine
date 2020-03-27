@@ -135,7 +135,7 @@ export class Matrix33 {
     }
 
     getNormalMatrix(matrix4: Matrix44) {
-        return this.setFromMatrix4(matrix4).getInverse(this).transpose();
+        return this.setFromMatrix4(matrix4); // .getInverse(this).transpose();
     }
 
     transpose() {
