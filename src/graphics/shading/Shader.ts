@@ -200,7 +200,7 @@ export class Shader extends GraphicAsset {
 
             const context: IShadingContext = {
                 skinning: visual.isSkinned,
-                fog,
+                fog: visual.receiveFog ? fog : undefined,
                 shadowMap: visual.receiveShadows,
                 vertexColor: visual.hasVertexColor,
                 directionalLights: this.useDirectionalLights(),
