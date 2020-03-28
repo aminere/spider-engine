@@ -48,7 +48,7 @@ spider.Engine.create({
     // It is also possible to use a default shader from spider.defaultAssets
     const shader = new spider.Shader({
         vertexCode: `                
-attribute vec3 position;
+in vec3 position;
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
 void main() {
@@ -57,8 +57,9 @@ void main() {
 `,
         fragmentCode: `
 precision mediump float;
+out vec4 fragColor;
 void main() {    
-    gl_FragColor = vec4(1.);
+    fragColor = vec4(1.);
 }
 `
     });
