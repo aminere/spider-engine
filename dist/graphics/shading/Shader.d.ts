@@ -6,6 +6,7 @@ import { ShaderParams } from "./ShaderUtils";
 import { ObjectProps } from "../../core/Types";
 import { Vector3 } from "../../math/Vector3";
 import { IShadingContext } from "./IShadingContext";
+import { Fog } from "../Fog";
 export interface ShaderAttribute {
     location: number;
     componentCount: number;
@@ -41,7 +42,7 @@ export declare class Shader extends GraphicAsset {
     private _executedOnce;
     constructor(props?: ObjectProps<Shader>);
     begin(context?: IShadingContext): boolean;
-    beginWithVisual(visual: Visual, bucketId: string): ShaderInstance | null;
+    beginWithVisual(visual: Visual, bucketId: string, fog?: Fog): ShaderInstance | null;
     applyParam(name: string, value: any, bucketId?: string): void;
     applyReferenceParam(name: string, referred: GraphicAsset, bucketId?: string): void;
     applyReferenceArrayParam(name: string, referreds: GraphicAsset[], bucketId?: string): void;
