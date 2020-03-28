@@ -130,7 +130,7 @@ namespace Private {
             // tslint:disable-next-line
             renderStateBucket.shaderToVisualBucketsMap.forEach((visualBuckets, shader) => {
                 visualBuckets.forEach((visualBucket, visualBucketId) => {
-                    const shaderInstance = shader.beginWithVisual(visualBucket.reference, visualBucketId);
+                    const shaderInstance = shader.beginWithVisual(visualBucket.reference, visualBucketId, fog);
                     if (!shaderInstance) {
                         return;
                     }

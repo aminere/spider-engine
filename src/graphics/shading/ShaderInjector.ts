@@ -1,7 +1,6 @@
 
 import { Debug } from "../../io/Debug";
 import { ExponentialFog } from "../Fog";
-import { ScenesInternal } from "../../core/Scenes";
 import { Interfaces } from "../../core/Interfaces";
 import { WebGL } from "../WebGL";
 import { graphicSettings } from "../GraphicSettings";
@@ -95,16 +94,13 @@ vBarycentric = barycentricCoord;`;
         }
 
         if (context.fog) {
-            let fog = ScenesInternal.list()[0].fog;
-            if (fog) {
-                directives = `${directives}
+            directives = `${directives}
 #define USE_FOG`;
-                if (fog.isA(ExponentialFog)) {
-                    directives = `${directives}
+            if (context.fog.isA(ExponentialFog)) {
+                directives = `${directives}
 #define USE_EXPONENTIAL_FOG`;
-                }
-                needInjection = true;
             }
+            needInjection = true;
         }
 
         if (context.shadowMap) {
@@ -203,16 +199,13 @@ float edgeFactor() {
         }
 
         if (context.fog) {
-            let fog = ScenesInternal.list()[0].fog;
-            if (fog) {
-                directives = `${directives}
+            directives = `${directives}
 #define USE_FOG`;
-                if (fog.isA(ExponentialFog)) {
-                    directives = `${directives}
+            if (context.fog.isA(ExponentialFog)) {
+                directives = `${directives}
 #define USE_EXPONENTIAL_FOG`;
-                }
-                needInjection = true;
             }
+            needInjection = true;
         }
 
         if (context.shadowMap) {

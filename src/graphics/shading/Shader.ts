@@ -15,6 +15,7 @@ import { ArrayProperty } from "../../serialization/ArrayProperty";
 import { graphicSettings } from "../GraphicSettings";
 import { Vector3 } from "../../math/Vector3";
 import { IShadingContext } from "./IShadingContext";
+import { Fog } from "../Fog";
  
 namespace Private {
     export const attributeTypeToComponentCount = {
@@ -48,7 +49,6 @@ namespace Private {
     export function makeDefaultShadingContext() {
         return {
             skinning: false,
-            fog: false,
             shadowMap: false,
             vertexColor: false,
             directionalLights: false,
@@ -179,7 +179,7 @@ export class Shader extends GraphicAsset {
     }
     
     // tslint:disable-next-line
-    beginWithVisual(visual: Visual, bucketId: string): ShaderInstance | null {
+    beginWithVisual(visual: Visual, bucketId: string, fog?: Fog): ShaderInstance | null {
         if (this._executedOnce) {
             if (this._shaderError) {
                 return null;
@@ -200,7 +200,7 @@ export class Shader extends GraphicAsset {
 
             const context: IShadingContext = {
                 skinning: visual.isSkinned,
-                fog: visual.receiveFog,
+                fog,
                 shadowMap: visual.receiveShadows,
                 vertexColor: visual.hasVertexColor,
                 directionalLights: this.useDirectionalLights(),
