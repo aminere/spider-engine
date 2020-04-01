@@ -35,7 +35,7 @@ namespace Private {
 
     export function unrollLoops(code: string) {
         return code.replace(
-            new RegExp(/_loop_([0-9A-Z_]+)[\r\n]+\$(.*?)\$/, "sg"),
+            /_loop_([0-9A-Z_]+)[\r\n]+\$([^\x05]*?)\$/g,
             (x, iterations, match) => {
                 const iters = (() => {
                     if (isNaN(iterations)) {
