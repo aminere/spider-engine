@@ -220,7 +220,11 @@ export class Scenes {
                         }
                     }
                 })
-                .catch(reject);
+                .catch(() => {
+                    Debug.logError(`Could not load '${path}'`);
+                    Private.sceneLoadInProgress = null;
+                    reject();
+                });
         });
     }
 
