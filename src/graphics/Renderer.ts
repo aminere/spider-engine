@@ -77,6 +77,7 @@ namespace Private {
     export const defaultShadowMapSize = new Vector2(4096, 4096);
     export let defaultPerspectiveCamera: Camera | null = null;
 
+    export let screenSizeDirty = true;
     export const screenSize = new Vector2();
     export const dummyMatrix = new Matrix44();
     export const normalMatrix = new Matrix33();
@@ -794,7 +795,9 @@ export class Renderer implements IRenderer {
 
     setRenderTarget(rt: RenderTarget | null, cubeMapFace?: number) {
         if (rt === Private.currentRenderTarget && Private.currentCubemapFace === cubeMapFace) {
-            return;
+            if (!Private.screenSizeDirty) {
+                return;
+            }
         }
         if (rt) {
             const result = rt.bind(cubeMapFace);
@@ -807,6 +810,7 @@ export class Renderer implements IRenderer {
         } else {
             WebGL.context.bindFramebuffer(WebGL.context.FRAMEBUFFER, null);
             WebGL.context.viewport(0, 0, this.screenSize.x, this.screenSize.y);
+            Private.screenSizeDirty = false;
             Private.currentRenderTarget = null;
             Private.currentCubemapFace = undefined;
         }
@@ -824,8 +828,8 @@ export class RendererInternal {
             return;
         }
         Private.screenSize.set(clientWidth, clientHeight);
+        Private.screenSizeDirty = true;
         Private.uiProjectionMatrix.makeOrthoProjection(0, canvas.clientWidth, 0, canvas.clientHeight, -100, 100);
-        // Not sure this is necessary
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
     }
