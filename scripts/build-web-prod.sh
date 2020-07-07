@@ -1,3 +1,4 @@
+#!/bin/bash
 pushd ../
 
 echo Building Engine
