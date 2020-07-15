@@ -153,17 +153,20 @@ export class ObjectManager implements IObjectManager {
         recordWriteTime?: boolean
     ) {        
         return new Promise<void>((resolve, reject) => {
-            const data = JSON.stringify(obj.serialize(), null, 2);
-            const saved = () => {
-                if (recordWriteTime !== false) {
-                    IOUtils.recordAssetChange(AssetChangeAction.update, [obj.id]);
-                }
-                EngineEvents.objectSaved.post(obj);
-                resolve();
-            };        
-            IFileInternal.instance.write(path, data)
-                .then(saved)
-                .catch(reject);
+            try {
+                const data = JSON.stringify(obj.serialize(), null, 2);                
+                IFileInternal.instance.write(path, data)
+                    .then(() => {
+                        if (recordWriteTime !== false) {
+                            IOUtils.recordAssetChange(AssetChangeAction.update, [obj.id]);
+                        }
+                        EngineEvents.objectSaved.post(obj);
+                        resolve();
+                    })
+                    .catch(reject);
+            } catch (e) {
+                reject(e);
+            }            
         });        
     }    
 
