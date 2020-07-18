@@ -51,7 +51,7 @@ export class SerializableObject {
         return json;
     }
 
-    setState<T extends SerializableObject>(props: ObjectProps<T>) {
+    setState<T>(props: ObjectProps<T>) {
         Object.entries(props).forEach(([key, value]) => {
             Object.assign(this, { [key]: value });
         });
