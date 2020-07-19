@@ -23,8 +23,8 @@ export namespace CodeBlockInternal {
 @Attributes.displayName("Code Block")
 @Attributes.hasDedicatedEditor(true)
 export class CodeBlock extends Asset implements ICodeBlock {
-    
-    get version() { return 6; }
+
+    get version() { return 7; }
 
     get pins() { return this._pins; }
     get code() { return this._code; }
@@ -64,8 +64,8 @@ export class CodeBlock extends Asset implements ICodeBlock {
             this._standaloneScript = document.createElement("script");
             this._standaloneScript.appendChild(document.createTextNode(finalCode));
             (document.head as HTMLHeadElement).appendChild(this._standaloneScript);
-          
-        } catch (e) {            
+
+        } catch (e) {
             this.logRuntimeError(e.message);
         } finally {
             const wasLoaded = this._isLoaded;
@@ -239,8 +239,8 @@ function onUpdate() {
                 )
                 ;
         } else if (previousVersion === 5) {
-             // tslint:disable-next-line
-             json.properties._code = (json.properties._code as any)
+            // tslint:disable-next-line
+            json.properties._code = (json.properties._code as any)
                 .replace(/.owner./g, ".entity.")
                 .replace(/.findEntities/g, ".filterChildren")
                 .replace(
@@ -256,6 +256,13 @@ function onUpdate() {
                     (x: string, i: string) => `getOrSetComponentByName("${i}")`
                 )
                 ;
+        } else if (previousVersion === 6) {
+            // tslint:disable-next-line
+            json.properties._code = (json.properties._code as any)
+                .replace(
+                    /getComponentByName\(["']([a-zA-Z]+)["']\)/g,
+                    (x: string, i: string) => `getComponent("${i}")`
+                );
         }
         return json;
     }
