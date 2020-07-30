@@ -18,9 +18,6 @@ export class CodeBlockConverterInstance extends Converter {
     
     get version() { return 2; }
     
-    set codeBlock(codeBlock: CodeBlock | null) {        
-        this._codeBlock.asset = codeBlock;
-    }
     get codeBlock() { return this._codeBlock.asset; }
     get customPins() { return this._customPins; }
 
@@ -110,6 +107,11 @@ export class CodeBlockConverterInstance extends Converter {
             delete json.properties.codeBlock;
         }
         return json;
+    }
+
+    setCodeBlock(codeBlock: CodeBlock | null, inline?: boolean) {
+        this._codeBlock.asset = codeBlock;
+        this._codeBlock.inline = Boolean(inline);
     }
 
     // tslint:disable-next-line

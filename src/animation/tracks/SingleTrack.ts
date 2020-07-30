@@ -86,7 +86,7 @@ export class SingleTrack<T extends AnimationKey> extends AnimationTrack {
             newKey.setValue(data.values[i]);
             this.keys.grow(newKey);
         }
-        return Promise.resolve(this);
+        return this;
     }
 }
 

@@ -58,7 +58,9 @@ export class AssetReference<T extends Asset> {
     }
     get state() { return this._state; }
     set state(state: AssetReferenceState) { this._state = state; }
-    get isResolved() { return this._state === AssetReferenceState.Resolved; }
+    get resolved() { return this._state === AssetReferenceState.Resolved; }
+    get inline() { return this._inline; }
+    set inline(inline: boolean) { this._inline = inline; }
 
     /**
      * @event
@@ -74,9 +76,13 @@ export class AssetReference<T extends Asset> {
     @Attributes.unserializable()
     private _state = AssetReferenceState.Resolved;
 
-    constructor(ctor: Constructor<T>, instance?: T) {  
+    @Attributes.unserializable()
+    private _inline = false;
+
+    constructor(ctor: Constructor<T>, instance?: T, inline?: boolean) {  
         this.typeName = () => ctor.name;
         this.onAssetDeleted = this.onAssetDeleted.bind(this);
+        this._inline = Boolean(inline);
         if (instance) {
             this._asset = instance;
             this._id = instance.id;

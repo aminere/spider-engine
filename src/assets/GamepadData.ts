@@ -36,6 +36,6 @@ export class GamepadData extends Asset {
         this.id = json.id;
         this.name = json.name;
         this._data = json.data;
-        return Promise.resolve(this);
+        return this;
     }
 }

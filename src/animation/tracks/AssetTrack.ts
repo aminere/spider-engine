@@ -86,6 +86,6 @@ export class AssetTrack extends SingleTrack<AssetKey> {
         for (const key of this.keys.data) {
             key.initializeReference(key.value, this.typeName, () => { });
         }
-        return Promise.resolve(this);
+        return this;
     }
 }

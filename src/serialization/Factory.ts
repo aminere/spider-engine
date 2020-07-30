@@ -22,7 +22,7 @@ interface ObjectRegister {
         // tslint:disable-next-line             
         createInstance: (...args: any[]) => SerializableObject;
         createReference: (data?: SerializableObject) => ReferenceBase;
-        createAssetReference: () => AssetReference<Asset>;
+        createAssetReference: (inline: boolean) => AssetReference<Asset>;
         createComponentReference: () => ComponentReference<Component>;
         createObjectArray: (data?: SerializableObject[]) => ArrayProperty<SerializableObject>;
         createReferenceArray: (data?: ReferenceBase[]) => ReferenceArray<SerializableObject>;
@@ -52,7 +52,7 @@ export class Factory implements IFactory {
             createReference: (data?: SerializableObject) => new Reference(ctor, data),            
             // TODO find legit was of casting from Constructor<T extends SerializableObject> to Constructor<Asset>
             // tslint:disable-next-line
-            createAssetReference: () => new AssetReference(ctor as any),
+            createAssetReference: (inline: boolean) => new AssetReference(ctor as any, undefined, inline),
             // tslint:disable-next-line
             createComponentReference: () => new ComponentReference(ctor as any),
             createObjectArray: (data?: SerializableObject[]) => new ArrayProperty(ctor, data),
@@ -83,9 +83,9 @@ export class Factory implements IFactory {
         return typeInfo ? typeInfo.createReference(data) : null;
     }
 
-    createAssetReference(typeName: string) {
+    createAssetReference(typeName: string, inline?: boolean) {
         const typeInfo = Private.getObjectInfo(typeName);
-        return typeInfo ? typeInfo.createAssetReference() : null;
+        return typeInfo ? typeInfo.createAssetReference(Boolean(inline)) : null;
     }
 
     createAssetReferenceArray(typeName: string, data?: AssetReference<Asset>[]) {

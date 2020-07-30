@@ -18,20 +18,7 @@ interface ObjectLoadingCallbacks {
 
 namespace Private {
     export let objectCache: { [path: string]: UniqueObject } = {};
-    export const objectLoadingInProgress: { [path: string]: ObjectLoadingCallbacks[] } = {};
-
-    export function loadObjectFromData(path: string, data: string) {
-        const json = JSON.parse(data);
-        const instance = IFactoryInternal.instance.createObject(json.typeName) as UniqueObject;
-        Private.objectCache[path] = instance;
-
-        if (instance.isA(Asset)) {
-            (instance as Asset).isPersistent = true;
-        }
-
-        instance.templatePath = path;
-        return instance.deserialize(json);
-    }
+    export const objectLoadingInProgress: { [path: string]: ObjectLoadingCallbacks[] } = {};    
 }
 
 export namespace ObjectManagerInternal {
@@ -61,15 +48,13 @@ export namespace ObjectManagerInternal {
         }
         Private.objectLoadingInProgress[path] = [loadingCallbacks];
         IFileInternal.instance.read(path)
-            .then(data => {
-                Private.loadObjectFromData(path, data)
-                    .then(instance => {
-                        // Notify owners
-                        for (const pendingCallback of Private.objectLoadingInProgress[path]) {
-                            pendingCallback.loaded(instance as UniqueObject, false);
-                        }
-                        delete Private.objectLoadingInProgress[path];
-                    });
+            .then(data => loadObjectFromData(path, data))
+            .then(instance => {
+                // Notify owners
+                for (const pendingCallback of Private.objectLoadingInProgress[path]) {
+                    pendingCallback.loaded(instance as UniqueObject, false);
+                }
+                delete Private.objectLoadingInProgress[path];
             })
             .catch(err => {
                 for (const pendingCallback of Private.objectLoadingInProgress[path]) {
@@ -77,6 +62,19 @@ export namespace ObjectManagerInternal {
                 }
                 delete Private.objectLoadingInProgress[path];
             });
+    }
+
+    export function loadObjectFromData(path: string, data: string) {
+        const json = JSON.parse(data);
+        const instance = IFactoryInternal.instance.createObject(json.typeName) as UniqueObject;
+        Private.objectCache[path] = instance;
+
+        if (instance.isA(Asset)) {
+            (instance as Asset).isPersistent = true;
+        }
+
+        instance.templatePath = path;
+        return instance.deserialize(json);
     }
 
     // tslint:disable-next-line

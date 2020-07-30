@@ -16,6 +16,7 @@ export namespace PhongShaderInternal {
 }
 
 @Attributes.displayName("Phong Shader")
+@Attributes.creatable(false)
 export class PhongShader extends Shader {    
 
     protected loadInstance(instance: ShaderInstance) {

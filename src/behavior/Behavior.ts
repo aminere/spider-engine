@@ -475,7 +475,7 @@ export class Behavior extends Asset implements IBehavior {
         return clone;
     }    
     
-    deserialize(json: SerializedObjectType): Promise<Behavior> {
+    deserialize(json: SerializedObjectType) {
         if (process.env.CONFIG === "editor") {
             for (const op of this.operators) {
                 if (op.instance) {
@@ -483,7 +483,7 @@ export class Behavior extends Asset implements IBehavior {
                 }
             }
         }
-        return super.deserialize(json) as Promise<Behavior>;
+        return super.deserialize(json) as Behavior;
     }
 
     updateInlineVariable(id: string, other: InlineVariable) {

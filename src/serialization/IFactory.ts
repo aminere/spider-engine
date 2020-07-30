@@ -19,7 +19,7 @@ export interface IFactory {
     // tslint:disable-next-line
     createObject: (typeName: string, ...args: any[]) => SerializableObject | null;
     createReference: (typeName: string, data?: SerializableObject) => ReferenceBase | null;
-    createAssetReference: (typeName: string) => AssetReference<Asset> | null;
+    createAssetReference: (typeName: string, inline?: boolean) => AssetReference<Asset> | null;
     createAssetReferenceArray: (typeName: string, data?: AssetReference<Asset>[]) => AssetReferenceArray<Asset> | null;
     createComponentReference: (typeName: string) => ComponentReference<Component> | null;
     createObjectArray: (typeName: string, data?: SerializableObject[]) => ArrayProperty<SerializableObject> | null;

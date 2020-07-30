@@ -77,6 +77,6 @@ export class NumberTrack extends SingleTrack<NumberKey> {
             ];
             this.keys.grow(newKey);
         }
-        return Promise.resolve(this);
+        return this;
     }
 }

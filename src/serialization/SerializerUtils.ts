@@ -22,6 +22,8 @@ import { ReferenceArrayBase } from "./ReferenceArray";
 interface SerializedAssetReference {
     typeName: string;
     id?: string;
+    // tslint:disable-next-line
+    inlineData?: any;
 }
 
 interface SerializedObjectReference extends SerializedAssetReference {
@@ -194,7 +196,7 @@ export class SerializerUtils {
 
     // tslint:disable-next-line
     static serializeProperty(data: any, _typeName?: string) {
-        const typeName = _typeName || SerializerUtils.getPropertyTypeName(data);
+        const typeName = _typeName ?? SerializerUtils.getPropertyTypeName(data);
         if (["AssetReference", "ObjectReference"].indexOf(typeName) >= 0) {
             const assetRef = (data as AssetReference<Asset>);
             let id = assetRef.id;
@@ -224,14 +226,16 @@ export class SerializerUtils {
                 }
             }
 
-            const result = {
+            const result: SerializedAssetReference = {
                 typeName: assetRef.typeName(),
-                id: id
+                id
             };
             if (typeName === "ObjectReference") {
-                Object.assign(result, {
-                    declarationId: (data as ObjectReference).declarationId 
-                });
+                (result as SerializedObjectReference).declarationId = (data as ObjectReference).declarationId;
+            } else {
+                if (assetRef.inline) {
+                    result.inlineData = JSON.stringify(assetRef.asset?.serialize());
+                }
             }
             return result;
         
@@ -270,7 +274,10 @@ export class SerializerUtils {
             let assetRef = target[index] as AssetReference<Asset>;
             if (typeName === "AssetReference") {
                 if (!assetRef) {
-                    assetRef = IFactoryInternal.instance.createAssetReference(assetRefData.typeName) as AssetReference<Asset>;
+                    assetRef = IFactoryInternal.instance.createAssetReference(
+                        assetRefData.typeName,
+                        Boolean(assetRefData.inlineData)
+                    ) as AssetReference<Asset>;
                     target[index] = assetRef;
                 }
             } else {
@@ -281,9 +288,15 @@ export class SerializerUtils {
                 } else {
                     (assetRef as ObjectReference).declarationId = objectRefData.declarationId;
                 }
-            }            
+            }
+
             assetRef.id = id;
-            if (id) {
+            if (assetRefData.inlineData) {
+                const asset = ObjectManagerInternal.loadObjectFromData(id as string, assetRefData.inlineData);
+                assetRef.asset = asset as Asset;
+                assetRef.inline = true;
+                SerializerUtils.setProperty(target, index, assetRef);
+            } else if (id) {
                 if (Private.nonPersistentObjectCache && id in Private.nonPersistentObjectCache) {
                     assetRef.asset = Private.nonPersistentObjectCache[id] as Asset;
                     SerializerUtils.setProperty(target, index, assetRef);

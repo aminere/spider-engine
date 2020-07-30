@@ -42,9 +42,9 @@ export class SerializableObject {
         return ISerializerInternal.instance.serializeObject(this);
     }
 
-    deserialize(json: SerializedObjectType): Promise<SerializableObject> {
+    deserialize(json: SerializedObjectType): Promise<SerializableObject> | SerializableObject {
         ISerializerInternal.instance.deserializeObject(this, json as SerializedObject);
-        return Promise.resolve(this);
+        return this;
     }
 
     upgrade(json: SerializedObject, previousVersion: number) {

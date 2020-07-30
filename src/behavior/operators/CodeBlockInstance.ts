@@ -5,7 +5,6 @@ import { AssetReference, AssetChangedEvent } from "../../serialization/AssetRefe
 import { VertexBuffer } from "../../graphics/VertexBuffer";
 import { EngineUtils } from "../../core/EngineUtils";
 import { SerializedObject } from "../../core/SerializableObject";
-import { WebGL } from "../../graphics/WebGL";
 import { BehaviorUtils } from "../BehaviorUtils";
 import { Operator } from "../Operator";
 import { CodeBlock, CodeBlockInternal } from "../CodeBlock";
@@ -23,9 +22,7 @@ export class CodeBlockInstance extends Operator {
     get version() { return 2; }
 
     get codeBlock() { return this._codeBlock.asset; }
-    set codeBlock(codeBlock: CodeBlock | null) {       
-        this._codeBlock.asset = codeBlock; 
-    }    
+
     get customPins() { return this._customPins; }
     get stateVariables() { return this._stateVariables; }
 
@@ -205,6 +202,11 @@ export class CodeBlockInstance extends Operator {
             delete json.properties.codeBlock;
         }
         return json;
+    }
+
+    setCodeBlock(codeBlock: CodeBlock | null, inline?: boolean) {
+        this._codeBlock.asset = codeBlock;
+        this._codeBlock.inline = Boolean(inline);
     }
 
     // tslint:disable-next-line

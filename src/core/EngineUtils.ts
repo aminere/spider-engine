@@ -28,7 +28,7 @@ export class EngineUtils {
     }
 
     static isAssetRefLoaded(assetRef: AssetReference<Asset>) {
-        if (!assetRef.isResolved) {
+        if (!assetRef.resolved) {
             return false;
         } else if (assetRef.asset) {
             if (!assetRef.asset.isLoaded()) {

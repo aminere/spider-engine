@@ -20,7 +20,7 @@ export namespace CodeBlockInternal {
     export const trimId = (id: string) => id.split("-").join("");
 }
 
-@Attributes.displayName("Code Block")
+@Attributes.displayName("Program")
 @Attributes.hasDedicatedEditor(true)
 export class CodeBlock extends Asset implements ICodeBlock {
 
