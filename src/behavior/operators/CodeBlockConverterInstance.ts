@@ -19,6 +19,7 @@ export class CodeBlockConverterInstance extends Converter {
     get version() { return 2; }
     
     get codeBlock() { return this._codeBlock.asset; }
+    get codeBlockRef() { return this._codeBlock; }
     get customPins() { return this._customPins; }
 
     @Attributes.unserializable()

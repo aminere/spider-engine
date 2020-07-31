@@ -22,6 +22,7 @@ export class CodeBlockInstance extends Operator {
     get version() { return 2; }
 
     get codeBlock() { return this._codeBlock.asset; }
+    get codeBlockRef() { return this._codeBlock; }
 
     get customPins() { return this._customPins; }
     get stateVariables() { return this._stateVariables; }
