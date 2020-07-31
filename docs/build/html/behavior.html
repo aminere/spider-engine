@@ -73,8 +73,9 @@
 <li class="toctree-l1"><a class="reference internal" href="core.html">Core Concepts</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Behaviors</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#blocks">Blocks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#block-types">Block Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#code-blocks">Code Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#more-on-program-blocks">More on Program Blocks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#built-in-blocks">Built-in Blocks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-data-objects">Custom Data Objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#debugging">Debugging</a></li>
@@ -124,29 +125,30 @@
 <p class="topic-title first">Content</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#overview" id="id5">Overview</a></p></li>
-<li><p><a class="reference internal" href="#block-types" id="id6">Block Types</a></p>
+<li><p><a class="reference internal" href="#blocks" id="id6">Blocks</a></p></li>
+<li><p><a class="reference internal" href="#block-types" id="id7">Block Types</a></p>
 <ul>
-<li><p><a class="reference internal" href="#execution-blocks" id="id7">Execution Blocks</a></p></li>
-<li><p><a class="reference internal" href="#converters" id="id8">Converters</a></p></li>
+<li><p><a class="reference internal" href="#programs" id="id8">Programs</a></p></li>
+<li><p><a class="reference internal" href="#converters" id="id9">Converters</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#code-blocks" id="id9">Code Blocks</a></p>
+<li><p><a class="reference internal" href="#more-on-program-blocks" id="id10">More on Program Blocks</a></p>
 <ul>
-<li><p><a class="reference internal" href="#life-cycle-methods" id="id10">Life-cycle Methods</a></p>
+<li><p><a class="reference internal" href="#life-cycle-methods" id="id11">Life-cycle Methods</a></p>
 <ul>
-<li><p><a class="reference internal" href="#onstart" id="id11">onStart</a></p></li>
-<li><p><a class="reference internal" href="#onupdate" id="id12">onUpdate</a></p></li>
-<li><p><a class="reference internal" href="#onfinish" id="id13">onFinish</a></p></li>
+<li><p><a class="reference internal" href="#onstart" id="id12">onStart</a></p></li>
+<li><p><a class="reference internal" href="#onupdate" id="id13">onUpdate</a></p></li>
+<li><p><a class="reference internal" href="#onfinish" id="id14">onFinish</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#example-implementation" id="id14">Example Implementation</a></p></li>
+<li><p><a class="reference internal" href="#example-program" id="id15">Example Program</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#built-in-blocks" id="id15">Built-in Blocks</a></p></li>
-<li><p><a class="reference internal" href="#custom-data-objects" id="id16">Custom Data Objects</a></p></li>
-<li><p><a class="reference internal" href="#debugging" id="id17">Debugging</a></p>
+<li><p><a class="reference internal" href="#built-in-blocks" id="id16">Built-in Blocks</a></p></li>
+<li><p><a class="reference internal" href="#custom-data-objects" id="id17">Custom Data Objects</a></p></li>
+<li><p><a class="reference internal" href="#debugging" id="id18">Debugging</a></p>
 <ul>
-<li><p><a class="reference internal" href="#debugging-in-chrome" id="id18">Debugging in Chrome</a></p></li>
+<li><p><a class="reference internal" href="#debugging-in-chrome" id="id19">Debugging in Chrome</a></p></li>
 </ul>
 </li>
 </ul>
@@ -166,11 +168,17 @@
 </div></blockquote>
 <p>To create a Behavior, click on the Create Button <img alt="create_button" src="_images/create_button2.png" /> in the <a class="reference internal" href="editor.html#assets-view"><span class="std std-ref">Assets View</span></a> and select <strong>Behavior</strong>.</p>
 </div>
+<div class="section" id="blocks">
+<span id="code-block"></span><h2><a class="toc-backref" href="#id6">Blocks</a><a class="headerlink" href="#blocks" title="Permalink to this headline">¶</a></h2>
+<p>The supported programming language for now is <strong>Javascript</strong>.</p>
+<p>You define the inputs, outputs, and logic within each block.</p>
+<p>You can access the engine through an <a class="reference external" href="/api">API</a> and perform a wide range of functionality.</p>
+</div>
 <div class="section" id="block-types">
-<h2><a class="toc-backref" href="#id6">Block Types</a><a class="headerlink" href="#block-types" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="execution-blocks">
-<h3><a class="toc-backref" href="#id7">Execution Blocks</a><a class="headerlink" href="#execution-blocks" title="Permalink to this headline">¶</a></h3>
-<p>Execution blocks have 2 mandatory signal pins: a <strong>Start</strong> and a <strong>Finish</strong>.</p>
+<h2><a class="toc-backref" href="#id7">Block Types</a><a class="headerlink" href="#block-types" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="programs">
+<h3><a class="toc-backref" href="#id8">Programs</a><a class="headerlink" href="#programs" title="Permalink to this headline">¶</a></h3>
+<p>Programs have 2 mandatory signal pins: a <strong>Start</strong> and a <strong>Finish</strong>.</p>
 <p>In addition, they can have any combination of data and signal pins.</p>
 <blockquote>
 <div><div class="figure align-default">
@@ -183,12 +191,13 @@
 <blockquote>
 <div><div class="figure align-center" id="id4">
 <img alt="_images/BehaviorBlockFSM.png" src="_images/BehaviorBlockFSM.png" />
-<p class="caption"><span class="caption-text">Internal states of an Execution Block</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Internal states of a Program Block</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
 </div></blockquote>
+<p>see <a class="reference internal" href="#more-program-blocks"><span class="std std-ref">More on Program Blocks</span></a>.</p>
 </div>
 <div class="section" id="converters">
-<h3><a class="toc-backref" href="#id8">Converters</a><a class="headerlink" href="#converters" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id9">Converters</a><a class="headerlink" href="#converters" title="Permalink to this headline">¶</a></h3>
 <p>Converters are specialized in converting data from an one format to another.</p>
 <p>Unlike execution blocks, they don’t have Start nor Finish pins, only data pins.</p>
 <blockquote>
@@ -201,45 +210,40 @@
 <p>To create a Converter, click on the Create Button <img alt="create_button" src="_images/create_button2.png" /> in the <a class="reference internal" href="editor.html#assets-view"><span class="std std-ref">Assets View</span></a> and select <strong>Converter</strong>.</p>
 </div>
 </div>
-<div class="section" id="code-blocks">
-<span id="code-block"></span><h2><a class="toc-backref" href="#id9">Code Blocks</a><a class="headerlink" href="#code-blocks" title="Permalink to this headline">¶</a></h2>
-<p>Code Blocks are the only way to implement custom functionality.</p>
-<p>The supported programming language for now is <strong>Javascript</strong>.</p>
-<p>You define the inputs, outputs, and logic within each block.</p>
-<p>You can access the engine through an <a class="reference external" href="/api">API</a> and perform a wide range of functionality.</p>
-<p>To create a Code Block, click on the Create Button <img alt="create_button" src="_images/create_button2.png" /> in the <a class="reference internal" href="editor.html#assets-view"><span class="std std-ref">Assets View</span></a> and select <strong>Code Block</strong>.</p>
+<div class="section" id="more-on-program-blocks">
+<span id="more-program-blocks"></span><h2><a class="toc-backref" href="#id10">More on Program Blocks</a><a class="headerlink" href="#more-on-program-blocks" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="life-cycle-methods">
-<h3><a class="toc-backref" href="#id10">Life-cycle Methods</a><a class="headerlink" href="#life-cycle-methods" title="Permalink to this headline">¶</a></h3>
-<p>Code Blocks have 3 life-cycle methods where you can implement your functionality.</p>
+<h3><a class="toc-backref" href="#id11">Life-cycle Methods</a><a class="headerlink" href="#life-cycle-methods" title="Permalink to this headline">¶</a></h3>
+<p>Programs have 3 life-cycle methods whereto implement functionality.</p>
 <p>They’re all optional and are only executed if defined by you:</p>
 <div class="section" id="onstart">
-<h4><a class="toc-backref" href="#id11">onStart</a><a class="headerlink" href="#onstart" title="Permalink to this headline">¶</a></h4>
-<p>Called every-time the code block receives a Start Signal.</p>
+<h4><a class="toc-backref" href="#id12">onStart</a><a class="headerlink" href="#onstart" title="Permalink to this headline">¶</a></h4>
+<p>Called every-time the program receives a Start Signal.</p>
 <p>This is called once during the frame.</p>
 <p><strong>Return value</strong>:</p>
 <ul class="simple">
-<li><p><a class="reference external" target="_blank" href="https://docs.spiderengine.io/api/enums/executionstatus.html#continue">ExecutionStatus.Continue</a>: The code block will remain active, and <strong>onUpdate</strong> will be called every following frame untils it get deactivated again.</p></li>
-<li><p><a class="reference external" target="_blank" href="https://docs.spiderengine.io/api/enums/executionstatus.html#finish">ExecutionStatus.Finish</a>: The code block will deactivate. If you defined an <strong>onFinish</strong> method, it will be called.</p></li>
+<li><p><a class="reference external" target="_blank" href="https://docs.spiderengine.io/api/enums/executionstatus.html#continue">ExecutionStatus.Continue</a>: The program will remain active, and <strong>onUpdate</strong> will be called every following frame untils it get deactivated again.</p></li>
+<li><p><a class="reference external" target="_blank" href="https://docs.spiderengine.io/api/enums/executionstatus.html#finish">ExecutionStatus.Finish</a>: The program will deactivate. If you defined an <strong>onFinish</strong> method, it will be called.</p></li>
 </ul>
 </div>
 <div class="section" id="onupdate">
-<h4><a class="toc-backref" href="#id12">onUpdate</a><a class="headerlink" href="#onupdate" title="Permalink to this headline">¶</a></h4>
-<p>Called every frame while the code block is active.</p>
+<h4><a class="toc-backref" href="#id13">onUpdate</a><a class="headerlink" href="#onupdate" title="Permalink to this headline">¶</a></h4>
+<p>Called every frame while the program is active.</p>
 <p><strong>Return value</strong>:</p>
 <ul class="simple">
-<li><p><a class="reference external" target="_blank" href="https://docs.spiderengine.io/api/enums/executionstatus.html#continue">ExecutionStatus.Continue</a>: The code block will remain active, and <strong>onUpdate</strong> will keep being called.</p></li>
-<li><p><a class="reference external" target="_blank" href="https://docs.spiderengine.io/api/enums/executionstatus.html#finish">ExecutionStatus.Finish</a>: The code block will deactivate, and <strong>onFinish</strong> will be called if defined.</p></li>
+<li><p><a class="reference external" target="_blank" href="https://docs.spiderengine.io/api/enums/executionstatus.html#continue">ExecutionStatus.Continue</a>: The program will remain active, and <strong>onUpdate</strong> will keep being called.</p></li>
+<li><p><a class="reference external" target="_blank" href="https://docs.spiderengine.io/api/enums/executionstatus.html#finish">ExecutionStatus.Finish</a>: The program will deactivate, and <strong>onFinish</strong> will be called if defined.</p></li>
 </ul>
 </div>
 <div class="section" id="onfinish">
-<h4><a class="toc-backref" href="#id13">onFinish</a><a class="headerlink" href="#onfinish" title="Permalink to this headline">¶</a></h4>
-<p>Called every-time a code block is deactivated.</p>
+<h4><a class="toc-backref" href="#id14">onFinish</a><a class="headerlink" href="#onfinish" title="Permalink to this headline">¶</a></h4>
+<p>Called every-time a program is deactivated.</p>
 <p>This is called once during the frame.</p>
 </div>
 </div>
-<div class="section" id="example-implementation">
-<h3><a class="toc-backref" href="#id14">Example Implementation</a><a class="headerlink" href="#example-implementation" title="Permalink to this headline">¶</a></h3>
-<p>This is an example implementation of a <strong>Delay</strong> block.</p>
+<div class="section" id="example-program">
+<h3><a class="toc-backref" href="#id15">Example Program</a><a class="headerlink" href="#example-program" title="Permalink to this headline">¶</a></h3>
+<p>This is an example implementation of a <strong>Delay</strong> program block.</p>
 <p>It remains active for a number of seconds defined by a <strong>duration</strong> input. When the time is up, it prints something to the console:</p>
 <ul class="simple">
 <li><p><strong>Delay Code</strong>:</p></li>
@@ -265,12 +269,12 @@
 </pre></div>
 </div>
 <ul>
-<li><p><strong>Delay Code Block</strong>: A good practice to make your code re-usable is to expose important variables. In this example, we expose the <strong>duration</strong> variable, by defining it as an Input in the Code Block.</p>
+<li><p><strong>Delay Program Block</strong>: A good practice to make your code re-usable is to expose important variables. In this example, we expose the <strong>duration</strong> variable, by defining it as an Input in the program.</p>
 <blockquote>
 <div><img alt="_images/delay_block.jpg" src="_images/delay_block.jpg" />
 </div></blockquote>
 </li>
-<li><p><strong>Delay Behavior</strong>: The code block is now usable in any behavior:</p>
+<li><p><strong>Delay Behavior</strong>: The program block is now usable in any behavior:</p>
 <blockquote>
 <div><img alt="_images/delay_behavior.jpg" src="_images/delay_behavior.jpg" />
 </div></blockquote>
@@ -284,7 +288,7 @@
 </div>
 </div>
 <div class="section" id="built-in-blocks">
-<h2><a class="toc-backref" href="#id15">Built-in Blocks</a><a class="headerlink" href="#built-in-blocks" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id16">Built-in Blocks</a><a class="headerlink" href="#built-in-blocks" title="Permalink to this headline">¶</a></h2>
 <p>Spider Engine provides a set of common blocks to deal with core needs, such as flow control, input, collision response, etc.</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -303,19 +307,19 @@
 </div>
 </div>
 <div class="section" id="custom-data-objects">
-<h2><a class="toc-backref" href="#id16">Custom Data Objects</a><a class="headerlink" href="#custom-data-objects" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id17">Custom Data Objects</a><a class="headerlink" href="#custom-data-objects" title="Permalink to this headline">¶</a></h2>
 <p>You can create custom data objects, containing any combination of properties.</p>
 <p>To do so, click on the Create Button <img alt="create_button" src="_images/create_button2.png" /> in the <a class="reference internal" href="editor.html#assets-view"><span class="std std-ref">Assets View</span></a> and select <strong>ObjectDeclaration</strong>.</p>
 <p>You will then be able to create as many definitions of your object as you need, and reference them from your behaviors.</p>
 </div>
 <div class="section" id="debugging">
-<h2><a class="toc-backref" href="#id17">Debugging</a><a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id18">Debugging</a><a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h2>
 <p>Debugging Behaviors is possible using the <strong>Developer Tools</strong> in all browsers, but we recommend using Chrome <img alt="chrome" src="_images/chrome.png" /> for best experience.</p>
 <div class="section" id="debugging-in-chrome">
-<h3><a class="toc-backref" href="#id18">Debugging in Chrome</a><a class="headerlink" href="#debugging-in-chrome" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id19">Debugging in Chrome</a><a class="headerlink" href="#debugging-in-chrome" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
 <li><p>Open the Developer Tools - see <a class="reference external" target="_blank" href="https://developers.google.com/web/tools/chrome-devtools/open">How to Open Chrome Dev Tools</a></p></li>
-<li><p>Under the <strong>Assets</strong> folder, your will find a debuggable Javascript file corresponding to each one of your Code Blocks or Converters.</p>
+<li><p>Under the <strong>Assets</strong> folder, your will find a debuggable Javascript file corresponding to each Program or Converter.</p>
 <blockquote>
 <div><img alt="_images/debugging.jpg" src="_images/debugging.jpg" />
 </div></blockquote>
@@ -329,7 +333,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>At runtime, your code is sandboxed and only has access to a strict state and the Spider Engine’s API, for security reasons.</p>
-<p>Therefore, the debuggable code is an automatically generated version of the code you write in the Code Blocks. It is slightly different, but fully debuggable and recognizable.</p>
+<p>Therefore, the debuggable code is an automatically generated version of the code you write in the programs. It is slightly different, but fully debuggable and recognizable.</p>
 </div>
 </div>
 </div>

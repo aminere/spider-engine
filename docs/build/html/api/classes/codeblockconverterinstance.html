@@ -99,7 +99,8 @@
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-accessor tsd-parent-kind-class"><a href="codeblockconverterinstance.html#codeblock" class="tsd-kind-icon">code<wbr>Block</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="codeblockconverterinstance.html#codeblock" class="tsd-kind-icon">code<wbr>Block</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="codeblockconverterinstance.html#codeblockref" class="tsd-kind-icon">code<wbr>Block<wbr>Ref</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="codeblockconverterinstance.html#custompins" class="tsd-kind-icon">custom<wbr>Pins</a></li>
 								<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><a href="codeblockconverterinstance.html#ownerbehavior" class="tsd-kind-icon">owner<wbr>Behavior</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="codeblockconverterinstance.html#pins" class="tsd-kind-icon">pins</a></li>
@@ -127,6 +128,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="codeblockconverterinstance.html#onsignalreceived" class="tsd-kind-icon">on<wbr>Signal<wbr>Received</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="codeblockconverterinstance.html#sendsignal" class="tsd-kind-icon">send<wbr>Signal</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="codeblockconverterinstance.html#serialize" class="tsd-kind-icon">serialize</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="codeblockconverterinstance.html#setcodeblock" class="tsd-kind-icon">set<wbr>Code<wbr>Block</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="codeblockconverterinstance.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="codeblockconverterinstance.html#setstate" class="tsd-kind-icon">set<wbr>State</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="codeblockconverterinstance.html#upgrade" class="tsd-kind-icon">upgrade</a></li>
@@ -148,7 +150,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L36">src/behavior/operators/CodeBlockConverterInstance.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L34">src/behavior/operators/CodeBlockConverterInstance.ts:34</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="codeblockconverterinstance.html" class="tsd-signature-type">CodeBlockConverterInstance</a></h4>
@@ -165,7 +167,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#id">id</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L18">src/behavior/BehaviorNode.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L18">src/behavior/BehaviorNode.ts:18</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -176,45 +178,47 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#position">position</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L17">src/behavior/BehaviorNode.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L17">src/behavior/BehaviorNode.ts:17</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-accessor tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
 					<a name="codeblock" class="tsd-anchor"></a>
 					<h3>code<wbr>Block</h3>
-					<ul class="tsd-signatures tsd-kind-accessor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> codeBlock<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="codeblock.html" class="tsd-signature-type">CodeBlock</a></li>
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">set</span> codeBlock<span class="tsd-signature-symbol">(</span>codeBlock<span class="tsd-signature-symbol">: </span><a href="codeblock.html" class="tsd-signature-type">CodeBlock</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> codeBlock<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="codeblockconverter.html" class="tsd-signature-type">CodeBlockConverter</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L24">src/behavior/operators/CodeBlockConverterInstance.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L21">src/behavior/operators/CodeBlockConverterInstance.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span>
 								<span class="tsd-signature-symbol"> | </span>
-								<a href="codeblock.html" class="tsd-signature-type">CodeBlock</a>
+								<a href="codeblockconverter.html" class="tsd-signature-type">CodeBlockConverter</a>
 							</h4>
 						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="codeblockref" class="tsd-anchor"></a>
+					<h3>code<wbr>Block<wbr>Ref</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> codeBlockRef<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="assetreference.html" class="tsd-signature-type">AssetReference</a><span class="tsd-signature-symbol">&lt;</span><a href="codeblockconverter.html" class="tsd-signature-type">CodeBlockConverter</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L21">src/behavior/operators/CodeBlockConverterInstance.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L22">src/behavior/operators/CodeBlockConverterInstance.ts:22</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>codeBlock: <a href="codeblock.html" class="tsd-signature-type">CodeBlock</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="assetreference.html" class="tsd-signature-type">AssetReference</a><span class="tsd-signature-symbol">&lt;</span><a href="codeblockconverter.html" class="tsd-signature-type">CodeBlockConverter</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -228,7 +232,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L25">src/behavior/operators/CodeBlockConverterInstance.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L23">src/behavior/operators/CodeBlockConverterInstance.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="referencearray.html" class="tsd-signature-type">ReferenceArray</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">BasePin</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -247,7 +251,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#ownerbehavior">ownerBehavior</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L28">src/behavior/BehaviorNode.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L28">src/behavior/BehaviorNode.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/ibehavior.html" class="tsd-signature-type">IBehavior</a></h4>
@@ -256,7 +260,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#ownerbehavior">ownerBehavior</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L27">src/behavior/BehaviorNode.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L27">src/behavior/BehaviorNode.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -280,7 +284,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#pins">pins</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L26">src/behavior/BehaviorNode.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L26">src/behavior/BehaviorNode.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="referencearray.html" class="tsd-signature-type">ReferenceArray</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">BasePin</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -297,7 +301,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L19">src/behavior/operators/CodeBlockConverterInstance.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L19">src/behavior/operators/CodeBlockConverterInstance.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -318,7 +322,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="converter.html">Converter</a>.<a href="converter.html#convert">convert</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L70">src/behavior/operators/CodeBlockConverterInstance.ts:70</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L68">src/behavior/operators/CodeBlockConverterInstance.ts:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -336,7 +340,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#copy">copy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/core/SerializableObject.ts#L27">src/core/SerializableObject.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/core/SerializableObject.ts#L27">src/core/SerializableObject.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a></h4>
@@ -354,7 +358,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#createarraypin">createArrayPin</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L89">src/behavior/BehaviorNode.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L89">src/behavior/BehaviorNode.ts:89</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -384,7 +388,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#createassetpin">createAssetPin</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L82">src/behavior/BehaviorNode.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L82">src/behavior/BehaviorNode.ts:82</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -414,7 +418,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#createcomponentreferencepin">createComponentReferencePin</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L75">src/behavior/BehaviorNode.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L75">src/behavior/BehaviorNode.ts:75</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -444,7 +448,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#createpin">createPin</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L70">src/behavior/BehaviorNode.ts:70</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L70">src/behavior/BehaviorNode.ts:70</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -476,14 +480,14 @@
 					<a name="deserialize" class="tsd-anchor"></a>
 					<h3>deserialize</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">deserialize<span class="tsd-signature-symbol">(</span>json<span class="tsd-signature-symbol">: </span><a href="../index.html#serializedobjecttype" class="tsd-signature-type">SerializedObjectType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">deserialize<span class="tsd-signature-symbol">(</span>json<span class="tsd-signature-symbol">: </span><a href="../index.html#serializedobjecttype" class="tsd-signature-type">SerializedObjectType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#deserialize">deserialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/core/SerializableObject.ts#L45">src/core/SerializableObject.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/core/SerializableObject.ts#L45">src/core/SerializableObject.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -492,7 +496,10 @@
 									<h5>json: <a href="../index.html#serializedobjecttype" class="tsd-signature-type">SerializedObjectType</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a><span class="tsd-signature-symbol">&gt;</span>
+								<span class="tsd-signature-symbol"> | </span>
+								<a href="serializableobject.html" class="tsd-signature-type">SerializableObject</a>
+							</h4>
 						</li>
 					</ul>
 				</section>
@@ -507,7 +514,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#destroy">destroy</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L46">src/behavior/operators/CodeBlockConverterInstance.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L44">src/behavior/operators/CodeBlockConverterInstance.ts:44</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -525,7 +532,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#filterpins">filterPins</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L101">src/behavior/operators/CodeBlockConverterInstance.ts:101</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L99">src/behavior/operators/CodeBlockConverterInstance.ts:99</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -567,7 +574,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#findpin">findPin</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L92">src/behavior/operators/CodeBlockConverterInstance.ts:92</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L90">src/behavior/operators/CodeBlockConverterInstance.ts:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -594,7 +601,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#findpinbyname">findPinByName</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L49">src/behavior/BehaviorNode.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L49">src/behavior/BehaviorNode.ts:49</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -621,7 +628,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#isa">isA</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -644,7 +651,7 @@
 												<li class="tsd-description">
 													<aside class="tsd-sources">
 														<ul>
-															<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
+															<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/core/SerializableObject.ts#L23">src/core/SerializableObject.ts:23</a></li>
 														</ul>
 													</aside>
 													<h4 class="tsd-parameters-title">Parameters</h4>
@@ -674,7 +681,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#isloaded">isLoaded</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L66">src/behavior/operators/CodeBlockConverterInstance.ts:66</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L64">src/behavior/operators/CodeBlockConverterInstance.ts:64</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -692,7 +699,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#onbehaviorstarted">onBehaviorStarted</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L41">src/behavior/BehaviorNode.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L41">src/behavior/BehaviorNode.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -709,7 +716,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L86">src/behavior/operators/CodeBlockConverterInstance.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L84">src/behavior/operators/CodeBlockConverterInstance.ts:84</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -726,7 +733,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L78">src/behavior/operators/CodeBlockConverterInstance.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L76">src/behavior/operators/CodeBlockConverterInstance.ts:76</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -750,7 +757,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="behaviornode.html">BehaviorNode</a>.<a href="behaviornode.html#sendsignal">sendSignal</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/BehaviorNode.ts#L58">src/behavior/BehaviorNode.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/BehaviorNode.ts#L58">src/behavior/BehaviorNode.ts:58</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -774,10 +781,36 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#serialize">serialize</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/core/SerializableObject.ts#L41">src/core/SerializableObject.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/core/SerializableObject.ts#L41">src/core/SerializableObject.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="../index.html#serializedobjecttype" class="tsd-signature-type">SerializedObjectType</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setcodeblock" class="tsd-anchor"></a>
+					<h3>set<wbr>Code<wbr>Block</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Code<wbr>Block<span class="tsd-signature-symbol">(</span>codeBlock<span class="tsd-signature-symbol">: </span><a href="codeblock.html" class="tsd-signature-type">CodeBlock</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span>, inline<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L113">src/behavior/operators/CodeBlockConverterInstance.ts:113</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>codeBlock: <a href="codeblock.html" class="tsd-signature-type">CodeBlock</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> inline: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -792,7 +825,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setproperty">setProperty</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/core/SerializableObject.ts#L37">src/core/SerializableObject.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/core/SerializableObject.ts#L37">src/core/SerializableObject.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -819,7 +852,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#setstate">setState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/core/SerializableObject.ts#L54">src/core/SerializableObject.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/core/SerializableObject.ts#L54">src/core/SerializableObject.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -849,7 +882,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="serializableobject.html">SerializableObject</a>.<a href="serializableobject.html#upgrade">upgrade</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/f28c1af/src/behavior/operators/CodeBlockConverterInstance.ts#L105">src/behavior/operators/CodeBlockConverterInstance.ts:105</a></li>
+									<li>Defined in <a href="https://github.com/franticsoftware/spider-engine/blob/bb5dd20/src/behavior/operators/CodeBlockConverterInstance.ts#L103">src/behavior/operators/CodeBlockConverterInstance.ts:103</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -891,8 +924,11 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="codeblockconverterinstance.html#position" class="tsd-kind-icon">position</a>
 							</li>
-							<li class=" tsd-kind-accessor tsd-parent-kind-class">
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="codeblockconverterinstance.html#codeblock" class="tsd-kind-icon">code<wbr>Block</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="codeblockconverterinstance.html#codeblockref" class="tsd-kind-icon">code<wbr>Block<wbr>Ref</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="codeblockconverterinstance.html#custompins" class="tsd-kind-icon">custom<wbr>Pins</a>
@@ -959,6 +995,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="codeblockconverterinstance.html#serialize" class="tsd-kind-icon">serialize</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="codeblockconverterinstance.html#setcodeblock" class="tsd-kind-icon">set<wbr>Code<wbr>Block</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="codeblockconverterinstance.html#setproperty" class="tsd-kind-icon">set<wbr>Property</a>
