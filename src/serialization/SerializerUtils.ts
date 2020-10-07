@@ -435,7 +435,22 @@ export class SerializerUtils {
             if (typeof (property) === "string" && property.startsWith("_")) {
                 // if setter exists, use it!
                 const propertyKey = property.slice(1);
-                const propertyValue = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(target), propertyKey);
+                let prototype = Object.getPrototypeOf(target);
+                let propertyValue = Object.getOwnPropertyDescriptor(prototype, propertyKey);
+                if (!propertyValue) {
+                    // Check if the setter is present in the parent type chain
+                    prototype = Object.getPrototypeOf(prototype);
+                    while (prototype
+                            && prototype.isA
+                            && prototype.isA(SerializableObject)
+                            && prototype.constructor.name !== "SerializableObject") {
+                        propertyValue = Object.getOwnPropertyDescriptor(prototype, propertyKey);
+                        if (propertyValue) {
+                            break;
+                        }
+                        prototype = Object.getPrototypeOf(prototype);
+                    }                    
+                }
                 if (propertyValue && propertyValue.set) {
                     if (value.constructor.name === "Reference") {
                         propertyValue.set.call(target, (value as ReferenceBase).getInstance());
