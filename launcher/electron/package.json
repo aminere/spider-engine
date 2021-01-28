@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "src/electron-launcher-prod.js",
   "devDependencies": {
-    "electron": "^7.2.4",
+    "electron": "^9.4.0",
     "electron-packager": "^8.7.0"
   },
   "scripts": {
