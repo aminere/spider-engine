@@ -3,7 +3,6 @@ import { GraphicAsset } from "../graphics/GraphicAsset";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { AABB } from "../math/AABB";
 import * as Attributes from "../core/Attributes";
-import { WebGL } from "../graphics/WebGL";
 
 @Attributes.displayName("Static Mesh")
 @Attributes.editable(false)
@@ -22,16 +21,16 @@ export class StaticMeshAsset extends GraphicAsset {
 
     get boundingBox() { 
         if (!this._boundingBox && this._vertexBuffer) {
-            const { attributes, primitiveType, indices } = this._vertexBuffer;
-            this._boundingBox = AABB.fromVertexArray(attributes.position as number[], primitiveType, indices);
+            const { attributes, indices } = this._vertexBuffer;
+            this._boundingBox = AABB.fromVertexArray(attributes.position as number[], indices);
         }
-        return this._boundingBox; 
+        return this._boundingBox as AABB; 
     }
 
     private _vertexBuffer!: VertexBuffer;
 
     @Attributes.unserializable()
-    private _boundingBox!: AABB;
+    private _boundingBox?: AABB;
 
     graphicUnload() {
         this._vertexBuffer.unload();

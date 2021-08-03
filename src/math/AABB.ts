@@ -31,39 +31,55 @@ export class AABB {
     private _cornersDirty = true;
 
     static fromVertexBuffer(vb: VertexBuffer) {
-        const { attributes, primitiveType, indices } = vb;
-        return AABB.fromVertexArray(attributes.position as number[], primitiveType, indices);
+        const { attributes, indices } = vb;
+        return AABB.fromVertexArray(attributes.position as number[], indices);
     }
 
-    static fromVertexArray(positions: number[], primitiveType: PrimitiveType, indices?: number[]) {
+    static fromVertexArray(positions: number[], indices?: number[]) {
         const bb = new AABB();
-        if (primitiveType === "TRIANGLES") {
+
+        const updateBBox = (x: number, y: number, z: number) => {
+            if (bb.min.x > x) {
+                bb.min.x = x;
+            } 
+            if (bb.max.x < x) {
+                bb.max.x = x;
+            }
+            if (bb.min.y > y) {
+                bb.min.y = y;
+            } 
+            if (bb.max.y < y) {
+                bb.max.y = y;
+            }
+            if (bb.min.z > z) {
+                bb.min.z = z;
+            } 
+            if (bb.max.z < z) {
+                bb.max.z = z;
+            }
+        };
+
+        if (indices) {
+            bb.min.copy(Vector3.one).multiply(999999);
+            bb.max.copy(Vector3.one).multiply(-999999);
+            for (let i = 0; i < indices.length; ++i) {
+                const idx = indices[i] * 3;
+                const x = positions[idx];
+                const y = positions[idx + 1];
+                const z = positions[idx + 2];
+                updateBBox(x, y, z);
+            }
+        } else {
             bb.min.copy(Vector3.one).multiply(999999);
             bb.max.copy(Vector3.one).multiply(-999999);
             for (let i = 0; i < positions.length; i += 3) {
                 const x = positions[i];
                 const y = positions[i + 1];
                 const z = positions[i + 2];
-                if (bb.min.x > x) {
-                    bb.min.x = x;
-                } 
-                if (bb.max.x < x) {
-                    bb.max.x = x;
-                }
-                if (bb.min.y > y) {
-                    bb.min.y = y;
-                } 
-                if (bb.max.y < y) {
-                    bb.max.y = y;
-                }
-                if (bb.min.z > z) {
-                    bb.min.z = z;
-                } 
-                if (bb.max.z < z) {
-                    bb.max.z = z;
-                }
+                updateBBox(x, y, z);
             }
         }
+
         return bb;
     }
 
