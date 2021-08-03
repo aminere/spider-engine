@@ -32,7 +32,7 @@ export class ComponentReference<T extends Component> {
             this._entity = component.entity;
             this._entityId = component.entity.id;
         } else {
-            delete this._entity;
+            this._entity = null;
             delete this._entityId;
         }
         this._resolved = true;

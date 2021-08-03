@@ -52,7 +52,7 @@ export class AnimationInstance extends SerializableObject {
      * @hidden
      */
     @Attributes.unserializable()
-    targets!: AnimationTargets;
+    targets?: AnimationTargets;
 
     @Attributes.unserializable()
     private _isPlaying = false;

@@ -120,7 +120,7 @@ export class FontTexture extends Texture {
         }
     }
 
-    private _canvas!: HTMLCanvasElement;
+    private _canvas?: HTMLCanvasElement;
     private _isDirty = true;
     private _text!: string;
     private _fontSize!: number;
@@ -139,26 +139,26 @@ export class FontTexture extends Texture {
     }
 
     getWidth() {
-        return this._canvas ? (this._canvas.width / this._scaleFactor) : 0;
+        return (this._canvas?.width ?? 0) / this._scaleFactor;
     }
     getHeight() {
-        return this._canvas ? (this._canvas.height / this._scaleFactor) : 0;
+        return (this._canvas?.height ?? 0) / this._scaleFactor;
     }
 
     begin(stage: number): boolean {
-        let gl = WebGL.context;
+        const gl = WebGL.context;
         let textureValid = true;
         if (!this._textureId) {
             if (!this._canvas) {
                 this._canvas = document.createElement("canvas");
             }
-            let context = this._canvas.getContext("2d");
+            const context = this._canvas.getContext("2d");
             if (context) {
                 this._textureId = gl.createTexture();
                 textureValid = this.updateTexture(context);
             }
         } else if (this._isDirty) {
-            let context = this._canvas.getContext("2d");
+            const context = this._canvas?.getContext("2d");
             if (context) {
                 textureValid = this.updateTexture(context);
             }
@@ -181,7 +181,7 @@ export class FontTexture extends Texture {
         // I forgot why this is necessary but I suspect it's to have the property grid refresh immediately
         if (process.env.CONFIG === "editor") {
             if (!this._isDirty) {
-                this.updateTexture(this._canvas.getContext("2d") as CanvasRenderingContext2D);
+                this.updateTexture(this._canvas?.getContext("2d") as CanvasRenderingContext2D);
                 return true;
             }
         }
@@ -203,6 +203,7 @@ export class FontTexture extends Texture {
             return false;
         }
         let isMultiline = this._maxWidth > 0;
+        const canvas = this._canvas as HTMLCanvasElement;
         if (isMultiline) {
             let canvasWidth = this._maxWidth * this._scaleFactor;
             let lines: string[] = [];
@@ -213,8 +214,8 @@ export class FontTexture extends Texture {
                 return false;
             }
             let lineHeight = this.getTextHeight(font, lines[0]);
-            this._canvas.width = canvasWidth;
-            this._canvas.height = lineHeight * lines.length;
+            canvas.width = canvasWidth;
+            canvas.height = lineHeight * lines.length;
             this.drawText(context, font, lines, lineHeight);
         } else {
             let textWidth = context.measureText(globalLines[0]).width;
@@ -228,8 +229,8 @@ export class FontTexture extends Texture {
             let lineHeight = this.getTextHeight(font, globalLines[0]);
             let canvasWidth = textWidth;
             let canvasHeight = lineHeight * globalLines.length;
-            this._canvas.width = canvasWidth; // MathUtils.getNextPow2(textWidth);
-            this._canvas.height = canvasHeight; // MathUtils.getNextPow2(this.getTextHeight(font, this._text));
+            canvas.width = canvasWidth; // MathUtils.getNextPow2(textWidth);
+            canvas.height = canvasHeight; // MathUtils.getNextPow2(this.getTextHeight(font, this._text));
             this.drawText(context, font, globalLines, lineHeight);
         }
 
@@ -248,7 +249,7 @@ export class FontTexture extends Texture {
         
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this._canvas);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
 
         this._isDirty = false;
         return true;
@@ -273,18 +274,19 @@ export class FontTexture extends Texture {
         if (this._shadow) {
             this._shadow.applyToContext(context);
         } else {
-            delete context.shadowColor;
+            context.shadowColor = "";
         }
 
-        context.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        const canvas = this._canvas as HTMLCanvasElement;
+        context.clearRect(0, 0, canvas.width, canvas.height);
 
         const halfLine = Math.ceil(lineHeight / 2);
         for (let i = 0; i < lines.length; ++i) {
             let x = 0;
             if (this._alignment === TextAlignment.Center) {
-                x = (this._canvas.width - context.measureText(lines[i]).width) / 2;
+                x = (canvas.width - context.measureText(lines[i]).width) / 2;
             } else if (this._alignment === TextAlignment.Right) {
-                x = this._canvas.width - context.measureText(lines[i]).width;
+                x = canvas.width - context.measureText(lines[i]).width;
             }
             context.fillText(lines[i], x, (i * lineHeight) + halfLine);
         }

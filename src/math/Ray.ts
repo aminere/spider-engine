@@ -69,7 +69,7 @@ export class Ray {
 
     private _origin: Vector3;
     private _direction: Vector3;
-    private _destination!: Vector3;
+    private _destination?: Vector3;
     private _length: number;
 
     static fromPerspectiveView(

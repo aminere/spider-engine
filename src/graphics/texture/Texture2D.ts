@@ -71,9 +71,9 @@ export class Texture2D extends Texture {
     @Attributes.unserializable()
     private _image!: HTMLImageElement;    
     @Attributes.unserializable()
-    private _canvas!: HTMLCanvasElement;
+    private _canvas?: HTMLCanvasElement;
     @Attributes.unserializable()
-    private _pixels!: Uint8ClampedArray;
+    private _pixels?: Uint8ClampedArray;
 
     constructor(props?: ObjectProps<Texture2D>) {
         super();
@@ -154,11 +154,12 @@ export class Texture2D extends Texture {
                 this._pixels = context.getImageData(0, 0, this._canvas.width, this._canvas.height).data;
             }
         }
-        let index = (y * this._canvas.width * 4) + (x * 4);
-        colorOut.r = this._pixels[index + 0];
-        colorOut.g = this._pixels[index + 1];
-        colorOut.b = this._pixels[index + 2];
-        colorOut.a = this._pixels[index + 3];
+        const index = (y * this._canvas.width * 4) + (x * 4);
+        const pixels = this._pixels as Uint8ClampedArray;
+        colorOut.r = pixels[index + 0];
+        colorOut.g = pixels[index + 1];
+        colorOut.b = pixels[index + 2];
+        colorOut.a = pixels[index + 3];
     }
 
     upgrade(json: SerializedObject, previousVersion: number) {

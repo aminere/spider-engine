@@ -460,7 +460,7 @@ const extractMeshesAndMaterials = (entity: any, parentWorldMatrix: Matrix44, loa
 let extractNodes = (root: any) => {
     let meshAndMaterialLoaders: Promise<NodeLoader>[] = [];
     extractMeshesAndMaterials(root, Matrix44.identity, meshAndMaterialLoaders);
-    return new Promise<Node[]>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         Promise.all(meshAndMaterialLoaders)
             .then(loaderDatas => {
                 let textureLoaders: Promise<NodeLoader>[] = [];
@@ -477,14 +477,10 @@ let extractNodes = (root: any) => {
                     } else if (loader.propertyName === "_geometry") {
                         const { _vertexBuffer } = propertyValue.properties;
                         const { data } = _vertexBuffer;
-                        const { attributes, primitiveType, indices } = data;
-                        if (primitiveType === "TRIANGLES") {
-                            const { position, normal, uv } = attributes;
-                            let aabb = AABB.fromVertexArray(position, primitiveType, indices);
-                            loader.node.shapes.push(new MeshCollisionShape(position, normal, uv, aabb));
-                        } else {
-                            console.log(`Unsupported primitiveType: '${primitiveType}'`);
-                        }
+                        const { attributes, indices } = data;
+                        const { position, normal, uv } = attributes;
+                        const aabb = AABB.fromVertexArray(position, indices);
+                        loader.node.shapes.push(new MeshCollisionShape(position, normal, uv, aabb));
                     }
                 }
                 if (textureLoaders.length > 0) {

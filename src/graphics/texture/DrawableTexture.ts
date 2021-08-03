@@ -33,6 +33,9 @@ export class DrawableTexture extends Texture {
         }
     }
 
+    get width() { return this._width; }
+    get height() { return this._height; }
+
     set data(data: Uint8Array) {
         this._data.array = data;
         this._pixelsDirty = true;
@@ -57,10 +60,10 @@ export class DrawableTexture extends Texture {
     @Attributes.unserializable()
     private _bytesPerPixel!: number;
 
-    getWidth() { return this._width; }
-    getHeight() { return this._height; }
+    override getWidth() { return this._width; }
+    override getHeight() { return this._height; }
 
-    begin(stage: number): boolean {
+    override begin(stage: number): boolean {
         let gl = WebGL.context;
         if (!this._textureId) {
             this._textureId = gl.createTexture();

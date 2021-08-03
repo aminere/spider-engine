@@ -34,7 +34,7 @@ export class EntityReference {
             this._entity = entity;            
         } else {
             delete this._id;
-            delete this._entity;
+            this._entity = null;
         }
         this._resolved = true;
     }
