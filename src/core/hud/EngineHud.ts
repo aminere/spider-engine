@@ -107,7 +107,7 @@ export class EngineHud {
     static load() {
         return Promise.all(
             Object.keys(Private.factory).map(a => {
-                return new Promise((resolve, reject) => {
+                return new Promise<void>((resolve, reject) => {
                     IObjectManagerInternal.instance.loadObject(Private.factory[a].path)
                         .then(tuple => {
                             Private.factory[a].set(tuple[0] as Prefab);
@@ -119,7 +119,7 @@ export class EngineHud {
         )
             .then(() => Promise.all(
                 Private.hudAssets.map(a => {
-                    return new Promise((resolve, reject) => {
+                    return new Promise<void>((resolve, reject) => {
                         IObjectManagerInternal.instance.loadObject(a.path)
                             .then(tuple => {
                                 a.set(tuple[0] as Asset);

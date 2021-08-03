@@ -8,7 +8,7 @@ namespace Private {
 export class IndexedDb {
 
     static initialize(dbName: string, version: number) {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             // tslint:disable-next-line
             const { indexedDB, mozIndexedDB, webkitIndexedDB, msIndexedDB } = window as any;
             const dbFactory: IDBFactory = indexedDB || mozIndexedDB || webkitIndexedDB || msIndexedDB;

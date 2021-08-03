@@ -23,7 +23,7 @@ export class EngineSettings extends UniqueObject {
     useCustomDefaultAssets?: boolean = undefined;
 
     static load() {
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             IObjectManagerInternal.instance.loadObject(EngineSettingsInternal.path)
                 .then(([settings]) => {
                     this._instance = settings as EngineSettings;

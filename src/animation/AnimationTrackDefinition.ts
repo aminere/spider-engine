@@ -17,7 +17,7 @@ export class AnimationTrackDefinition extends SerializableObject {
     targetName?: string;
 
     @Attributes.unserializable()    
-    transition!: AnimationTrackTransition;
+    transition?: AnimationTrackTransition;
 
     private _id: string;
     

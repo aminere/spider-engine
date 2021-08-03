@@ -284,7 +284,7 @@ export class Scenes {
             return Promise.reject();
         }
         Private.preloadedScenesRequests.push(path);
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             ObjectManagerInternal.loadObjectIgnoreCache(path)
                 .then(([scene]) => {
                     Private.preloadedScenesInProgress.push({
