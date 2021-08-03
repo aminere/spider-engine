@@ -5,6 +5,8 @@ export declare class DrawableTexture extends Texture {
     get rgba(): boolean;
     set width(width: number);
     set height(height: number);
+    get width(): number;
+    get height(): number;
     set data(data: Uint8Array);
     get data(): Uint8Array;
     private _width;

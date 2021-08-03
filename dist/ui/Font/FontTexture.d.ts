@@ -12,7 +12,7 @@ export declare class FontTexture extends Texture {
     set alignment(alignment: number);
     set shadow(shadow: FontShadow | undefined);
     set filtering(filtering: TextureFiltering);
-    private _canvas;
+    private _canvas?;
     private _isDirty;
     private _text;
     private _fontSize;

@@ -19,7 +19,7 @@ export declare class SerializableObject {
     destroy(): void;
     setProperty(name: string, value: any): void;
     serialize(): SerializedObjectType;
-    deserialize(json: SerializedObjectType): Promise<SerializableObject>;
+    deserialize(json: SerializedObjectType): Promise<SerializableObject> | SerializableObject;
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
-    setState<T extends SerializableObject>(props: ObjectProps<T>): void;
+    setState<T>(props: ObjectProps<T>): void;
 }

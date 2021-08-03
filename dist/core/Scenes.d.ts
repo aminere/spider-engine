@@ -34,7 +34,7 @@ export declare class Scenes {
      * After preloading is done, you must call Scenes.load() when you want the scene to become usable.
      * @param path - The scene path
      */
-    static preLoad(path: string): Promise<unknown>;
+    static preLoad(path: string): Promise<void>;
     /**
      * Destroys all current scenes
      */

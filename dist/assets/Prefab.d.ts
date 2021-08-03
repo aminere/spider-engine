@@ -14,5 +14,5 @@ export declare class Prefab extends Asset {
     constructor();
     isLoaded(): boolean;
     serialize(): SerializedPrefab;
-    deserialize(_json: SerializedObjectType): Promise<this>;
+    deserialize(_json: SerializedObjectType): this;
 }

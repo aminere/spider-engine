@@ -1,4 +1,5 @@
 import { ReferenceArray } from "../../serialization/ReferenceArray";
+import { AssetReference } from "../../serialization/AssetReference";
 import { SerializedObject } from "../../core/SerializableObject";
 import { Operator } from "../Operator";
 import { CodeBlock } from "../CodeBlock";
@@ -9,7 +10,7 @@ import { BasePin } from "../Pin";
 export declare class CodeBlockInstance extends Operator {
     get version(): number;
     get codeBlock(): CodeBlock | null;
-    set codeBlock(codeBlock: CodeBlock | null);
+    get codeBlockRef(): AssetReference<CodeBlock>;
     get customPins(): ReferenceArray<BasePin>;
     get stateVariables(): object;
     private _customPins;
@@ -31,6 +32,7 @@ export declare class CodeBlockInstance extends Operator {
     filterPins(filter: (p: BasePin) => boolean): BasePin[];
     findPinByName(pinName: string): BasePin | undefined;
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
+    setCodeBlock(codeBlock: CodeBlock | null, inline?: boolean): void;
     private executeFunction;
     private onCodeBlockChanged;
     private initializeStateIfNecessary;

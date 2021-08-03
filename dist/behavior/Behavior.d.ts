@@ -69,7 +69,7 @@ export declare class Behavior extends Asset implements IBehavior {
     findVariable(id: string): InlineVariable | undefined;
     findPin(operatorId: string, pinId: string): BasePin | undefined;
     copy(preserveId?: boolean): Behavior;
-    deserialize(json: SerializedObjectType): Promise<Behavior>;
+    deserialize(json: SerializedObjectType): Behavior;
     updateInlineVariable(id: string, other: InlineVariable): void;
     destroy(): void;
     onCollision(info: CollisionInfo): void;

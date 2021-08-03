@@ -1,12 +1,14 @@
 import { ReferenceArray } from "../../serialization/ReferenceArray";
+import { AssetReference } from "../../serialization/AssetReference";
 import { SerializedObject } from "../../core/SerializableObject";
 import { Converter } from "../Converter";
 import { CodeBlock } from "../CodeBlock";
 import { BasePin } from "../Pin";
+import { CodeBlockConverter } from "../CodeBlockConverter";
 export declare class CodeBlockConverterInstance extends Converter {
     get version(): number;
-    set codeBlock(codeBlock: CodeBlock | null);
-    get codeBlock(): CodeBlock | null;
+    get codeBlock(): CodeBlockConverter | null;
+    get codeBlockRef(): AssetReference<CodeBlockConverter>;
     get customPins(): ReferenceArray<BasePin>;
     private _customPins;
     private _stateVariables;
@@ -21,6 +23,7 @@ export declare class CodeBlockConverterInstance extends Converter {
     findPin(pinId: string): BasePin | undefined;
     filterPins(filter: (p: BasePin) => boolean): BasePin[];
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
+    setCodeBlock(codeBlock: CodeBlock | null, inline?: boolean): void;
     private executeFunction;
     private onCodeBlockChanged;
     private initializeStateIfNecessary;

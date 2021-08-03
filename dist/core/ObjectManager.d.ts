@@ -2,6 +2,7 @@ import { UniqueObject } from "./UniqueObject";
 import { IObjectManager } from "./IObjectManager";
 export declare namespace ObjectManagerInternal {
     function loadObject(path: string, loaded: (obj: UniqueObject, fromCache: boolean) => void, error: (err: any) => void, ignoreCache: boolean): void;
+    function loadObjectFromData(path: string, data: string): import("./SerializableObject").SerializableObject | Promise<import("./SerializableObject").SerializableObject>;
     function loadObjectById(id: string, loaded: (obj: UniqueObject, fromCache: boolean) => void, error: () => void): void;
     function loadObjectIgnoreCache(path: string): Promise<[UniqueObject, boolean]>;
     const objectCache: () => {

@@ -25,7 +25,7 @@ export declare class Ray {
     set length(length: number);
     private _origin;
     private _direction;
-    private _destination;
+    private _destination?;
     private _length;
     static fromPerspectiveView(fovRadians: number, inverseView: Matrix44, viewX: number, viewY: number, viewW: number, viewH: number): Ray;
     static fromOrthographicView(orthoSizeY: number, inverseView: Matrix44, viewX: number, viewY: number, viewW: number, viewH: number): Ray;

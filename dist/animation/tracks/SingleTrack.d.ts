@@ -13,7 +13,7 @@ export declare class SingleTrack<T extends AnimationKey> extends AnimationTrack 
     removeKey(key: AnimationKey): void;
     sortByTime(removeDuplicates?: boolean): void;
     serialize(): SerializedAnimationTrack | SerializedNumberTrack;
-    deserialize(json: SerializedAnimationTrack | SerializedNumberTrack): Promise<this>;
+    deserialize(json: SerializedAnimationTrack | SerializedNumberTrack): this;
 }
 export declare class BooleanTrack extends SingleTrack<BooleanKey> {
     constructor();

@@ -42,7 +42,7 @@ export declare class Visual extends Component {
     private _envMap;
     constructor(props?: ObjectProps<Visual>);
     setEntity(entity: Entity): void;
-    graphicUpdate(camera: Camera): GraphicUpdateResult | GraphicUpdateResult.Unchanged;
+    graphicUpdate(camera: Camera): GraphicUpdateResult;
     destroy(): void;
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
 }

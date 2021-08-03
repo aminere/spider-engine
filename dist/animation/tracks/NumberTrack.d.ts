@@ -6,5 +6,5 @@ export declare class NumberTrack extends SingleTrack<NumberKey> {
     constructor();
     getSample(time: number): number | undefined;
     serialize(): SerializedNumberTrack;
-    deserialize(json: SerializedNumberTrack): Promise<this>;
+    deserialize(json: SerializedNumberTrack): this;
 }

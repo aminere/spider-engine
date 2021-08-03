@@ -7,5 +7,5 @@ export declare class GamepadData extends Asset {
     get data(): GamepadDataLoad;
     private _data;
     serialize(): SerializedGamepadData;
-    deserialize(_json: SerializedObjectType): Promise<this>;
+    deserialize(_json: SerializedObjectType): this;
 }

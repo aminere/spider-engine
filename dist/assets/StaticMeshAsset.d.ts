@@ -6,6 +6,6 @@ export declare class StaticMeshAsset extends GraphicAsset {
     set vertexBuffer(vb: VertexBuffer);
     get boundingBox(): AABB;
     private _vertexBuffer;
-    private _boundingBox;
+    private _boundingBox?;
     graphicUnload(): void;
 }

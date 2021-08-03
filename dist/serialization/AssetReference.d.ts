@@ -17,7 +17,9 @@ export declare class AssetReference<T extends Asset> {
     set asset(asset: T | null);
     get state(): AssetReferenceState;
     set state(state: AssetReferenceState);
-    get isResolved(): boolean;
+    get resolved(): boolean;
+    get inline(): boolean;
+    set inline(inline: boolean);
     /**
      * @event
      */
@@ -25,7 +27,8 @@ export declare class AssetReference<T extends Asset> {
     private _id?;
     private _asset;
     private _state;
-    constructor(ctor: Constructor<T>, instance?: T);
+    private _inline;
+    constructor(ctor: Constructor<T>, instance?: T, inline?: boolean);
     clear(): void;
     setAssetFast(asset: T | null): void;
     detach(): void;

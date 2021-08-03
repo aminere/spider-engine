@@ -18,6 +18,7 @@ import { CollisionFilter } from "../collision/CollisionFilter";
 import { VertexBuffer } from "../graphics/VertexBuffer";
 import { AABB } from "../math/AABB";
 import { IHttpRequestOptions } from "../network/HTTP";
+import { RotationOrder } from "../math/Types";
 export declare class BehaviorAPI {
     static api: {
         Math: {
@@ -149,7 +150,7 @@ export declare class BehaviorAPI {
         Quaternion: {
             identity: () => Quaternion;
             fromPool: () => Quaternion;
-            fromEulerAngles: (x: number, y: number, z: number, order?: "YXZ" | "ZYX" | "XYZ" | "ZXY" | "YZX" | "XZY" | undefined) => Quaternion;
+            fromEulerAngles: (x: number, y: number, z: number, order?: RotationOrder | undefined) => Quaternion;
             fromAxisAngle: (axis: Vector3, angle: number) => Quaternion;
         };
         Color: {

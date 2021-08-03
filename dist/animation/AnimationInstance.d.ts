@@ -25,7 +25,7 @@ export declare class AnimationInstance extends SerializableObject {
     /**
      * @hidden
      */
-    targets: AnimationTargets;
+    targets?: AnimationTargets;
     private _isPlaying;
     private _localTime;
     private _playTime;

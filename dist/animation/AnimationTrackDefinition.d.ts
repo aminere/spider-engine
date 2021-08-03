@@ -8,7 +8,7 @@ export declare class AnimationTrackDefinition extends SerializableObject {
     propertyPath: string;
     track: Reference<AnimationTrack>;
     targetName?: string;
-    transition: AnimationTrackTransition;
+    transition?: AnimationTrackTransition;
     private _id;
     constructor();
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;

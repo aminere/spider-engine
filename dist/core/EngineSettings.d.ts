@@ -12,7 +12,7 @@ export declare class EngineSettings extends UniqueObject {
     canvasAlpha: boolean;
     startupScene?: string;
     useCustomDefaultAssets?: boolean;
-    static load(): Promise<unknown>;
+    static load(): Promise<void>;
     static get instance(): EngineSettings;
     upgrade(json: SerializedObject, previousVersion: number): SerializedObject;
     save(): void;

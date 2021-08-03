@@ -22,8 +22,8 @@ export declare class Texture2D extends Texture {
     private _textureData?;
     private _textureDataLoaded;
     private _image;
-    private _canvas;
-    private _pixels;
+    private _canvas?;
+    private _pixels?;
     constructor(props?: ObjectProps<Texture2D>);
     getWidth(): number;
     getHeight(): number;

@@ -9,5 +9,5 @@ export declare class AssetTrack extends SingleTrack<AssetKey> {
     createKey(time: number, value: string, created?: (key: AnimationKey) => void): void;
     isLoaded(): boolean;
     serialize(): SerializedAnimationTrack;
-    deserialize(json: SerializedAnimationTrack): Promise<this>;
+    deserialize(json: SerializedAnimationTrack): this;
 }
