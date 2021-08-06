@@ -58,7 +58,8 @@ export class BehaviorAPI {
             atan: (value: number) => Math.atan(value),
             atan2: (y: number, x: number) => Math.atan2(y, x),
             pow: (base: number, exponent: number) => Math.pow(base, exponent),
-            exp: (value: number) => Math.exp(value)
+            exp: (value: number) => Math.exp(value),
+            log: (value: number) => Math.log(value)
         },
         MathEx: {
             toRadians: (angleDegrees: number) => MathEx.toRadians(angleDegrees),
