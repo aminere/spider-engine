@@ -92,3 +92,4 @@ export * from "./collision/VisualCollisionShape";
 export * from "./collision/Collider";
 export * from "./physics/PhysicsContext";
 export * from "./physics/RigidBody";
+export * from "./physics/Physics";

@@ -248,6 +248,7 @@ export class Transform extends Component {
 
     onReplace(previous: Transform) {
         this.changed = previous.changed;
+        this.changed.post();
     }
 
     private attachToPosition() {
