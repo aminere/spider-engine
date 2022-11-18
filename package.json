@@ -34,7 +34,7 @@
     "typescript": "^4.3.5",
     "webpack": "^4.41.6",
     "webpack-bundle-analyzer": "^3.3.2",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   },
   "scripts": {
     "watch": "webpack --config=webpack/webpack.config.js --env=web.dev --watch",
