@@ -37,11 +37,11 @@
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
-    "watch": "webpack --config=webpack/webpack.config.js --env=web.dev --watch",
+    "watch": "set NODE_OPTIONS=--openssl-legacy-provider && webpack --config=webpack/webpack.config.js --env=web.dev --watch",
     "electron-dev": "electron src/electron-launcher.js ../electron_dev.html",
     "electron-prod": "electron src/electron-launcher.js ../electron_prod.html",
-    "build-web-dev": "webpack --config=webpack/webpack.config.js --env=web.dev",
-    "build-web-prod": "webpack --config=webpack/webpack.config.js --env=web.prod",
+    "build-web-dev": "set NODE_OPTIONS=--openssl-legacy-provider && webpack --config=webpack/webpack.config.js --env=web.dev",
+    "build-web-prod": "set NODE_OPTIONS=--openssl-legacy-provider && webpack --config=webpack/webpack.config.js --env=web.prod",
     "build-electron-dev": "webpack --config=webpack/webpack.config.js --env=electron.dev",
     "build-electron-prod": "webpack --config=webpack/webpack.config.js --env=electron.prod"
   }

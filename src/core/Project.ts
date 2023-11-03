@@ -20,7 +20,7 @@ export class Project {
         if (Private.projectId) {
             return Private.projectId;
         }
-        const projectInfo = sessionStorage.getItem("project_info");
+        const projectInfo = localStorage.getItem("project_info");
         if (projectInfo) {
             return (JSON.parse(projectInfo) as ProjectImportInfo).info.projectId;
         }
@@ -28,7 +28,7 @@ export class Project {
     }
 
     static get projectName(): string | null {
-        const projectInfo = sessionStorage.getItem("project_info");
+        const projectInfo = localStorage.getItem("project_info");
         if (projectInfo) {
             return (JSON.parse(projectInfo) as ProjectImportInfo).info.name;
         }        
@@ -36,7 +36,7 @@ export class Project {
     }
 
     static get isOpenSource() {
-        const projectInfo = sessionStorage.getItem("project_info");
+        const projectInfo = localStorage.getItem("project_info");
         if (projectInfo) {
             return (JSON.parse(projectInfo) as ProjectImportInfo).info.isOpenSource;
         }
@@ -44,7 +44,7 @@ export class Project {
     }
 
     static importToEditor() {
-        const projectInfo = sessionStorage.getItem("project_info");
+        const projectInfo = localStorage.getItem("project_info");
         if (!projectInfo) {
             console.assert(false, "Can't import project because import information is missing.");
             return;
