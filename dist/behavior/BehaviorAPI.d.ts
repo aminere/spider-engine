@@ -40,6 +40,7 @@ export declare class BehaviorAPI {
             atan2: (y: number, x: number) => number;
             pow: (base: number, exponent: number) => number;
             exp: (value: number) => number;
+            log: (value: number) => number;
         };
         MathEx: {
             toRadians: (angleDegrees: number) => number;

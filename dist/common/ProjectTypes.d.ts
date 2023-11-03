@@ -7,6 +7,7 @@ export interface CompactProjectInfo {
     thumbnailTimestamp: number;
     sourceFileId: string;
     defaultAssetsVersion?: string;
+    runtimeIteration?: string;
 }
 export interface ProjectImportInfo {
     importUrl: string;

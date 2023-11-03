@@ -15,8 +15,8 @@
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
-    "watch": "webpack --config=webpack/webpack.config.js --env=raytracer.dev --watch",
-    "build-dev": "webpack --config=webpack/webpack.config.js --env=raytracer.dev",
-    "build-prod": "webpack --config=webpack/webpack.config.js --env=raytracer.prod"
+    "watch": "set NODE_OPTIONS=--openssl-legacy-provider && webpack --config=webpack/webpack.config.js --env=raytracer.dev --watch",
+    "build-dev": "set NODE_OPTIONS=--openssl-legacy-provider && webpack --config=webpack/webpack.config.js --env=raytracer.dev",
+    "build-prod": "set NODE_OPTIONS=--openssl-legacy-provider && webpack --config=webpack/webpack.config.js --env=raytracer.prod"
   }
 }
