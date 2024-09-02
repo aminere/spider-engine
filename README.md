@@ -4,7 +4,7 @@
 
 ![Thumbnails](https://raw.githubusercontent.com/aminere/spider-engine/master/docs/source/images/runtime.jpg)
 
-Spider is a fast game engine, ideal for prototyping in your web browser.
+Spider is a fast game engine in Typescript / WebGL, ideal for prototyping in your web browser.
 
 It provides high-level abstractions over a range of functionalities needed by games, including rendering, serialization, UI, input, prefabs, hierarchy, to name a few.
 
